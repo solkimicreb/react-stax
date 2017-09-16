@@ -5,27 +5,26 @@ import React, {
   createElement,
   cloneElement
 } from 'react'
+import { easyComp } from 'react-easy-state'
 import { normalizePath, isLinkActive } from './urlUtils'
 import { route, links } from './core'
 
-export default class Link extends PureComponent {
-  state = {};
-
+class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
     activeClass: PropTypes.string,
     params: PropTypes.object
-  };
+  }
 
   static contextTypes = {
     easyRouterDepth: PropTypes.number
-  };
+  }
 
   static defaultProps = {
     element: 'a',
     activeClass: 'active'
-  };
+  }
 
   constructor () {
     super()
@@ -39,7 +38,7 @@ export default class Link extends PureComponent {
   }
 
   updateActivity () {
-    this.setState({ isActive: isLinkActive(this.tokens, this.props.params) })
+    this.forceUpdate()
   }
 
   componentWillMount () {
@@ -62,7 +61,7 @@ export default class Link extends PureComponent {
     // also take in the params for this!
     const href = this.tokens ? this.tokens.join('/') : ''
 
-    const isActive = this.state.isActive || isLinkActive(this.tokens, this.props.params)
+    const isActive = isLinkActive(this.tokens, this.props.params)
     const className = isActive ? activeClass : ''
 
     const anchor = createElement('a', { onClick, href }, children)
@@ -72,3 +71,5 @@ export default class Link extends PureComponent {
     return createElement(element, { className }, anchor)
   }
 }
+
+export default easyComp(Link)

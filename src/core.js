@@ -47,11 +47,11 @@ function routePath (tokens) {
 
 export function updateLinks (tokens) {
   // later throttle
-  nextTick(() => {
+  /*nextTick(() => {
     for (let link of links) {
       link.updateActivity(tokens)
     }
-  })
+  })*/
 }
 
 window.addEventListener('popstate', () => {

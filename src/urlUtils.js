@@ -1,4 +1,5 @@
 import { updateLinks } from './core'
+import { getParams } from 'react-easy-params'
 
 export function normalizePath (path, depth) {
   let tokens = path.split('/')
@@ -48,7 +49,7 @@ export function updatePathToken (newToken, depth) {
   const oldToken = tokens[depth + 1]
   if (oldToken !== newToken) {
     tokens[depth + 1] = newToken
-    history.replaceState(history.state, '', createUrl(tokens))
+    setPath(tokens)
     // maybe it makes sense to throttle this!
     // some stuff is removed, some it added -> no need to rush with the links
     updateLinks(tokens)
@@ -59,7 +60,7 @@ export function trimPathTokens (depth) {
   const tokens = location.pathname.split('/')
   if (tokens.length > depth + 1) {
     tokens.length = depth + 1
-    history.replaceState(history.state, '', createUrl(tokens))
+    setPath(tokens)
     updateLinks(tokens)
   }
 }
@@ -74,7 +75,7 @@ export function isLinkActive (linkTokens, linkParams) {
     }
   }
   if (linkParams) {
-    const queryParams = toParams(location.search)
+    const queryParams = getParams(Object.keys(linkParams))
     for (let param in linkParams) {
       if (linkParams[param] !== queryParams[param]) {
         return false
@@ -84,34 +85,12 @@ export function isLinkActive (linkTokens, linkParams) {
   return true
 }
 
-function createUrl (tokens) {
-  return tokens.join('/') + location.search + location.hash
+export function getPath () {
+  return location.pathname.split('/')
 }
 
-export function toQuery (params) {
-  const tokens = []
-  for (let key in params) {
-    const value = params[key]
-    if (value !== undefined) {
-      tokens.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    }
-  }
-  return tokens.length ? '?' + tokens.join('&') : ''
-}
-
-export function toParams (query) {
-  const tokens = query
-    .slice(1)
-    .split('&')
-    .filter(notEmpty)
-  const params = {}
-  for (let token of tokens) {
-    const keyValue = token.split('=')
-    params[decodeURIComponent(keyValue[0])] = decodeURIComponent(keyValue[1])
-  }
-  return params
-}
-
-function notEmpty (string) {
-  return string !== ''
+export function setPath (tokens) {
+  const path = tokens.join('/')
+  const url = path + location.search + location.hash
+  history.replaceState(history.state, '', url)
 }
