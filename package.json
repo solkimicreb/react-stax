@@ -1,0 +1,116 @@
+{
+  "name": "react-easy-stack",
+  "version": "3.0.1",
+  "description": "React Easy State provides a healthy balance of local and global state management in a simple, scalable way",
+  "main": "dist/cjs.es5.js",
+  "module": "dist/es.es5.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "jest --coverage",
+    "test-watch": "jest --watch",
+    "test-validate": "jest-html --css-patterns ../style.css",
+    "test-update": "jest --updateSnapshot",
+    "test-builds": "node ./scripts/testBuilds.js",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "lint": "standard",
+    "lint-fix": "prettier --ignore-path '.gitignore' --write '**/!(bundle).js' && standard --fix",
+    "build-examples": "node ./scripts/buildExamples.js",
+    "build-examples-watch": "node ./scripts/buildExamples.js --watch",
+    "build": "node ./scripts/build.js",
+    "build-toc": "node ./scripts/buildToc.js"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "./node_modules/jest-html"
+    ],
+    "collectCoverageFrom": [
+      "**/src/**",
+      "**/examples/**",
+      "!**/examples/**/dist/**",
+      "!**/examples/**/index.jsx"
+    ]
+  },
+  "author": {
+    "name": "Miklos Bertalan",
+    "email": "miklos.bertalan@risingstack.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:solkimicreb/react-easy-state.git"
+  },
+  "bugs": {
+    "url": "https://github.com/solkimicreb/react-easy-state/issues"
+  },
+  "homepage": "https://github.com/solkimicreb/react-easy-state#readme",
+  "license": "MIT",
+  "keywords": [
+    "observable",
+    "react-component",
+    "react",
+    "reactjs",
+    "reactive",
+    "model",
+    "frp",
+    "functional-reactive-programming",
+    "state management",
+    "es6 proxy"
+  ],
+  "dependencies": {
+    "react-easy-params": "^1.0.0",
+    "react-easy-state": "^3.0.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "@nx-js/observer-util": "^3.1.3",
+    "history-throttler": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "7.1.1",
+    "babel-minify": "^0.2.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "buble": "^0.15.2",
+    "classnames": "2.2.5",
+    "coveralls": "^2.13.1",
+    "del": "^3.0.0",
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^1.5.1",
+    "jest": "20.0.4",
+    "jest-html": "^1.3.4",
+    "markdown-toc": "^1.1.0",
+    "moment": "2.18.1",
+    "pre-push": "0.1.1",
+    "prettier": "^1.6.1",
+    "react": "15.6.1",
+    "react-dom": "15.6.1",
+    "react-test-renderer": "^15.6.1",
+    "rollup": "^0.49.0",
+    "rollup-plugin-auto-external": "^1.0.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "sinon": "3.1.0",
+    "standard": "10.0.3",
+    "webpack": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "env": [
+      "jest"
+    ]
+  },
+  "pre-push": [
+    "lint",
+    "test",
+    "build-examples"
+  ]
+}
