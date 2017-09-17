@@ -75,7 +75,7 @@ export function isLinkActive (linkTokens, linkParams) {
     }
   }
   if (linkParams) {
-    const queryParams = getParams(Object.keys(linkParams))
+    const queryParams = getParams()
     for (let param in linkParams) {
       if (linkParams[param] !== queryParams[param]) {
         return false

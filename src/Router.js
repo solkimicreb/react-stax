@@ -1,10 +1,12 @@
-import React, { PureComponent, Children, PropTypes } from 'react'
+import React, { Component, Children, PropTypes } from 'react'
+import { getParams } from 'react-easy-params'
+import { easyComp } from 'react-easy-state'
 import { routers, registerRouter, releaseRouter } from './core'
 import { updatePathToken, trimPathTokens } from './urlUtils'
 
 // namespacedepth in some crazy way!
 // super simple -> just parse the url token and route based on that!
-export default class Router extends PureComponent {
+class Router extends Component {
   static PropTypes = {
     onRoute: PropTypes.func
   };
@@ -37,20 +39,25 @@ export default class Router extends PureComponent {
   route (token) {
     const { onRoute } = this.props
 
-    if (this.currentPage === token) {
-      return
-    }
-    // this should be toggleable from onRoute too
-    this.currentPage = token
-
     let routing = Promise.resolve()
     if (onRoute) {
-      const ev = { target: this }
+      const ev = {
+        target: this,
+        oldPage: this.currentPage,
+        newPage: token || this.currentPage,
+        params: getParams()
+      }
       routing = routing.then(() => onRoute(ev))
     }
-    // decide if I still want to route here!!
-    // only call forceUpdate here if the current route is not matching with the token
-    routing.then(() => this.forceUpdate())
+
+    routing.then(() => {
+      // also check if another routing was called
+      // for this to pass -> render should be an async function ):
+      if (this.currentPage !== token) {
+        this.currentPage = token
+        this.forceUpdate()
+      }
+    })
   }
 
   render () {
@@ -83,3 +90,5 @@ export default class Router extends PureComponent {
     return currentPage
   }
 }
+
+export default easyComp(Router)

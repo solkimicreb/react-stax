@@ -7,7 +7,7 @@ import { routeParams } from 'react-easy-params'
 export const routers = {}
 export const links = new Set()
 
-export function registerRouter (router, depth) {
+export function registerRouter(router, depth) {
   let routersAtDepth = routers[depth]
   if (!routersAtDepth) {
     routersAtDepth = routers[depth] = new Set()
@@ -15,7 +15,7 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
 }
 
-export function releaseRouter (router, depth) {
+export function releaseRouter(router, depth) {
   const routersAtDepth = routers[depth]
 
   routersAtDepth.delete(router)
@@ -24,8 +24,8 @@ export function releaseRouter (router, depth) {
   }
 }
 
-export function route (tokens, params) {
-  pushState({}, '')
+export function route(tokens, params) {
+  pushState(undefined, '')
   if (tokens) {
     routePath(tokens)
   }
@@ -34,7 +34,7 @@ export function route (tokens, params) {
   }
 }
 
-function routePath (tokens) {
+function routePath(tokens) {
   tokens = tokens.slice(1)
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
@@ -45,13 +45,14 @@ function routePath (tokens) {
   }
 }
 
-export function updateLinks (tokens) {
+export function updateLinks(tokens) {
   // later throttle
-  /*nextTick(() => {
+  // can be removed later i guees
+  nextTick(() => {
     for (let link of links) {
       link.updateActivity(tokens)
     }
-  })*/
+  })
 }
 
 window.addEventListener('popstate', () => {

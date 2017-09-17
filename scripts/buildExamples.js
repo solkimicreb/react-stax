@@ -32,7 +32,7 @@ const compiler = webpack({
   resolve: {
     extensions: ['.js', '.json', '.jsx'],
     alias: {
-      'react-easy-stack': path.resolve('src'),
+      'react-easy-stack': path.resolve('src', 'index.js'),
       'react-easy-state': 'react-easy-state/dist/es.es6.js',
       'react-easy-params': 'react-easy-params/dist/es.es6.js'
     }

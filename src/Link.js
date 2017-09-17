@@ -14,7 +14,9 @@ class Link extends PureComponent {
     to: PropTypes.string,
     element: PropTypes.string,
     activeClass: PropTypes.string,
-    params: PropTypes.object
+    params: PropTypes.object,
+    onClick: PropTypes.func,
+    className: PropTypes.string
   }
 
   static contextTypes = {
@@ -26,30 +28,33 @@ class Link extends PureComponent {
     activeClass: 'active'
   }
 
-  constructor () {
+  constructor() {
     super()
     this.onClick = this.onClick.bind(this)
     this.updateActivity = this.updateActivity.bind(this)
   }
 
-  onClick (ev) {
+  onClick(ev) {
     ev.preventDefault()
     route(this.tokens, this.props.params)
+    if (this.props.onClick) {
+      this.props.onClick(ev)
+    }
   }
 
-  updateActivity () {
+  updateActivity() {
     this.forceUpdate()
   }
 
-  componentWillMount () {
+  componentWillMount() {
     links.add(this)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     links.delete(this)
   }
 
-  render () {
+  render() {
     const { to, element, children, activeClass } = this.props
     const { onClick } = this
 
@@ -62,7 +67,10 @@ class Link extends PureComponent {
     const href = this.tokens ? this.tokens.join('/') : ''
 
     const isActive = isLinkActive(this.tokens, this.props.params)
-    const className = isActive ? activeClass : ''
+    let className = isActive ? activeClass : ''
+    if (this.props.className) {
+      className += ` ${this.props.className}`
+    }
 
     const anchor = createElement('a', { onClick, href }, children)
     if (element === 'a') {
