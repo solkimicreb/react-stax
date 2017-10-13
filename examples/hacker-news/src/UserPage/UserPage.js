@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp } from 'react-easy-stack'
+import { easyPage } from 'react-easy-stack'
 import user from './store'
 
 function UserPage() {
@@ -13,4 +13,4 @@ function UserPage() {
   )
 }
 
-export default easyComp(UserPage)
+export default easyPage(UserPage, user)

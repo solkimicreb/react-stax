@@ -1,14 +1,14 @@
 import React, { Component, Children, PropTypes } from 'react'
 import { getParams } from 'react-easy-params'
-import { easyComp } from 'react-easy-state'
 import { routers, registerRouter, releaseRouter } from './core'
-import { updatePathToken, trimPathTokens } from './urlUtils'
+import { getPage, setPage } from './urlUtils'
 
 // namespacedepth in some crazy way!
 // super simple -> just parse the url token and route based on that!
-class Router extends Component {
+export default class Router extends Component {
   static PropTypes = {
-    onRoute: PropTypes.func
+    onRoute: PropTypes.func,
+    defaultPage: PropTypes.string
   };
 
   static childContextTypes = {
@@ -36,59 +36,56 @@ class Router extends Component {
     releaseRouter(this, depth)
   }
 
-  route (token) {
+  componentDidMount () {
+    const depth = this.context.easyRouterDepth || 0
+    this.route(getPage(depth), getParams())
+  }
+
+  route (toPage, params) {
+    toPage = toPage || this.props.defaultPage
+
+    return this.dispatchRouteEvent(toPage, params)
+      .then(() => {
+        if (this.currentPage !== toPage) {
+          const depth = this.context.easyRouterDepth || 0
+          this.currentPage = toPage
+          setPage(this.currentPage, depth)
+          this.forceUpdate()
+        }
+      })
+  }
+
+  dispatchRouteEvent (toPage, params) {
     const { onRoute } = this.props
 
-    let routing = Promise.resolve()
-    if (onRoute) {
-      const ev = {
-        target: this,
-        oldPage: this.currentPage,
-        newPage: token || this.currentPage,
-        params: getParams()
-      }
-      routing = routing.then(() => onRoute(ev))
-    }
-
-    routing.then(() => {
-      // also check if another routing was called
-      // for this to pass -> render should be an async function ):
-      if (this.currentPage !== token) {
-        this.currentPage = token
-        this.forceUpdate()
-      }
-    })
+    return onRoute ? onRoute({
+      target: this,
+      fromPage: this.currentPage,
+      toPage,
+      params
+    }) : Promise.resolve()
   }
 
   render () {
-    let selectedPage, defaultPage
+    if (!this.currentPage) {
+      return null
+    }
 
+    let selectedChild
     Children.forEach(this.props.children, child => {
-      if (!child.props.page) {
+      const { page } = child.props
+      if (!page) {
         throw new Error('Every router child must have page property')
       }
-      if (child.props.page === this.currentPage) {
-        if (selectedPage) {
+      if (page === this.currentPage) {
+        if (selectedChild) {
           throw new Error(
             'Using the same page name for two child in the same router is forbidden'
           )
         }
-        selectedPage = child
-      }
-      if (child.props.default) {
-        if (defaultPage) {
-          throw new Error('A router can only have one default page at max')
-        }
-        defaultPage = child
+        selectedChild = child
       }
     })
-
-    const currentPage = selectedPage || defaultPage || null
-    this.currentPage = currentPage ? currentPage.props.page : ''
-    const depth = this.context.easyRouterDepth || 0
-    updatePathToken(this.currentPage, depth)
-    return currentPage
+    return selectedChild
   }
 }
-
-export default easyComp(Router)

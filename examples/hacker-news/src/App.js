@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import { easyComp, Router, Link } from 'react-easy-stack'
-import StoriesPage from './StoriesPage'
-import StoryPage from './StoryPage'
-import UserPage from './UserPage'
+import { StoriesPage, storiesStore } from './StoriesPage'
+import { StoryPage, storyStore } from './StoryPage'
+import { UserPage, userStore } from './UserPage'
 import { TYPES } from './config'
-import store from './store'
 
 class App extends Component {
-  async onRoute({ newPage }) {
+  async onRoute({ fromPage, toPage, params }) {
+    console.log('route', fromPage, toPage, params)
     // this is also called when the params change only
-    switch (newPage) {
-      case 'stories': await store.fetchStories()
-      case 'story': await store.fetchStory()
-      case 'user': await store.fetchUser()
+    switch (toPage) {
+      case 'stories': return await storiesStore.fetchStories()
+      case 'story': return await storyStore.fetchStory()
+      case 'user': return await userStore.fetchUser()
     }
   }
 
@@ -21,12 +21,12 @@ class App extends Component {
       <div>
         <nav>
           {TYPES.map(
-            type => <Link to="/stories" params={{ type }}>{type}</Link>
+            type => <Link to="/stories" params={{ type }} key={type}>{type}</Link>
           )}
         </nav>
 
-        <Router onRoute={this.onRoute}>
-          <StoriesPage page="stories" default />
+        <Router defaultPage='stories' onRoute={this.onRoute}>
+          <StoriesPage page="stories" />
           <StoryPage page="story" />
           <UserPage page="user" />
         </Router>

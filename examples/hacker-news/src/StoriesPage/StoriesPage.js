@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp } from 'react-easy-stack'
+import { easyPage } from 'react-easy-stack'
 import FlipMove from 'react-flip-move'
 import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../StoryItem'
@@ -8,7 +8,7 @@ import store from './store'
 function StoriesPage() {
   return (
     <InfiniteScroll
-      loadMore={store.fetchStories}
+      loadMore={store.fetchPage}
       hasMore={store.hasMore}
       pageStart={1}
       initialLoad={false}
@@ -20,4 +20,4 @@ function StoriesPage() {
   )
 }
 
-export default easyComp(StoriesPage)
+export default easyPage(StoriesPage, store)

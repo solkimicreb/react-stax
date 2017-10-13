@@ -1,7 +1,8 @@
-import React from 'react';
-import { easyComp } from 'react-easy-stack';
+import React from 'react'
+import { easyPage } from 'react-easy-stack'
 import StoryItem from '../StoryItem'
-import story from './store';
+import Comment from '../Comment'
+import story from './store'
 
 function StoryPage() {
   return (
@@ -13,4 +14,4 @@ function StoryPage() {
   )
 }
 
-export default easyComp(StoryPage);
+export default easyPage(StoryPage, story)

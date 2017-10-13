@@ -1,4 +1,3 @@
-import { updateLinks } from './core'
 import { getParams } from 'react-easy-params'
 
 export function normalizePath (path, depth) {
@@ -6,14 +5,15 @@ export function normalizePath (path, depth) {
 
   // an absolute path
   if (tokens[0] === '') {
-    return tokens
+    return tokens.slice(1)
   }
 
   // remove '.' tokens
   tokens = tokens.filter(notInPlace)
 
   let parentTokensAllowed = true
-  const result = location.pathname.split('/')
+  // remove empty tokens
+  const result = location.pathname.split('/').filter(notEmpty)
 
   for (let token of tokens) {
     if (depth < 0) {
@@ -40,31 +40,6 @@ export function normalizePath (path, depth) {
   return result
 }
 
-function notInPlace (token) {
-  return token !== '.'
-}
-
-export function updatePathToken (newToken, depth) {
-  const tokens = location.pathname.split('/')
-  const oldToken = tokens[depth + 1]
-  if (oldToken !== newToken) {
-    tokens[depth + 1] = newToken
-    setPath(tokens)
-    // maybe it makes sense to throttle this!
-    // some stuff is removed, some it added -> no need to rush with the links
-    updateLinks(tokens)
-  }
-}
-
-export function trimPathTokens (depth) {
-  const tokens = location.pathname.split('/')
-  if (tokens.length > depth + 1) {
-    tokens.length = depth + 1
-    setPath(tokens)
-    updateLinks(tokens)
-  }
-}
-
 export function isLinkActive (linkTokens, linkParams) {
   if (linkTokens) {
     const pathTokens = location.pathname.split('/')
@@ -85,12 +60,26 @@ export function isLinkActive (linkTokens, linkParams) {
   return true
 }
 
-export function getPath () {
-  return location.pathname.split('/')
+export function setPage (page, depth) {
+  const pages = location.pathname.split('/').filter(notEmpty)
+  pages[depth] = toPage
+  const url = pages.join('/') + location.search + location.hash
+  history.replaceState(history.state, '', url)
 }
 
-export function setPath (tokens) {
-  const path = tokens.join('/')
-  const url = path + location.search + location.hash
-  history.replaceState(history.state, '', url)
+export function getPage (depth) {
+  const pages = getPages()
+  return pages[depth]
+}
+
+export function getPages () {
+  return location.pathname.split('/').filter(notEmpty)
+}
+
+function notInPlace (token) {
+  return token !== '.'
+}
+
+function notEmpty (token) {
+  return token !== ''
 }

@@ -1,10 +1,9 @@
-import { trimPathTokens } from './urlUtils'
-import { nextTick } from '@nx-js/observer-util'
 import pushState from 'history-throttler'
-import { routeParams } from 'react-easy-params'
+import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
+import { activePages } from './stores'
+import { getPages } from './urlUtils'
 
-// later allow parallel routing, improve structure
-export const routers = {}
+export const routers = []
 export const links = new Set()
 
 export function registerRouter(router, depth) {
@@ -17,46 +16,31 @@ export function registerRouter(router, depth) {
 
 export function releaseRouter(router, depth) {
   const routersAtDepth = routers[depth]
-
-  routersAtDepth.delete(router)
-  if (!routersAtDepth.size) {
-    trimPathTokens(depth)
+  if (routersAtDepth) {
+    routersAtDepth.delete(router)
   }
 }
 
-export function route(tokens, params) {
-  pushState(undefined, '')
-  if (tokens) {
-    routePath(tokens)
-  }
+export function route (pages, params) {
+  pushState(undefined, '', location.pathname + location.hash)
+
+  // do not deactivate app stores!
+  activePages.forEach(deactivate)
+  // maybe check for undefined instead at these places!
   if (params) {
     routeParams(params)
   }
-}
-
-function routePath(tokens) {
-  tokens = tokens.slice(1)
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i]
-    const routersAtDepth = routers[i]
-    if (routersAtDepth) {
-      routersAtDepth.forEach(router => router.route(token))
-    }
+  if (pages) {
+    routeRouters(pages, params)
   }
 }
 
-export function updateLinks(tokens) {
-  // later throttle
-  // can be removed later i guees
-  nextTick(() => {
-    for (let link of links) {
-      link.updateActivity(tokens)
-    }
-  })
+function routeRouters (pages, params) {
+  for (let depth = 0; depth < routers.length; depth++) {
+    const newPage = pages[depth]
+    const routersAtDepth = routers[depth]
+    routersAtDepth.forEach(router => router.route(newPage, params))
+  }
 }
 
-window.addEventListener('popstate', () => {
-  const tokens = location.pathname.split('/')
-  routePath(tokens)
-  updateLinks()
-})
+window.addEventListener('popstate', () => routeRouters(getPages(), getParams()))

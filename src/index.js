@@ -1,8 +1,7 @@
-import { nextTick, observe } from '@nx-js/observer-util'
-import { easyStore, easyComp } from 'react-easy-state'
-import { easyParams } from 'react-easy-params'
+import { easyComp, easyStore } from 'react-easy-params'
 import { route } from './core'
+import easyPage from './easyPage'
 import Link from './Link'
 import Router from './Router'
 
-export { easyComp, easyStore, easyParams, Router, Link, route, nextTick, observe }
+export { easyStore, easyComp, easyPage, Router, Link, route }

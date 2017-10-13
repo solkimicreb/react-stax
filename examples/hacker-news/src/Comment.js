@@ -1,7 +1,7 @@
 import React from 'react'
 import { easyComp, Link } from 'react-easy-stack'
 
-function StoryItem({ url, title, time, type, by, score, descendants, id }) {
+function Comment({ url, title, time, type, by, score, descendants, id }) {
   return (
     <div>
       {url
@@ -13,13 +13,13 @@ function StoryItem({ url, title, time, type, by, score, descendants, id }) {
       : (
         <div>
           {score} points by
-          <Link to="/user" params={{ id: by }}> {by} </Link>
-          <Link to="/story" params={{ id }}> {time} ago </Link> |
-          <Link to="/story" params={{ id }}> {descendants} </Link>
+          <Link to="/user" params={{ id: by }}>{by}</Link>
+          <Link to="/story" params={{ id }}>{time} ago</Link> |
+          <Link to="/story" params={{ id }}>{descendants}</Link>
         </div>
       )}
     </div>
   )
 }
 
-export default easyComp(StoryItem)
+export default easyComp(Comment)

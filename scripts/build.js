@@ -13,8 +13,8 @@ const bundles = [
     input: {
       input: path.resolve('src/index.js'),
       plugins: [
-        resolvePlugin(),
         babelPlugin({ exclude: 'node_modules/**' }),
+        resolvePlugin(),
         externalsPlugin({ dependencies: true, peerDependecies: true })
       ]
     },
@@ -26,8 +26,8 @@ const bundles = [
     input: {
       input: path.resolve('src/index.js'),
       plugins: [
-        resolvePlugin(),
         babelPlugin({ exclude: 'node_modules/**' }),
+        resolvePlugin(),
         externalsPlugin({ dependencies: true, peerDependecies: true })
       ]
     },
@@ -39,8 +39,8 @@ const bundles = [
     input: {
       input: path.resolve('src/index.js'),
       plugins: [
-        resolvePlugin(),
         babelPlugin({ exclude: 'node_modules/**' }),
+        resolvePlugin(),
         externalsPlugin({ dependencies: false, peerDependecies: true })
       ]
     },

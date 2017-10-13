@@ -1,16 +1,16 @@
-import { easyStore, easyParams } from 'react-easy-stack'
+import { easyStore } from 'react-easy-stack'
 import { fetchStory } from '../api'
 
-const store = easyStore({
+const store = {
   id: '',
   async fetchStory () {
     const story = await fetchStory(this.id)
     Object.assign(this, story)
   }
-})
+}
 
-easyParams(store, {
+const params = {
   id: ['url']
-})
+}
 
-export default store
+export default easyStore(store, params)

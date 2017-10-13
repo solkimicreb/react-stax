@@ -1,12 +1,13 @@
-import { easyStore, easyParams, observe } from 'react-easy-stack'
+import { easyStore } from 'react-easy-stack'
 import { fetchStoriesByType, fetchStories, events } from '../api'
 
-const store = easyStore({
+const store = {
   stories: [],
   type: 'top',
   hasMore: true,
   async fetchStories() {
     this.stories = await fetchStoriesByType(this.type, 1)
+    console.log(this.stories)
     events.removeAllListeners()
     events.on(this.type, () => this.updateStories())
   },
@@ -23,13 +24,10 @@ const store = easyStore({
       this.hasMore = true
     }
   }
-})
+}
 
-// I can replace this later
-observe(() => store.fetchStories())
-
-easyParams(store, {
+const params = {
   type: ['url', 'history']
-})
+}
 
-export default store
+export default easyStore(store, params)
