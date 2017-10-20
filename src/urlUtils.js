@@ -62,7 +62,7 @@ export function isLinkActive (linkTokens, linkParams) {
 
 export function setPage (page, depth) {
   const pages = location.pathname.split('/').filter(notEmpty)
-  pages[depth] = toPage
+  pages[depth] = page
   const url = pages.join('/') + location.search + location.hash
   history.replaceState(history.state, '', url)
 }

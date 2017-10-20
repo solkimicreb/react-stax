@@ -4,7 +4,6 @@ import { activePages } from './stores'
 import { getPages } from './urlUtils'
 
 export const routers = []
-export const links = new Set()
 
 export function registerRouter(router, depth) {
   let routersAtDepth = routers[depth]
@@ -26,7 +25,7 @@ export function route (pages, params) {
 
   // do not deactivate app stores!
   activePages.forEach(deactivate)
-  // maybe check for undefined instead at these places!
+  // maybe check for undefined instead at these places, an empty string would be a valid route
   if (params) {
     routeParams(params)
   }

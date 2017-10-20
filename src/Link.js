@@ -1,15 +1,16 @@
 import React, {
-  PureComponent,
+  Component,
   Children,
   PropTypes,
   createElement,
   cloneElement
 } from 'react'
 import { easyComp } from 'react-easy-state'
+import { getParams } from 'react-easy-params'
 import { normalizePath, isLinkActive } from './urlUtils'
-import { route, links } from './core'
+import { route } from './core'
 
-class Link extends PureComponent {
+class Link extends Component {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
@@ -28,10 +29,8 @@ class Link extends PureComponent {
     activeClass: 'active'
   }
 
-  constructor() {
-    super()
-    this.onClick = this.onClick.bind(this)
-    this.updateActivity = this.updateActivity.bind(this)
+  get depth () {
+    return this.context.easyRouterDepth || 0
   }
 
   onClick(ev) {
@@ -46,21 +45,12 @@ class Link extends PureComponent {
     this.forceUpdate()
   }
 
-  componentWillMount() {
-    links.add(this)
-  }
-
-  componentWillUnmount() {
-    links.delete(this)
-  }
-
   render() {
     const { to, element, children, activeClass } = this.props
     const { onClick } = this
 
     if (to) {
-      const depth = this.context.easyRouterDepth || 0
-      this.tokens = normalizePath(to, depth)
+      this.tokens = normalizePath(to, this.depth)
     }
 
     // also take in the params for this!

@@ -3,12 +3,9 @@ import { easyComp } from 'react-easy-state'
 import { activePages } from './stores'
 
 export default function easyPage (Page, store) {
-  return class EasyPageHOC extends easyComp(Page) {
-    static displayName = Page.displayName || Page.name;
-    static contextTypes = Page.contextTypes;
-    static propTypes = Page.propTypes;
-    static defaultProps = Page.defaultProps;
+  Page = easyComp(Page)
 
+  class EasyPageHOC extends Page {
     componentWillMount () {
       if (super.componentWillMount) {
         super.componentWillMount()
@@ -35,4 +32,15 @@ export default function easyPage (Page, store) {
       return super.render()
     }
   }
+
+  copyStaticProps(Page, EasyPageHOC)
+  return EasyPageHOC
+}
+
+function copyStaticProps (fromComp, toComp) {
+  toComp.displayName = fromComp.displayName || fromComp.name
+  toComp.contextTypes = fromComp.contextTypes
+  toComp.childContextTypes = fromComp.childContextTypes
+  toComp.propTypes = fromComp.propTypes
+  toComp.defaultProps = fromComp.defaultProps
 }

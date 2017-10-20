@@ -7,8 +7,6 @@ import { TYPES } from './config'
 
 class App extends Component {
   async onRoute({ fromPage, toPage, params }) {
-    console.log('route', fromPage, toPage, params)
-    // this is also called when the params change only
     switch (toPage) {
       case 'stories': return await storiesStore.fetchStories()
       case 'story': return await storyStore.fetchStory()

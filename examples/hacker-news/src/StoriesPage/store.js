@@ -7,7 +7,6 @@ const store = {
   hasMore: true,
   async fetchStories() {
     this.stories = await fetchStoriesByType(this.type, 1)
-    console.log(this.stories)
     events.removeAllListeners()
     events.on(this.type, () => this.updateStories())
   },

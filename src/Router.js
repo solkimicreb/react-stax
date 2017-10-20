@@ -3,8 +3,6 @@ import { getParams } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter } from './core'
 import { getPage, setPage } from './urlUtils'
 
-// namespacedepth in some crazy way!
-// super simple -> just parse the url token and route based on that!
 export default class Router extends Component {
   static PropTypes = {
     onRoute: PropTypes.func,
@@ -19,26 +17,26 @@ export default class Router extends Component {
     easyRouterDepth: PropTypes.number
   };
 
+  get depth () {
+    return this.context.easyRouterDepth || 0
+  }
+
   getChildContext () {
-    const ownDepth = this.context.easyRouterDepth
     return {
-      easyRouterDepth: ownDepth ? ownDepth + 1 : 1
+      easyRouterDepth: this.depth + 1
     }
   }
 
   componentWillMount () {
-    const depth = this.context.easyRouterDepth || 0
-    registerRouter(this, depth)
+    registerRouter(this, this.depth)
   }
 
   componentWillUnmount () {
-    const depth = this.context.easyRouterDepth || 0
-    releaseRouter(this, depth)
+    releaseRouter(this, this.depth)
   }
 
   componentDidMount () {
-    const depth = this.context.easyRouterDepth || 0
-    this.route(getPage(depth), getParams())
+    this.route(getPage(this.depth), getParams())
   }
 
   route (toPage, params) {
@@ -47,9 +45,8 @@ export default class Router extends Component {
     return this.dispatchRouteEvent(toPage, params)
       .then(() => {
         if (this.currentPage !== toPage) {
-          const depth = this.context.easyRouterDepth || 0
           this.currentPage = toPage
-          setPage(this.currentPage, depth)
+          setPage(this.currentPage, this.depth)
           this.forceUpdate()
         }
       })
