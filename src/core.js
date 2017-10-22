@@ -24,6 +24,7 @@ export function route (pages, params) {
   pushState(undefined, '', location.pathname + location.hash)
 
   // do not deactivate app stores!
+  // TODO -> issue -> this is not called on page start!!
   pageStores.forEach(deactivate)
   // route params to app stores
   if (params) {

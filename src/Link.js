@@ -57,6 +57,11 @@ class Link extends Component {
     const href = this.tokens ? this.tokens.join('/') : ''
 
     const isActive = isLinkActive(this.tokens, this.props.params)
+    if (to === '/stories') {
+      // TODO -> issue: there are no active stores here ):
+      console.log('render link', this.props.params, getParams(), isActive)
+    }
+
     let className = isActive ? activeClass : ''
     if (this.props.className) {
       className += ` ${this.props.className}`

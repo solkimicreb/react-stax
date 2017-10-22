@@ -1,7 +1,6 @@
 import { easyComp, easyStore } from 'react-easy-params'
+import easyRouter from './easyRouter'
 import { route } from './core'
-import easyPage from './easyPage'
 import Link from './Link'
-import Router from './Router'
 
-export { easyStore, easyComp, easyPage, Router, Link, route }
+export { easyStore, easyComp, easyRouter, Link, route }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyPage } from 'react-easy-stack'
+import { easyComp } from 'react-easy-stack'
 import StoryItem from '../StoryItem'
 import Comment from '../Comment'
 import story from './store'
@@ -14,4 +14,4 @@ function StoryPage() {
   )
 }
 
-export default easyPage(StoryPage, story, 'story')
+export default easyComp(StoryPage)

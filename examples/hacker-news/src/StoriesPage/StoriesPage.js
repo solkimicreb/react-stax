@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyPage } from 'react-easy-stack'
+import { easyComp } from 'react-easy-stack'
 import FlipMove from 'react-flip-move'
 import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../StoryItem'
@@ -20,4 +20,4 @@ function StoriesPage() {
   )
 }
 
-export default easyPage(StoriesPage, store, 'stories')
+export default easyComp(StoriesPage)

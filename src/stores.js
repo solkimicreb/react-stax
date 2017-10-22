@@ -1,1 +1,1 @@
-export const pageStores = new Map()
+export const pageStores = new Set()
