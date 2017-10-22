@@ -1,7 +1,7 @@
 import { easyStore } from 'react-easy-stack'
 import { fetchUser } from '../api'
 
-const store = {
+const store = window.user = {
   id: '',
   async fetchUser () {
     const user = await fetchUser(this.id)

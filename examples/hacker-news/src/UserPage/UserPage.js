@@ -13,4 +13,4 @@ function UserPage() {
   )
 }
 
-export default easyPage(UserPage, user)
+export default easyPage(UserPage, user, 'user')

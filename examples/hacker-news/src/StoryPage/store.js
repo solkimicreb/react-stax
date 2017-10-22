@@ -1,7 +1,7 @@
 import { easyStore } from 'react-easy-stack'
 import { fetchStory } from '../api'
 
-const store = {
+const store = window.story = {
   id: '',
   async fetchStory () {
     const story = await fetchStory(this.id)

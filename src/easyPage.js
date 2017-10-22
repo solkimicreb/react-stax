@@ -1,8 +1,10 @@
 import { activate, deactivate } from 'react-easy-params'
 import { easyComp } from 'react-easy-state'
-import { activePages } from './stores'
+import { pageStores } from './stores'
 
-export default function easyPage (Page, store) {
+export default function easyPage (Page, store, name) {
+  deactivate(store)
+  pageStores.set(name, store)
   Page = easyComp(Page)
 
   class EasyPageHOC extends Page {
@@ -10,12 +12,11 @@ export default function easyPage (Page, store) {
       if (super.componentWillMount) {
         super.componentWillMount()
       }
-      if (activePages.has(Page)) {
+      /*if (activePages.has(Page)) {
         throw new Error(
           `Only one instance of ${Page} page can be active at a time.`
         )
-      }
-      activePages.set(Page, store)
+      }*/
       activate(store)
     }
 
@@ -23,13 +24,7 @@ export default function easyPage (Page, store) {
       if (super.componentWillUnmount) {
         super.componentWillUnmount()
       }
-      activePages.delete(Page)
       deactivate(store)
-    }
-
-    render () {
-      activate(store)
-      return super.render()
     }
   }
 

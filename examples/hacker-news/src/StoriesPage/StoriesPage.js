@@ -20,4 +20,4 @@ function StoriesPage() {
   )
 }
 
-export default easyPage(StoriesPage, store)
+export default easyPage(StoriesPage, store, 'stories')

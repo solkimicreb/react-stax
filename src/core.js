@@ -1,6 +1,6 @@
 import pushState from 'history-throttler'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
-import { activePages } from './stores'
+import { pageStores } from './stores'
 import { getPages } from './urlUtils'
 
 export const routers = []
@@ -24,8 +24,8 @@ export function route (pages, params) {
   pushState(undefined, '', location.pathname + location.hash)
 
   // do not deactivate app stores!
-  activePages.forEach(deactivate)
-  // maybe check for undefined instead at these places, an empty string would be a valid route
+  pageStores.forEach(deactivate)
+  // route params to app stores
   if (params) {
     routeParams(params)
   }

@@ -1,7 +1,8 @@
 import React, { Component, Children, PropTypes } from 'react'
-import { getParams } from 'react-easy-params'
+import { routeParams, getParams, activate } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter } from './core'
 import { getPage, setPage } from './urlUtils'
+import { pageStores } from './stores'
 
 export default class Router extends Component {
   static PropTypes = {
@@ -41,6 +42,11 @@ export default class Router extends Component {
 
   route (toPage, params) {
     toPage = toPage || this.props.defaultPage
+    const store = pageStores.get(toPage)
+    if (params && store) {
+      activate(store)
+      routeParams(params, store)
+    }
 
     return this.dispatchRouteEvent(toPage, params)
       .then(() => {

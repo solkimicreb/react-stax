@@ -14,4 +14,4 @@ function StoryPage() {
   )
 }
 
-export default easyPage(StoryPage, story)
+export default easyPage(StoryPage, story, 'story')

@@ -22,6 +22,7 @@ class App extends Component {
             type => <Link to="/stories" params={{ type }} key={type}>{type}</Link>
           )}
         </nav>
+        <Router />
 
         <Router defaultPage='stories' onRoute={this.onRoute}>
           <StoriesPage page="stories" />

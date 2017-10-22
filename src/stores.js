@@ -1,1 +1,1 @@
-export const activePages = new Map()
+export const pageStores = new Map()
