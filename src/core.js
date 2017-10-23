@@ -1,6 +1,6 @@
 import pushState from 'history-throttler'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
-import { pageStores } from './stores'
+import { pageStores, links } from './stores'
 import { getPages } from './urlUtils'
 
 export const routers = []
@@ -23,24 +23,39 @@ export function releaseRouter(router, depth) {
 export function route (pages, params) {
   pushState(undefined, '', location.pathname + location.hash)
 
-  // do not deactivate app stores!
-  // TODO -> issue -> this is not called on page start!!
+  // deactivate all page stores (and no app stores)
   pageStores.forEach(deactivate)
   // route params to app stores
   if (params) {
     routeParams(params)
   }
-  if (pages) {
-    routeRouters(pages, params)
-  }
+  return pages ? routeRouters(pages, params) : Promise.resolve()
 }
 
 function routeRouters (pages, params) {
-  for (let depth = 0; depth < routers.length; depth++) {
-    const newPage = pages[depth]
-    const routersAtDepth = routers[depth]
-    routersAtDepth.forEach(router => router.route(newPage, params))
-  }
+  return routeRoutersFromDepth(0, pages, params)
+    .then(() => {
+      console.log('update links', getParams())
+      links.forEach(link => link.updateActivity())
+    })
 }
 
-window.addEventListener('popstate', () => routeRouters(getPages(), getParams()))
+function routeRoutersFromDepth (depth, pages, params) {
+  const newPage = pages[depth]
+  const routersAtDepth = routers[depth]
+
+  if (!routersAtDepth) {
+    return Promise.resolve()
+  }
+
+  const routings = Array.from(routersAtDepth).map(router => router.route(newPage, params))
+  return Promise.all(routings)
+    .then(() => routeRoutersFromDepth(++depth, pages, params))
+}
+
+window.addEventListener('load', () => route(getPages(), getParams()))
+window.addEventListener('popstate', () => {
+  // first deactivate all page stores -> can be reactivated after!
+  pageStores.forEach(deactivate)
+  routeRouters(getPages())
+})

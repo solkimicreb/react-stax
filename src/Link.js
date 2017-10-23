@@ -42,7 +42,7 @@ class Link extends Component {
     links.delete(this)
   }
 
-  onClick(ev) {
+  onClick = (ev) => {
     ev.preventDefault()
     route(this.tokens, this.props.params)
     if (this.props.onClick) {
@@ -50,8 +50,7 @@ class Link extends Component {
     }
   }
 
-  updateActivity() {
-    console.log('force')
+  updateActivity = () => {
     this.forceUpdate()
   }
 
@@ -67,11 +66,6 @@ class Link extends Component {
     const href = this.tokens ? this.tokens.join('/') : ''
 
     const isActive = isLinkActive(this.tokens, this.props.params)
-    if (to === '/stories') {
-      // TODO -> issue: there are no active stores here ):
-      console.log('render link', this.props.params, getParams(), isActive)
-    }
-
     let className = isActive ? activeClass : ''
     if (this.props.className) {
       className += ` ${this.props.className}`
@@ -85,4 +79,4 @@ class Link extends Component {
   }
 }
 
-export default easyComp(Link)
+export default Link // later export easyComp!!

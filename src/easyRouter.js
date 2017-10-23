@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter } from './core'
 import { getPage, setPage } from './urlUtils'
-import { pageStores, links } from './stores'
+import { pageStores } from './stores'
 
 export default function easyRouter (config) {
   // pages must have a comp or a render func!
@@ -48,10 +48,6 @@ export default function easyRouter (config) {
       releaseRouter(this, this.depth)
     }
 
-    componentDidMount () {
-      this.route(getPage(this.depth), getParams())
-    }
-
     route (toPageName, params) {
       let toPage = config.pages[toPageName]
       if (!toPage) {
@@ -60,9 +56,11 @@ export default function easyRouter (config) {
       }
 
       const store = toPage.store
-      if (params && store) {
+      if (store) {
         activate(store)
-        routeParams(params, store)
+        if (params) {
+          routeParams(params, store)  
+        }
       }
 
       const event = {
@@ -77,12 +75,9 @@ export default function easyRouter (config) {
         .then(() => {
           if (this.currentPage !== toPage) {
             this.currentPage = toPage
-            setPage(this.toPageName, this.depth)
+            setPage(toPageName, this.depth)
             this.forceUpdate()
           }
-        })
-        .then(() => {
-          links.forEach(link => link.updateActivity())
         })
     }
 
