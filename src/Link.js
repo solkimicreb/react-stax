@@ -9,6 +9,7 @@ import { easyComp } from 'react-easy-state'
 import { getParams } from 'react-easy-params'
 import { normalizePath, isLinkActive } from './urlUtils'
 import { route } from './core'
+import { links } from './stores'
 
 class Link extends Component {
   static propTypes = {
@@ -33,6 +34,14 @@ class Link extends Component {
     return this.context.easyRouterDepth || 0
   }
 
+  componentWillMount () {
+    links.add(this)
+  }
+
+  componentWillUnmount () {
+    links.delete(this)
+  }
+
   onClick(ev) {
     ev.preventDefault()
     route(this.tokens, this.props.params)
@@ -42,6 +51,7 @@ class Link extends Component {
   }
 
   updateActivity() {
+    console.log('force')
     this.forceUpdate()
   }
 

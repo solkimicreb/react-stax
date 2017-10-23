@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter } from './core'
 import { getPage, setPage } from './urlUtils'
-import { pageStores } from './stores'
+import { pageStores, links } from './stores'
 
 export default function easyRouter (config) {
   // pages must have a comp or a render func!
@@ -80,6 +80,9 @@ export default function easyRouter (config) {
             setPage(this.toPageName, this.depth)
             this.forceUpdate()
           }
+        })
+        .then(() => {
+          links.forEach(link => link.updateActivity())
         })
     }
 
