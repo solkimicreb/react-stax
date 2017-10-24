@@ -55,26 +55,30 @@ export default function easyRouter (config) {
         toPage = config.pages[toPageName]
       }
 
-      const store = toPage.store
-      if (store) {
-        activate(store)
-        if (params) {
-          routeParams(params, store)
-        }
-      }
-
       const event = {
         target: this,
         fromPage: this.currentPage,
         toPage: toPageName,
         params,
         preventDefault () {
+          console.log('preventing event')
           this.defaultPrevented = true
         }
       }
 
-      return this.dispatchRouteEvent(config, event)
-        .then(() => this.dispatchRouteEvent(toPage, event))
+      return Promise.resolve()
+        .then(() => this.dispatchRouteEvent(config, event))
+        .then(() => {
+          const store = toPage.store
+          if (store && !event.defaultPrevented) {
+            // also activate store if there are no params yet!
+            activate(store)
+            if (params) {
+              routeParams(params, store)
+            }
+          }
+        })
+        .then(() => this.resolveData(toPage, event))
         .then(() => {
           if (this.currentPage !== toPage && !event.defaultPrevented) {
             this.currentPage = toPage
@@ -85,10 +89,15 @@ export default function easyRouter (config) {
     }
 
     dispatchRouteEvent (config, event) {
-      if (config.onRoute && !event.defaultPrevented) {
+      if (config.onRoute) {
         return config.onRoute(event)
       }
-      return Promise.resolve()
+    }
+
+    resolveData (config, event) {
+      if (config.resolve && !event.defaultPrevented) {
+        return config.resolve()
+      }
     }
 
     render () {

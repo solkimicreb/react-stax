@@ -9,21 +9,21 @@ const router = {
     stories: {
       comp: StoriesPage,
       store: storiesStore,
-      async onRoute () {
+      async resolve () {
         await this.store.fetchStories()
       }
     },
     story: {
       comp: StoryPage,
       store: storyStore,
-      async onRoute () {
+      async resolve () {
         await this.store.fetchStory()
       }
     },
     user: {
       comp: UserPage,
       store: userStore,
-      async onRoute () {
+      async resolve () {
         await this.store.fetchUser()
       }
     }

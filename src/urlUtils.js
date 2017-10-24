@@ -4,6 +4,7 @@ export function normalizePath (path, depth) {
   let tokens = path.split('/')
 
   // an absolute path
+  // TODO -> validate it!
   if (tokens[0] === '') {
     return tokens.slice(1)
   }
