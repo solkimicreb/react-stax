@@ -40,15 +40,15 @@ export function normalizePath (path, depth) {
   return result
 }
 
-export function isLinkActive (linkTokens, linkParams) {
-  /*if (linkTokens) {
-    const pathTokens = location.pathname.split('/')
-    for (let i = 0; i < linkTokens.length; i++) {
-      if (linkTokens[i] !== pathTokens[i]) {
+export function isLinkActive (linkPages, linkParams) {
+  if (linkPages) {
+    const pathPages = getPages()
+    for (let i = 0; i < linkPages.length; i++) {
+      if (linkPages[i] !== pathPages[i]) {
         return false
       }
     }
-  }*/
+  }
   if (linkParams) {
     const queryParams = getParams()
     for (let param in linkParams) {
