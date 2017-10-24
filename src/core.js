@@ -20,10 +20,12 @@ export function releaseRouter(router, depth) {
   }
 }
 
-export function route (pages, params) {
+export function route (pages, params, init) {
   // maybe add an intercepting event here too?
   // also add options to use replaceState
-  pushState(undefined, '', location.pathname + location.hash)
+  if (!init) {
+    pushState(undefined, '', location.pathname + location.hash)
+  }
 
   // deactivate all page stores (and no app stores)
   pageStores.forEach(deactivate)
@@ -54,7 +56,10 @@ function routeRoutersFromDepth (depth, pages, params) {
     .then(() => routeRoutersFromDepth(++depth, pages, params))
 }
 
-window.addEventListener('load', () => route(getPages(), getParams()))
+window.addEventListener('load', () => {
+  // initial routing
+  route(getPages(), getParams(), true)
+})
 window.addEventListener('popstate', () => {
   // first deactivate all page stores -> can be reactivated after!
   pageStores.forEach(deactivate)

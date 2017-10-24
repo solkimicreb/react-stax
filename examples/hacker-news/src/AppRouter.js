@@ -1,16 +1,26 @@
 import { easyRouter } from 'react-easy-stack'
-import { StoriesPage, storiesStore } from './StoriesPage'
+// import { StoriesPage, storiesStore } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
-// import { UserPage, userStore } from './UserPage'
+import { UserPage, userStore } from './UserPage'
 
 const router = {
   default: 'stories',
   pages: {
-    stories: {
+    /*stories: {
       comp: StoriesPage,
       store: storiesStore,
       async resolve () {
         await this.store.fetchStories()
+      }
+    },*/
+    async stories () {
+      const { StoriesPage, storiesStore } = await import('./StoriesPage')
+      return {
+        comp: StoriesPage,
+        store: storiesStore,
+        async resolve () {
+          await this.store.fetchStories()
+        }
       }
     },
     story: {
@@ -20,21 +30,11 @@ const router = {
         await this.store.fetchStory()
       }
     },
-    /*user: {
+    user: {
       comp: UserPage,
       store: userStore,
       async resolve () {
         await this.store.fetchUser()
-      }
-    }*/
-    async user () {
-      const { UserPage, userStore } = await import('./UserPage')
-      return {
-        comp: UserPage,
-        store: userStore,
-        async resolve () {
-          await this.store.fetchUser()
-        }
       }
     }
   }

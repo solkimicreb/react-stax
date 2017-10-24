@@ -42,7 +42,7 @@ export default function easyRouter (config) {
     }
 
     routeRouter (toPageName, params) {
-      if (!toPageName in config.pages) {
+      if (!(toPageName in config.pages)) {
         toPageName = config.default
       }
       let toPage = config.pages[toPageName]
@@ -59,9 +59,9 @@ export default function easyRouter (config) {
 
       return Promise.resolve()
         .then(() => this.dispatchRouteEvent(config, event))
-        .then(() => typeof toPage === 'function' ? toPage() : toPage)
+        .then(() => (typeof toPage === 'function') ? toPage() : toPage)
         .then(newToPage => {
-          toPage = newToPage
+          config.pages[toPageName] = toPage = newToPage
         })
         .then(() => {
           const store = toPage.store
