@@ -5,20 +5,8 @@ import { getPage, setPage, normalizePath } from './urlUtils'
 import { pageStores } from './stores'
 
 export default function easyRouter (config) {
-  // pages must have a comp or a render func!
-  if (!config.pages) {
-    throw new TypeError('pages must be defined')
-  }
-  if (!config.default) {
-    throw new TypeError('default must be defined')
-  }
-
-  for (let pageName in config.pages) {
-    const page = config.pages[pageName]
-    if (page.store) {
-      deactivate(page.store)
-      pageStores.add(page.store)
-    }
+  if (typeof config !== 'function') {
+    validateConfig(config)
   }
 
   return class Router extends Component {
@@ -54,15 +42,14 @@ export default function easyRouter (config) {
     }
 
     routeRouter (toPageName, params) {
-      let toPage = config.pages[toPageName]
-      if (!toPage) {
+      if (!toPageName in config.pages) {
         toPageName = config.default
-        toPage = config.pages[toPageName]
       }
+      let toPage = config.pages[toPageName]
 
       const event = {
         target: this,
-        fromPage: this.currentPage,
+        fromPage: this.currentPage, // this is not a string!! BUG!
         toPage: toPageName,
         params,
         preventDefault () {
@@ -72,6 +59,10 @@ export default function easyRouter (config) {
 
       return Promise.resolve()
         .then(() => this.dispatchRouteEvent(config, event))
+        .then(() => typeof toPage === 'function' ? toPage() : toPage)
+        .then(newToPage => {
+          toPage = newToPage
+        })
         .then(() => {
           const store = toPage.store
           if (store && !event.defaultPrevented) {
@@ -106,6 +97,26 @@ export default function easyRouter (config) {
 
     render () {
       return this.currentPage ? React.createElement(this.currentPage.comp) : null
+    }
+  }
+}
+
+function validateConfig (config) {
+  if (typeof config !== 'object' || config === null) {
+    throw new TypeError('config must be an object')
+  }
+  if (!config.pages) {
+    throw new TypeError('pages must be defined')
+  }
+  if (!config.default) {
+    throw new TypeError('default must be defined')
+  }
+
+  for (let pageName in config.pages) {
+    const page = config.pages[pageName]
+    if (page.store) {
+      deactivate(page.store)
+      pageStores.add(page.store)
     }
   }
 }
