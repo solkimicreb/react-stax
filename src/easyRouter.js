@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter, route } from './core'
-import { getPage, setPage, normalizePath } from './urlUtils'
+import { normalizePath } from './urlUtils'
 import { pageStores } from './stores'
 
 export default function easyRouter (config) {
@@ -77,9 +77,10 @@ export default function easyRouter (config) {
         .then(() => {
           if (this.currentPage !== toPage && !event.defaultPrevented) {
             this.currentPage = toPage
-            setPage(toPageName, this.depth)
             this.forceUpdate()
           }
+          // later return the event -> defaultPrevented can be fetched and routing can be halted
+          return toPageName
         })
     }
 

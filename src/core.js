@@ -1,7 +1,7 @@
 import pushState from 'history-throttler'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { pageStores, links } from './stores'
-import { getPages } from './urlUtils'
+import { getPages, setPages } from './urlUtils'
 
 export const routers = []
 
@@ -38,6 +38,9 @@ export function route (pages, params, init) {
 
 function routeRouters (pages, params) {
   return routeRoutersFromDepth(0, pages, params)
+    // pages are patched on the go, update URL here!
+    .then(() => setPages(pages)) // later this should sey without the params -> they are added later
+    // I also have to cut array length at the final depth
     .then(() => {
       links.forEach(link => link.updateActivity())
     })
@@ -53,7 +56,21 @@ function routeRoutersFromDepth (depth, pages, params) {
 
   const routings = Array.from(routersAtDepth).map(router => router.routeRouter(newPage, params))
   return Promise.all(routings)
-    .then(() => routeRoutersFromDepth(++depth, pages, params))
+    .then(pagesAtDepth => {
+      const pageAtDepth = reducePages(pagesAtDepth, depth)
+      pages[depth] = pageAtDepth
+      routeRoutersFromDepth(++depth, pages, params)
+    })
+}
+
+function reducePages (pages, depth) {
+  let result = pages[0]
+  for (let page of pages) {
+    if (page !== result) {
+      throw new Error(`Unmatching pages ${page}, ${result} at depth ${depth}`)
+    }
+  }
+  return result
 }
 
 window.addEventListener('load', () => {

@@ -1,4 +1,5 @@
 import { getParams } from 'react-easy-params'
+import pushState from 'history-throttler'
 
 export function normalizePath (path, depth) {
   let tokens = path.split('/')
@@ -61,20 +62,9 @@ export function isLinkActive (linkPages, linkParams) {
   return true
 }
 
-export function setPage (page, depth) {
-  const pages = getPages()
-  pages[depth] = page
-  setPages(pages)
-}
-
 export function setPages (pages) {
   const url = pages.join('/') + location.search + location.hash
-  history.replaceState(history.state, '', url)
-}
-
-export function getPage (depth) {
-  const pages = getPages()
-  return pages[depth]
+  pushState(history.state, '', url)
 }
 
 export function getPages () {
