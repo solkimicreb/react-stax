@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { easyComp, Link } from 'react-easy-stack'
 import AppRouter from './AppRouter'
 import { TYPES } from './config'

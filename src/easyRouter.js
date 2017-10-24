@@ -59,7 +59,7 @@ export default function easyRouter (config) {
       if (store) {
         activate(store)
         if (params) {
-          routeParams(params, store)  
+          routeParams(params, store)
         }
       }
 
@@ -67,13 +67,16 @@ export default function easyRouter (config) {
         target: this,
         fromPage: this.currentPage,
         toPage: toPageName,
-        params
+        params,
+        preventDefault () {
+          this.defaultPrevented = true
+        }
       }
 
       return this.dispatchRouteEvent(config, event)
         .then(() => this.dispatchRouteEvent(toPage, event))
         .then(() => {
-          if (this.currentPage !== toPage) {
+          if (this.currentPage !== toPage && !event.defaultPrevented) {
             this.currentPage = toPage
             setPage(toPageName, this.depth)
             this.forceUpdate()
@@ -82,7 +85,10 @@ export default function easyRouter (config) {
     }
 
     dispatchRouteEvent (config, event) {
-      return config.onRoute ? config.onRoute(event) : Promise.resolve()
+      if (config.onRoute && !event.defaultPrevented) {
+        return config.onRoute(event)
+      }
+      return Promise.resolve()
     }
 
     render () {

@@ -21,6 +21,7 @@ export function releaseRouter(router, depth) {
 }
 
 export function route (pages, params) {
+  // maybe add an intercepting event here too?
   pushState(undefined, '', location.pathname + location.hash)
 
   // deactivate all page stores (and no app stores)
