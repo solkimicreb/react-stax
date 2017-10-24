@@ -59,7 +59,7 @@ function routeRoutersFromDepth (depth, pages, params) {
     .then(pagesAtDepth => {
       const pageAtDepth = reducePages(pagesAtDepth, depth)
       pages[depth] = pageAtDepth
-      routeRoutersFromDepth(++depth, pages, params)
+      return routeRoutersFromDepth(++depth, pages, params)
     })
 }
 
