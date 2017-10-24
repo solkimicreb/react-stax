@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
-import { routers, registerRouter, releaseRouter } from './core'
-import { getPage, setPage } from './urlUtils'
+import { routers, registerRouter, releaseRouter, route } from './core'
+import { getPage, setPage, normalizePath } from './urlUtils'
 import { pageStores } from './stores'
 
 export default function easyRouter (config) {
@@ -48,7 +48,12 @@ export default function easyRouter (config) {
       releaseRouter(this, this.depth)
     }
 
-    route (toPageName, params) {
+    route (path, params) {
+      const pages = normalizePath(path, this.depth)
+      return route(pages, params)
+    }
+
+    routeRouter (toPageName, params) {
       let toPage = config.pages[toPageName]
       if (!toPage) {
         toPageName = config.default
@@ -61,7 +66,6 @@ export default function easyRouter (config) {
         toPage: toPageName,
         params,
         preventDefault () {
-          console.log('preventing event')
           this.defaultPrevented = true
         }
       }

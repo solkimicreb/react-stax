@@ -49,7 +49,7 @@ function routeRoutersFromDepth (depth, pages, params) {
     return Promise.resolve()
   }
 
-  const routings = Array.from(routersAtDepth).map(router => router.route(newPage, params))
+  const routings = Array.from(routersAtDepth).map(router => router.routeRouter(newPage, params))
   return Promise.all(routings)
     .then(() => routeRoutersFromDepth(++depth, pages, params))
 }
