@@ -42,7 +42,7 @@ class Link extends Component {
     links.delete(this)
   }
 
-  onClick = (ev) => {
+  onClick (ev) {
     ev.preventDefault()
     route(this.tokens, this.props.params)
     if (this.props.onClick) {
@@ -50,7 +50,7 @@ class Link extends Component {
     }
   }
 
-  updateActivity = () => {
+  updateActivity () {
     this.forceUpdate()
   }
 
@@ -79,4 +79,4 @@ class Link extends Component {
   }
 }
 
-export default Link // later export easyComp!!
+export default easyComp(Link)

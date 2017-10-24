@@ -35,7 +35,6 @@ export function route (pages, params) {
 function routeRouters (pages, params) {
   return routeRoutersFromDepth(0, pages, params)
     .then(() => {
-      console.log('update links', getParams())
       links.forEach(link => link.updateActivity())
     })
 }
