@@ -30,6 +30,8 @@ class Link extends Component {
     activeClass: 'active'
   }
 
+  isActive = true
+
   get depth () {
     return this.context.easyRouterDepth || 0
   }
@@ -54,18 +56,19 @@ class Link extends Component {
     this.forceUpdate()
   }
 
+  shouldComponentUpdate () {
+    return this.isActive
+  }
+
   // support shouldComponentUpdate I guess
   // or maybe deactivate the link while routing!
+  // instead of this I should do it manually?? nope -> easyComp is way cooler
   render() {
     const { to, element, children, activeClass, params } = this.props
     const { onClick } = this
 
     if (to) {
       this.tokens = normalizePath(to, this.depth)
-    }
-
-    if (to === 'stories') {
-      console.log('render link', params.type)
     }
 
     // also take in the params for this!

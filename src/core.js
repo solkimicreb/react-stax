@@ -23,14 +23,12 @@ export function releaseRouter(router, depth) {
 export function route (pages, params, init) {
   // maybe add an intercepting event here too?
   // also add options to use replaceState
-  /*if (!init) {
-    pushState(undefined, '', location.pathname + location.hash)
-  }*/
 
   // deactivate all page stores (and no app stores)
   appStores.forEach(deactivate)
   activePageStores.forEach(deactivate)
   activePageStores.clear()
+  links.forEach(link => link.isActive = false)
   // route params to app stores
   if (params) {
     appStores.forEach(store => routeParams(params, store))
@@ -43,7 +41,10 @@ export function route (pages, params, init) {
       setPages(pages) // later this should sey without the params -> they are added later
       appStores.forEach(activate)
       activePageStores.forEach(activate)
-      links.forEach(link => link.updateActivity())
+      links.forEach(link => {
+        links.isActive = true
+        link.updateActivity()
+      })
     })
 }
 
@@ -75,6 +76,7 @@ function reducePages (pages, depth) {
 }
 
 window.addEventListener('load', () => {
+  links.forEach(link => link.isActive = false)
   const pages = getPages()
 
   routeRoutersFromDepth(0, pages)
@@ -83,15 +85,23 @@ window.addEventListener('load', () => {
       history.replaceState(undefined, '', url)
       appStores.forEach(activate)
       activePageStores.forEach(activate)
-      links.forEach(link => link.updateActivity())
+      links.forEach(link => {
+        link.isActive = true
+        link.updateActivity()
+      })
       // call this with query at the end history.replaceState(undefined, '', pages.join('/') + location.hash)
     })
 })
 window.addEventListener('popstate', () => {
+  links.forEach(link => link.isActive = false)
+
   routeRoutersFromDepth(0, getPages(), getParams())
     .then(() => {
       appStores.forEach(activate)
       activePageStores.forEach(activate)
-      links.forEach(link => link.updateActivity())
+      links.forEach(link => {
+        link.isActive = true
+        link.updateActivity()
+      })
     })
 })
