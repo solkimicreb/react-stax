@@ -1,6 +1,6 @@
 import pushState from 'history-throttler'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
-import { pageStores, links } from './stores'
+import { appStores, activePageStores, links } from './stores'
 import { getPages, setPages } from './urlUtils'
 
 export const routers = []
@@ -23,25 +23,26 @@ export function releaseRouter(router, depth) {
 export function route (pages, params, init) {
   // maybe add an intercepting event here too?
   // also add options to use replaceState
-  if (!init) {
+  /*if (!init) {
     pushState(undefined, '', location.pathname + location.hash)
-  }
+  }*/
 
   // deactivate all page stores (and no app stores)
-  pageStores.forEach(deactivate)
+  appStores.forEach(deactivate)
+  activePageStores.forEach(deactivate)
+  activePageStores.clear()
   // route params to app stores
   if (params) {
-    routeParams(params)
+    appStores.forEach(store => routeParams(params, store))
   }
-  return pages ? routeRouters(pages, params) : Promise.resolve()
-}
 
-function routeRouters (pages, params) {
-  return routeRoutersFromDepth(0, pages, params)
+  const routing = pages ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
+  return routing
     // pages are patched on the go, update URL here!
-    .then(() => setPages(pages)) // later this should sey without the params -> they are added later
-    // I also have to cut array length at the final depth
     .then(() => {
+      setPages(pages) // later this should sey without the params -> they are added later
+      appStores.forEach(activate)
+      activePageStores.forEach(activate)
       links.forEach(link => link.updateActivity())
     })
 }
@@ -74,11 +75,19 @@ function reducePages (pages, depth) {
 }
 
 window.addEventListener('load', () => {
-  // initial routing
-  route(getPages(), getParams(), true)
+  // I also have to route params somehow -> appStores are not yet active ):
+  routeRoutersFromDepth(0, getPages(), getParams())
+    .then(() => {
+      appStores.forEach(activate)
+      activePageStores.forEach(activate)
+      links.forEach(link => link.updateActivity())
+    })
 })
 window.addEventListener('popstate', () => {
-  // first deactivate all page stores -> can be reactivated after!
-  pageStores.forEach(deactivate)
-  routeRouters(getPages())
+  routeRoutersFromDepth(0, getPages(), getParams())
+    .then(() => {
+      appStores.forEach(activate)
+      activePageStores.forEach(activate)
+      links.forEach(link => link.updateActivity())
+    })
 })

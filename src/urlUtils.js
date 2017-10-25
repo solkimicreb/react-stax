@@ -63,8 +63,8 @@ export function isLinkActive (linkPages, linkParams) {
 }
 
 export function setPages (pages) {
-  const url = pages.join('/') + location.search + location.hash
-  pushState(history.state, '', url)
+  const url = pages.filter(notEmpty).join('/') + location.hash
+  pushState(undefined, '', url)
 }
 
 export function getPages () {

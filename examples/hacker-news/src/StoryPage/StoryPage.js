@@ -9,7 +9,7 @@ function StoryPage() {
     <div>
       <StoryItem {...story} />
       <div dangerouslySetInnerHTML={{ __html: story.text }} />
-      {story.kids.map(commentId => <Comment key={commentId} />)}
+      {story.kids && story.kids.map(commentId => <Comment key={commentId} />)}
     </div>
   )
 }

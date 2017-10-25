@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { routers, registerRouter, releaseRouter, route } from './core'
 import { normalizePath } from './urlUtils'
-import { pageStores } from './stores'
+import { appStores, activePageStores } from './stores'
 
 export default function easyRouter (config) {
   if (typeof config !== 'function') {
@@ -61,13 +61,19 @@ export default function easyRouter (config) {
         .then(() => this.dispatchRouteEvent(config, event))
         .then(() => (typeof toPage === 'function') ? toPage() : toPage)
         .then(newToPage => {
+          // init lazy loaded pages
           config.pages[toPageName] = toPage = newToPage
+          if (toPage.store) {
+            appStores.delete(toPage.store)
+          }
         })
         .then(() => {
           const store = toPage.store
           if (store && !event.defaultPrevented) {
             // also activate store if there are no params yet!
-            activate(store)
+            // do not activate
+            // activate(store)
+            activePageStores.add(store)
             if (params) {
               routeParams(params, store)
             }
@@ -116,8 +122,7 @@ function validateConfig (config) {
   for (let pageName in config.pages) {
     const page = config.pages[pageName]
     if (page.store) {
-      deactivate(page.store)
-      pageStores.add(page.store)
+      appStores.delete(page.store)
     }
   }
 }
