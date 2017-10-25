@@ -75,12 +75,16 @@ function reducePages (pages, depth) {
 }
 
 window.addEventListener('load', () => {
-  // I also have to route params somehow -> appStores are not yet active ):
-  routeRoutersFromDepth(0, getPages(), getParams())
+  const pages = getPages()
+
+  routeRoutersFromDepth(0, pages)
     .then(() => {
+      const url = pages.join('/') + location.search + location.hash
+      history.replaceState(undefined, '', url)
       appStores.forEach(activate)
       activePageStores.forEach(activate)
       links.forEach(link => link.updateActivity())
+      // call this with query at the end history.replaceState(undefined, '', pages.join('/') + location.hash)
     })
 })
 window.addEventListener('popstate', () => {

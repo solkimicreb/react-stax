@@ -54,18 +54,24 @@ class Link extends Component {
     this.forceUpdate()
   }
 
+  // support shouldComponentUpdate I guess
+  // or maybe deactivate the link while routing!
   render() {
-    const { to, element, children, activeClass } = this.props
+    const { to, element, children, activeClass, params } = this.props
     const { onClick } = this
 
     if (to) {
       this.tokens = normalizePath(to, this.depth)
     }
 
+    if (to === 'stories') {
+      console.log('render link', params.type)
+    }
+
     // also take in the params for this!
     const href = this.tokens ? this.tokens.join('/') : ''
 
-    const isActive = isLinkActive(this.tokens, this.props.params)
+    const isActive = isLinkActive(this.tokens, params)
     let className = isActive ? activeClass : ''
     if (this.props.className) {
       className += ` ${this.props.className}`
