@@ -2,6 +2,7 @@ import pushState from 'history-throttler'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
 import { appStores, activePageStores, links } from './stores'
 import { getPages, setPages } from './urlUtils'
+import { isRouting, startRouting, stopRouting } from './status'
 
 export const routers = []
 
@@ -20,9 +21,16 @@ export function releaseRouter(router, depth) {
   }
 }
 
-export function route (pages, params, init) {
+export function route (pages, params) {
   // maybe add an intercepting event here too?
   // also add options to use replaceState
+
+  // indicate that a routing is taking place
+  if(isRouting()) {
+    console.warn('Returning early from routing. Another routing process is already taking place')
+    return
+  }
+  startRouting()
 
   // deactivate all page stores (and no app stores)
   appStores.forEach(deactivate)
@@ -46,6 +54,8 @@ export function route (pages, params, init) {
         link.updateActivity()
       })
     })
+    .then(stopRouting)
+    .catch(stopRouting)
 }
 
 function routeRoutersFromDepth (depth, pages, params) {
@@ -76,7 +86,7 @@ function reducePages (pages, depth) {
 }
 
 // later export it from a specific depth
-export function startRouting () {
+export function routeInitial () {
   links.forEach(link => link.isActive = false)
   const pages = getPages()
 
