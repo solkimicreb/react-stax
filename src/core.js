@@ -75,7 +75,8 @@ function reducePages (pages, depth) {
   return result
 }
 
-window.addEventListener('load', () => {
+// later export it from a specific depth
+export function startRouting () {
   links.forEach(link => link.isActive = false)
   const pages = getPages()
 
@@ -91,7 +92,8 @@ window.addEventListener('load', () => {
       })
       // call this with query at the end history.replaceState(undefined, '', pages.join('/') + location.hash)
     })
-})
+}
+
 window.addEventListener('popstate', () => {
   links.forEach(link => link.isActive = false)
 

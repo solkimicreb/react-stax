@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { routeParams, getParams, activate, deactivate } from 'react-easy-params'
-import { routers, registerRouter, releaseRouter, route } from './core'
+import { routers, registerRouter, releaseRouter, route, startRouting } from './core'
 import { normalizePath } from './urlUtils'
 import { appStores, activePageStores } from './stores'
 
@@ -34,6 +34,12 @@ export default function easyRouter (config) {
 
     componentWillUnmount () {
       releaseRouter(this, this.depth)
+    }
+
+    componentDidMount () {
+      if (this.depth === 0) {
+        startRouting()
+      }
     }
 
     route (path, params) {
