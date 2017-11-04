@@ -23,9 +23,7 @@ export default class Router extends Component {
   }
 
   getChildContext () {
-    return {
-      easyRouterDepth: this.depth + 1
-    }
+    return { easyRouterDepth: this.depth + 1 }
   }
 
   componentWillMount () {
@@ -42,9 +40,9 @@ export default class Router extends Component {
     releaseRouter(this, this.depth)
   }
 
-  route (path, params) {
+  route (path, params, options) {
     const pages = normalizePath(path, this.depth)
-    return route(pages, params)
+    return route(pages, params, options)
   }
 
   routeRouter (toPageName, params) {
