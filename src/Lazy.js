@@ -15,6 +15,10 @@ export default class Lazy extends Component {
     this.forceUpdate()
   }
 
+  shouldComponentUpdate () {
+    return false
+  }
+
   render () {
     return this.comp || null // maybe return children otherwise
   }

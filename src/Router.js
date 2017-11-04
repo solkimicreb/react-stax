@@ -40,6 +40,10 @@ export default class Router extends Component {
     releaseRouter(this, this.depth)
   }
 
+  shouldComponentUpdate () {
+    return false
+  }
+
   route (path, params, options) {
     const pages = normalizePath(path, this.depth)
     return route(pages, params, options)

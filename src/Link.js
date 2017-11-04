@@ -34,6 +34,15 @@ export default class Link extends Component {
     return this.context.easyRouterDepth || 0
   }
 
+  constructor (props, context) {
+    super(props, context)
+
+    this.onClick = this.onClick.bind(this)
+
+    this.resolvePageNames()
+    this.isActive = isLinkActive(this.toPageNames, props.params)
+  }
+
   componentWillMount () {
     links.add(this)
   }
@@ -42,13 +51,8 @@ export default class Link extends Component {
     links.delete(this)
   }
 
-  constructor (props, context) {
-    super(props, context)
-
-    this.onClick = this.onClick.bind(this)
-
-    this.resolvePageNames()
-    this.isActive = isLinkActive(this.toPageNames, props.params)
+  shouldComponentUpdate () {
+    return false
   }
 
   onClick (ev) {
