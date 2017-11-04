@@ -45,9 +45,9 @@ export default class Link extends Component {
     super(props, context)
 
     this.onClick = this.onClick.bind(this)
-    
+
     this.resolvePageNames()
-    this.isActive = isLinkActive(this.toPageNames, history.state)
+    this.isActive = isLinkActive(this.toPageNames, props.params)
   }
 
   onClick (ev) {
@@ -70,9 +70,9 @@ export default class Link extends Component {
     }
   }
 
-  updateActivity (shouldRender) {
+  updateActivity () {
     const wasActive = this.isActive
-    const isActive = isLinkActive(this.toPageNames, params)
+    const isActive = isLinkActive(this.toPageNames, this.props.params)
     if (wasActive !== isActive) {
       this.isActive = isActive
       this.forceUpdate()

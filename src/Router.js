@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, Children } from 'react'
-import { routers, registerRouter, releaseRouter, route, routeInitial } from './core'
+import { registerRouter, releaseRouter, route, routeInitial } from './core'
 import { normalizePath } from './urlUtils'
 import { appStores, activePageStores } from './stores'
 import { isRouting } from './status'

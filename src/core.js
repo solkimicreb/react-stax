@@ -4,7 +4,7 @@ import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
 import { toParams, toQuery } from './params'
 
-export const routers = []
+const routers = []
 
 export function registerRouter(router, depth) {
   let routersAtDepth = routers[depth]
@@ -45,7 +45,8 @@ export function route (pages, params = {}, options = {}) {
       const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
       // I only do the pushState here?? -> fail -> I have to start with a pushState!!
       history.replaceState(history.state, '', url)
-      // links.forEach(link => link.updateActivity())
+      console.log('UPDATE LINKS')
+      links.forEach(link => link.updateActivity())
     })
     .then(stopRouting, stopRouting)
 }
