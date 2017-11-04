@@ -5,6 +5,11 @@ const store = {
   stories: [],
   type: 'top',
   hasMore: true,
+  async init ({ type = this.type }) {
+    this.type = type
+    await this.fetchStories()
+    this.hasMore = true
+  },
   async fetchStories() {
     this.stories = await fetchStoriesByType(this.type, 1)
     events.removeAllListeners()

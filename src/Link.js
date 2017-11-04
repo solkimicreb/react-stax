@@ -5,13 +5,11 @@ import React, {
   createElement,
   cloneElement
 } from 'react'
-import { easyComp } from 'react-easy-state'
-import { getParams } from 'react-easy-params'
 import { normalizePath, isLinkActive } from './urlUtils'
 import { route } from './core'
 import { links } from './stores'
 
-class Link extends Component {
+export default class Link extends Component {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
@@ -27,10 +25,9 @@ class Link extends Component {
 
   static defaultProps = {
     element: 'a',
-    activeClass: 'active'
+    activeClass: 'active',
+    className: ''
   }
-
-  isActive = true
 
   get depth () {
     return this.context.easyRouterDepth || 0
@@ -44,41 +41,50 @@ class Link extends Component {
     links.delete(this)
   }
 
+  constructor (props, context) {
+    super(props, context)
+
+    this.onClick = this.onClick.bind(this)
+    
+    this.resolvePageNames()
+    this.isActive = isLinkActive(this.toPageNames, history.state)
+  }
+
   onClick (ev) {
+    const { onClick, params } = this.props
+
     ev.preventDefault()
-    route(this.tokens, this.props.params)
-    if (this.props.onClick) {
-      this.props.onClick(ev)
+    route(this.toPageNames, params)
+
+    // maybe only call this after the routing is over!!
+    if (onClick) {
+      onClick(ev)
     }
   }
 
-  updateActivity () {
-    this.forceUpdate()
-  }
-
-  shouldComponentUpdate () {
-    return this.isActive
-  }
-
-  // support shouldComponentUpdate I guess
-  // or maybe deactivate the link while routing!
-  // instead of this I should do it manually?? nope -> easyComp is way cooler
-  render() {
-    const { to, element, children, activeClass, params } = this.props
-    const { onClick } = this
-
+  resolvePageNames () {
+    const { to } = this.props
     if (to) {
-      this.tokens = normalizePath(to, this.depth)
+      this.toPageNames = normalizePath(to, this.depth)
+      this.href = this.toPageNames.join('/')
     }
+  }
 
-    // also take in the params for this!
-    const href = this.tokens ? this.tokens.join('/') : ''
-
-    const isActive = isLinkActive(this.tokens, params)
-    let className = isActive ? activeClass : ''
-    if (this.props.className) {
-      className += ` ${this.props.className}`
+  updateActivity (shouldRender) {
+    const wasActive = this.isActive
+    const isActive = isLinkActive(this.toPageNames, params)
+    if (wasActive !== isActive) {
+      this.isActive = isActive
+      this.forceUpdate()
     }
+  }
+
+  render() {
+    let { to, element, children, activeClass, params, className } = this.props
+    const { onClick, href, isActive } = this
+
+    activeClass = isActive ? activeClass : ''
+    className = `${className} ${activeClass}`
 
     const anchor = createElement('a', { onClick, href }, children)
     if (element === 'a') {
@@ -87,5 +93,3 @@ class Link extends Component {
     return createElement(element, { className }, anchor)
   }
 }
-
-export default easyComp(Link)

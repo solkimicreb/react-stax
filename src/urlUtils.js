@@ -1,4 +1,3 @@
-import { getParams } from 'react-easy-params'
 import pushState from 'history-throttler'
 
 export function normalizePath (path, depth) {
@@ -52,7 +51,7 @@ export function isLinkActive (linkPages, linkParams) {
     }
   }
   if (linkParams) {
-    const queryParams = getParams()
+    const queryParams = history.state || {}// getParams()
     for (let param in linkParams) {
       if (linkParams[param] !== queryParams[param]) {
         return false
@@ -60,11 +59,6 @@ export function isLinkActive (linkPages, linkParams) {
     }
   }
   return true
-}
-
-export function setPages (pages) {
-  const url = pages.filter(notEmpty).join('/') + location.hash
-  pushState(undefined, '', url)
 }
 
 export function getPages () {
@@ -75,6 +69,6 @@ function notInPlace (token) {
   return token !== '.'
 }
 
-function notEmpty (token) {
+export function notEmpty (token) {
   return token !== ''
 }

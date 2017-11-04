@@ -1,8 +1,12 @@
 import { easyStore } from 'react-easy-stack'
 import { fetchStory } from '../api'
 
-const store = window.story = {
+const store = {
   id: '',
+  async init ({ id = this.id }) {
+    this.id = id
+    await this.fetchStory()
+  },
   async fetchStory () {
     const story = await fetchStory(this.id)
     Object.assign(this, story)
