@@ -2,9 +2,10 @@ import { toWidgetType } from './types'
 import { toQuery, toParams } from './searchParams'
 import { links } from '../stores'
 import { isRouting } from '../status'
+import { getParams, setParams } from './params'
 
 export default function syncUrl (config, store) {
-  const params = history.state
+  const params = getParams()
   let paramsChanged = false
 
   for (let key of config.url) {
@@ -16,14 +17,9 @@ export default function syncUrl (config, store) {
   }
 
   // replaceState is expensive, only do it when it is necessary
-  if (paramsChanged) {
-    if (isRouting()) {
-      history.replaceState(params, '')
-    } else {
-      // only replace the url and update the links if I am not routing
-      history.replaceState(params, '', createUrl(params))
-      links.forEach(link => link.updateActivity())
-    }
+  if (paramsChanged && !isRouting()) {
+    history.replaceState(params, '', createUrl(params))
+    links.forEach(link => link.updateActivity())
   }
 }
 

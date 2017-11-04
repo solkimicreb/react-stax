@@ -2,7 +2,7 @@ import pushState from 'history-throttler'
 import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
-import { toParams, toQuery } from './params'
+import { toParams, toQuery, getParams, setParams } from './params'
 
 const routers = []
 
@@ -29,23 +29,26 @@ export function route (pages, params = {}, options = {}) {
   startRouting()
 
   if (options.inherit === true) {
-    params = Object.assign(history.state, params)
+    const prevParams = getParams()
+    params = Object.assign({}, prevParams, params)
   }
 
-  if (options.history !== false) {
-    pushState(params, '')
-  } else {
-    history.replaceState(params, '')
-  }
+  // do not replace or push here! -> only do it at the very end!
+  // setParams(params)
+  setParams(params)
 
   const routing = pages ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
   return routing
     // pages are patched on the go, update URL here!
     .then(() => {
       const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
-      // I only do the pushState here?? -> fail -> I have to start with a pushState!!
-      history.replaceState(history.state, '', url)
-      console.log('UPDATE LINKS')
+
+      if (options.history !== false) {
+        history.pushState(params, '', url)
+      } else {
+        history.replaceState(params, '', url)
+      }
+
       links.forEach(link => link.updateActivity())
     })
     .then(stopRouting, stopRouting)

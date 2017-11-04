@@ -1,4 +1,5 @@
 import pushState from 'history-throttler'
+import { getParams } from './params'
 
 // pathToPageNames
 export function normalizePath (path, depth) {
@@ -51,7 +52,7 @@ export function isLinkActive (linkPages, linkParams) {
     }
   }
   if (linkParams) {
-    const queryParams = history.state || {}// getParams()
+    const queryParams = getParams()
     for (let param in linkParams) {
       if (linkParams[param] !== queryParams[param]) {
         return false

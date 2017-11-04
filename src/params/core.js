@@ -4,6 +4,7 @@ import syncUrl from './url'
 import { syncStorage, syncStoreWithStorage } from './storage'
 import setupConfig from './setupConfig'
 import { toParams } from './searchParams'
+import { setParams } from './params'
 
 export function easyStore (store, config) {
   store = originalEasyStore(store)
@@ -28,4 +29,4 @@ export function easyStore (store, config) {
 
 // init the state with the URL search params
 const params = toParams(location.search)
-history.replaceState(params, '')
+setParams(params)
