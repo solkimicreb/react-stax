@@ -15,6 +15,7 @@ export default class Link extends Component {
     element: PropTypes.string,
     activeClass: PropTypes.string,
     params: PropTypes.object,
+    options: PropTypes.object,
     onClick: PropTypes.func,
     className: PropTypes.string
   }
@@ -51,10 +52,10 @@ export default class Link extends Component {
   }
 
   onClick (ev) {
-    const { onClick, params } = this.props
+    const { onClick, params, options } = this.props
 
     ev.preventDefault()
-    route(this.toPageNames, params)
+    route(this.toPageNames, params, options)
 
     // maybe only call this after the routing is over!!
     if (onClick) {
