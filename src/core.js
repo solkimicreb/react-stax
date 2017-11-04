@@ -1,4 +1,3 @@
-import pushState from 'history-throttler'
 import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'

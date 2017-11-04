@@ -1,4 +1,3 @@
-import pushState from 'history-throttler'
 import { getParams } from './params'
 
 // pathToPageNames
