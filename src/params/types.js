@@ -1,34 +1,35 @@
-const toStoreCasters = {
-  number: Number,
-  boolean: JSON.parse,
-  string: String,
-  date: date => new Date(parseInt(date)),
-  object: JSON.parse
+const casters = {
+  n: Number,
+  b: JSON.parse,
+  s: String
 }
 
-const toWidgetCasters = {
-  date: date => date.getTime()
-}
-
-export function toStoreType (prop, typeProp) {
-  const type = getType(typeProp)
-  const caster = toStoreCasters[type]
-  return caster ? caster(prop) : prop
-}
-
-export function toWidgetType (prop, allowObjectType) {
-  const type = getType(prop)
-  if (!allowObjectType && type === 'object' && prop !== null) {
-    throw new TypeError(`${prop} must be a primitive or a date.`)
+export function toParamTypes (query) {
+  const params = {}
+  for (let key in query) {
+    const value = query[key]
+    const type = key[0]
+    key = key.slice(2)
+    const caster = casters[type]
+    if (!caster) {
+      console.error(`Invalid query type for '${key}': ${type}`)
+      continue
+    }
+    params[key] = caster(value)
   }
-  const caster = toWidgetCasters[type]
-  return caster ? caster(prop) : prop
+  return params
 }
 
-function getType (prop) {
-  let type = typeof prop
-  if (type === 'object' && prop instanceof Date) {
-    type = 'date'
+export function toQueryTypes (params) {
+  const query = {}
+  for (let key in params) {
+    const value = params[key]
+    const type = (typeof value)[0]
+    if (!(type in casters)) {
+      console.error(`Invalid query type for '${key}': ${type}`)
+      continue
+    }
+    query[`${type}_${key}`] = value
   }
-  return type
+  return query
 }
