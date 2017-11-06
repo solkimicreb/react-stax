@@ -11,7 +11,7 @@ class App extends Component {
   store = {
     isRouting: false
   }
-  
+
   async onRoute ({ fromPage, toPage, params }) {
     if (fromPage !== toPage) {
       this.store.isRouting = true
@@ -38,8 +38,8 @@ class App extends Component {
             type => <Link to="stories" params={{ type }} key={type}>{type}</Link>
           )}
         </nav>
-        <Router className={routerClass} default="stories" onRoute={this.onRoute}>
-          <StoriesPage page="stories" />
+        <Router className={routerClass} onRoute={this.onRoute}>
+          <StoriesPage page="stories" default />
           <StoryPage page="story" />
           <UserPage page="user" />
         </Router>

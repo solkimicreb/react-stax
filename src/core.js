@@ -89,7 +89,7 @@ function routeRoutersAtDepth (depth, routersAtDepth, pageNames) {
 }
 
 function reducePageNames (pageNames, pageNamesAtDepth, depth) {
-  let pageNameAtDepth = pageNames[0]
+  let pageNameAtDepth = pageNamesAtDepth[0]
   for (let pageName of pageNamesAtDepth) {
     if (pageName !== pageNameAtDepth) {
       throw new Error(`Unmatching pages ${pageName}, ${pageNameAtDepth} at depth ${depth}`)

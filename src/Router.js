@@ -11,11 +11,6 @@ export default class Router extends Component {
     className: PropTypes.string
   }
 
-  static defaultProps = {
-    routingClass: '',
-    className: ''
-  }
-
   static childContextTypes = {
     easyRouterDepth: PropTypes.number
   };
@@ -52,11 +47,12 @@ export default class Router extends Component {
   }
 
   selectPage (toPageName) {
-    const { default: defaultPageName, children } = this.props
+    const { children } = this.props
 
     Children.forEach(children, child => {
       const childName = child.props.page
-      if (childName === toPageName || (!this.toPage && childName === defaultPageName)) {
+      const isDefaultChild = ('default' in child.props)
+      if (childName === toPageName || (!this.toPage && isDefaultChild)) {
         this.toPage = child
       }
     })
