@@ -1,3 +1,15 @@
 .active {
   color: red;
 }
+
+.router {
+  transition: opacity 1s;
+}
+
+.router:not(.routing) {
+  opacity: 1;
+}
+
+.router.routing {
+  opacity: 0;
+}

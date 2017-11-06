@@ -5,7 +5,7 @@ const store = {
   id: '',
   async init ({ id = this.id }) {
     this.id = id
-    this.fetchUser()
+    await this.fetchUser()
   },
   async fetchUser () {
     const user = await fetchUser(this.id)

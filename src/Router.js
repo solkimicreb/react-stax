@@ -7,7 +7,13 @@ import Lazy from './Lazy'
 
 export default class Router extends Component {
   static propTypes = {
-    onRoute: PropTypes.func
+    onRoute: PropTypes.func,
+    className: PropTypes.string
+  }
+
+  static defaultProps = {
+    routingClass: '',
+    className: ''
   }
 
   static childContextTypes = {
@@ -38,10 +44,6 @@ export default class Router extends Component {
 
   componentWillUnmount () {
     releaseRouter(this, this.depth)
-  }
-
-  shouldComponentUpdate () {
-    return false
   }
 
   route (path, params, options) {
@@ -89,6 +91,8 @@ export default class Router extends Component {
   }
 
   render () {
-    return this.currentPage || null
+    let { className } = this.props
+
+    return (<div className={className}>{this.currentPage || null}</div>)
   }
 }
