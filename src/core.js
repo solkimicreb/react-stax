@@ -21,10 +21,6 @@ export function releaseRouter(router, depth) {
 }
 
 export function route (pages, params = {}, options = {}) {
-  if(isRouting()) {
-    console.warn('Returning early from routing. Another routing process is already taking place')
-    return
-  }
   startRouting()
 
   if (options.inherit === true) {
@@ -32,13 +28,10 @@ export function route (pages, params = {}, options = {}) {
     params = Object.assign({}, prevParams, params)
   }
 
-  // do not replace or push here! -> only do it at the very end!
-  // setParams(params)
   setParams(params)
 
   const routing = pages ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
   return routing
-    // pages are patched on the go, update URL here!
     .then(() => {
       const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
 
@@ -50,36 +43,59 @@ export function route (pages, params = {}, options = {}) {
 
       links.forEach(link => link.updateActivity())
     })
+    // issue -> this swallows errors -> I should rethrow them instead!
     .then(stopRouting, stopRouting)
 }
 
-function routeRoutersFromDepth (depth, pages, params) {
-  const newPage = pages[depth]
-  const routersAtDepth = routers[depth]
+// route should call routeFromDepth(0, pages, params, options)
+
+function routeRoutersFromDepth (depth, pageNames, params) {
+  const toPageName = pageNames[depth]
+  let routersAtDepth = routers[depth]
 
   if (!routersAtDepth) {
     return Promise.resolve()
   }
+  routersAtDepth = Array.from(routersAtDepth)
 
-  const routings = Array.from(routersAtDepth)
-    .map(router => router.routeRouter(newPage, params))
+  const pages = routersAtDepth.map(
+    router => router.selectPage(toPageName)
+  )
 
-  return Promise.all(routings)
-    .then(pagesAtDepth => {
-      const pageAtDepth = reducePages(pagesAtDepth, depth)
-      pages[depth] = pageAtDepth
-      return routeRoutersFromDepth(++depth, pages, params)
-    })
+  const events = routersAtDepth.map(
+    router => router.dispatchRouteEvent(params)
+  )
+
+  return Promise.all(pages)
+    .then(() => Promise.all(events))
+    .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames))
+    .then(() => routeRoutersFromDepth(++depth, pageNames, params))
 }
 
-function reducePages (pages, depth) {
-  let result = pages[0]
-  for (let page of pages) {
-    if (page !== result) {
-      throw new Error(`Unmatching pages ${page}, ${result} at depth ${depth}`)
+function routeRoutersAtDepth (depth, routersAtDepth, pageNames) {
+  if (isRouting()) {
+    const loaders = routersAtDepth.map(
+      router => router.loadPage()
+    )
+
+    const routings = routersAtDepth.map(
+      router => router.routeToPage()
+    )
+
+    return Promise.all(loaders)
+      .then(() => Promise.all(routings))
+      .then(pageNamesAtDepth => reducePageNames(pageNames, pageNamesAtDepth, depth))
+  }
+}
+
+function reducePageNames (pageNames, pageNamesAtDepth, depth) {
+  let pageNameAtDepth = pageNames[0]
+  for (let pageName of pageNamesAtDepth) {
+    if (pageName !== pageNameAtDepth) {
+      throw new Error(`Unmatching pages ${pageName}, ${pageNameAtDepth} at depth ${depth}`)
     }
   }
-  return result
+  pageNames[depth] = pageNameAtDepth
 }
 
 export function routeInitial () {

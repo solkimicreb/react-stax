@@ -2,7 +2,7 @@ import React, { Component, PropTypes, Children } from 'react'
 import { registerRouter, releaseRouter, route, routeInitial } from './core'
 import { normalizePath } from './urlUtils'
 import { appStores, activePageStores } from './stores'
-import { isRouting } from './status'
+import { isRouting, stopRouting } from './status'
 import Lazy from './Lazy'
 
 export default class Router extends Component {
@@ -49,51 +49,43 @@ export default class Router extends Component {
     return route(pages, params, options)
   }
 
-  routeRouter (toPageName, params) {
+  selectPage (toPageName) {
     const { default: defaultPageName, children } = this.props
 
-    let toPage
     Children.forEach(children, child => {
       const childName = child.props.page
-      if (childName === toPageName || (!toPage && childName === defaultPageName)) {
-        toPage = child
+      if (childName === toPageName || (!this.toPage && childName === defaultPageName)) {
+        this.toPage = child
       }
     })
-    toPageName = toPage.props.page
-
-    // throw an error if the default page is not in a child!
-    // get page names!!
-
-    const event = {
-      target: this,
-      fromPage: this.currentPageName,
-      toPage: toPageName,
-      params,
-      preventDefault () {
-        this.defaultPrevented = true
-      }
-    }
-
-    return Promise.resolve()
-      .then(() => this.dispatchRouteEvent(event))
-      .catch(console.error)
-      .then(() => toPage.type === Lazy ? toPage.props.load() : toPage)
-      .then(toPage => {
-        if (this.currentPage !== toPage && !event.defaultPrevented) {
-          this.currentPage = toPage
-          this.currentPageName = toPageName
-          this.forceUpdate()
-        }
-        // later return the event -> defaultPrevented can be fetched and routing can be halted
-        return toPageName
-      })
   }
 
-  dispatchRouteEvent (event) {
+  dispatchRouteEvent (params) {
     const { onRoute } = this.props
     if (onRoute) {
-      return onRoute(event)
+      return onRoute({
+        target: this,
+        fromPage: this.currentPage && this.currentPage.props.page,
+        toPage: this.toPage.props.page,
+        params,
+        preventDefault: stopRouting
+      })
     }
+  }
+
+  loadPage () {
+    if (this.toPage.type === Lazy) {
+      this.toPage.props.load()
+        .then(loadedPage => (this.toPage = loadedPage))
+    }
+  }
+
+  routeToPage () {
+    if (this.currentPage !== this.toPage) {
+      this.currentPage = this.toPage
+      this.forceUpdate()
+    }
+    return this.toPage.props.page
   }
 
   render () {

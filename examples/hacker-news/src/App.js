@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { easyComp, Link, Router, Lazy } from 'react-easy-stack'
-// import { storiesStore } from './StoriesPage'
+import { storiesStore, StoriesPage } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
 import { UserPage, userStore } from './UserPage'
 // rename to STORY_TYPES
@@ -9,7 +9,7 @@ import { TYPES } from './config'
 class App extends Component {
   async onRoute ({ toPage, params }) {
     switch (toPage) {
-      case 'stories': return loadStoriesStore(params)
+      case 'stories': return storiesStore.init(params)
       case 'story': return storyStore.init(params)
       case 'user': return userStore.init(params)
     }
@@ -24,7 +24,7 @@ class App extends Component {
           )}
         </nav>
         <Router default="stories" onRoute={this.onRoute}>
-          <Lazy page="stories" load={loadStoriesPage} />
+          <StoriesPage page="stories" />
           <StoryPage page="story" />
           <UserPage page="user" />
         </Router>
