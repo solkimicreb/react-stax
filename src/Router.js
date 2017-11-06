@@ -8,7 +8,16 @@ import Lazy from './Lazy'
 export default class Router extends Component {
   static propTypes = {
     onRoute: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    enterClass: PropTypes.string,
+    leaveClass: PropTypes.string,
+    duration: PropTypes.number
+  }
+
+  static defaultProps = {
+    className: '',
+    enterClass: '',
+    leaveClass: ''
   }
 
   static childContextTypes = {
@@ -46,8 +55,9 @@ export default class Router extends Component {
     return route(pages, params, options)
   }
 
-  selectPage (toPageName) {
-    const { children } = this.props
+  startRouting (toPageName) {
+    const { children, leaveClass } = this.props
+    this.startTime = Date.now()
 
     Children.forEach(children, child => {
       const childName = child.props.page
@@ -56,6 +66,11 @@ export default class Router extends Component {
         this.toPage = child
       }
     })
+
+    if (this.toPage !== this.currentPage && leaveClass) {
+      this.leaving = true
+      this.forceUpdate(() => (this.leaving = false))
+    }
   }
 
   dispatchRouteEvent (params) {
@@ -78,17 +93,31 @@ export default class Router extends Component {
     }
   }
 
+  waitDuration () {
+    const { duration } = this.props
+    if (duration) {
+      const diff = Date.now() - this.startTime
+      return new Promise(resolve => setTimeout(resolve, duration - diff))
+    }
+  }
+
   routeToPage () {
     if (this.currentPage !== this.toPage) {
       this.currentPage = this.toPage
-      this.forceUpdate()
+      this.entering = true
+      this.forceUpdate(() => (this.entering = false))
     }
     return this.toPage.props.page
   }
 
   render () {
-    let { className } = this.props
+    let { className, enterClass, leaveClass } = this.props
+    if (this.entering) {
+      className += ` ${enterClass}`
+    } else if (this.leaving) {
+      className += ` ${leaveClass}`
+    }
 
-    return (<div className={className}>{this.currentPage || null}</div>)
+    return <div className={className}>{this.currentPage || null}</div>
   }
 }

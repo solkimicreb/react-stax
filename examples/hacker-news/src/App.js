@@ -4,19 +4,10 @@ import { easyComp, Link, Router, Lazy } from 'react-easy-stack'
 import { storiesStore, StoriesPage } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
 import { UserPage, userStore } from './UserPage'
-// rename to STORY_TYPES
-import { TYPES } from './config'
+import { STORY_TYPES } from './config'
 
 class App extends Component {
-  store = {
-    isRouting: false
-  }
-
-  async onRoute ({ fromPage, toPage, params }) {
-    if (fromPage !== toPage) {
-      this.store.isRouting = true
-    }
-
+  async onRoute ({ toPage, params }) {
     if (toPage === 'stories') {
       await storiesStore.init(params)
     } else if (toPage === 'story') {
@@ -24,21 +15,17 @@ class App extends Component {
     } else if (toPage === 'user') {
       await userStore.init(params)
     }
-
-    this.store.isRouting = false
   }
 
   render () {
-    const routerClass = classNames('router', { routing: this.store.isRouting })
-
     return (
       <div>
         <nav>
-          {TYPES.map(
+          {STORY_TYPES.map(
             type => <Link to="stories" params={{ type }} activeClass='active' key={type}>{type}</Link>
           )}
         </nav>
-        <Router className={routerClass} onRoute={this.onRoute}>
+        <Router className='router' enterClass='enter' leaveClass='leave' duration={200} onRoute={this.onRoute}>
           <StoriesPage page="stories" default />
           <StoryPage page="story" />
           <UserPage page="user" />

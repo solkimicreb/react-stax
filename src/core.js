@@ -57,33 +57,26 @@ function routeRoutersFromDepth (depth, pageNames, params) {
     return Promise.resolve()
   }
   routersAtDepth = Array.from(routersAtDepth)
+  routersAtDepth.forEach(router => router.startRouting(toPageName))
 
-  const pages = routersAtDepth.map(
-    router => router.selectPage(toPageName)
-  )
-
-  const events = routersAtDepth.map(
-    router => router.dispatchRouteEvent(params)
-  )
-
-  return Promise.all(pages)
-    .then(() => Promise.all(events))
+  return Promise.all(
+      routersAtDepth.map(router => router.dispatchRouteEvent(params))
+    )
     .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames))
     .then(() => routeRoutersFromDepth(++depth, pageNames, params))
 }
 
 function routeRoutersAtDepth (depth, routersAtDepth, pageNames) {
   if (isRouting()) {
-    const loaders = routersAtDepth.map(
-      router => router.loadPage()
-    )
-
-    const routings = routersAtDepth.map(
-      router => router.routeToPage()
-    )
-
-    return Promise.all(loaders)
-      .then(() => Promise.all(routings))
+    return Promise.all(
+        routersAtDepth.map(router => router.loadPage())
+      )
+      .then(() => Promise.all(
+        routersAtDepth.map(router => router.waitDuration())
+      ))
+      .then(() => Promise.all(
+        routersAtDepth.map(router => router.routeToPage())
+      ))
       .then(pageNamesAtDepth => reducePageNames(pageNames, pageNamesAtDepth, depth))
   }
 }

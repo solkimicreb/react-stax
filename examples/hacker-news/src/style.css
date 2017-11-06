@@ -3,13 +3,13 @@
 }
 
 .router {
-  transition: opacity 1s;
+  transition: opacity .2s ease-in-out;
 }
 
-.router:not(.routing) {
+.router.enter {
   opacity: 1;
 }
 
-.router.routing {
+.router.leave {
   opacity: 0;
 }

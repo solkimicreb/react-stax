@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
 import EventListener from 'events'
-import { API_URL, API_VERSION, STORIES_PER_PAGE, TYPES } from './config'
+import { API_URL, API_VERSION, STORIES_PER_PAGE, STORY_TYPES } from './config'
 
 firebase.initializeApp({ databaseURL: API_URL })
 const api = firebase.database().ref(API_VERSION)
@@ -11,7 +11,7 @@ const cache = new Map()
 const idsByType = new Map()
 
 // keep the story ids real-time updated, broadcast an event when they change
-TYPES.forEach(type => {
+STORY_TYPES.forEach(type => {
   api.child(`${type}stories`).on('value', snapshot => {
     idsByType.set(type, snapshot.val())
     events.emit(type)
