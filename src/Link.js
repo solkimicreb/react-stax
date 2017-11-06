@@ -26,7 +26,7 @@ export default class Link extends Component {
 
   static defaultProps = {
     element: 'a',
-    activeClass: 'active',
+    activeClass: '',
     className: ''
   }
 
@@ -41,10 +41,16 @@ export default class Link extends Component {
 
     this.resolvePageNames()
     this.isActive = isLinkActive(this.toPageNames, props.params)
+
+    if (props.activeClass) {
+      links.add(this)
+    }
   }
 
-  componentWillMount () {
-    links.add(this)
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.activeClass) {
+      links.add(this)
+    }
   }
 
   componentWillUnmount () {

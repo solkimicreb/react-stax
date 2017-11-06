@@ -35,7 +35,7 @@ class App extends Component {
       <div>
         <nav>
           {TYPES.map(
-            type => <Link to="stories" params={{ type }} key={type}>{type}</Link>
+            type => <Link to="stories" params={{ type }} activeClass='active' key={type}>{type}</Link>
           )}
         </nav>
         <Router className={routerClass} onRoute={this.onRoute}>
