@@ -55,7 +55,13 @@ export default class Router extends Component {
     return route(pages, params, options)
   }
 
-  startRouting (toPageName) {
+  startRouting (toPageName, params) {
+    return Promise.resolve()
+      .then(() => this.selectPage(toPageName))
+      .then(() => this.dispatchRouteEvent(params))
+  }
+
+  selectPage (toPageName) {
     const { children, leaveClass } = this.props
     this.startTime = Date.now()
 
@@ -86,6 +92,19 @@ export default class Router extends Component {
     }
   }
 
+  finishRouting () {
+    let result = Promise.resolve()
+
+    if (this.toPage !== this.currentPage) {
+      result = result
+        .then(() => this.loadPage())
+        .then(() => this.waitDuration())
+        .then(() => this.routeToPage())
+    }
+    return result
+      .then(() => this.toPage.props.page)
+  }
+
   loadPage () {
     if (this.toPage.type === Lazy) {
       this.toPage.props.load()
@@ -102,12 +121,9 @@ export default class Router extends Component {
   }
 
   routeToPage () {
-    if (this.currentPage !== this.toPage) {
-      this.currentPage = this.toPage
-      this.entering = true
-      this.forceUpdate(() => (this.entering = false))
-    }
-    return this.toPage.props.page
+    this.currentPage = this.toPage
+    this.entering = true
+    this.forceUpdate(() => (this.entering = false))
   }
 
   render () {

@@ -44,7 +44,7 @@ export function route (pages, params = {}, options = {}) {
       links.forEach(link => link.updateActivity())
     })
     // issue -> this swallows errors -> I should rethrow them instead!
-    .then(stopRouting, stopRouting)
+    .then(stopRouting/*, stopRouting*/)
 }
 
 // route should call routeFromDepth(0, pages, params, options)
@@ -57,29 +57,21 @@ function routeRoutersFromDepth (depth, pageNames, params) {
     return Promise.resolve()
   }
   routersAtDepth = Array.from(routersAtDepth)
-  routersAtDepth.forEach(router => router.startRouting(toPageName))
 
   return Promise.all(
-      routersAtDepth.map(router => router.dispatchRouteEvent(params))
+      routersAtDepth.map(router => router.startRouting(toPageName, params))
     )
-    // buggy do not call if not isrouting
-    .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames))
-    .then(() => routeRoutersFromDepth(++depth, pageNames, params))
+    .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames, params))
 }
 
-function routeRoutersAtDepth (depth, routersAtDepth, pageNames) {
+function routeRoutersAtDepth (depth, routersAtDepth, pageNames, params) {
   if (isRouting()) {
-    // only call if rouer topage !== currentpage
     return Promise.all(
-        routersAtDepth.map(router => router.loadPage())
+        routersAtDepth.map(router => router.finishRouting())
       )
-      .then(() => Promise.all(
-        routersAtDepth.map(router => router.waitDuration())
-      ))
-      .then(() => Promise.all(
-        routersAtDepth.map(router => router.routeToPage())
-      ))
       .then(pageNamesAtDepth => reducePageNames(pageNames, pageNamesAtDepth, depth))
+      // this doesn't really belong here ):
+      .then(() => routeRoutersFromDepth(++depth, pageNames, params))
   }
 }
 
