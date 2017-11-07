@@ -5,8 +5,8 @@ const store = {
   stories: [],
   type: 'top',
   hasMore: true,
-  async init ({ type = this.type }) {
-    this.type = type
+  async init ({ type }) {
+    this.type = type || this.type
     await this.fetchStories()
     this.hasMore = true
   },
@@ -30,8 +30,4 @@ const store = {
   }
 }
 
-const params = {
-  type: ['url', 'history']
-}
-
-export default easyStore(store, params)
+export default easyStore(store, { type: 'url' })

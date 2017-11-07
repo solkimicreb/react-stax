@@ -1,7 +1,7 @@
 import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
-import { toParams, toQuery, getParams, setParams } from './params'
+import { toParams, toQuery, getParams, setParams, params as currParams } from './params'
 
 const routers = []
 
@@ -62,12 +62,14 @@ function routeRoutersFromDepth (depth, pageNames, params) {
   return Promise.all(
       routersAtDepth.map(router => router.dispatchRouteEvent(params))
     )
+    // buggy do not call if not isrouting
     .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames))
     .then(() => routeRoutersFromDepth(++depth, pageNames, params))
 }
 
 function routeRoutersAtDepth (depth, routersAtDepth, pageNames) {
   if (isRouting()) {
+    // only call if rouer topage !== currentpage
     return Promise.all(
         routersAtDepth.map(router => router.loadPage())
       )

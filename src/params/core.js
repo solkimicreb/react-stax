@@ -20,13 +20,17 @@ export function easyStore (store, config) {
 
   config = setupConfig(config)
 
-  observe(() => syncUrl(config, store))
-  observe(() => syncStorage(config, store))
+  let initing = true
+
+  observe(() => syncUrl(config, store, initing))
+  observe(() => syncStorage(config, store, initing))
   syncStoreWithStorage(config, store)
 
+  initing = false
   return store
 }
 
 // init the state with the URL search params
 const params = toParams(location.search)
 setParams(params)
+history.replaceState(params, '')

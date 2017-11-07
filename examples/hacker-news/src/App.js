@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import classNames from 'classnames'
-import { easyComp, Link, Router, Lazy } from 'react-easy-stack'
+import { easyComp, Link, Router } from 'react-easy-stack'
 import { storiesStore, StoriesPage } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
 import { UserPage, userStore } from './UserPage'

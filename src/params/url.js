@@ -4,7 +4,7 @@ import { links } from '../stores'
 import { isRouting } from '../status'
 import { getParams, setParams } from './params'
 
-export default function syncUrl (config, store) {
+export default function syncUrl (config, store, initing) {
   const params = getParams()
   let paramsChanged = false
 
@@ -16,7 +16,7 @@ export default function syncUrl (config, store) {
   }
 
   // replaceState is expensive, only do it when it is necessary
-  if (paramsChanged && !isRouting()) {
+  if (paramsChanged && !initing && !isRouting()) {
     // use pushState here if it is a history param
     history.replaceState(params, '', createUrl(params))
     links.forEach(link => link.updateActivity())

@@ -3,8 +3,8 @@ import { fetchStory } from '../api'
 
 const store = {
   id: '',
-  async init ({ id = this.id }) {
-    this.id = id
+  async init ({ id }) {
+    this.id = id || this.id
     await this.fetchStory()
   },
   async fetchStory () {
@@ -13,8 +13,4 @@ const store = {
   }
 }
 
-const params = {
-  id: ['url']
-}
-
-export default easyStore(store, params)
+export default easyStore(store, { id: 'url' })

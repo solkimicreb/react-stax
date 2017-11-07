@@ -5,8 +5,6 @@ import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../StoryItem'
 import store from './store'
 
-window.store = store
-
 function StoriesPage() {
   return (
     <InfiniteScroll

@@ -1,6 +1,6 @@
 import { easyComp } from 'react-easy-state'
 import { easyStore } from './core'
 import { toParams, toQuery } from './searchParams'
-import { getParams, setParams } from './params'
+import { getParams, setParams, params } from './params'
 
-export { easyStore, easyComp, toParams, toQuery, getParams, setParams }
+export { easyStore, easyComp, toParams, toQuery, getParams, setParams, params }

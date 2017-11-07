@@ -1,4 +1,4 @@
-let params = history.params
+export let params = history.state
 
 export function setParams (newParams) {
   params = newParams
