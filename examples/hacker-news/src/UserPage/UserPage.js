@@ -1,8 +1,9 @@
 import React from 'react'
 import { easyComp } from 'react-easy-stack'
-import user from './store'
+import store from './store'
 
 function UserPage() {
+  const { user } = store
   return (
     <div>
       <p>user: {user.id}</p>

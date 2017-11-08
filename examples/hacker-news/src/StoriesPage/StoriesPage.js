@@ -14,7 +14,7 @@ function StoriesPage() {
       initialLoad={false}
       threshold={500}>
       <FlipMove enterAnimation="fade" leaveAnimation="fade" duration={250}>
-        {store.stories.map((story, idx) => <StoryItem {...story} idx={idx} key={story.id} />)}
+        {store.stories.map((story, idx) => <StoryItem story={story} idx={idx} key={story.id} />)}
       </FlipMove>
     </InfiniteScroll>
   )

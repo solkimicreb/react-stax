@@ -7,6 +7,8 @@ firebase.initializeApp({ databaseURL: API_URL })
 const api = firebase.database().ref(API_VERSION)
 
 export const events = new EventListener()
+events.setMaxListeners(1000)
+
 const cache = new Map()
 
 // keep the story ids real-time updated, broadcast an event when they change
@@ -14,9 +16,16 @@ STORY_TYPES.forEach(type => {
   api.child(`${type}stories`).on('value', snapshot => {
     const ids = snapshot.val()
     cache.set(`${type}stories`, ids)
-    ids.forEach(id => cache.delete(`item/${id}`))
     events.emit(type)
   })
+})
+
+//
+api.child('updates').on('value', snapshot => {
+  const { items = [], profiles = [] } = snapshot.val()
+  items.forEach(id => cache.delete(`item/${id}`))
+  profiles.forEach(id => cache.delete(`user/${id}`))
+  events.emit('updates', new Set(items))
 })
 
 function fetch(child) {
@@ -37,9 +46,9 @@ function fetch(child) {
   }
 }
 
-function fetchIdsByType(type, startPage = 0, endPage = startPage + 1) {
+function fetchIdsByType(type, startPage = 0, endPage = startPage) {
   return fetch(`${type}stories`).then(ids =>
-    ids.slice(startPage * STORIES_PER_PAGE, endPage * STORIES_PER_PAGE)
+    ids.slice(startPage * STORIES_PER_PAGE, (endPage + 1) * STORIES_PER_PAGE)
   )
 }
 
@@ -47,9 +56,13 @@ export function fetchStoriesByType(type, startPage, endPage) {
   return fetchIdsByType(type, startPage, endPage).then(fetchStories)
 }
 
-export function fetchStories(ids) {
-  ids = ids || []
-  return Promise.all(ids.map(fetchStory))
+export async function fetchStories(ids = []) {
+  const stories = await Promise.all(ids.map(fetchStory))
+  return stories.filter(notNull)
+}
+
+function notNull (story) {
+  return story !== null
 }
 
 export function fetchStory(id) {

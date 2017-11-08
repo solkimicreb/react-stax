@@ -57,10 +57,6 @@ export default class Link extends Component {
     links.delete(this)
   }
 
-  shouldComponentUpdate () {
-    return false
-  }
-
   onClick (ev) {
     const { onClick, params, options } = this.props
 

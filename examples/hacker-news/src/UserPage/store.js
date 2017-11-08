@@ -1,5 +1,5 @@
 import { easyStore } from 'react-easy-stack'
-import { fetchUser } from '../api'
+import { fetchUser, events } from '../api'
 
 const store = {
   id: '',
@@ -8,8 +8,7 @@ const store = {
     await this.fetchUser()
   },
   async fetchUser () {
-    const user = await fetchUser(this.id)
-    Object.assign(this, user)
+    this.user = await fetchUser(this.id)
   }
 }
 

@@ -1,5 +1,5 @@
 import { easyStore } from 'react-easy-stack'
-import { fetchStory } from '../api'
+import { fetchStory, events } from '../api'
 
 const store = {
   id: '',
@@ -8,10 +8,7 @@ const store = {
     await this.fetchStory()
   },
   async fetchStory () {
-    const story = await fetchStory(this.id)
-    // issue if there are no kids!!
-    // this keeps the old kids
-    Object.assign(this, story)
+    this.story = await fetchStory(this.id)
   }
 }
 

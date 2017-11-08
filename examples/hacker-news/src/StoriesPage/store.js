@@ -1,5 +1,5 @@
 import { easyStore } from 'react-easy-stack'
-import { fetchStoriesByType, fetchStories, events } from '../api'
+import { fetchStoriesByType, fetchStories, fetchStory, events } from '../api'
 
 const store = {
   type: 'top',
@@ -9,14 +9,13 @@ const store = {
   async init ({ type }) {
     this.type = type || this.type
     await this.fetchStories()
+    events.on(this.type, this.updateStories)
     this.hasMore = true
   },
-  async fetchStories() {
+  async fetchStories () {
     this.stories = await fetchStoriesByType(this.type, 1)
-    events.removeAllListeners()
-    events.on(this.type, ids => this.updateStories(ids))
   },
-  async updateStories() {
+  async updateStories () {
     this.stories = await fetchStoriesByType(this.type, 0, this.pages)
   },
   async fetchPage(page) {

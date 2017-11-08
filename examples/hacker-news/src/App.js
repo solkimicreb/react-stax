@@ -5,10 +5,13 @@ import { storiesStore, StoriesPage } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
 import { UserPage, userStore } from './UserPage'
 import appStore from './appStore'
+import { events } from './api'
 import { STORY_TYPES } from './config'
 
 class App extends Component {
-  async onRoute ({ toPage, params }) {
+  async onRoute ({ fromPage, toPage, params }) {
+    events.removeAllListeners()
+
     if (toPage === 'stories') {
       await storiesStore.init(params)
     } else if (toPage === 'story') {
