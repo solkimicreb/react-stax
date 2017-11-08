@@ -1,7 +1,7 @@
 import { easyStore as originalEasyStore } from 'react-easy-state'
 import { observe, priorities } from '@nx-js/observer-util'
 import syncUrl from './url'
-import { syncStorage, syncStoreWithStorage } from './storage'
+import { syncStorage } from './storage'
 import setupConfig from './setupConfig'
 import { toParams } from './searchParams'
 import { setParams } from './params'
@@ -23,8 +23,7 @@ export function easyStore (store, config) {
   let initing = true
 
   observe(() => syncUrl(config, store, initing))
-  observe(() => syncStorage(config, store, initing))
-  syncStoreWithStorage(config, store)
+  observe(() => syncStorage(config, store))
 
   initing = false
   return store

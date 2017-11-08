@@ -1,7 +1,7 @@
-import { easyStore } from 'react-easy-stack'
+import { easyStore, storage } from 'react-easy-stack'
 
 const store = {
-  dark: false,
+  dark: storage.dark,
   toggleTheme () {
     this.dark = !this.dark
   }
