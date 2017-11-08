@@ -8,23 +8,19 @@ const api = firebase.database().ref(API_VERSION)
 
 export const events = new EventListener()
 const cache = new Map()
-const idsByType = new Map()
 
 // keep the story ids real-time updated, broadcast an event when they change
 STORY_TYPES.forEach(type => {
-  api.child(`${type}stories`).on('value', async snapshot => {
+  api.child(`${type}stories`).on('value', snapshot => {
     const ids = snapshot.val()
-    idsByType.set(type, ids)
-    // instead of this just invalidate the cache for specific items I guess
-    await Promise.all(
-      ids.map(id => fetch(`item/${id}`, false))
-    )
-    events.emit(type, ids)
+    cache.set(`${type}stories`, ids)
+    ids.forEach(id => cache.delete(`item/${id}`))
+    events.emit(type)
   })
 })
 
-function fetch(child, useCache = true) {
-  if (useCache && cache.has(child)) {
+function fetch(child) {
+  if (cache.has(child)) {
     return Promise.resolve(cache.get(child))
   } else {
     return new Promise((resolve, reject) => {
@@ -41,38 +37,29 @@ function fetch(child, useCache = true) {
   }
 }
 
-function fetchIdsByType(type, page) {
-  if (idsByType.has(type)) {
-    const ids = idsByType.get(type)
-    return Promise.resolve(
-      ids.slice(page * STORIES_PER_PAGE, (page + 1) * STORIES_PER_PAGE)
-    )
-  }
+function fetchIdsByType(type, startPage = 0, endPage = startPage + 1) {
   return fetch(`${type}stories`).then(ids =>
-    ids.slice(page * STORIES_PER_PAGE, (page + 1) * STORIES_PER_PAGE)
+    ids.slice(startPage * STORIES_PER_PAGE, endPage * STORIES_PER_PAGE)
   )
 }
 
-export function fetchStoriesByType(type, page, useCache) {
-  return fetchIdsByType(type, page)
-    .then(ids => fetchStories(ids, useCache))
+export function fetchStoriesByType(type, startPage, endPage) {
+  return fetchIdsByType(type, startPage, endPage).then(fetchStories)
 }
 
-export function fetchStories(ids, useCache) {
+export function fetchStories(ids) {
   ids = ids || []
-  return Promise.all(ids.map(
-    id => fetchStory(id, useCache)
-  ))
+  return Promise.all(ids.map(fetchStory))
 }
 
-export function fetchStory(id, useCache) {
-  return fetch(`item/${id}`, useCache)
+export function fetchStory(id) {
+  return fetch(`item/${id}`)
 }
 
-export function fetchComment(id, useCache) {
-  return fetch(`item/${id}`, useCache)
+export function fetchComment(id) {
+  return fetch(`item/${id}`)
 }
 
-export function fetchUser(id, useCache) {
-  return fetch(`user/${id}`, useCache)
+export function fetchUser(id) {
+  return fetch(`user/${id}`)
 }
