@@ -1,25 +1,52 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { easyComp, Link } from 'react-easy-stack'
+import timeago from 'timeago.js'
+import { fetchComment } from './api'
 
-function Comment({ url, title, time, type, by, score, descendants, id }) {
-  return (
-    <div>
-      {url
-      ? <a href={url}>{title} <small>({url})</small></a>
-      : <Link to="/story" params={{ id }}>{title}</Link>}
+class RawComment extends Component {
+  store = {
+    hidden: false,
+    comment: {}
+  }
 
-      {type === 'job'
-      ? <Link to="/story" params={{ id }}>{title}</Link>
-      : (
+  constructor (props) {
+    super(props)
+    this.fetchComment(props.id)
+  }
+
+  async fetchComment (id) {
+    this.store.comment = await fetchComment(id)
+  }
+
+  toggleVisibility () {
+    this.store.hidden = !this.store.hidden
+  }
+
+  render () {
+    const { comment, hidden } = this.store
+    const { deleted, dead, text, by, time, kids, id } = comment
+    const timeAgo = timeago().format(time * 1000)
+
+    if (deleted || dead || !text) {
+      return null
+    }
+
+    return (
+      <div className='comment'>
         <div>
-          {score} points by
-          <Link to="/user" params={{ id: by }}>{by}</Link>
-          <Link to="/story" params={{ id }}>{time} ago</Link> |
-          <Link to="/story" params={{ id }}>{descendants}</Link>
+          <Link to="/user" params={{ id: by }}> {by} </Link>
+          <span> {timeAgo} </span>
+          <span onClick={this.toggleVisibility}>{hidden ? `[+${kids.length}]` : '[-]'}</span>
         </div>
-      )}
+
+        {!hidden && <div>
+          <div dangerouslySetInnerHTML={{ __html: text }} />
+          {kids && kids.map(commentId => <Comment key={commentId} id={commentId} />)}
+        </div>}
     </div>
-  )
+    )
+  }
 }
 
-export default easyComp(Comment)
+const Comment = easyComp(RawComment)
+export default Comment

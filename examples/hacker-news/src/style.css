@@ -1,9 +1,90 @@
-.active {
-  color: red;
+.topnav {
+  background-color: #222;
+  position: fixed;
+  top: 0;
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  vertical-align: middle;
+  z-index: 100;
+}
+
+.topnav .inner {
+  max-width: 900px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color .3s;
+}
+
+.topnav .links {
+  float: left;
+}
+
+.topnav .theme-toggle {
+  float: right;
+}
+
+.topnav a {
+  margin: 0 15px;
+}
+
+.topnav a.active, .topnav a:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.story {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+}
+
+.story .num {
+  margin-right: 10px;
+  font-size: 28px;
+}
+
+.story .header {
+  font-size: 20px;
+}
+
+.story .footer {
+}
+
+.comment {
+  margin: 15px auto;
+  position: relative;
+  left: 15px;
+}
+
+.app.dark {
+  --text-color: red;
+  --bg-color: white;
+}
+
+.app {
+  --text-color: rgba(230, 230, 230);
+  --faded-color: rgba(230, 230, 230, 0.7);
+  --accent-color: #0366d6;
+  --bg-color: #242938;
+
+  transition: color .2s, background-color .2s;
+
+  color: var(--text-color);
+  background-color: var(--bg-color);
+
+  padding: 50px 0;
+  min-height: 100vh;
 }
 
 .router {
   transition: opacity .2s ease-in-out;
+  max-width: 900px;
+  margin: auto;
 }
 
 .router.enter {

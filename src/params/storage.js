@@ -1,5 +1,5 @@
 const STORAGE_NAME = 'STORAGE'
-const storage = JSON.parse(localStorage.getItem(STORAGE_NAME))
+const storage = JSON.parse(localStorage.getItem(STORAGE_NAME)) || {}
 
 export function syncStorage (config, store) {
   for (let key of config.storage) {

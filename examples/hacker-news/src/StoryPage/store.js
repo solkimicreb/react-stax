@@ -9,6 +9,8 @@ const store = {
   },
   async fetchStory () {
     const story = await fetchStory(this.id)
+    // issue if there are no kids!!
+    // this keeps the old kids
     Object.assign(this, story)
   }
 }

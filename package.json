@@ -59,7 +59,8 @@
   ],
   "dependencies": {
     "react-easy-params": "^1.0.0",
-    "react-easy-state": "^3.0.1"
+    "react-easy-state": "^3.0.1",
+    "timeago.js": "^3.0.2"
   },
   "peerDependencies": {
     "react": "*",

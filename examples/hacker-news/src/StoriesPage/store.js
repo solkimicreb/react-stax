@@ -13,11 +13,12 @@ const store = {
   async fetchStories() {
     this.stories = await fetchStoriesByType(this.type, 1)
     events.removeAllListeners()
-    events.on(this.type, () => this.updateStories())
+    events.on(this.type, ids => this.updateStories(ids))
   },
-  async updateStories() {
-    const ids = store.stories.map(story => story.id)
+  async updateStories(ids) {
+    // issue this fetches it all the way!
     this.stories = await fetchStories(ids)
+    console.log('INCOMING DATA', this.type, ids)
   },
   async fetchPage(page) {
     const stories = await fetchStoriesByType(this.type, page)

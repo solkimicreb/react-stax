@@ -12,14 +12,19 @@ const idsByType = new Map()
 
 // keep the story ids real-time updated, broadcast an event when they change
 STORY_TYPES.forEach(type => {
-  api.child(`${type}stories`).on('value', snapshot => {
-    idsByType.set(type, snapshot.val())
-    events.emit(type)
+  api.child(`${type}stories`).on('value', async snapshot => {
+    const ids = snapshot.val()
+    idsByType.set(type, ids)
+    // instead of this just invalidate the cache for specific items I guess
+    await Promise.all(
+      ids.map(id => fetch(`item/${id}`, false))
+    )
+    events.emit(type, ids)
   })
 })
 
-export function fetch(child) {
-  if (cache.has(child)) {
+function fetch(child, useCache = true) {
+  if (useCache && cache.has(child)) {
     return Promise.resolve(cache.get(child))
   } else {
     return new Promise((resolve, reject) => {
@@ -36,7 +41,7 @@ export function fetch(child) {
   }
 }
 
-export function fetchIdsByType(type, page) {
+function fetchIdsByType(type, page) {
   if (idsByType.has(type)) {
     const ids = idsByType.get(type)
     return Promise.resolve(
@@ -48,19 +53,26 @@ export function fetchIdsByType(type, page) {
   )
 }
 
-export function fetchStoriesByType(type, page) {
-  return fetchIdsByType(type, page).then(fetchStories)
+export function fetchStoriesByType(type, page, useCache) {
+  return fetchIdsByType(type, page)
+    .then(ids => fetchStories(ids, useCache))
 }
 
-export function fetchStories(ids) {
+export function fetchStories(ids, useCache) {
   ids = ids || []
-  return Promise.all(ids.map(fetchStory))
+  return Promise.all(ids.map(
+    id => fetchStory(id, useCache)
+  ))
 }
 
-export function fetchStory(id) {
-  return fetch(`item/${id}`)
+export function fetchStory(id, useCache) {
+  return fetch(`item/${id}`, useCache)
 }
 
-export function fetchUser(id) {
-  return fetch(`user/${id}`)
+export function fetchComment(id, useCache) {
+  return fetch(`item/${id}`, useCache)
+}
+
+export function fetchUser(id, useCache) {
+  return fetch(`user/${id}`, useCache)
 }
