@@ -1,10 +1,8 @@
 import { easyStore as originalEasyStore } from 'react-easy-state'
-import { observe, priorities } from '@nx-js/observer-util'
-import syncUrl from './url'
+import { observe } from '@nx-js/observer-util'
+import { syncUrl } from './url'
 import { syncStorage } from './storage'
 import setupConfig from './setupConfig'
-import { toParams } from './searchParams'
-import { setParams } from './params'
 
 export function easyStore (store, config) {
   store = originalEasyStore(store)
@@ -17,7 +15,6 @@ export function easyStore (store, config) {
       'The second argument must be undefined or a config object.'
     )
   }
-
   config = setupConfig(config)
 
   observe(() => syncUrl(config, store))
@@ -25,8 +22,3 @@ export function easyStore (store, config) {
 
   return store
 }
-
-// init the state with the URL search params
-const params = toParams(location.search)
-setParams(params)
-history.replaceState(params, '')

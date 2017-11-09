@@ -2,10 +2,15 @@ import { toWidgetType } from './types'
 import { toQuery, toParams } from './searchParams'
 import { links } from '../stores'
 import { isRouting } from '../status'
-import { getParams, setParams } from './params'
 
-export default function syncUrl (config, store, initing) {
-  const params = getParams()
+export let params = toParams(location.search)
+history.replaceState(params, '', createUrl(params))
+
+export function setParams (newParams) {
+  params = newParams
+}
+
+export function syncUrl (config, store) {
   let paramsChanged = false
 
   for (let key of config.url) {
@@ -16,7 +21,7 @@ export default function syncUrl (config, store, initing) {
   }
 
   // replaceState is expensive, only do it when it is necessary
-  if (paramsChanged && !initing && !isRouting()) {
+  if (paramsChanged && !isRouting()) {
     // use pushState here if it is a history param
     history.replaceState(params, '', createUrl(params))
     links.forEach(link => link.updateActivity())

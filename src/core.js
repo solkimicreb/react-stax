@@ -1,7 +1,7 @@
 import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
-import { toParams, toQuery, getParams, setParams, params as currParams } from './params'
+import { toParams, toQuery, setParams, params as currParams } from './params'
 
 const routers = []
 
@@ -24,8 +24,7 @@ export function route (pages, params = {}, options = {}) {
   startRouting()
 
   if (options.inherit === true) {
-    const prevParams = getParams()
-    params = Object.assign({}, prevParams, params)
+    params = Object.assign({}, currParams, params)
   }
 
   setParams(params)

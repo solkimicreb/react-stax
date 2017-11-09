@@ -1,4 +1,5 @@
-import { easyComp, easyStore, params, storage } from './params'
+import { easyComp } from 'react-easy-state'
+import { easyStore, params, storage } from './params'
 import Router from './Router'
 import { route } from './core'
 import Link from './Link'

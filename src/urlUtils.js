@@ -1,4 +1,4 @@
-import { getParams } from './params'
+import { params } from './params'
 
 // pathToPageNames
 export function normalizePath (path, depth) {
@@ -51,9 +51,8 @@ export function isLinkActive (linkPages, linkParams) {
     }
   }
   if (linkParams) {
-    const queryParams = getParams()
     for (let param in linkParams) {
-      if (linkParams[param] !== queryParams[param]) {
+      if (linkParams[param] !== params[param]) {
         return false
       }
     }
