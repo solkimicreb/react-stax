@@ -24,6 +24,10 @@
   float: right;
 }
 
+.topnav .theme-toggle.loading {
+  color: green;
+}
+
 .topnav a {
   margin: 0 15px;
 }

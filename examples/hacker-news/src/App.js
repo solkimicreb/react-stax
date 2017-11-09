@@ -22,8 +22,9 @@ class App extends Component {
   }
 
   render () {
-    const { dark, toggleTheme } = appStore
+    const { loading, dark, toggleTheme } = appStore
     const appClass = classNames('app', { dark })
+    const themeClass = classNames('theme-toggle', { loading })
 
     return (
       <div className={appClass}>
@@ -34,7 +35,7 @@ class App extends Component {
                 type => <Link to="stories" params={{ type }} activeClass='active' key={type}>{type}</Link>
               )}
             </div>
-            <div className='theme-toggle' onClick={toggleTheme}>
+            <div className={themeClass} onClick={toggleTheme}>
               THEME
             </div>
           </div>

@@ -1,13 +1,10 @@
-import { easyStore } from 'react-easy-stack'
-import { fetchUser, events } from '../api'
+import { easyStore, params } from 'react-easy-stack'
+import { fetchUser } from '../api'
 
 const store = {
-  id: '',
+  id: params.id,
   async init ({ id }) {
     this.id = id || this.id
-    await this.fetchUser()
-  },
-  async fetchUser () {
     this.user = await fetchUser(this.id)
   }
 }

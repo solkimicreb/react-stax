@@ -32,7 +32,7 @@ class RawComment extends Component {
 
   render () {
     const { comment, hidden } = this.store
-    const { deleted, dead, text, by, time, kids, id } = comment
+    const { deleted, dead, text, by, time, kids } = comment
 
     if (deleted || dead || !text) {
       return null

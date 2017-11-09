@@ -1,19 +1,15 @@
-import { easyStore } from 'react-easy-stack'
-import { fetchStoriesByType, fetchStories, fetchStory, events } from '../api'
+import { easyStore, params } from 'react-easy-stack'
+import { fetchStoriesByType, events } from '../api'
 
 const store = {
-  type: 'top',
+  type: params.type || 'top',
   stories: [],
   pages: 0,
   hasMore: true,
   async init ({ type }) {
     this.type = type || this.type
-    await this.fetchStories()
-    events.on(this.type, this.updateStories)
-    this.hasMore = true
-  },
-  async fetchStories () {
     this.stories = await fetchStoriesByType(this.type, 1)
+    events.on(this.type, this.updateStories)
   },
   async updateStories () {
     this.stories = await fetchStoriesByType(this.type, 0, this.pages)

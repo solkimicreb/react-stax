@@ -31,7 +31,7 @@ class TimeAgo extends Component {
   }
 
   componentWillUnmount () {
-    clearTimeout(this.updater)
+    clearTimeout(this.timeout)
   }
 
   render () {

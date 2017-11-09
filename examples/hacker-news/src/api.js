@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
 import EventListener from 'events'
+import appStore from './appStore'
 import { API_URL, API_VERSION, STORIES_PER_PAGE, STORY_TYPES } from './config'
 
 firebase.initializeApp({ databaseURL: API_URL })
@@ -32,15 +33,20 @@ function fetch(child) {
   if (cache.has(child)) {
     return Promise.resolve(cache.get(child))
   } else {
+    appStore.loading = true
     return new Promise((resolve, reject) => {
       api.child(child).once(
         'value',
         snapshot => {
           const val = snapshot.val()
           cache.set(child, val)
+          appStore.loading = false
           resolve(val)
         },
-        reject
+        err => {
+          appStore.loading = false
+          reject(err)
+        }
       )
     })
   }
