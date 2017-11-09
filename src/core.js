@@ -27,8 +27,6 @@ export function route (pages = [], params = {}, options = {}) {
     params = Object.assign({}, currParams, params)
   }
 
-  setParams(params)
-
   const routing = pages.length ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
   return routing
     .then(() => {
@@ -40,6 +38,12 @@ export function route (pages = [], params = {}, options = {}) {
         history.replaceState(params, '', url)
       }
 
+      // setParams should not update the URL
+      setParams(params)
+      // do I really have to update activity here??
+      // yes! but I should not do it in setParams!
+      // updateActivity should modify the store instead of forceUpdate to save
+      // me from multiple rendering!
       links.forEach(link => link.updateActivity())
     })
     // issue -> this swallows errors -> I should rethrow them instead!

@@ -6,6 +6,7 @@ import { isRouting } from '../status'
 const rawParams = toParams(location.search)
 export const params = observable(rawParams)
 
+// on set params there is no need
 export function setParams (newParams) {
   for (let param of Object.keys(rawParams)) {
     delete rawParams[param]
