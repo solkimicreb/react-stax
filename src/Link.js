@@ -5,11 +5,12 @@ import React, {
   createElement,
   cloneElement
 } from 'react'
+import { easyComp } from 'react-easy-state'
 import { normalizePath, isLinkActive } from './urlUtils'
 import { route } from './core'
 import { links } from './stores'
 
-export default class Link extends Component {
+class Link extends Component {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
@@ -37,11 +38,7 @@ export default class Link extends Component {
   constructor (props, context) {
     super(props, context)
 
-    this.onClick = this.onClick.bind(this)
-
     this.resolvePageNames()
-    this.isActive = isLinkActive(this.toPageNames, props.params)
-
     if (props.activeClass) {
       links.add(this)
     }
@@ -86,11 +83,14 @@ export default class Link extends Component {
     }
   }
 
-  render() {
+  render () {
     let { to, element, children, activeClass, params, className } = this.props
-    const { onClick, href, isActive } = this
+    const { onClick, href, toPageNames } = this
 
-    activeClass = isActive ? activeClass : ''
+    if (activeClass) {
+      const isActive = isLinkActive(toPageNames, params)
+      activeClass = isActive ? activeClass : ''
+    }
     className = `${className} ${activeClass}`
 
     const anchor = createElement('a', { onClick, href }, children)
@@ -100,3 +100,5 @@ export default class Link extends Component {
     return createElement(element, { className }, anchor)
   }
 }
+
+export default easyComp(Link)

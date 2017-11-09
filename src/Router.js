@@ -1,7 +1,6 @@
 import React, { Component, PropTypes, Children } from 'react'
 import { registerRouter, releaseRouter, route, routeInitial } from './core'
 import { normalizePath } from './urlUtils'
-import { appStores, activePageStores } from './stores'
 import { isRouting, stopRouting } from './status'
 import Lazy from './Lazy'
 

@@ -1,13 +1,15 @@
 import { easyStore, params } from 'react-easy-stack'
 import { fetchStoriesByType, events } from '../api'
 
+params.type = params.type || 'top'
+
 const store = {
   type: params.type,
   stories: [],
   pages: 0,
   hasMore: true,
   async init ({ type }) {
-    this.type = type || this.type || 'top'
+    this.type = type || this.type
     this.stories = await fetchStoriesByType(this.type, 1)
     events.on(this.type, this.updateStories)
   },
@@ -26,4 +28,4 @@ const store = {
   }
 }
 
-export default easyStore(store, { type: 'url' })
+export default easyStore(store)

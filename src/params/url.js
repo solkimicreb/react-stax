@@ -1,33 +1,25 @@
-import { toWidgetType } from './types'
+import { observable, observe, exec } from '@nx-js/observer-util'
 import { toQuery, toParams } from './searchParams'
 import { links } from '../stores'
 import { isRouting } from '../status'
 
-export let params = toParams(location.search)
-history.replaceState(params, '', createUrl(params))
+const rawParams = toParams(location.search)
+export const params = observable(rawParams)
 
 export function setParams (newParams) {
-  params = newParams
-}
-
-export function syncUrl (config, store) {
-  let paramsChanged = false
-
-  for (let key of config.url) {
-    if (params[key] !== store[key]) {
-      params[key] = store[key]
-      paramsChanged = true
-    }
+  for (let param of Object.keys(rawParams)) {
+    delete rawParams[param]
   }
-
-  // replaceState is expensive, only do it when it is necessary
-  if (paramsChanged && !isRouting()) {
-    // use pushState here if it is a history param
-    history.replaceState(params, '', createUrl(params))
-    links.forEach(link => link.updateActivity())
-  }
+  Object.assign(rawParams, newParams)
+  // this could also work if the user is not caching the obj!
+  // rawParams = newParams
+  // params = observable(newParams)
+  exec(syncParams)
 }
 
-function createUrl (params) {
-  return location.pathname + toQuery(params) + location.hash
+function syncParams () {
+  const url = location.pathname + toQuery(params) + location.hash
+  history.replaceState(rawParams, '', url)
 }
+
+observe(syncParams)

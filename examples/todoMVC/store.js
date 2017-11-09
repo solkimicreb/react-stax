@@ -1,7 +1,7 @@
 import { easyStore, params, storage } from 'react-easy-stack'
 
-all: storage.all || [],
-filter: params.filter || 'all',
+storage.todos = storage.todos || []
+params.filter = params.filter || 'all'
 
 // a complex global store with a lot of derived data (getters and setters)
 const store = easyStore({

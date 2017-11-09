@@ -9,4 +9,4 @@ const store = {
   }
 }
 
-export default easyStore(store, { id: 'url' })
+export default easyStore(store)

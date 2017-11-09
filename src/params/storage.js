@@ -1,9 +1,10 @@
-const STORAGE_NAME = 'STORAGE'
-export const storage = JSON.parse(localStorage.getItem(STORAGE_NAME)) || {}
+import { observable, observe } from '@nx-js/observer-util'
 
-export function syncStorage (config, store) {
-  for (let key of config.storage) {
-    storage[key] = store[key]
-  }
+const STORAGE_NAME = 'STORAGE'
+const rawStorage = JSON.parse(localStorage.getItem(STORAGE_NAME)) || {}
+export const storage = observable(storage)
+
+function syncStorage (config, store) {
   localStorage.setItem(STORAGE_NAME, JSON.stringify(storage))
 }
+observe(syncStorage)
