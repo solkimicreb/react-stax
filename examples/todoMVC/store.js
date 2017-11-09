@@ -1,47 +1,48 @@
-import { easyStore, easyParams } from 'react-easy-stack'
+import { easyStore, params, storage } from 'react-easy-stack'
+
+all: storage.all || [],
+filter: params.filter || 'all',
 
 // a complex global store with a lot of derived data (getters and setters)
 const store = easyStore({
-  all: [],
-  filter: 'all',
   get isEmpty () {
-    return this.all.length === 0
+    return storage.todos.length === 0
   },
   get completed () {
-    return this.all.filter(todo => todo.completed)
+    return storage.todos.filter(todo => todo.completed)
   },
   get hasCompleted () {
     return this.completed.length !== 0
   },
   get allCompleted () {
-    return this.all.every(todo => todo.completed)
+    return storage.todos.every(todo => todo.completed)
   },
   set allCompleted (completed) {
-    this.all.forEach(todo => {
+    storage.todos.forEach(todo => {
       todo.completed = completed
     })
   },
   get active () {
-    return this.all.filter(todo => !todo.completed)
+    return storage.todos.filter(todo => !todo.completed)
   },
   create (title) {
-    this.all.push({ title })
+    storage.todos.push({ title })
   },
   changeFilter (filter) {
-    this.filter = filter
+    params.filter = filter
   },
   remove (id) {
-    this.all.splice(id, 1)
+    storage.todos.splice(id, 1)
   },
   toggle (id) {
-    const todo = this.all[id]
+    const todo = storage.todos[id]
     todo.completed = !todo.completed
   },
   toggleAll () {
     this.allCompleted = !this.allCompleted
   },
   clearCompleted () {
-    this.all = this.active
+    storage.todos = this.active
   }
 })
 
@@ -49,9 +50,7 @@ const store = easyStore({
 // and adds a new history item whenever it changes
 // store.all is synchronized with the LocalStorage,
 // so the todos are kept between page reloads
-easyParams(store, {
-  filter: ['url', 'history'],
-  all: ['storage']
+export default easyStore(store, {
+  filter: 'url',
+  all: 'storage'
 })
-
-export default store

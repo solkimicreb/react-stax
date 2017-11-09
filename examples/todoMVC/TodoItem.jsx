@@ -17,7 +17,7 @@ class TodoItem extends Component {
     const { toggle, remove } = this
     const { title, completed = false } = this.props
 
-    const itemClass = classNames({ view: true, completed })
+    const itemClass = classNames('view', { completed })
 
     return (
       <li className={itemClass}>

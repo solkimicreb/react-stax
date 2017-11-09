@@ -20,7 +20,7 @@ export function releaseRouter(router, depth) {
   }
 }
 
-export function route (pages, params = {}, options = {}) {
+export function route (pages = [], params = {}, options = {}) {
   startRouting()
 
   if (options.inherit === true) {
@@ -29,7 +29,7 @@ export function route (pages, params = {}, options = {}) {
 
   setParams(params)
 
-  const routing = pages ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
+  const routing = pages.length ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
   return routing
     .then(() => {
       const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
