@@ -20,12 +20,9 @@ export function easyStore (store, config) {
 
   config = setupConfig(config)
 
-  let initing = true
-
-  observe(() => syncUrl(config, store, initing))
+  observe(() => syncUrl(config, store))
   observe(() => syncStorage(config, store))
 
-  initing = false
   return store
 }
 
