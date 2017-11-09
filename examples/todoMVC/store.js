@@ -5,37 +5,37 @@ params.filter = params.filter || 'all'
 
 // a complex global store with a lot of derived data (getters and setters)
 const store = easyStore({
-  get isEmpty () {
-    return storage.todos.length === 0
+  get all () {
+    return storage.todos
+  },
+  get active () {
+    return this.all.filter(todo => !todo.completed)
   },
   get completed () {
-    return storage.todos.filter(todo => todo.completed)
+    return this.all.filter(todo => todo.completed)
   },
   get hasCompleted () {
     return this.completed.length !== 0
   },
   get allCompleted () {
-    return storage.todos.every(todo => todo.completed)
+    return this.all.every(todo => todo.completed)
   },
   set allCompleted (completed) {
-    storage.todos.forEach(todo => {
+    this.all.forEach(todo => {
       todo.completed = completed
     })
   },
-  get active () {
-    return storage.todos.filter(todo => !todo.completed)
+  get isEmpty () {
+    return this.all.length === 0
   },
   create (title) {
-    storage.todos.push({ title })
-  },
-  changeFilter (filter) {
-    params.filter = filter
+    this.all.push({ title })
   },
   remove (id) {
-    storage.todos.splice(id, 1)
+    this.all.splice(id, 1)
   },
   toggle (id) {
-    const todo = storage.todos[id]
+    const todo = this.all[id]
     todo.completed = !todo.completed
   },
   toggleAll () {
@@ -50,7 +50,4 @@ const store = easyStore({
 // and adds a new history item whenever it changes
 // store.all is synchronized with the LocalStorage,
 // so the todos are kept between page reloads
-export default easyStore(store, {
-  filter: 'url',
-  all: 'storage'
-})
+export default easyStore(store)

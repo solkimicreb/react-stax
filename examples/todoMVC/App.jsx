@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { easyComp, Link } from 'react-easy-stack'
+import { easyComp, Link, params } from 'react-easy-stack'
 import TodoItem from './TodoItem'
 import todos from './store'
 
@@ -14,7 +14,8 @@ class App extends Component {
   }
 
   render () {
-    const { isEmpty, hasCompleted, allCompleted, active, filter, toggleAll, clearCompleted } = todos
+    const { isEmpty, hasCompleted, allCompleted, active, toggleAll, clearCompleted } = todos
+    const { filter } = params
 
     return (
       <div className='todoapp'>

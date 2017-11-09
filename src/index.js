@@ -5,4 +5,4 @@ import { route } from './core'
 import Link from './Link'
 import Lazy from './Lazy'
 
-export { easyStore, easyComp, Router, Link, route, Lazy, params, storage }
+export { easyStore, easyComp, Lazy, Router, Link, route, params, storage }

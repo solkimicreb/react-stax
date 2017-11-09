@@ -10,11 +10,7 @@ export function setParams (newParams) {
   for (let param of Object.keys(rawParams)) {
     delete rawParams[param]
   }
-  Object.assign(rawParams, newParams)
-  // this could also work if the user is not caching the obj!
-  // rawParams = newParams
-  // params = observable(newParams)
-  exec(syncParams)
+  Object.assign(params, newParams)
 }
 
 function syncParams () {
