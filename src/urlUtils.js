@@ -1,5 +1,3 @@
-import { params } from './params'
-
 // pathToPageNames
 export function normalizePath (path, depth) {
   let tokens = path.split('/')
@@ -39,25 +37,6 @@ export function normalizePath (path, depth) {
 
   result.length = depth
   return result
-}
-
-export function isLinkActive (linkPages, linkParams) {
-  if (linkPages) {
-    const pathPages = getPages()
-    for (let i = 0; i < linkPages.length; i++) {
-      if (linkPages[i] !== pathPages[i]) {
-        return false
-      }
-    }
-  }
-  if (linkParams) {
-    for (let param in linkParams) {
-      if (linkParams[param] !== params[param]) {
-        return false
-      }
-    }
-  }
-  return true
 }
 
 export function getPages () {

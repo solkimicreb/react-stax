@@ -8,10 +8,13 @@ const store = {
   stories: [],
   pages: 0,
   hasMore: true,
+  initing: true,
   async init ({ type }) {
+    this.initing = true
     this.type = type || this.type
     this.stories = await fetchStoriesByType(this.type, 1)
     events.on(this.type, this.updateStories)
+    this.initing = false
   },
   async updateStories () {
     this.stories = await fetchStoriesByType(this.type, 0, this.pages)

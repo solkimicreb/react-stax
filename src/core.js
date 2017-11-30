@@ -2,6 +2,7 @@ import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
 import { toParams, toQuery, setParams, params as currParams } from './params'
+import { setPages } from './pages'
 
 const routers = []
 
@@ -39,12 +40,9 @@ export function route (pages = [], params = {}, options = {}) {
       }
 
       // setParams should not update the URL
+      setPages(pages)
       setParams(params)
-      // do I really have to update activity here??
-      // yes! but I should not do it in setParams!
-      // updateActivity should modify the store instead of forceUpdate to save
-      // me from multiple rendering!
-      links.forEach(link => link.updateActivity())
+
     })
     // issue -> this swallows errors -> I should rethrow them instead!
     .then(stopRouting/*, stopRouting*/)

@@ -8,7 +8,8 @@ import React, {
 import { easyComp } from 'react-easy-state'
 import { normalizePath, isLinkActive } from './urlUtils'
 import { route } from './core'
-import { links } from './stores'
+import { params } from './params'
+import { pages } from './pages'
 
 class Link extends Component {
   static propTypes = {
@@ -31,67 +32,76 @@ class Link extends Component {
     className: ''
   }
 
+  store = {
+    toPageNames: [],
+    href: ''
+  }
+
   get depth () {
     return this.context.easyRouterDepth || 0
   }
 
   constructor (props, context) {
     super(props, context)
+    this.resolvePageNames(props.to)
+  }
 
-    this.resolvePageNames()
-    if (props.activeClass) {
-      links.add(this)
+  componentWillReceiveProps ({ to }) {
+    if (to && to !== this.props.to) {
+      this.resolvePageNames(to)
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.activeClass) {
-      links.add(this)
-    }
+  resolvePageNames (toPageNames) {
+    this.store.toPageNames = normalizePath(toPageNames, this.depth)
+    this.store.href = this.store.toPageNames.join('/')
   }
 
-  componentWillUnmount () {
-    links.delete(this)
+  isLinkActive () {
+    return this.isLinkPagesActive() && this.isLinkParamsActive()
+  }
+
+  isLinkPagesActive () {
+    const linkPages = this.store.toPageNames
+    if (linkPages) {
+      for (let i = 0; i < linkPages.length; i++) {
+        if (linkPages[i] !== pages[i]) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
+  isLinkParamsActive () {
+    const linkParams = this.props.params
+    if (linkParams) {
+      for (let param in linkParams) {
+        if (linkParams[param] !== params[param]) {
+          return false
+        }
+      }
+    }
+    return true
   }
 
   onClick (ev) {
-    const { onClick, params, options } = this.props
-
     ev.preventDefault()
-    route(this.toPageNames, params, options)
-
-    // maybe only call this after the routing is over!!
+    const { onClick, params, options } = this.props
     if (onClick) {
       onClick(ev)
     }
-  }
-
-  resolvePageNames () {
-    const { to } = this.props
-    if (to) {
-      this.toPageNames = normalizePath(to, this.depth)
-      this.href = this.toPageNames.join('/')
-    }
-  }
-
-  updateActivity () {
-    const wasActive = this.isActive
-    const isActive = isLinkActive(this.toPageNames, this.props.params)
-    if (wasActive !== isActive) {
-      this.isActive = isActive
-      this.forceUpdate()
-    }
+    route(this.store.toPageNames, params, options)
   }
 
   render () {
     let { to, element, children, activeClass, params, className } = this.props
-    const { onClick, href, toPageNames } = this
+    const { toPageNames, href } = this.store
+    const { onClick, isLinkActive } = this
 
-    if (activeClass) {
-      const isActive = isLinkActive(toPageNames, params)
-      activeClass = isActive ? activeClass : ''
+    if (activeClass && isLinkActive()) {
+      className = `${className} ${activeClass}`
     }
-    className = `${className} ${activeClass}`
 
     const anchor = createElement('a', { onClick, href }, children)
     if (element === 'a') {

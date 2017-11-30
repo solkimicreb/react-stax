@@ -1,7 +1,5 @@
 import { observable, observe, exec } from '@nx-js/observer-util'
 import { toQuery, toParams } from './searchParams'
-import { links } from '../stores'
-import { isRouting } from '../status'
 
 const rawParams = toParams(location.search)
 export const params = observable(rawParams)
