@@ -1,5 +1,6 @@
 import { observable, observe, exec } from '@nx-js/observer-util'
 import { toQuery, toParams } from './searchParams'
+import scheduler from './scheduler'
 
 const rawParams = toParams(location.search)
 export const params = observable(rawParams)
@@ -17,4 +18,4 @@ function syncParams () {
   history.replaceState(rawParams, '', url)
 }
 
-observe(syncParams)
+observe(syncParams, { scheduler })

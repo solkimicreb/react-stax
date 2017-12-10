@@ -1,5 +1,4 @@
-import { toParams, toQuery } from './searchParams'
-import { params, setParams } from './url'
-import { storage } from './storage'
-
-export { toParams, toQuery, setParams, params, storage }
+export { toParams, toQuery } from './searchParams'
+export { params, setParams } from './url'
+export { storage } from './storage'
+export { default as paramsScheduler } from './scheduler'

@@ -1,7 +1,7 @@
 import { getPages, notEmpty } from './urlUtils'
 import { isRouting, startRouting, stopRouting } from './status'
 import { links } from './stores'
-import { toParams, toQuery, setParams, params as currParams } from './params'
+import { toParams, toQuery, setParams, params as currParams, paramsScheduler } from './params'
 import { setPages } from './pages'
 
 const routers = []
@@ -23,6 +23,7 @@ export function releaseRouter(router, depth) {
 
 export function route (pages = [], params = {}, options = {}) {
   startRouting()
+  paramsScheduler.stop()
 
   if (options.inherit === true) {
     params = Object.assign({}, currParams, params)
@@ -42,7 +43,8 @@ export function route (pages = [], params = {}, options = {}) {
       // setParams should not update the URL
       setPages(pages)
       setParams(params)
-
+      paramsScheduler.process()
+      paramsScheduler.start()
     })
     // issue -> this swallows errors -> I should rethrow them instead!
     .then(stopRouting/*, stopRouting*/)
