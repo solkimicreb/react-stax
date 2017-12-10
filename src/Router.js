@@ -74,7 +74,12 @@ export default class Router extends Component {
 
     if (this.toPage !== this.currentPage && leaveClass) {
       this.leaving = true
-      this.forceUpdate(() => (this.leaving = false))
+      return new Promise(resolve => {
+        this.setState({}, () => {
+          this.leaving = false
+          resolve()
+        })
+      })
     }
   }
 
@@ -122,7 +127,12 @@ export default class Router extends Component {
   routeToPage () {
     this.currentPage = this.toPage
     this.entering = true
-    this.forceUpdate(() => (this.entering = false))
+    return new Promise(resolve => {
+      this.setState({}, () => {
+        this.entering = false
+        resolve()
+      })
+    })
   }
 
   render () {
