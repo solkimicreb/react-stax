@@ -6,7 +6,7 @@ import React, {
   cloneElement
 } from 'react'
 import { easyComp } from 'react-easy-state'
-import { normalizePath, isLinkActive } from './urlUtils'
+import { normalizePath } from './urlUtils'
 import { route } from './core'
 import { params } from './params'
 import { pages } from './pages'

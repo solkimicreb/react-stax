@@ -1,4 +1,4 @@
-import { observable, observe, exec } from '@nx-js/observer-util'
+import { observable, observe } from '@nx-js/observer-util'
 import { toQuery, toParams } from './searchParams'
 import scheduler from './scheduler'
 

@@ -32,6 +32,9 @@ export function route (pages = [], params = {}, options = {}) {
   const routing = pages.length ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
   return routing
     .then(() => {
+      // setParams should not update the URL
+      setPages(pages)
+      setParams(params)
       const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
 
       if (options.history !== false) {
@@ -39,10 +42,6 @@ export function route (pages = [], params = {}, options = {}) {
       } else {
         history.replaceState(params, '', url)
       }
-
-      // setParams should not update the URL
-      setPages(pages)
-      setParams(params)
       paramsScheduler.process()
       paramsScheduler.start()
     })
