@@ -2,9 +2,11 @@ export function toQuery (params) {
   const queryTokens = []
 
   for (let key in params) {
-    const value = params[key]
+    let value = params[key]
     if (value !== undefined && value !== '') {
-      queryTokens.push(`${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`)
+      key = encodeURIComponent(key)
+      value = encodeURIComponent(JSON.stringify(value))
+      queryTokens.push(`${key}=${value}`)
     }
   }
   return queryTokens.length ? '?' + queryTokens.join('&') : ''
@@ -19,7 +21,9 @@ export function toParams (queryString) {
   const params = {}
   for (let token of queryTokens) {
     const keyValue = token.split('=')
-    params[decodeURIComponent(keyValue[0])] = JSON.parse(decodeURIComponent(keyValue[1]))
+    const key = decodeURIComponent(keyValue[0])
+    const value = JSON.parse(decodeURIComponent(keyValue[1]))
+    params[key] = value
   }
   return params
 }
