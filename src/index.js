@@ -1,8 +1,6 @@
-import { easyComp, easyStore } from 'react-easy-state'
-import { params, storage } from './params'
-import Router from './Router'
-import { route } from './core'
-import Link from './Link'
-import Lazy from './Lazy'
-
-export { easyStore, easyComp, Lazy, Router, Link, route, params, storage }
+export { easyComp, easyStore } from 'react-easy-state'
+export { params, storage } from './params'
+export { default as Router } from './Router'
+export { route } from './core'
+export { default as Link } from './Link'
+export { default as Lazy } from './Lazy'
