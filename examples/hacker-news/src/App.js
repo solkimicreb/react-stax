@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { easyComp, Link, Router } from 'react-easy-stack'
+import { easyComp, Link, Router, params } from 'react-easy-stack'
 import classNames from 'classnames'
 import { storiesStore, StoriesPage } from './StoriesPage'
 import { StoryPage, storyStore } from './StoryPage'
@@ -9,7 +9,7 @@ import { events } from './api'
 import { STORY_TYPES } from './config'
 
 class App extends Component {
-  async onRoute ({ fromPage, toPage, params }) {
+  async onRoute ({ fromPage, toPage }) {
     events.removeAllListeners()
 
     if (toPage === 'stories') {
@@ -40,8 +40,9 @@ class App extends Component {
             </div>
           </div>
         </nav>
-        <Router className='router' enterClass='enter' leaveClass='leave' duration={200} onRoute={this.onRoute}>
-          <StoriesPage page="stories" default />
+        <Router className='router' defaultPage='stories' onRoute={this.onRoute}
+          enterClass='enter' leaveClass='leave' duration={200}>
+          <StoriesPage page="stories" />
           <StoryPage page="story" />
           <UserPage page="user" />
         </Router>

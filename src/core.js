@@ -1,8 +1,5 @@
-import { getPages, notEmpty } from './urlUtils'
-import { isRouting, startRouting, stopRouting } from './status'
-import { links } from './stores'
-import { toParams, toQuery, setParams, params as currParams, paramsScheduler } from './params'
-import { setPages } from './pages'
+import { toPages, clear } from './urlUtils'
+import { pages, params, urlScheduler } from './observables'
 
 const routers = []
 
@@ -21,38 +18,30 @@ export function releaseRouter(router, depth) {
   }
 }
 
-export function route (pages = [], params = {}, options = {}) {
-  startRouting()
-  paramsScheduler.stop()
+export function route (newPages = pages, newParams = {}, options = {}) {
+  urlScheduler.process()
+  urlScheduler.stop()
 
-  if (options.inherit === true) {
-    params = Object.assign({}, currParams, params)
+  // push the current state, only use replaceState later
+  if (options.history !== false) {
+    history.pushState(history.state, '')
   }
 
-  const routing = pages.length ? routeRoutersFromDepth(0, pages, params) : Promise.resolve()
-  return routing
-    .then(() => {
-      // setParams should not update the URL
-      setPages(pages)
-      setParams(params)
-      const url = pages.filter(notEmpty).join('/') + toQuery(params) + location.hash
+  // clear the current pages, it will be rebuilt by the routers during the routing
+  clear(pages)
 
-      if (options.history !== false) {
-        history.pushState(params, '', url)
-      } else {
-        history.replaceState(params, '', url)
-      }
-      paramsScheduler.process()
-      paramsScheduler.start()
-    })
-    // issue -> this swallows errors -> I should rethrow them instead!
-    .then(stopRouting/*, stopRouting*/)
+  // replace or extend params with nextParams by mutation (do not change the observable ref)
+  if (!options.inherit) {
+    clear(params)
+  }
+  Object.assign(params, newParams)
+
+  return routeFromDepth(0, newPages)
+    .then(() => urlScheduler.start())
 }
 
-// route should call routeFromDepth(0, pages, params, options)
-
-function routeRoutersFromDepth (depth, pageNames, params) {
-  const toPageName = pageNames[depth]
+function routeFromDepth (depth, pages) {
+  const toPage = pages[depth]
   let routersAtDepth = routers[depth]
 
   if (!routersAtDepth) {
@@ -60,35 +49,37 @@ function routeRoutersFromDepth (depth, pageNames, params) {
   }
   routersAtDepth = Array.from(routersAtDepth)
 
-  return Promise.all(
-      routersAtDepth.map(router => router.startRouting(toPageName, params))
-    )
-    .then(() => routeRoutersAtDepth(depth, routersAtDepth, pageNames, params))
+  console.log('route', routersAtDepth)
+
+  return startRoutingAtDepth(routersAtDepth, toPage)
+    .then((events) => finishRoutingAtDepth(depth, routersAtDepth, events))
+    .then(() => routeFromDepth(++depth, pages))
 }
 
-function routeRoutersAtDepth (depth, routersAtDepth, pageNames, params) {
-  if (isRouting()) {
-    return Promise.all(
-        routersAtDepth.map(router => router.finishRouting())
-      )
-      .then(pageNamesAtDepth => reducePageNames(pageNames, pageNamesAtDepth, depth))
-      // this doesn't really belong here ):
-      .then(() => routeRoutersFromDepth(++depth, pageNames, params))
+function startRoutingAtDepth (routersAtDepth, toPage) {
+  return Promise.all(routersAtDepth.map(router => router.startRouting(toPage)))
+}
+
+function finishRoutingAtDepth (depth, routersAtDepth, events) {
+  console.log('fininsh', events)
+  const toPage = events[0].toPage
+  const pagesMatch = events.every(event => event.toPage === toPage)
+  if (!pagesMatch) {
+    throw new Error('Pages do not match for parallel routers')
+  }
+  pages[depth] = toPage
+
+  const defaultPrevented = events.some(event => event.defaultPrevented)
+  if (!defaultPrevented) {
+    return Promise.all(routersAtDepth.map(router => router.finishRouting()))
   }
 }
 
-function reducePageNames (pageNames, pageNamesAtDepth, depth) {
-  let pageNameAtDepth = pageNamesAtDepth[0]
-  for (let pageName of pageNamesAtDepth) {
-    if (pageName !== pageNameAtDepth) {
-      throw new Error(`Unmatching pages ${pageName}, ${pageNameAtDepth} at depth ${depth}`)
-    }
-  }
-  pageNames[depth] = pageNameAtDepth
-}
-
+// name this routeOnNavigation
 export function routeInitial () {
-  return route(getPages(), history.state, { history: false })
+  const pages = toPages(location.pathname)
+  const params = history.state
+  return route(pages, params, { history: false })
 }
 
 window.addEventListener('popstate', routeInitial)

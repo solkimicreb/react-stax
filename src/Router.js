@@ -1,7 +1,6 @@
 import React, { Component, PropTypes, Children } from 'react'
 import { registerRouter, releaseRouter, route, routeInitial } from './core'
 import { normalizePath } from './urlUtils'
-import { isRouting, stopRouting } from './status'
 import Lazy from './Lazy'
 
 export default class Router extends Component {
@@ -37,10 +36,11 @@ export default class Router extends Component {
 
   componentWillMount () {
     registerRouter(this, this.depth)
+    this.parsePages()
   }
 
   componentDidMount () {
-    if (!isRouting()) {
+    if (this.depth === 0) {
       routeInitial()
     }
   }
@@ -49,32 +49,50 @@ export default class Router extends Component {
     releaseRouter(this, this.depth)
   }
 
+  componentWillReceiveProps ({ children }) {
+    // this might be bad!
+    if (children !== this.props.children) {
+      this.parsePages()
+    }
+  }
+
+  parsePages () {
+    const { children } = this.props
+    const pages = {}
+    Children.forEach(children, child => {
+      const page = child.props.page
+      pages[page] = child
+    })
+    this.pages = pages
+  }
+
   route (path, params, options) {
     const pages = normalizePath(path, this.depth)
     return route(pages, params, options)
   }
 
-  startRouting (toPageName, params) {
+  startRouting (toPage) {
     return Promise.resolve()
-      .then(() => this.selectPage(toPageName))
-      .then(() => this.dispatchRouteEvent(params))
+      .then(() => this.selectPage(toPage))
+      .then(() => this.dispatchRouteEvent())
   }
 
-  selectPage (toPageName) {
-    const { children, leaveClass } = this.props
+  selectPage (toPage) {
+    const { leaveClass, defaultPage, notFoundPage } = this.props
     this.startTime = Date.now()
 
-    Children.forEach(children, child => {
-      const childName = child.props.page
-      const isDefaultChild = ('default' in child.props)
-      if (childName === toPageName || (!this.toPage && isDefaultChild)) {
-        this.toPage = child
-      }
-    })
+    if (toPage in this.pages) {
+      this.toPage = toPage
+    } else if (toPage) {
+      this.toPage = notFoundPage
+    } else {
+      this.toPage = defaultPage
+    }
 
     if (this.toPage !== this.currentPage && leaveClass) {
       this.leaving = true
       return new Promise(resolve => {
+        // use the renderIndicator trick here!!
         this.setState({}, () => {
           this.leaving = false
           resolve()
@@ -83,36 +101,37 @@ export default class Router extends Component {
     }
   }
 
-  dispatchRouteEvent (params) {
+  dispatchRouteEvent () {
     const { onRoute } = this.props
-    if (onRoute) {
-      return onRoute({
-        target: this,
-        fromPage: this.currentPage && this.currentPage.props.page,
-        toPage: this.toPage.props.page,
-        params,
-        preventDefault: stopRouting
-      })
+    const event = {
+      target: this,
+      fromPage: this.currentPage,
+      toPage: this.toPage,
+      preventDefault () {
+        this.defaultPrevented = true
+      }
     }
+
+    return onRoute
+      ? onRoute(event).then(() => event)
+      : event
   }
 
   finishRouting () {
-    let result = Promise.resolve()
-
     if (this.toPage !== this.currentPage) {
-      result = result
+      return Promise.resolve()
         .then(() => this.loadPage())
         .then(() => this.waitDuration())
         .then(() => this.routeToPage())
     }
-    return result
-      .then(() => this.toPage.props.page)
   }
 
   loadPage () {
-    if (this.toPage.type === Lazy) {
-      this.toPage.props.load()
-        .then(loadedPage => (this.toPage = loadedPage))
+    const { pages, toPage } = this
+    const Page = pages[toPage]
+    if (Page.type === Lazy) {
+      Page.props.load()
+        .then(LoadedPage => (pages[toPage] = LoadedPage))
     }
   }
 
@@ -136,13 +155,16 @@ export default class Router extends Component {
   }
 
   render () {
+    const { entering, leaving, pages, currentPage } = this
     let { className, enterClass, leaveClass } = this.props
-    if (this.entering) {
+
+    if (entering) {
       className += ` ${enterClass}`
-    } else if (this.leaving) {
+    } else if (leaving) {
       className += ` ${leaveClass}`
     }
 
-    return <div className={className}>{this.currentPage || null}</div>
+    const Page = pages[currentPage] || null
+    return <div className={className}>{Page}</div>
   }
 }

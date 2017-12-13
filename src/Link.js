@@ -8,8 +8,7 @@ import React, {
 import { easyComp } from 'react-easy-state'
 import { normalizePath } from './urlUtils'
 import { route } from './core'
-import { params } from './params'
-import { pages } from './pages'
+import { params, pages } from './observables'
 
 class Link extends Component {
   static propTypes = {
