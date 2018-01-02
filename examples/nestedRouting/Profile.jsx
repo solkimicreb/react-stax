@@ -6,7 +6,7 @@ function CardExampleWithAvatar () {
   return (
     <div>
       {[1, 2, 3, 4, 5].map(val =>
-        <Card className='page' key={val}>
+        <Card key={val}>
           <CardHeader title="Profile" subtitle="Your User Profile" avatar='http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' />
           <CardText>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.

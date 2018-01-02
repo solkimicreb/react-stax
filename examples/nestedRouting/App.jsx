@@ -13,11 +13,11 @@ export default class App extends Component {
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Link to='/profile' default={true}><MenuItem>Profile</MenuItem></Link>
+            <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
             <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
           </Drawer>
 
-          <Router>
+          <Router className='page' defaultPage='profile'>
             <Profile page='profile' />
             <Settings page='settings' />
           </Router>
