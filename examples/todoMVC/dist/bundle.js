@@ -8431,10 +8431,10 @@ function route(newPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* page
 
   // clear the current pages, it will be rebuilt by the routers during the routing
   // clear(pages)
-  __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].length = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].length;
 
   const nPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].slice(0, depth);
   nPages.push(...newPages);
+  __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].length = nPages.length;
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {

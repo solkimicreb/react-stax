@@ -30,10 +30,10 @@ export function route (newPages = pages, newParams = {}, options = {}, depth = 0
 
   // clear the current pages, it will be rebuilt by the routers during the routing
   // clear(pages)
-  pages.length = pages.length
 
   const nPages = pages.slice(0, depth)
   nPages.push(...newPages)
+  pages.length = nPages.length
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
