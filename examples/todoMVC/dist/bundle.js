@@ -27969,7 +27969,6 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   componentWillMount() {
     Object(__WEBPACK_IMPORTED_MODULE_1__core__["a" /* registerRouter */])(this, this.depth);
-    this.parsePages();
   }
 
   componentWillUnmount() {
@@ -27981,13 +27980,6 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     // this.registerRouter()
     if (this.depth === 0) {
       Object(__WEBPACK_IMPORTED_MODULE_1__core__["d" /* routeInitial */])();
-    }
-  }
-
-  componentWillReceiveProps({ children }) {
-    // this might be bad!
-    if (children !== this.props.children) {
-      this.parsePages();
     }
   }
 

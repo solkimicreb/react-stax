@@ -39,7 +39,6 @@ export default class Router extends Component {
 
   componentWillMount () {
     registerRouter(this, this.depth)
-    this.parsePages()
   }
 
   componentWillUnmount () {
@@ -51,13 +50,6 @@ export default class Router extends Component {
     // this.registerRouter()
     if (this.depth === 0) {
       routeInitial()
-    }
-  }
-
-  componentWillReceiveProps ({ children }) {
-    // this might be bad!
-    if (children !== this.props.children) {
-      this.parsePages()
     }
   }
 
