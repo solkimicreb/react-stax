@@ -6,7 +6,7 @@ import React, {
   cloneElement
 } from 'react'
 import { easyComp } from 'react-easy-state'
-import { normalizePath } from './urlUtils'
+import { toPages } from './urlUtils'
 import { route } from './core'
 import { params, pages } from './observables'
 
@@ -31,29 +31,11 @@ class Link extends Component {
     className: ''
   }
 
-  store = {
-    toPageNames: [],
-    href: ''
-  }
-
-  get depth () {
-    return this.context.easyRouterDepth || 0
-  }
-
-  constructor (props, context) {
-    super(props, context)
-    this.resolvePageNames(props.to)
-  }
-
-  componentWillReceiveProps ({ to }) {
-    if (to && to !== this.props.to) {
-      this.resolvePageNames(to)
-    }
-  }
-
-  resolvePageNames (toPageNames) {
-    this.store.toPageNames = normalizePath(toPageNames, this.depth)
-    this.store.href = this.store.toPageNames.join('/')
+  get linkDepth () {
+    const { to } = this.props
+    const depth = this.context.easyRouterDepth || 0
+    const isRelative = !to || to[0] !== '/'
+    return isRelative ? depth : 0
   }
 
   isLinkActive () {
@@ -61,13 +43,12 @@ class Link extends Component {
   }
 
   isLinkPagesActive () {
-    const linkPages = this.store.toPageNames
-    if (linkPages) {
-      for (let i = 0; i < linkPages.length; i++) {
-        if (linkPages[i] !== pages[i]) {
-          return false
-        }
-      }
+    const { to } = this.props
+    if (to) {
+      const linkPages = toPages(to)
+      return linkPages.every(
+        (linkPage, i) => linkPage === pages[i + this.linkDepth]
+      )
     }
     return true
   }
@@ -86,23 +67,23 @@ class Link extends Component {
 
   onClick (ev) {
     ev.preventDefault()
-    const { onClick, params, options } = this.props
+    const { onClick, params, options, to } = this.props
     if (onClick) {
       onClick(ev)
     }
-    route(this.store.toPageNames, params, options)
+
+    route(toPages(to), params, options, this.linkDepth)
   }
 
   render () {
     let { to, element, children, activeClass, params, className } = this.props
-    const { toPageNames, href } = this.store
     const { onClick, isLinkActive } = this
 
     if (activeClass && isLinkActive()) {
       className = `${className} ${activeClass}`
     }
 
-    const anchor = createElement('a', { onClick, href }, children)
+    const anchor = createElement('a', { onClick, href: to }, children)
     if (element === 'a') {
       return cloneElement(anchor, { className }, children)
     }

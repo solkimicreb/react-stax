@@ -5816,52 +5816,12 @@ function raw(obj) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = normalizePath;
-/* harmony export (immutable) */ __webpack_exports__["c"] = toPages;
-/* harmony export (immutable) */ __webpack_exports__["e"] = toPath;
-/* harmony export (immutable) */ __webpack_exports__["f"] = toQuery;
-/* harmony export (immutable) */ __webpack_exports__["d"] = toParams;
+/* harmony export (immutable) */ __webpack_exports__["b"] = toPages;
+/* harmony export (immutable) */ __webpack_exports__["d"] = toPath;
+/* harmony export (immutable) */ __webpack_exports__["e"] = toQuery;
+/* harmony export (immutable) */ __webpack_exports__["c"] = toParams;
 /* unused harmony export notEmpty */
 /* harmony export (immutable) */ __webpack_exports__["a"] = clear;
-// pathToPageNames
-function normalizePath(path, depth) {
-  let tokens = path.split('/');
-
-  // an absolute path
-  if (tokens[0] === '') {
-    return tokens.slice(1);
-  }
-
-  // remove '.' tokens
-  tokens = tokens.filter(notInPlace);
-
-  let parentTokensAllowed = true;
-  // remove empty tokens
-  const result = location.pathname.split('/').filter(notEmpty);
-
-  for (let token of tokens) {
-    if (depth < 0) {
-      throw new Error(`Malformed path: ${path}, too many '..' tokens.`);
-    }
-    if (token === '') {
-      throw new Error(`Malformed path: ${path}, can not contain empty tokens.`);
-    }
-    if (token === '..') {
-      if (!parentTokensAllowed) {
-        throw new Error(`Malformed path: ${path}, '..' tokens are only allowed at the beginning.`);
-      }
-      depth--;
-    } else {
-      result[depth] = token;
-      parentTokensAllowed = false;
-      depth++;
-    }
-  }
-
-  result.length = depth;
-  return result;
-}
-
 function toPages(path) {
   return path.split('/').filter(notEmpty);
 }
@@ -5895,10 +5855,6 @@ function toParams(queryString) {
     params[key] = value;
   }
   return params;
-}
-
-function notInPlace(token) {
-  return token !== '.';
 }
 
 function notEmpty(token) {
@@ -8463,17 +8419,22 @@ function releaseRouter(router, depth) {
   }
 }
 
-function route(newPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */], newParams = {}, options = {}) {
+function route(newPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */], newParams = {}, options = {}, depth = 0) {
   __WEBPACK_IMPORTED_MODULE_1__observables__["d" /* urlScheduler */].process();
   __WEBPACK_IMPORTED_MODULE_1__observables__["d" /* urlScheduler */].stop();
 
+  console.log(Array.from(newPages), depth);
   // push the current state, only use replaceState later
   if (options.history !== false) {
     history.pushState(history.state, '');
   }
 
   // clear the current pages, it will be rebuilt by the routers during the routing
-  Object(__WEBPACK_IMPORTED_MODULE_0__urlUtils__["a" /* clear */])(__WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */]);
+  // clear(pages)
+  __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].length = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].length;
+
+  const nPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */].slice(0, depth);
+  nPages.push(...newPages);
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -8481,47 +8442,28 @@ function route(newPages = __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* page
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_1__observables__["b" /* params */], newParams);
 
-  return routeFromDepth(0, newPages).then(() => __WEBPACK_IMPORTED_MODULE_1__observables__["d" /* urlScheduler */].start());
+  return routeFromDepth(depth, nPages).then(() => {
+    __WEBPACK_IMPORTED_MODULE_1__observables__["d" /* urlScheduler */].start();
+    // pages.lenght = newPages.length
+  });
 }
 
-function routeFromDepth(depth, pages) {
-  const toPage = pages[depth];
+function routeFromDepth(depth, newPages) {
+  const toPage = newPages[depth];
   let routersAtDepth = routers[depth];
 
   if (!routersAtDepth) {
     return Promise.resolve();
   }
   routersAtDepth = Array.from(routersAtDepth);
+  console.log(newPages, depth);
 
-  console.log('route', routersAtDepth);
-
-  return startRoutingAtDepth(routersAtDepth, toPage).then(events => finishRoutingAtDepth(depth, routersAtDepth, events)).then(() => routeFromDepth(++depth, pages));
-}
-
-function startRoutingAtDepth(routersAtDepth, toPage) {
-  console.log('routers', Array.from(routersAtDepth));
-  return Promise.all(routersAtDepth.map(router => router.startRouting(toPage)));
-}
-
-function finishRoutingAtDepth(depth, routersAtDepth, events) {
-  if (events.length) {
-    const toPage = events[0].toPage;
-    const pagesMatch = events.every(event => event.toPage === toPage);
-    if (!pagesMatch) {
-      throw new Error('Pages do not match for parallel routers');
-    }
-    __WEBPACK_IMPORTED_MODULE_1__observables__["a" /* pages */][depth] = toPage;
-  }
-
-  const defaultPrevented = events.some(event => event.defaultPrevented);
-  if (!defaultPrevented) {
-    return Promise.all(routersAtDepth.map(router => router.finishRouting()));
-  }
+  return Promise.all(routersAtDepth.map(router => router.route(toPage))).then(() => routeFromDepth(++depth, newPages));
 }
 
 // name this routeOnNavigation
 function routeInitial() {
-  const pages = Object(__WEBPACK_IMPORTED_MODULE_0__urlUtils__["c" /* toPages */])(location.pathname);
+  const pages = Object(__WEBPACK_IMPORTED_MODULE_0__urlUtils__["b" /* toPages */])(location.pathname);
   const params = history.state;
   return route(pages, params, { history: false });
 }
@@ -27954,8 +27896,8 @@ module.exports = onlyChild;
 
 
 
-const rawParams = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["d" /* toParams */])(location.search);
-const rawPages = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["c" /* toPages */])(location.pathname);
+const rawParams = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["c" /* toParams */])(location.search);
+const rawPages = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["b" /* toPages */])(location.pathname);
 const params = Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["a" /* observable */])(rawParams);
 /* harmony export (immutable) */ __webpack_exports__["b"] = params;
 
@@ -27967,7 +27909,7 @@ const urlScheduler = new __WEBPACK_IMPORTED_MODULE_1__nx_js_queue_util__["a" /* 
 
 
 function syncUrl() {
-  const url = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["e" /* toPath */])(pages) + Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["f" /* toQuery */])(params) + location.hash;
+  const url = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["d" /* toPath */])(pages) + Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["e" /* toQuery */])(params) + location.hash;
   history.replaceState(rawParams, '', url);
 }
 
@@ -28008,6 +27950,8 @@ Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["b" /* observe */])(sy
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core__ = __webpack_require__(83);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__urlUtils__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Lazy__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__observables__ = __webpack_require__(54);
+
 
 
 
@@ -28033,14 +27977,16 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     this.parsePages();
   }
 
+  componentWillUnmount() {
+    Object(__WEBPACK_IMPORTED_MODULE_1__core__["b" /* releaseRouter */])(this, this.depth);
+  }
+
   componentDidMount() {
+    // this.route()
+    // this.registerRouter()
     if (this.depth === 0) {
       Object(__WEBPACK_IMPORTED_MODULE_1__core__["d" /* routeInitial */])();
     }
-  }
-
-  componentWillUnmount() {
-    Object(__WEBPACK_IMPORTED_MODULE_1__core__["b" /* releaseRouter */])(this, this.depth);
   }
 
   componentWillReceiveProps({ children }) {
@@ -28050,88 +27996,87 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
   }
 
+  /*route (path, params, options) {
+    const pages = normalizePath(path, this.depth)
+    return route(pages, params, options)
+  }*/
+
+  route(toPage) {
+    const { defaultPage } = this.props;
+    const startTime = Date.now();
+    const pagesMap = this.parsePages();
+    const fromPage = __WEBPACK_IMPORTED_MODULE_4__observables__["a" /* pages */][this.depth];
+    toPage = toPage in pagesMap ? toPage : defaultPage;
+
+    console.log('toPage', toPage, 'fromPage', fromPage);
+
+    if (toPage !== fromPage) {
+      return this.startRouting().then(() => this.dispatchRouteEvent(fromPage, toPage))
+      // only continue if it is not defaultPrevented!
+      .then(() => this.waitDuration(startTime)).then(() => this.endRouting(pagesMap, toPage));
+    }
+  }
+
   parsePages() {
-    const { children } = this.props;
     const pages = {};
-    __WEBPACK_IMPORTED_MODULE_0_react__["Children"].forEach(children, child => {
-      const page = child.props.page;
-      pages[page] = child;
+    __WEBPACK_IMPORTED_MODULE_0_react__["Children"].forEach(this.props.children, child => {
+      pages[child.props.page] = child;
     });
-    this.pages = pages;
+    return pages;
   }
 
-  route(path, params, options) {
-    const pages = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["b" /* normalizePath */])(path, this.depth);
-    return Object(__WEBPACK_IMPORTED_MODULE_1__core__["c" /* route */])(pages, params, options);
+  startRouting() {
+    const { leaveClass } = this.props;
+
+    return new Promise(resolve => {
+      this.setState({ statusClass: leaveClass }, resolve);
+    });
   }
 
-  startRouting(toPage) {
-    return Promise.resolve().then(() => this.selectPage(toPage)).then(() => this.dispatchRouteEvent());
-  }
+  dispatchRouteEvent(fromPage, toPage) {
+    const { onRoute } = this.props;
 
-  selectPage(toPage) {
-    const { defaultPage, leaveClass } = this.props;
-    this.startTime = Date.now();
-
-    this.toPage = toPage in this.pages ? toPage : defaultPage;
-
-    if (this.toPage !== this.currentPage && leaveClass) {
-      return new Promise(resolve => {
-        this.setState({ statusClass: leaveClass }, resolve);
+    if (onRoute) {
+      return onRoute({
+        target: this,
+        fromPage,
+        toPage,
+        preventDefault() {
+          this.defaultPrevented = true;
+        }
       });
     }
   }
 
-  dispatchRouteEvent() {
-    const { onRoute } = this.props;
-    const event = {
-      target: this,
-      fromPage: this.currentPage,
-      toPage: this.toPage,
-      preventDefault() {
-        this.defaultPrevented = true;
-      }
-    };
-
-    return onRoute ? onRoute(event).then(() => event) : event;
-  }
-
-  finishRouting() {
-    if (this.toPage !== this.currentPage) {
-      return Promise.resolve().then(() => this.loadPage()).then(() => this.waitDuration()).then(() => this.routeToPage());
-    }
-  }
-
-  loadPage() {
-    const { pages, toPage } = this;
-    const Page = pages[toPage];
+  loadPage(pagesMap, toPage) {
+    const Page = pagesMap[toPage];
     if (Page.type === __WEBPACK_IMPORTED_MODULE_3__Lazy__["a" /* default */]) {
-      Page.props.load().then(LoadedPage => pages[toPage] = LoadedPage);
+      Page.props.load().then(LoadedPage => pagesMap[toPage] = LoadedPage);
     }
   }
 
-  waitDuration() {
+  waitDuration(startTime) {
     const { duration } = this.props;
     if (duration) {
-      const diff = Date.now() - this.startTime;
+      const diff = Date.now() - startTime;
       return new Promise(resolve => setTimeout(resolve, duration - diff));
     }
   }
 
-  routeToPage() {
+  endRouting(pagesMap, toPage) {
     const { enterClass } = this.props;
-    this.currentPage = this.toPage;
-    const Page = this.pages[this.currentPage];
+    const Page = pagesMap[toPage];
+    __WEBPACK_IMPORTED_MODULE_4__observables__["a" /* pages */][this.depth] = toPage;
+    console.log('end');
     return new Promise(resolve => {
       this.setState({ Page, statusClass: enterClass }, resolve);
     });
   }
 
   render() {
-    let { className } = this.props;
     const { statusClass, Page } = this.state;
-    className = `${className} ${statusClass}`;
 
+    const className = `${this.props.className} ${statusClass}`;
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       { className: className },
@@ -28179,28 +28124,11 @@ Router.contextTypes = {
 
 class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
-  get depth() {
-    return this.context.easyRouterDepth || 0;
-  }
-
-  constructor(props, context) {
-    super(props, context);
-    this.store = {
-      toPageNames: [],
-      href: ''
-    };
-    this.resolvePageNames(props.to);
-  }
-
-  componentWillReceiveProps({ to }) {
-    if (to && to !== this.props.to) {
-      this.resolvePageNames(to);
-    }
-  }
-
-  resolvePageNames(toPageNames) {
-    this.store.toPageNames = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["b" /* normalizePath */])(toPageNames, this.depth);
-    this.store.href = this.store.toPageNames.join('/');
+  get linkDepth() {
+    const { to } = this.props;
+    const depth = this.context.easyRouterDepth || 0;
+    const isRelative = !to || to[0] !== '/';
+    return isRelative ? depth : 0;
   }
 
   isLinkActive() {
@@ -28208,13 +28136,10 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   isLinkPagesActive() {
-    const linkPages = this.store.toPageNames;
-    if (linkPages) {
-      for (let i = 0; i < linkPages.length; i++) {
-        if (linkPages[i] !== __WEBPACK_IMPORTED_MODULE_4__observables__["a" /* pages */][i]) {
-          return false;
-        }
-      }
+    const { to } = this.props;
+    if (to) {
+      const linkPages = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["b" /* toPages */])(to);
+      return linkPages.every((linkPage, i) => linkPage === __WEBPACK_IMPORTED_MODULE_4__observables__["a" /* pages */][i + this.linkDepth]);
     }
     return true;
   }
@@ -28233,23 +28158,23 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   onClick(ev) {
     ev.preventDefault();
-    const { onClick, params, options } = this.props;
+    const { onClick, params, options, to } = this.props;
     if (onClick) {
       onClick(ev);
     }
-    Object(__WEBPACK_IMPORTED_MODULE_3__core__["c" /* route */])(this.store.toPageNames, params, options);
+
+    Object(__WEBPACK_IMPORTED_MODULE_3__core__["c" /* route */])(Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["b" /* toPages */])(to), params, options, this.linkDepth);
   }
 
   render() {
     let { to, element, children, activeClass, params, className } = this.props;
-    const { toPageNames, href } = this.store;
     const { onClick, isLinkActive } = this;
 
     if (activeClass && isLinkActive()) {
       className = `${className} ${activeClass}`;
     }
 
-    const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
+    const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href: to }, children);
     if (element === 'a') {
       return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(anchor, { className }, children);
     }

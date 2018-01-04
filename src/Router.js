@@ -2,6 +2,7 @@ import React, { Component, PropTypes, Children } from 'react'
 import { registerRouter, releaseRouter, route, routeInitial } from './core'
 import { normalizePath } from './urlUtils'
 import Lazy from './Lazy'
+import { pages } from './observables'
 
 export default class Router extends Component {
   static propTypes = {
@@ -41,14 +42,16 @@ export default class Router extends Component {
     this.parsePages()
   }
 
+  componentWillUnmount () {
+    releaseRouter(this, this.depth)
+  }
+
   componentDidMount () {
+    // this.route()
+    // this.registerRouter()
     if (this.depth === 0) {
       routeInitial()
     }
-  }
-
-  componentWillUnmount () {
-    releaseRouter(this, this.depth)
   }
 
   componentWillReceiveProps ({ children }) {
@@ -58,96 +61,90 @@ export default class Router extends Component {
     }
   }
 
-  parsePages () {
-    const { children } = this.props
-    const pages = {}
-    Children.forEach(children, child => {
-      const page = child.props.page
-      pages[page] = child
-    })
-    this.pages = pages
-  }
-
-  route (path, params, options) {
+  /*route (path, params, options) {
     const pages = normalizePath(path, this.depth)
     return route(pages, params, options)
+  }*/
+
+  route (toPage) {
+    const { defaultPage } = this.props
+    const startTime = Date.now()
+    const pagesMap = this.parsePages()
+    const fromPage = pages[this.depth]
+    toPage = toPage in pagesMap ? toPage : defaultPage
+
+    console.log('toPage', toPage, 'fromPage', fromPage)
+
+    if (toPage !== fromPage) {
+      return this.startRouting()
+        .then(() => this.dispatchRouteEvent(fromPage, toPage))
+        // only continue if it is not defaultPrevented!
+        .then(() => this.waitDuration(startTime))
+        .then(() => this.endRouting(pagesMap, toPage))
+    }
   }
 
-  startRouting (toPage) {
-    return Promise.resolve()
-      .then(() => this.selectPage(toPage))
-      .then(() => this.dispatchRouteEvent())
+  parsePages () {
+    const pages = {}
+    Children.forEach(this.props.children, child => {
+      pages[child.props.page] = child
+    })
+    return pages
   }
 
-  selectPage (toPage) {
-    const { defaultPage, leaveClass } = this.props
-    this.startTime = Date.now()
+  startRouting () {
+    const { leaveClass } = this.props
 
-    this.toPage = toPage in this.pages ? toPage : defaultPage
+    return new Promise(resolve => {
+      this.setState({ statusClass: leaveClass }, resolve)
+    })
+  }
 
-    if (this.toPage !== this.currentPage && leaveClass) {
-      return new Promise(resolve => {
-        this.setState({ statusClass: leaveClass }, resolve)
+  dispatchRouteEvent (fromPage, toPage) {
+    const { onRoute } = this.props
+
+    if (onRoute) {
+      return onRoute({
+        target: this,
+        fromPage,
+        toPage,
+        preventDefault () {
+          this.defaultPrevented = true
+        }
       })
     }
   }
 
-  dispatchRouteEvent () {
-    const { onRoute } = this.props
-    const event = {
-      target: this,
-      fromPage: this.currentPage,
-      toPage: this.toPage,
-      preventDefault () {
-        this.defaultPrevented = true
-      }
-    }
-
-    return onRoute
-      ? onRoute(event).then(() => event)
-      : event
-  }
-
-  finishRouting () {
-    if (this.toPage !== this.currentPage) {
-      return Promise.resolve()
-        .then(() => this.loadPage())
-        .then(() => this.waitDuration())
-        .then(() => this.routeToPage())
-    }
-  }
-
-  loadPage () {
-    const { pages, toPage } = this
-    const Page = pages[toPage]
+  loadPage (pagesMap, toPage) {
+    const Page = pagesMap[toPage]
     if (Page.type === Lazy) {
       Page.props.load()
-        .then(LoadedPage => (pages[toPage] = LoadedPage))
+        .then(LoadedPage => (pagesMap[toPage] = LoadedPage))
     }
   }
 
-  waitDuration () {
+  waitDuration (startTime) {
     const { duration } = this.props
     if (duration) {
-      const diff = Date.now() - this.startTime
+      const diff = Date.now() - startTime
       return new Promise(resolve => setTimeout(resolve, duration - diff))
     }
   }
 
-  routeToPage () {
+  endRouting (pagesMap, toPage) {
     const { enterClass } = this.props
-    this.currentPage = this.toPage
-    const Page = this.pages[this.currentPage]
+    const Page = pagesMap[toPage]
+    pages[this.depth] = toPage
+    console.log('end')
     return new Promise(resolve => {
       this.setState({ Page, statusClass: enterClass }, resolve)
     })
   }
 
   render () {
-    let { className } = this.props
     const { statusClass, Page } = this.state
-    className = `${className} ${statusClass}`
 
+    const className = `${this.props.className} ${statusClass}`
     return <div className={className}>{Page || null}</div>
   }
 }
