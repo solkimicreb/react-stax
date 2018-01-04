@@ -39,16 +39,13 @@ export function normalizePath (path, depth) {
   return result
 }
 
-export function getPages () {
-  return location.pathname.split('/').filter(notEmpty)
-}
 
 export function toPages (path) {
   return path.split('/').filter(notEmpty)
 }
 
 export function toPath (pages) {
-  return pages.filter(notEmpty).join('/')
+  return '/' + pages.filter(notEmpty).join('/')
 }
 
 export function toQuery (params) {

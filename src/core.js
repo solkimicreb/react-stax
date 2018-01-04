@@ -57,17 +57,19 @@ function routeFromDepth (depth, pages) {
 }
 
 function startRoutingAtDepth (routersAtDepth, toPage) {
+  console.log('routers', Array.from(routersAtDepth))
   return Promise.all(routersAtDepth.map(router => router.startRouting(toPage)))
 }
 
 function finishRoutingAtDepth (depth, routersAtDepth, events) {
-  console.log('fininsh', events)
-  const toPage = events[0].toPage
-  const pagesMatch = events.every(event => event.toPage === toPage)
-  if (!pagesMatch) {
-    throw new Error('Pages do not match for parallel routers')
+  if (events.length) {
+    const toPage = events[0].toPage
+    const pagesMatch = events.every(event => event.toPage === toPage)
+    if (!pagesMatch) {
+      throw new Error('Pages do not match for parallel routers')
+    }
+    pages[depth] = toPage
   }
-  pages[depth] = toPage
 
   const defaultPrevented = events.some(event => event.defaultPrevented)
   if (!defaultPrevented) {

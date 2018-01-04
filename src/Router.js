@@ -34,6 +34,8 @@ export default class Router extends Component {
     return { easyRouterDepth: this.depth + 1 }
   }
 
+  state = {}
+
   componentWillMount () {
     registerRouter(this, this.depth)
     this.parsePages()
@@ -78,25 +80,14 @@ export default class Router extends Component {
   }
 
   selectPage (toPage) {
-    const { leaveClass, defaultPage, notFoundPage } = this.props
+    const { defaultPage, leaveClass } = this.props
     this.startTime = Date.now()
 
-    if (toPage in this.pages) {
-      this.toPage = toPage
-    } else if (toPage) {
-      this.toPage = notFoundPage
-    } else {
-      this.toPage = defaultPage
-    }
+    this.toPage = toPage in this.pages ? toPage : defaultPage
 
     if (this.toPage !== this.currentPage && leaveClass) {
-      this.leaving = true
       return new Promise(resolve => {
-        // use the renderIndicator trick here!!
-        this.setState({}, () => {
-          this.leaving = false
-          resolve()
-        })
+        this.setState({ statusClass: leaveClass }, resolve)
       })
     }
   }
@@ -144,27 +135,19 @@ export default class Router extends Component {
   }
 
   routeToPage () {
+    const { enterClass } = this.props
     this.currentPage = this.toPage
-    this.entering = true
+    const Page = this.pages[this.currentPage]
     return new Promise(resolve => {
-      this.setState({}, () => {
-        this.entering = false
-        resolve()
-      })
+      this.setState({ Page, statusClass: enterClass }, resolve)
     })
   }
 
   render () {
-    const { entering, leaving, pages, currentPage } = this
-    let { className, enterClass, leaveClass } = this.props
+    let { className } = this.props
+    const { statusClass, Page } = this.state
+    className = `${className} ${statusClass}`
 
-    if (entering) {
-      className += ` ${enterClass}`
-    } else if (leaving) {
-      className += ` ${leaveClass}`
-    }
-
-    const Page = pages[currentPage] || null
-    return <div className={className}>{Page}</div>
+    return <div className={className}>{Page || null}</div>
   }
 }
