@@ -42,9 +42,9 @@ class App extends Component {
         </nav>
         <Router className='router' defaultPage='stories' onRoute={this.onRoute}
           enterClass='enter' leaveClass='leave' duration={200}>
-          <StoriesPage page="stories" />
-          <StoryPage page="story" />
-          <UserPage page="user" />
+          <StoriesPage page='stories' />
+          <StoryPage page='story' />
+          <UserPage page='user' />
         </Router>
       </div>
     )

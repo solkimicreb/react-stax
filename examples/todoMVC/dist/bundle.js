@@ -28160,8 +28160,9 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     if (activeClass && isLinkActive()) {
       className = `${className} ${activeClass}`;
     }
+    const href = to + Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["e" /* toQuery */])(params);
 
-    const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href: to }, children);
+    const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
     if (element === 'a') {
       return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(anchor, { className }, children);
     }

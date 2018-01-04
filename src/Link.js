@@ -6,7 +6,7 @@ import React, {
   cloneElement
 } from 'react'
 import { easyComp } from 'react-easy-state'
-import { toPages } from './urlUtils'
+import { toPages, toQuery } from './urlUtils'
 import { route } from './core'
 import { params, pages } from './observables'
 
@@ -82,8 +82,9 @@ class Link extends Component {
     if (activeClass && isLinkActive()) {
       className = `${className} ${activeClass}`
     }
+    const href = to + toQuery(params)
 
-    const anchor = createElement('a', { onClick, href: to }, children)
+    const anchor = createElement('a', { onClick, href }, children)
     if (element === 'a') {
       return cloneElement(anchor, { className }, children)
     }
