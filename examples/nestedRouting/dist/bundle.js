@@ -13528,23 +13528,18 @@ Object.defineProperties(Queue.prototype, prototypeAccessors);
 
 
 class Lazy extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+  constructor(...args) {
+    var _temp;
 
-  constructor({ load } = props) {
-    super(props);
-    load().then(comp => this.setComp(comp));
+    return _temp = super(...args), this.state = {}, _temp;
   }
 
-  setComp(comp) {
-    this.comp = comp;
-    this.forceUpdate();
-  }
-
-  shouldComponentUpdate() {
-    return false;
+  componentDidMount() {
+    this.props.load().then(comp => this.setState({ comp }));
   }
 
   render() {
-    return this.comp || null; // maybe return children otherwise
+    return this.state.comp || null;
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Lazy;

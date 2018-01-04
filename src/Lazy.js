@@ -5,21 +5,14 @@ export default class Lazy extends Component {
     load: PropTypes.func.isRequired
   }
 
-  constructor ({ load } = props) {
-    super(props)
-    load().then(comp => this.setComp(comp))
-  }
+  state = {}
 
-  setComp (comp) {
-    this.comp = comp
-    this.forceUpdate()
-  }
-
-  shouldComponentUpdate () {
-    return false
+  componentDidMount () {
+    this.props.load()
+      .then(comp => this.setState({ comp }))
   }
 
   render () {
-    return this.comp || null // maybe return children otherwise
+    return this.state.comp || null
   }
 }
