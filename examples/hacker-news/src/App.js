@@ -18,7 +18,7 @@ function App () {
         <div className='inner'>
           <div className='links'>
             {STORY_TYPES.map(
-              type => <Link to="stories" params={{ type }} activeClass='active' key={type} onClick={storiesStore.updateStories}>{type}</Link>
+              type => <Link to="stories" params={{ type }} activeClass='active' key={type}>{type}</Link>
             )}
           </div>
           <div className={themeClass} onClick={toggleTheme}>
@@ -26,8 +26,8 @@ function App () {
           </div>
         </div>
       </nav>
-      <Router className='router' defaultPage='stories'
-        enterClass='enter' leaveClass='leave' duration={1000}>
+      <Router className='router' defaultPage='stories' alwaysRoute={true}
+        enterClass='enter' leaveClass='leave' duration={150}>
         <StoriesPage page='stories' resolve={storiesStore.init} />
         <StoryPage page='story' resolve={storyStore.init} />
         <UserPage page='user' resolve={userStore.init} />

@@ -6,6 +6,7 @@ import Lazy from './Lazy'
 export default class Router extends Component {
   static propTypes = {
     onRoute: PropTypes.func,
+    alwaysRoute: PropTypes.bool,
     className: PropTypes.string,
     enterClass: PropTypes.string,
     leaveClass: PropTypes.string,
@@ -13,6 +14,7 @@ export default class Router extends Component {
   }
 
   static defaultProps = {
+    alwaysRoute: false,
     className: '',
     enterClass: '',
     leaveClass: ''
@@ -49,16 +51,17 @@ export default class Router extends Component {
   }
 
   route (fromPage, toPage) {
+    const { alwaysRoute } = this.props
     const { currentView } = this.state
     const startTime = Date.now()
     toPage = this.selectPage(toPage)
 
-    const defaultPrevented = this.onChange(fromPage, toPage)
-    if (defaultPrevented) {
-      throw new Error('Routing prevented')
-    }
+    if (alwaysRoute || !currentView || toPage !== fromPage) {
+      const defaultPrevented = this.onRoute(fromPage, toPage)
+      if (defaultPrevented) {
+        throw new Error('Routing prevented')
+      }
 
-    if (!currentView || toPage !== fromPage) {
       return Promise.resolve()
         .then(() => this.startRouting())
         .then(() => this.selectView(toPage))
@@ -88,12 +91,12 @@ export default class Router extends Component {
     }
   }
 
-  onChange (fromPage, toPage) {
-    const { onChange } = this.props
+  onRoute (fromPage, toPage) {
+    const { onRoute } = this.props
     let defaultPrevented = false
 
-    if (onChange) {
-      onChange({
+    if (onRoute) {
+      onRoute({
         target: this,
         fromPage,
         toPage,
@@ -145,7 +148,7 @@ export default class Router extends Component {
   render () {
     let { className } = this.props
     const { statusClass, currentView } = this.state
-    
+
     className = `${className} ${statusClass}`
     return <div className={className}>{currentView || null}</div>
   }

@@ -30179,16 +30179,17 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   route(fromPage, toPage) {
+    const { alwaysRoute } = this.props;
     const { currentView } = this.state;
     const startTime = Date.now();
     toPage = this.selectPage(toPage);
 
-    const defaultPrevented = this.onChange(fromPage, toPage);
-    if (defaultPrevented) {
-      throw new Error('Routing prevented');
-    }
+    if (alwaysRoute || !currentView || toPage !== fromPage) {
+      const defaultPrevented = this.onRoute(fromPage, toPage);
+      if (defaultPrevented) {
+        throw new Error('Routing prevented');
+      }
 
-    if (!currentView || toPage !== fromPage) {
       return Promise.resolve().then(() => this.startRouting()).then(() => this.selectView(toPage)).then(() => this.resolveData()).then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
     }
 
@@ -30212,12 +30213,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
   }
 
-  onChange(fromPage, toPage) {
-    const { onChange } = this.props;
+  onRoute(fromPage, toPage) {
+    const { onRoute } = this.props;
     let defaultPrevented = false;
 
-    if (onChange) {
-      onChange({
+    if (onRoute) {
+      onRoute({
         target: this,
         fromPage,
         toPage,
@@ -30281,12 +30282,14 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
 Router.propTypes = {
   onRoute: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].func,
+  alwaysRoute: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].bool,
   className: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].string,
   enterClass: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].string,
   leaveClass: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].string,
   duration: __WEBPACK_IMPORTED_MODULE_0_react__["PropTypes"].number
 };
 Router.defaultProps = {
+  alwaysRoute: false,
   className: '',
   enterClass: '',
   leaveClass: ''

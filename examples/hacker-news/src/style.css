@@ -88,17 +88,13 @@ a {
 .router {
   max-width: 900px;
   margin: auto;
+  transition: .15s opacity ease-in-out;
 }
 
 .router.enter {
-  animation: 1s both fade;
+  opacity: 1;
 }
 
 .router.leave {
-  animation: 1s reverse both fade;
-}
-
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  opacity: 0;
 }
