@@ -53,10 +53,14 @@ export default class Router extends Component {
     const startTime = Date.now()
     toPage = this.selectPage(toPage)
 
+    const defaultPrevented = this.onChange(fromPage, toPage)
+    if (defaultPrevented) {
+      throw new Error('Routing prevented')
+    }
+
     if (!currentView || toPage !== fromPage) {
       return Promise.resolve()
         .then(() => this.startRouting())
-        .then(() => this.onChange(fromPage, toPage))
         .then(() => this.selectView(toPage))
         .then(() => this.resolveData())
         .then(() => this.waitDuration(startTime))
@@ -64,6 +68,7 @@ export default class Router extends Component {
         .then(() => this.finishRouting(toPage))
     }
 
+    // refactor this
     return toPage
   }
 
@@ -85,22 +90,17 @@ export default class Router extends Component {
 
   onChange (fromPage, toPage) {
     const { onChange } = this.props
+    let defaultPrevented = false
 
     if (onChange) {
-      const event = {
+      onChange({
         target: this,
         fromPage,
         toPage,
-        preventDefault () {
-          this.defaultPrevented = true
-        }
-      }
-      onChange(event)
-
-      if (event.defaultPrevented) {
-        throw new Error('Routing prevented')
-      }
+        preventDefault: () => (defaultPrevented = true)
+      })
     }
+    return defaultPrevented
   }
 
   selectView (toPage) {
@@ -114,7 +114,7 @@ export default class Router extends Component {
   resolveData () {
     const { resolve } = this.currentView.props
 
-    // I should clone the view with the new props!!
+    // I should clone the view with the new props from resolve!
     if (resolve) {
       return resolve()
     }
@@ -128,7 +128,7 @@ export default class Router extends Component {
     }
   }
 
-  updateView (toView) {
+  updateView () {
     const { enterClass } = this.props
     const { currentView } = this
 
@@ -145,7 +145,7 @@ export default class Router extends Component {
   render () {
     let { className } = this.props
     const { statusClass, currentView } = this.state
-
+    
     className = `${className} ${statusClass}`
     return <div className={className}>{currentView || null}</div>
   }

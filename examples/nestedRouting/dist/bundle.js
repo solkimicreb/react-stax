@@ -30183,10 +30183,16 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     const startTime = Date.now();
     toPage = this.selectPage(toPage);
 
-    if (!currentView || toPage !== fromPage) {
-      return Promise.resolve().then(() => this.startRouting()).then(() => this.onChange(fromPage, toPage)).then(() => this.selectView(toPage)).then(() => this.resolveData()).then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
+    const defaultPrevented = this.onChange(fromPage, toPage);
+    if (defaultPrevented) {
+      throw new Error('Routing prevented');
     }
 
+    if (!currentView || toPage !== fromPage) {
+      return Promise.resolve().then(() => this.startRouting()).then(() => this.selectView(toPage)).then(() => this.resolveData()).then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
+    }
+
+    // refactor this
     return toPage;
   }
 
@@ -30208,22 +30214,17 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   onChange(fromPage, toPage) {
     const { onChange } = this.props;
+    let defaultPrevented = false;
 
     if (onChange) {
-      const event = {
+      onChange({
         target: this,
         fromPage,
         toPage,
-        preventDefault() {
-          this.defaultPrevented = true;
-        }
-      };
-      onChange(event);
-
-      if (event.defaultPrevented) {
-        throw new Error('Routing prevented');
-      }
+        preventDefault: () => defaultPrevented = true
+      });
     }
+    return defaultPrevented;
   }
 
   selectView(toPage) {
@@ -30236,7 +30237,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   resolveData() {
     const { resolve } = this.currentView.props;
 
-    // I should clone the view with the new props!!
+    // I should clone the view with the new props from resolve!
     if (resolve) {
       return resolve();
     }
@@ -30250,7 +30251,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
   }
 
-  updateView(toView) {
+  updateView() {
     const { enterClass } = this.props;
     const { currentView } = this;
 

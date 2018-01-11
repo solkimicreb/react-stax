@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { easyComp, Link, Router } from 'react-easy-stack'
 import classNames from 'classnames'
 import { storiesStore, StoriesPage } from './StoriesPage'
@@ -27,7 +27,7 @@ function App () {
         </div>
       </nav>
       <Router className='router' defaultPage='stories'
-        enterClass='enter' leaveClass='leave' duration={100}>
+        enterClass='enter' leaveClass='leave' duration={1000}>
         <StoriesPage page='stories' resolve={storiesStore.init} />
         <StoryPage page='story' resolve={storyStore.init} />
         <UserPage page='user' resolve={userStore.init} />
