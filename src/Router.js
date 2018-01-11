@@ -1,8 +1,7 @@
 import React, { Component, PropTypes, Children } from 'react'
-import { registerRouter, releaseRouter, route, routeInitial } from './core'
-import { normalizePath } from './urlUtils'
+import { registerRouter, releaseRouter, route, isRouting } from './core'
+import { path } from './observables'
 import Lazy from './Lazy'
-import { pages } from './observables'
 
 export default class Router extends Component {
   static propTypes = {
@@ -46,72 +45,78 @@ export default class Router extends Component {
   }
 
   componentDidMount () {
-    // this.route()
-    // this.registerRouter()
-    if (this.depth === 0) {
-      routeInitial()
-    }
+    this.route(path[this.depth], path[this.depth])
   }
 
-  /*route (path, params, options) {
-    const pages = normalizePath(path, this.depth)
-    return route(pages, params, options)
-  }*/
-
-  route (toPage) {
-    const { defaultPage } = this.props
+  route (fromPage, toPage) {
+    const { currentView } = this.state
     const startTime = Date.now()
-    const pagesMap = this.parsePages()
-    const fromPage = pages[this.depth]
-    toPage = toPage in pagesMap ? toPage : defaultPage
+    toPage = this.selectPage(toPage)
 
-    console.log('toPage', toPage, 'fromPage', fromPage)
-
-    if (toPage !== fromPage) {
-      return this.startRouting()
-        .then(() => this.dispatchRouteEvent(fromPage, toPage))
-        // only continue if it is not defaultPrevented!
+    if (!currentView || toPage !== fromPage) {
+      return Promise.resolve()
+        .then(() => this.startRouting())
+        .then(() => this.onChange(fromPage, toPage))
+        .then(() => this.selectView(toPage))
+        .then(() => this.resolveData())
         .then(() => this.waitDuration(startTime))
-        .then(() => this.endRouting(pagesMap, toPage))
+        .then(() => this.updateView())
+        .then(() => this.finishRouting(toPage))
     }
+
+    return toPage
   }
 
-  parsePages () {
-    const pages = {}
-    Children.forEach(this.props.children, child => {
-      pages[child.props.page] = child
-    })
-    return pages
+  selectPage (toPage) {
+    const { children, defaultPage } = this.props
+    const pages = Children.map(children, child => child.props.page)
+    return pages.indexOf(toPage) === -1 ? defaultPage : toPage
   }
 
   startRouting () {
     const { leaveClass } = this.props
 
-    return new Promise(resolve => {
-      this.setState({ statusClass: leaveClass }, resolve)
-    })
+    if (leaveClass) {
+      return new Promise(resolve => {
+        this.setState({ statusClass: leaveClass }, resolve)
+      })
+    }
   }
 
-  dispatchRouteEvent (fromPage, toPage) {
-    const { onRoute } = this.props
+  onChange (fromPage, toPage) {
+    const { onChange } = this.props
 
-    if (onRoute) {
-      return onRoute({
+    if (onChange) {
+      const event = {
         target: this,
         fromPage,
         toPage,
         preventDefault () {
           this.defaultPrevented = true
         }
-      })
+      }
+      onChange(event)
+
+      if (event.defaultPrevented) {
+        throw new Error('Routing prevented')
+      }
     }
   }
 
-  loadPage (pagesMap, toPage) {
-    const Page = pagesMap[toPage]
-    if (Page.type === Lazy) {
-      Page.props.load()
-        .then(LoadedPage => (pagesMap[toPage] = LoadedPage))
+  selectView (toPage) {
+    const { children } = this.props
+    const view = Children.toArray(children)
+      .find(child => child.props.page === toPage)
+
+    this.currentView = view.type === Lazy ? view.props.load() : view
+  }
+
+  resolveData () {
+    const { resolve } = this.currentView.props
+
+    // I should clone the view with the new props!!
+    if (resolve) {
+      return resolve()
     }
   }
 
@@ -123,20 +128,25 @@ export default class Router extends Component {
     }
   }
 
-  endRouting (pagesMap, toPage) {
+  updateView (toView) {
     const { enterClass } = this.props
-    const Page = pagesMap[toPage]
-    pages[this.depth] = toPage
-    console.log('end')
+    const { currentView } = this
+
     return new Promise(resolve => {
-      this.setState({ Page, statusClass: enterClass }, resolve)
+      this.setState({ currentView, statusClass: enterClass }, resolve)
     })
   }
 
-  render () {
-    const { statusClass, Page } = this.state
+  finishRouting (toPage) {
+    this.currentView = undefined
+    return toPage
+  }
 
-    const className = `${this.props.className} ${statusClass}`
-    return <div className={className}>{Page || null}</div>
+  render () {
+    let { className } = this.props
+    const { statusClass, currentView } = this.state
+
+    className = `${className} ${statusClass}`
+    return <div className={className}>{currentView || null}</div>
   }
 }

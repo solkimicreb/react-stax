@@ -86,7 +86,7 @@ a {
 }
 
 .router {
-  transition: opacity .2s ease-in-out;
+  transition: opacity .1s;
   max-width: 900px;
   margin: auto;
 }

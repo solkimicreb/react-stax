@@ -1,9 +1,9 @@
-export function toPages (path) {
+export function toPathArray (path) {
   return path.split('/').filter(notEmpty)
 }
 
-export function toPath (pages) {
-  return '/' + pages.filter(notEmpty).join('/')
+export function toPathString (path) {
+  return '/' + path.filter(notEmpty).join('/')
 }
 
 export function toQuery (params) {

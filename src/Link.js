@@ -6,9 +6,9 @@ import React, {
   cloneElement
 } from 'react'
 import { easyComp } from 'react-easy-state'
-import { toPages, toQuery } from './urlUtils'
+import { toPathArray, toQuery } from './urlUtils'
 import { route } from './core'
-import { params, pages } from './observables'
+import { params, path } from './observables'
 
 class Link extends Component {
   static propTypes = {
@@ -39,15 +39,15 @@ class Link extends Component {
   }
 
   isLinkActive () {
-    return this.isLinkPagesActive() && this.isLinkParamsActive()
+    return this.isLinkPathActive() && this.isLinkParamsActive()
   }
 
-  isLinkPagesActive () {
+  isLinkPathActive () {
     const { to } = this.props
     if (to) {
-      const linkPages = toPages(to)
-      return linkPages.every(
-        (linkPage, i) => linkPage === pages[i + this.linkDepth]
+      const linkPath = toPathArray(to)
+      return linkPath.every(
+        (page, i) => page === path[i + this.linkDepth]
       )
     }
     return true
@@ -72,7 +72,7 @@ class Link extends Component {
       onClick(ev)
     }
 
-    route(toPages(to), params, options, this.linkDepth)
+    route(to, params, options, this.linkDepth)
   }
 
   render () {

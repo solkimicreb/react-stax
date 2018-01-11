@@ -1,7 +1,9 @@
-import { toPages, clear } from './urlUtils'
-import { pages, params, urlScheduler } from './observables'
+import { path, params, urlScheduler } from './observables'
+import { toPathArray, clear } from './urlUtils'
 
 const routers = []
+
+export let isRouting = false
 
 export function registerRouter(router, depth) {
   let routersAtDepth = routers[depth]
@@ -18,22 +20,14 @@ export function releaseRouter(router, depth) {
   }
 }
 
-export function route (newPages = pages, newParams = {}, options = {}, depth = 0) {
+export function route (toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
   urlScheduler.process()
   urlScheduler.stop()
 
-  console.log(Array.from(newPages), depth)
   // push the current state, only use replaceState later
   if (options.history !== false) {
     history.pushState(history.state, '')
   }
-
-  // clear the current pages, it will be rebuilt by the routers during the routing
-  // clear(pages)
-
-  const nPages = pages.slice(0, depth)
-  nPages.push(...newPages)
-  pages.length = nPages.length
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -41,32 +35,38 @@ export function route (newPages = pages, newParams = {}, options = {}, depth = 0
   }
   Object.assign(params, newParams)
 
-  return routeFromDepth(depth, nPages)
-    .then(() => {
-      urlScheduler.start()
-      // pages.lenght = newPages.length
-    })
+  toPath = path.slice(0, depth).concat(toPathArray(toPath))
+  path.length = toPath.length // this is BS, remove it later!
+
+  return routeFromDepth(depth, toPath)
+    .then(() => urlScheduler.start())
 }
 
-function routeFromDepth (depth, newPages) {
-  const toPage = newPages[depth]
+function routeFromDepth (depth, toPath) {
+  const fromPage = path[depth]
+  const toPage = toPath[depth]
   let routersAtDepth = routers[depth]
 
-  if (!routersAtDepth) {
+  if (!(routersAtDepth && routersAtDepth.size)) {
     return Promise.resolve()
   }
-  routersAtDepth = Array.from(routersAtDepth)
-  console.log(newPages, depth)
 
-  return Promise.all(routersAtDepth.map(router => router.route(toPage)))
-    .then(() => routeFromDepth(++depth, newPages))
+  const routings = Array.from(routersAtDepth)
+    .map(router => router.route(fromPage, toPage))
+
+  return Promise.all(routings)
+    .then(pages => updatePath(depth, pages))
+    .then(() => routeFromDepth(++depth, toPath))
+}
+
+function updatePath (depth, pages) {
+  // reduce and throw error later!!
+  path[depth] = pages[0]
 }
 
 // name this routeOnNavigation
 export function routeInitial () {
-  const pages = toPages(location.pathname)
-  const params = history.state
-  return route(pages, params, { history: false })
+  return route(location.pathname, history.state, { history: false })
 }
 
 window.addEventListener('popstate', routeInitial)

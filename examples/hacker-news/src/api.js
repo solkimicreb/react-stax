@@ -1,14 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
-import EventListener from 'events'
 import appStore from './appStore'
 import { API_URL, API_VERSION, STORIES_PER_PAGE, STORY_TYPES } from './config'
 
 firebase.initializeApp({ databaseURL: API_URL })
 const api = firebase.database().ref(API_VERSION)
-
-export const events = new EventListener()
-events.setMaxListeners(1000)
 
 const cache = new Map()
 
@@ -17,7 +13,6 @@ STORY_TYPES.forEach(type => {
   api.child(`${type}stories`).on('value', snapshot => {
     const ids = snapshot.val()
     cache.set(`${type}stories`, ids)
-    events.emit(type)
   })
 })
 
@@ -26,7 +21,6 @@ api.child('updates').on('value', snapshot => {
   const { items = [], profiles = [] } = snapshot.val()
   items.forEach(id => cache.delete(`item/${id}`))
   profiles.forEach(id => cache.delete(`user/${id}`))
-  events.emit('updates', new Set(items))
 })
 
 function fetch(child) {

@@ -1,5 +1,5 @@
 export { easyComp, easyStore } from 'react-easy-state'
-export { params, storage } from './observables'
+export { params, storage, path } from './observables'
 export { default as Router } from './Router'
 export { route } from './core'
 export { default as Link } from './Link'
