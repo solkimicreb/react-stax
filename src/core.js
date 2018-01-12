@@ -21,6 +21,9 @@ export function releaseRouter(router, depth) {
 }
 
 export function route (toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
+  isRouting = true
+  toPath = toPathArray(toPath)
+
   urlScheduler.process()
   urlScheduler.stop()
 
@@ -35,11 +38,10 @@ export function route (toPath = location.pathname, newParams = {}, options = {},
   }
   Object.assign(params, newParams)
 
-  toPath = path.slice(0, depth).concat(toPathArray(toPath))
-  path.length = toPath.length // this is BS, remove it later!
+  path.splice(depth, path.length)
 
   return routeFromDepth(depth, toPath)
-    .then(() => urlScheduler.start())
+    .then(finishRouting, finishRouting)
 }
 
 function routeFromDepth (depth, toPath) {
@@ -55,18 +57,16 @@ function routeFromDepth (depth, toPath) {
     .map(router => router.route(fromPage, toPage))
 
   return Promise.all(routings)
-    .then(pages => updatePath(depth, pages))
     .then(() => routeFromDepth(++depth, toPath))
 }
 
-function updatePath (depth, pages) {
-  // reduce and throw error later!!
-  path[depth] = pages[0]
+function finishRouting () {
+  isRouting = false
+  urlScheduler.start()
+  // if it was an error, rethrow the error here!!
 }
 
-// name this routeOnNavigation
-export function routeInitial () {
-  return route(location.pathname, history.state, { history: false })
-}
-
-window.addEventListener('popstate', routeInitial)
+window.addEventListener(
+  'popstate',
+  () => route(location.pathname, history.state, { history: false })
+)

@@ -8172,22 +8172,33 @@ function set(obj, key, value, receiver) {
     value = proxyToRaw.get(value) || value;
   }
   // save if the value changed because of this set operation
-  // array 'length' is an exception here, because of it's exotic nature
-  var valueChanged = key === 'length' || value !== obj[key];
+  var valueChanged = value !== obj[key];
+  // length is lazy, it can change without an explicit length set operation
+  var prevLength = Array.isArray(obj) && obj.length;
   // execute the set operation before running any reaction
   var result = Reflect.set(obj, key, value, receiver);
+  // check if the length changed implicitly, because of out of bound set operations
+  var lengthChanged = prevLength !== false && prevLength !== obj.length;
   // emit a warning and do not queue anything when another reaction is queued
   // from an already running reaction
   if (hasRunningReaction()) {
     console.error("Mutating observables in reactions is forbidden. You set " + key + " to " + value + ".");
     return result;
   }
+  // if the target of the operation is not the raw receiver return
+  // (possible because of prototypal inheritance)
+  if (obj !== proxyToRaw.get(receiver)) {
+    return result;
+  }
   // do not queue reactions if it is a symbol keyed property
   // or the set operation resulted in no value change
-  // or if the target of the operation is not the raw object (possible because of prototypal inheritance)
-  if (typeof key !== 'symbol' && valueChanged && obj === proxyToRaw.get(receiver)) {
+  if (typeof key !== 'symbol' && valueChanged) {
     queueReactionsForKey(obj, key);
     queueReactionsForKey(obj, ENUMERATE);
+  }
+  // queue length reactions in case the length changed
+  if (lengthChanged) {
+    queueReactionsForKey(obj, 'length');
   }
   return result;
 }
@@ -8264,11 +8275,10 @@ function raw(obj) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export isRouting */
-/* harmony export (immutable) */ __webpack_exports__["a"] = registerRouter;
-/* harmony export (immutable) */ __webpack_exports__["b"] = releaseRouter;
-/* harmony export (immutable) */ __webpack_exports__["c"] = route;
-/* unused harmony export routeInitial */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return isRouting; });
+/* harmony export (immutable) */ __webpack_exports__["b"] = registerRouter;
+/* harmony export (immutable) */ __webpack_exports__["c"] = releaseRouter;
+/* harmony export (immutable) */ __webpack_exports__["d"] = route;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observables__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__urlUtils__ = __webpack_require__(53);
 
@@ -8294,6 +8304,9 @@ function releaseRouter(router, depth) {
 }
 
 function route(toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
+  isRouting = true;
+  toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* toPathArray */])(toPath);
+
   __WEBPACK_IMPORTED_MODULE_0__observables__["d" /* urlScheduler */].process();
   __WEBPACK_IMPORTED_MODULE_0__observables__["d" /* urlScheduler */].stop();
 
@@ -8308,10 +8321,9 @@ function route(toPath = location.pathname, newParams = {}, options = {}, depth =
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0__observables__["a" /* params */], newParams);
 
-  toPath = __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* toPathArray */])(toPath));
-  __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].length = toPath.length; // this is BS, remove it later!
+  __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].length);
 
-  return routeFromDepth(depth, toPath).then(() => __WEBPACK_IMPORTED_MODULE_0__observables__["d" /* urlScheduler */].start());
+  return routeFromDepth(depth, toPath).then(finishRouting, finishRouting);
 }
 
 function routeFromDepth(depth, toPath) {
@@ -8325,20 +8337,16 @@ function routeFromDepth(depth, toPath) {
 
   const routings = Array.from(routersAtDepth).map(router => router.route(fromPage, toPage));
 
-  return Promise.all(routings).then(pages => updatePath(depth, pages)).then(() => routeFromDepth(++depth, toPath));
+  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath));
 }
 
-function updatePath(depth, pages) {
-  // reduce and throw error later!!
-  __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */][depth] = pages[0];
+function finishRouting() {
+  isRouting = false;
+  __WEBPACK_IMPORTED_MODULE_0__observables__["d" /* urlScheduler */].start();
+  // if it was an error, rethrow the error here!!
 }
 
-// name this routeOnNavigation
-function routeInitial() {
-  return route(location.pathname, history.state, { history: false });
-}
-
-window.addEventListener('popstate', routeInitial);
+window.addEventListener('popstate', () => route(location.pathname, history.state, { history: false }));
 
 /***/ }),
 /* 83 */
@@ -27966,15 +27974,18 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   componentWillMount() {
-    Object(__WEBPACK_IMPORTED_MODULE_1__core__["a" /* registerRouter */])(this, this.depth);
+    Object(__WEBPACK_IMPORTED_MODULE_1__core__["b" /* registerRouter */])(this, this.depth);
   }
 
   componentWillUnmount() {
-    Object(__WEBPACK_IMPORTED_MODULE_1__core__["b" /* releaseRouter */])(this, this.depth);
+    Object(__WEBPACK_IMPORTED_MODULE_1__core__["c" /* releaseRouter */])(this, this.depth);
   }
 
   componentDidMount() {
-    this.route(__WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth], __WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth]);
+    if (!__WEBPACK_IMPORTED_MODULE_1__core__["a" /* isRouting */]) {
+      __WEBPACK_IMPORTED_MODULE_2__observables__["d" /* urlScheduler */].stop();
+      this.route(__WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth], __WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth]).then(() => __WEBPACK_IMPORTED_MODULE_2__observables__["d" /* urlScheduler */].start());
+    }
   }
 
   route(fromPage, toPage) {
@@ -28073,7 +28084,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   finishRouting(toPage) {
     this.currentView = undefined;
-    return toPage;
+    __WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth] = toPage;
   }
 
   render() {
@@ -28169,7 +28180,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       onClick(ev);
     }
 
-    Object(__WEBPACK_IMPORTED_MODULE_3__core__["c" /* route */])(to, params, options, this.linkDepth);
+    Object(__WEBPACK_IMPORTED_MODULE_3__core__["d" /* route */])(to, params, options, this.linkDepth);
   }
 
   render() {

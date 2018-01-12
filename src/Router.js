@@ -1,6 +1,6 @@
 import React, { Component, PropTypes, Children, cloneElement } from 'react'
 import { registerRouter, releaseRouter, route, isRouting } from './core'
-import { path, params } from './observables'
+import { path, params, urlScheduler } from './observables'
 import Lazy from './Lazy'
 
 export default class Router extends Component {
@@ -47,7 +47,11 @@ export default class Router extends Component {
   }
 
   componentDidMount () {
-    this.route(path[this.depth], path[this.depth])
+    if (!isRouting) {
+      urlScheduler.stop()
+      this.route(path[this.depth], path[this.depth])
+        .then(() => urlScheduler.start())
+    }
   }
 
   route (fromPage, toPage) {
@@ -152,7 +156,7 @@ export default class Router extends Component {
 
   finishRouting (toPage) {
     this.currentView = undefined
-    return toPage
+    path[this.depth] = toPage
   }
 
   render () {
