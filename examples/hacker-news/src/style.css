@@ -30,6 +30,7 @@
 
 .topnav a {
   margin: 0 15px;
+  transition: .3s color;
 }
 
 .topnav a.active, .topnav a:hover {
@@ -54,9 +55,6 @@ a {
 
 .story .header {
   font-size: 20px;
-}
-
-.story .footer {
 }
 
 .comment {
@@ -88,7 +86,7 @@ a {
 .router {
   max-width: 900px;
   margin: auto;
-  transition: .15s opacity ease-in-out;
+  transition: .15s opacity;
 }
 
 .router.enter {

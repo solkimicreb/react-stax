@@ -28000,13 +28000,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         throw new Error('Routing prevented');
       }
 
-      return Promise.resolve().then(() => this.startRouting()).then(() => this.selectView(toPage)).then(() => this.resolveData())
-      // comp updates here to show the new params! -> this is bad ):
-      .then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
+      return Promise.resolve().then(() => this.startRouting()).then(() => alwaysRoute && this.waitDuration(startTime)).then(() => this.selectView(toPage)).then(() => this.resolveData()).then(() => !alwaysRoute && this.waitDuration(startTime)).then(() => this.finishRouting(toPage));
     }
-
-    // refactor this
-    return toPage;
   }
 
   selectPage(toPage) {
@@ -28073,18 +28068,16 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
   }
 
-  updateView() {
+  finishRouting(toPage) {
     const { enterClass } = this.props;
     const { currentView } = this;
+
+    __WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth] = toPage;
+    this.currentView = undefined;
 
     return new Promise(resolve => {
       this.setState({ currentView, statusClass: enterClass }, resolve);
     });
-  }
-
-  finishRouting(toPage) {
-    this.currentView = undefined;
-    __WEBPACK_IMPORTED_MODULE_2__observables__["b" /* path */][this.depth] = toPage;
   }
 
   render() {

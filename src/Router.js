@@ -68,16 +68,12 @@ export default class Router extends Component {
 
       return Promise.resolve()
         .then(() => this.startRouting())
+        .then(() => alwaysRoute && this.waitDuration(startTime))
         .then(() => this.selectView(toPage))
         .then(() => this.resolveData())
-        // comp updates here to show the new params! -> this is bad ):
-        .then(() => this.waitDuration(startTime))
-        .then(() => this.updateView())
+        .then(() => !alwaysRoute && this.waitDuration(startTime))
         .then(() => this.finishRouting(toPage))
     }
-
-    // refactor this
-    return toPage
   }
 
   selectPage (toPage) {
@@ -145,18 +141,16 @@ export default class Router extends Component {
     }
   }
 
-  updateView () {
+  finishRouting (toPage) {
     const { enterClass } = this.props
     const { currentView } = this
+
+    path[this.depth] = toPage
+    this.currentView = undefined
 
     return new Promise(resolve => {
       this.setState({ currentView, statusClass: enterClass }, resolve)
     })
-  }
-
-  finishRouting (toPage) {
-    this.currentView = undefined
-    path[this.depth] = toPage
   }
 
   render () {
