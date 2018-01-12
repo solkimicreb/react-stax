@@ -1,10 +1,16 @@
 import React, { Component } from 'react'
 import { easyComp, Link } from 'react-easy-stack'
 import timeago from 'timeago.js'
+import { fetchComment } from './api'
 
 class RawComment extends Component {
   store = {
-    hidden: false
+    hidden: false,
+    comment: {}
+  }
+
+  async componentDidMount () {
+    this.store.comment = await fetchComment(this.props.id)
   }
 
   toggleVisibility () {
@@ -12,8 +18,8 @@ class RawComment extends Component {
   }
 
   render () {
-    const { hidden } = this.store
-    const { deleted, dead, text, by, time, kids } = this.props.comment
+    const { hidden, comment } = this.store
+    const { deleted, dead, text, by, time, kids } = comment
     const timeAgo = timeago().format(time * 1000)
 
     if (deleted || dead || !text) {
@@ -25,7 +31,7 @@ class RawComment extends Component {
         <div>
           <Link to="/user" params={{ id: by }}> {by} </Link>
           {timeAgo}
-          <span onClick={this.toggleVisibility}>{hidden ? `[+${kids.length}]` : '[-]'}</span>
+          <span onClick={this.toggleVisibility}>{hidden ? '[+]' : '[-]'}</span>
         </div>
 
         {!hidden && <div>

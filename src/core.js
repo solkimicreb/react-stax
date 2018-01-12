@@ -41,7 +41,7 @@ export function route (toPath = location.pathname, newParams = {}, options = {},
   path.splice(depth, path.length)
 
   return routeFromDepth(depth, toPath)
-    .then(finishRouting, finishRouting)
+    .then(finishRouting/*, finishRouting*/)
 }
 
 function routeFromDepth (depth, toPath) {

@@ -8752,7 +8752,7 @@ function route(toPath = location.pathname, newParams = {}, options = {}, depth =
 
   __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].length);
 
-  return routeFromDepth(depth, toPath).then(finishRouting, finishRouting);
+  return routeFromDepth(depth, toPath).then(finishRouting /*, finishRouting*/);
 }
 
 function routeFromDepth(depth, toPath) {
