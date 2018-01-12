@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../StoryItem'
 import store from './store'
 
-function StoriesPage() {
+function StoriesPage () {
   const { fetchPage, hasMore, stories } = store
   return (
     <InfiniteScroll loadMore={fetchPage} hasMore={hasMore}

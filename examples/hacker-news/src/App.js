@@ -1,9 +1,9 @@
 import React from 'react'
 import { easyComp, Link, Router } from 'react-easy-stack'
 import classNames from 'classnames'
-import { storiesStore, StoriesPage } from './StoriesPage'
-import { StoryPage, storyStore } from './StoryPage'
-import { UserPage, userStore } from './UserPage'
+import { StoriesPage, resolveStories } from './StoriesPage'
+import { StoryPage, resolveStory } from './StoryPage'
+import { UserPage, resolveUser } from './UserPage'
 import appStore from './appStore'
 import { STORY_TYPES } from './config'
 
@@ -28,9 +28,9 @@ function App () {
       </nav>
       <Router className='router' defaultPage='stories' alwaysRoute={true}
         enterClass='enter' leaveClass='leave' duration={150}>
-        <StoriesPage page='stories' resolve={storiesStore.init} />
-        <StoryPage page='story' resolve={storyStore.init} />
-        <UserPage page='user' resolve={userStore.init} />
+        <StoriesPage page='stories' resolve={resolveStories}  defaultParams={{ type: 'top' }} />
+        <StoryPage page='story' resolve={resolveStory} />
+        <UserPage page='user' resolve={resolveUser} />
       </Router>
     </div>
   )

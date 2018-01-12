@@ -2,10 +2,8 @@ import React from 'react'
 import { easyComp } from 'react-easy-stack'
 import StoryItem from '../StoryItem'
 import Comment from '../Comment'
-import store from './store'
 
-function StoryPage() {
-  const { story } = store
+function StoryPage (story) {
   return (
     <div>
       <StoryItem story={story} />

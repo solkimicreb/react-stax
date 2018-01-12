@@ -1,15 +1,13 @@
 import React from 'react'
 import { easyComp } from 'react-easy-stack'
-import store from './store'
 
-function UserPage() {
-  const { user } = store
+function UserPage ({ id, created, karma, about }) {
   return (
     <div>
-      <p>user: {user.id}</p>
-      <p>created: {user.created}</p>
-      <p>karma: {user.karma}</p>
-      <p>about: <span dangerouslySetInnerHTML={{ __html: user.about }} /></p>
+      <p>user: {id}</p>
+      <p>created: {created}</p>
+      <p>karma: {karma}</p>
+      <p>about: <span dangerouslySetInnerHTML={{ __html: about }} /></p>
     </div>
   )
 }

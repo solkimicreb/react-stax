@@ -30190,7 +30190,9 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         throw new Error('Routing prevented');
       }
 
-      return Promise.resolve().then(() => this.startRouting()).then(() => this.selectView(toPage)).then(() => this.resolveData()).then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
+      return Promise.resolve().then(() => this.startRouting()).then(() => this.selectView(toPage)).then(() => this.resolveData())
+      // comp updates here to show the new params! -> this is bad ):
+      .then(() => this.waitDuration(startTime)).then(() => this.updateView()).then(() => this.finishRouting(toPage));
     }
 
     // refactor this
@@ -30236,11 +30238,20 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   resolveData() {
-    const { resolve } = this.currentView.props;
+    const { resolve, defaultParams } = this.currentView.props;
 
-    // I should clone the view with the new props from resolve!
+    if (defaultParams) {
+      for (let key in defaultParams) {
+        if (!(key in __WEBPACK_IMPORTED_MODULE_2__observables__["a" /* params */])) {
+          __WEBPACK_IMPORTED_MODULE_2__observables__["a" /* params */][key] = defaultParams[key];
+        }
+      }
+    }
+
     if (resolve) {
-      return resolve();
+      return resolve()
+      // BAD -> not guaranteed to be a promise
+      .then(data => this.currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(this.currentView, data));
     }
   }
 

@@ -1,6 +1,6 @@
-import React, { Component, PropTypes, Children } from 'react'
+import React, { Component, PropTypes, Children, cloneElement } from 'react'
 import { registerRouter, releaseRouter, route, isRouting } from './core'
-import { path } from './observables'
+import { path, params } from './observables'
 import Lazy from './Lazy'
 
 export default class Router extends Component {
@@ -66,6 +66,7 @@ export default class Router extends Component {
         .then(() => this.startRouting())
         .then(() => this.selectView(toPage))
         .then(() => this.resolveData())
+        // comp updates here to show the new params! -> this is bad ):
         .then(() => this.waitDuration(startTime))
         .then(() => this.updateView())
         .then(() => this.finishRouting(toPage))
@@ -115,11 +116,20 @@ export default class Router extends Component {
   }
 
   resolveData () {
-    const { resolve } = this.currentView.props
+    const { resolve, defaultParams } = this.currentView.props
 
-    // I should clone the view with the new props from resolve!
+    if (defaultParams) {
+      for (let key in defaultParams) {
+        if (!(key in params)) {
+          params[key] = defaultParams[key]
+        }
+      }
+    }
+
     if (resolve) {
       return resolve()
+        // BAD -> not guaranteed to be a promise
+        .then(data => (this.currentView = cloneElement(this.currentView, data)))
     }
   }
 

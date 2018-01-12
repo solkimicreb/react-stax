@@ -1,16 +1,11 @@
 import { easyStore, params } from 'react-easy-stack'
 import { fetchStoriesByType } from '../api'
 
-params.type = params.type || 'top'
-
 const store = {
   stories: [],
   pages: 0,
   hasMore: true,
-  async init () {
-    await this.updateStories()
-  },
-  async updateStories () {
+  async resolveStories () {
     this.stories = await fetchStoriesByType(params.type, 0, this.pages)
   },
   async fetchPage(page) {

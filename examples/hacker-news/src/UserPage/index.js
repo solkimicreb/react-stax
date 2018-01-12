@@ -1,4 +1,4 @@
 import UserPage from './UserPage'
-import userStore from './store'
+import resolveUser from './resolveUser'
 
-export { UserPage, userStore }
+export { UserPage, resolveUser }
