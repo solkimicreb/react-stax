@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp, Link } from 'react-easy-stack'
+import { view, Link } from 'react-easy-stack'
 import timeago from 'timeago.js'
 
 function StoryItem ({ idx, story }) {
@@ -34,4 +34,4 @@ function StoryItem ({ idx, story }) {
   )
 }
 
-export default easyComp(StoryItem)
+export default view(StoryItem)

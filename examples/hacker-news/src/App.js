@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp, Link, Router } from 'react-easy-stack'
+import { view, Link, Router } from 'react-easy-stack'
 import classNames from 'classnames'
 import { StoriesPage, resolveStories } from './StoriesPage'
 import { StoryPage, resolveStory } from './StoryPage'
@@ -36,4 +36,4 @@ function App () {
   )
 }
 
-export default easyComp(App)
+export default view(App)

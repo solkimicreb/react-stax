@@ -1,7 +1,7 @@
-import { easyStore, params } from 'react-easy-stack'
+import { store, params } from 'react-easy-stack'
 import { fetchStoriesByType } from '../api'
 
-const store = {
+export default store({
   stories: [],
   pages: 0,
   hasMore: true,
@@ -18,6 +18,4 @@ const store = {
     }
     this.pages = page
   }
-}
-
-export default easyStore(store)
+})

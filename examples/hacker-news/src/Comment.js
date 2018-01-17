@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { easyComp, Link } from 'react-easy-stack'
+import { view, store, Link } from 'react-easy-stack'
 import timeago from 'timeago.js'
 import { fetchComment } from './api'
 
 class RawComment extends Component {
-  store = {
+  store = store({
     hidden: false,
     comment: {}
-  }
+  })
 
   async componentDidMount () {
     this.store.comment = await fetchComment(this.props.id)
@@ -43,5 +43,5 @@ class RawComment extends Component {
   }
 }
 
-const Comment = easyComp(RawComment)
+const Comment = view(RawComment)
 export default Comment

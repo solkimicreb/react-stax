@@ -1,4 +1,4 @@
-export { easyComp, easyStore } from 'react-easy-state'
+export { view, store } from 'react-easy-state'
 export { params, storage, path } from './observables'
 export { default as Router } from './Router'
 export { route } from './core'

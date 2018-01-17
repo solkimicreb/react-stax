@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
-import { easyComp } from 'react-easy-stack'
+import { view } from 'react-easy-stack'
 import todos from './store'
 
 class TodoItem extends Component {
@@ -29,5 +29,5 @@ class TodoItem extends Component {
   }
 }
 
-// wrap the component with easyComp before exporting it
-export default easyComp(TodoItem)
+// wrap the component with view before exporting it
+export default view(TodoItem)

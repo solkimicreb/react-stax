@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { easyComp, Link, params } from 'react-easy-stack'
+import { view, Link, params } from 'react-easy-stack'
 import TodoItem from './TodoItem'
-import todos from './store'
+import todosStore from './store'
 
 // render is triggered whenever the relevant parts of the global todos store change
 class App extends Component {
@@ -14,8 +14,8 @@ class App extends Component {
   }
 
   render () {
-    const { isEmpty, hasCompleted, allCompleted, active, toggleAll, clearCompleted } = todos
-    const { filter } = params
+    const { todos, isEmpty, hasCompleted, allCompleted, clearCompleted,
+      activeCount, toggleAll } = todosStore
 
     return (
       <div className='todoapp'>
@@ -28,12 +28,12 @@ class App extends Component {
           <input className='toggle-all' type='checkbox' checked={allCompleted} onChange={toggleAll} />
           <label htmlFor='toggle-all'>Mark all as complete</label>
           <ul className='todo-list'>
-            {todos[filter].map((todo, idx) => <TodoItem {...todo} id={idx} key={idx} />)}
+            {todos.map((todo, idx) => <TodoItem {...todo} id={idx} key={idx} />)}
           </ul>
         </section>}
 
         {!isEmpty && <footer className='footer'>
-          <span className='todo-count'>{active.length} items left</span>
+          <span className='todo-count'>{activeCount} items left</span>
           <div className='filters'>
             <Link element='button' activeClass='selected' params={{filter: 'all'}}>All</Link>
             <Link element='button' activeClass='selected' params={{filter: 'active'}}>Active</Link>
@@ -48,5 +48,5 @@ class App extends Component {
   }
 }
 
-// wrap the component with easyComp before exporting it
-export default easyComp(App)
+// wrap the component with view before exporting it
+export default view(App)

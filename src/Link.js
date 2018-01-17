@@ -5,7 +5,7 @@ import React, {
   createElement,
   cloneElement
 } from 'react'
-import { easyComp } from 'react-easy-state'
+import { view } from 'react-easy-state'
 import { toPathArray, toQuery } from './urlUtils'
 import { route } from './core'
 import { params, path } from './observables'
@@ -92,4 +92,4 @@ class Link extends Component {
   }
 }
 
-export default easyComp(Link)
+export default view(Link)

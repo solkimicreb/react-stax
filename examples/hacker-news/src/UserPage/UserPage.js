@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp } from 'react-easy-stack'
+import { view } from 'react-easy-stack'
 
 function UserPage ({ id, created, karma, about }) {
   return (
@@ -12,4 +12,4 @@ function UserPage ({ id, created, karma, about }) {
   )
 }
 
-export default easyComp(UserPage)
+export default view(UserPage)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { easyComp } from 'react-easy-stack'
+import { view } from 'react-easy-stack'
 import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../StoryItem'
 import store from './store'
@@ -14,4 +14,4 @@ function StoriesPage () {
   )
 }
 
-export default easyComp(StoriesPage)
+export default view(StoriesPage)

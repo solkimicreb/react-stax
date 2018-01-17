@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { easyComp } from 'react-easy-stack'
+import { view } from 'react-easy-stack'
 import timeago from 'timeago.js'
 
 const SECOND = 1000
@@ -39,4 +39,4 @@ class TimeAgo extends Component {
   }
 }
 
-export default easyComp(TimeAgo)
+export default view(TimeAgo)
