@@ -45,10 +45,10 @@ export function route (
 
   path.splice(depth, path.length)
 
-  return routeFromDepth(depth, toPath).then(finishRouting /*, finishRouting */)
+  return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */)
 }
 
-function routeFromDepth (depth, toPath) {
+function routeFromDepth (depth, toPath, inital) {
   const fromPage = path[depth]
   const toPage = toPath[depth]
   let routersAtDepth = routers[depth]
@@ -58,10 +58,10 @@ function routeFromDepth (depth, toPath) {
   }
 
   const routings = Array.from(routersAtDepth).map(router =>
-    router.route(fromPage, toPage)
+    router.route(fromPage, toPage, initial)
   )
 
-  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath))
+  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath, false))
 }
 
 function finishRouting () {

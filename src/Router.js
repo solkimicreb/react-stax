@@ -52,7 +52,7 @@ export default class Router extends Component {
     }
   }
 
-  route (fromPage, toPage) {
+  route (fromPage, toPage, initial) {
     const { alwaysRoute } = this.props
     const { currentView } = this.state
     const startTime = Date.now()
@@ -65,11 +65,11 @@ export default class Router extends Component {
       }
 
       return Promise.resolve()
-        .then(() => this.startRouting())
-        .then(() => alwaysRoute && this.waitDuration(startTime))
+        .then(() => initial && this.startRouting())
+        .then(() => initial && alwaysRoute && this.waitDuration(startTime))
         .then(() => this.selectView(toPage))
         .then(() => this.resolveData())
-        .then(() => !alwaysRoute && this.waitDuration(startTime))
+        .then(() => initial && !alwaysRoute && this.waitDuration(startTime))
         .then(() => this.finishRouting(toPage))
     }
   }
