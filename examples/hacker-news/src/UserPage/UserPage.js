@@ -7,7 +7,9 @@ function UserPage ({ id, created, karma, about }) {
       <p>user: {id}</p>
       <p>created: {created}</p>
       <p>karma: {karma}</p>
-      <p>about: <span dangerouslySetInnerHTML={{ __html: about }} /></p>
+      <p>
+        about: <span dangerouslySetInnerHTML={{ __html: about }} />
+      </p>
     </div>
   )
 }

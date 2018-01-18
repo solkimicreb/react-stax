@@ -17,18 +17,35 @@ function App () {
       <nav className='topnav'>
         <div className='inner'>
           <div className='links'>
-            {STORY_TYPES.map(
-              type => <Link to="stories" params={{ type }} activeClass='active' key={type}>{type}</Link>
-            )}
+            {STORY_TYPES.map(type => (
+              <Link
+                to='stories'
+                params={{ type }}
+                activeClass='active'
+                key={type}
+              >
+                {type}
+              </Link>
+            ))}
           </div>
           <div className={themeClass} onClick={toggleTheme}>
             THEME
           </div>
         </div>
       </nav>
-      <Router className='router' defaultPage='stories' alwaysRoute={true}
-        enterClass='enter' leaveClass='leave' duration={150}>
-        <StoriesPage page='stories' resolve={resolveStories}  defaultParams={{ type: 'top' }} />
+      <Router
+        className='router'
+        defaultPage='stories'
+        alwaysRoute
+        enterClass='enter'
+        leaveClass='leave'
+        duration={150}
+      >
+        <StoriesPage
+          page='stories'
+          resolve={resolveStories}
+          defaultParams={{ type: 'top' }}
+        />
         <StoryPage page='story' resolve={resolveStory} />
         <UserPage page='user' resolve={resolveUser} />
       </Router>

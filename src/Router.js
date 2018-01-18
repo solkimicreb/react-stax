@@ -11,14 +11,14 @@ export default class Router extends Component {
     enterClass: PropTypes.string,
     leaveClass: PropTypes.string,
     duration: PropTypes.number
-  }
+  };
 
   static defaultProps = {
     alwaysRoute: false,
     className: '',
     enterClass: '',
     leaveClass: ''
-  }
+  };
 
   static childContextTypes = {
     easyRouterDepth: PropTypes.number
@@ -36,7 +36,7 @@ export default class Router extends Component {
     return { easyRouterDepth: this.depth + 1 }
   }
 
-  state = {}
+  state = {};
 
   componentWillMount () {
     registerRouter(this, this.depth)
@@ -48,9 +48,7 @@ export default class Router extends Component {
 
   componentDidMount () {
     if (!isRouting) {
-      urlScheduler.stop()
       this.route(path[this.depth], path[this.depth])
-        .then(() => urlScheduler.start())
     }
   }
 
@@ -109,8 +107,9 @@ export default class Router extends Component {
 
   selectView (toPage) {
     const { children } = this.props
-    const view = Children.toArray(children)
-      .find(child => child.props.page === toPage)
+    const view = Children.toArray(children).find(
+      child => child.props.page === toPage
+    )
 
     this.currentView = view.type === Lazy ? view.props.load() : view
   }
@@ -127,9 +126,13 @@ export default class Router extends Component {
     }
 
     if (resolve) {
-      return resolve()
-        // BAD -> not guaranteed to be a promise
-        .then(data => (this.currentView = cloneElement(this.currentView, data)))
+      return (
+        resolve()
+          // BAD -> not guaranteed to be a promise
+          .then(
+            data => (this.currentView = cloneElement(this.currentView, data))
+          )
+      )
     }
   }
 

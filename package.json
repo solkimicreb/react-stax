@@ -108,6 +108,7 @@
   "standard": {
     "parser": "babel-eslint",
     "env": [
+      "browser",
       "jest"
     ]
   },

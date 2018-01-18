@@ -19,17 +19,17 @@ class Link extends Component {
     options: PropTypes.object,
     onClick: PropTypes.func,
     className: PropTypes.string
-  }
+  };
 
   static contextTypes = {
     easyRouterDepth: PropTypes.number
-  }
+  };
 
   static defaultProps = {
     element: 'a',
     activeClass: '',
     className: ''
-  }
+  };
 
   get linkDepth () {
     const { to } = this.props
@@ -46,9 +46,7 @@ class Link extends Component {
     const { to } = this.props
     if (to) {
       const linkPath = toPathArray(to)
-      return linkPath.every(
-        (page, i) => page === path[i + this.linkDepth]
-      )
+      return linkPath.every((page, i) => page === path[i + this.linkDepth])
     }
     return true
   }

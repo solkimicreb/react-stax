@@ -9,7 +9,7 @@ const HOUR = 60 * MINUTE
 class TimeAgo extends Component {
   store = {
     timeAgo: ''
-  }
+  };
 
   constructor (props) {
     super(props)

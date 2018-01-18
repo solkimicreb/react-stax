@@ -8,7 +8,8 @@ function StoryPage (story) {
     <div>
       <StoryItem story={story} />
       <div dangerouslySetInnerHTML={{ __html: story.text }} />
-      {story.kids && story.kids.map(commentId => <Comment key={commentId} id={commentId} />)}
+      {story.kids &&
+        story.kids.map(commentId => <Comment key={commentId} id={commentId} />)}
     </div>
   )
 }

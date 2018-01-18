@@ -12,20 +12,38 @@ function StoryItem ({ idx, story }) {
       {idx !== undefined && <div className='num'>{idx}</div>}
       <div>
         <div className='header'>
-          {url
-          ? <a href={url}>{title} <small>({hostname})</small></a>
-          : <Link to="/story" params={{ id }}>{title}</Link>}
+          {url ? (
+            <a href={url}>
+              {title} <small>({hostname})</small>
+            </a>
+          ) : (
+            <Link to='/story' params={{ id }}>
+              {title}
+            </Link>
+          )}
         </div>
 
         <div className='footer'>
-          {type === 'job'
-          ? <Link to="/story" params={{ id }}>{title}</Link>
-          : (
+          {type === 'job' ? (
+            <Link to='/story' params={{ id }}>
+              {title}
+            </Link>
+          ) : (
             <div>
               {score} points by
-              <Link to="/user" params={{ id: by }}> {by} </Link>
-              <Link to="/story" params={{ id }}> {timeAgo} </Link> |
-              <Link to="/story" params={{ id }}> {descendants} comments</Link>
+              <Link to='/user' params={{ id: by }}>
+                {' '}
+                {by}{' '}
+              </Link>
+              <Link to='/story' params={{ id }}>
+                {' '}
+                {timeAgo}{' '}
+              </Link>{' '}
+              |
+              <Link to='/story' params={{ id }}>
+                {' '}
+                {descendants} comments
+              </Link>
             </div>
           )}
         </div>

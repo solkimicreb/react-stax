@@ -5,7 +5,7 @@ const routers = []
 
 export let isRouting = false
 
-export function registerRouter(router, depth) {
+export function registerRouter (router, depth) {
   let routersAtDepth = routers[depth]
   if (!routersAtDepth) {
     routersAtDepth = routers[depth] = new Set()
@@ -13,14 +13,19 @@ export function registerRouter(router, depth) {
   routersAtDepth.add(router)
 }
 
-export function releaseRouter(router, depth) {
+export function releaseRouter (router, depth) {
   const routersAtDepth = routers[depth]
   if (routersAtDepth) {
     routersAtDepth.delete(router)
   }
 }
 
-export function route (toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
+export function route (
+  toPath = location.pathname,
+  newParams = {},
+  options = {},
+  depth = 0
+) {
   isRouting = true
   toPath = toPathArray(toPath)
 
@@ -40,8 +45,7 @@ export function route (toPath = location.pathname, newParams = {}, options = {},
 
   path.splice(depth, path.length)
 
-  return routeFromDepth(depth, toPath)
-    .then(finishRouting/*, finishRouting*/)
+  return routeFromDepth(depth, toPath).then(finishRouting /*, finishRouting */)
 }
 
 function routeFromDepth (depth, toPath) {
@@ -53,11 +57,11 @@ function routeFromDepth (depth, toPath) {
     return Promise.resolve()
   }
 
-  const routings = Array.from(routersAtDepth)
-    .map(router => router.route(fromPage, toPage))
+  const routings = Array.from(routersAtDepth).map(router =>
+    router.route(fromPage, toPage)
+  )
 
-  return Promise.all(routings)
-    .then(() => routeFromDepth(++depth, toPath))
+  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath))
 }
 
 function finishRouting () {
@@ -66,7 +70,6 @@ function finishRouting () {
   // if it was an error, rethrow the error here!!
 }
 
-window.addEventListener(
-  'popstate',
-  () => route(location.pathname, history.state, { history: false })
+window.addEventListener('popstate', () =>
+  route(location.pathname, history.state, { history: false })
 )

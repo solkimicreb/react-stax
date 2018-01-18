@@ -8,7 +8,7 @@ export default store({
   async resolveStories () {
     this.stories = await fetchStoriesByType(params.type, 0, this.pages)
   },
-  async fetchPage(page) {
+  async fetchPage (page) {
     const stories = await fetchStoriesByType(params.type, page)
     if (!stories.length) {
       this.hasMore = false

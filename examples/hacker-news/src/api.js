@@ -23,7 +23,7 @@ api.child('updates').on('value', snapshot => {
   profiles.forEach(id => cache.delete(`user/${id}`))
 })
 
-function fetch(child) {
+function fetch (child) {
   if (cache.has(child)) {
     return Promise.resolve(cache.get(child))
   } else {
@@ -46,17 +46,17 @@ function fetch(child) {
   }
 }
 
-function fetchIdsByType(type, startPage = 0, endPage = startPage) {
+function fetchIdsByType (type, startPage = 0, endPage = startPage) {
   return fetch(`${type}stories`).then(ids =>
     ids.slice(startPage * STORIES_PER_PAGE, (endPage + 1) * STORIES_PER_PAGE)
   )
 }
 
-export function fetchStoriesByType(type, startPage, endPage) {
+export function fetchStoriesByType (type, startPage, endPage) {
   return fetchIdsByType(type, startPage, endPage).then(fetchStories)
 }
 
-export async function fetchStories(ids = []) {
+export async function fetchStories (ids = []) {
   const stories = await Promise.all(ids.map(fetchStory))
   return stories.filter(notNull)
 }
@@ -65,14 +65,14 @@ function notNull (story) {
   return story !== null
 }
 
-export function fetchStory(id) {
+export function fetchStory (id) {
   return fetch(`item/${id}`)
 }
 
-export function fetchComment(id) {
+export function fetchComment (id) {
   return fetch(`item/${id}`)
 }
 
-export function fetchUser(id) {
+export function fetchUser (id) {
   return fetch(`user/${id}`)
 }

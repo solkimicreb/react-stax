@@ -7,7 +7,7 @@ class RawComment extends Component {
   store = store({
     hidden: false,
     comment: {}
-  })
+  });
 
   async componentDidMount () {
     this.store.comment = await fetchComment(this.props.id)
@@ -29,16 +29,22 @@ class RawComment extends Component {
     return (
       <div className='comment'>
         <div>
-          <Link to="/user" params={{ id: by }}> {by} </Link>
+          <Link to='/user' params={{ id: by }}>
+            {' '}
+            {by}{' '}
+          </Link>
           {timeAgo}
           <span onClick={this.toggleVisibility}>{hidden ? '[+]' : '[-]'}</span>
         </div>
 
-        {!hidden && <div>
-          <div dangerouslySetInnerHTML={{ __html: text }} />
-          {kids && kids.map(commentId => <Comment key={commentId} id={commentId} />)}
-        </div>}
-    </div>
+        {!hidden && (
+          <div>
+            <div dangerouslySetInnerHTML={{ __html: text }} />
+            {kids &&
+              kids.map(commentId => <Comment key={commentId} id={commentId} />)}
+          </div>
+        )}
+      </div>
     )
   }
 }

@@ -1,13 +1,13 @@
-import React from 'react';
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import React from 'react'
+import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card'
+import FlatButton from 'material-ui/FlatButton'
 
 function CardExampleWithAvatar () {
   return (
     <div>
       {[1, 2, 3, 4, 5].map(val =>
         <Card key={val}>
-          <CardHeader title="Profile" subtitle="Your User Profile" avatar='http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' />
+          <CardHeader title='Profile' subtitle='Your User Profile' avatar='http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' />
           <CardText>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
@@ -20,4 +20,4 @@ function CardExampleWithAvatar () {
   )
 }
 
-export default CardExampleWithAvatar;
+export default CardExampleWithAvatar

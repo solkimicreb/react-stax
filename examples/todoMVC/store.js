@@ -6,9 +6,12 @@ storage.todos = storage.todos || []
 export default store({
   get todos () {
     switch (params.filter) {
-      case 'completed': return storage.todos.filter(todo => todo.completed)
-      case 'active': return storage.todos.filter(todo => !todo.completed)
-      default: return storage.todos
+      case 'completed':
+        return storage.todos.filter(todo => todo.completed)
+      case 'active':
+        return storage.todos.filter(todo => !todo.completed)
+      default:
+        return storage.todos
     }
   },
   get isEmpty () {
