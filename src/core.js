@@ -48,7 +48,7 @@ export function route (
   return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */)
 }
 
-function routeFromDepth (depth, toPath, inital) {
+function routeFromDepth (depth, toPath, initial) {
   const fromPage = path[depth]
   const toPage = toPath[depth]
   let routersAtDepth = routers[depth]
