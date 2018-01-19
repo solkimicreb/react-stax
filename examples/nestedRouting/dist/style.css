@@ -15,3 +15,15 @@ a.active div {
 .card {
 	margin-bottom: 20px;
 }
+
+.router {
+  transition: opacity 2s;
+}
+
+.router.leave {
+  opacity: 0;
+}
+
+.router.enter {
+  opacity: 1;
+}

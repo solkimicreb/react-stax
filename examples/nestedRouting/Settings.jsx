@@ -8,7 +8,7 @@ export default class Settings extends Component {
       <div>
         <Link to='privacy'>Privacy</Link>
         <Link to='user'>User</Link>
-        <Router defaultPage='privacy'>
+        <Router defaultPage='privacy' className='router' leaveClass='leave' enterClass='enter' duration={2000}>
           <div page='privacy'>Privacy Settings</div>
           <div page='user'>User Settings</div>
         </Router>

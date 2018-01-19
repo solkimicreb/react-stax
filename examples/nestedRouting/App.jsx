@@ -17,7 +17,7 @@ export default class App extends Component {
             <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
           </Drawer>
 
-          <Router className='page' defaultPage='profile'>
+          <Router className='page router' leaveClass='leave' enterClass='enter' duration={2000} defaultPage='profile'>
             <Profile page='profile' />
             <Settings page='settings' />
           </Router>
