@@ -7551,6 +7551,7 @@ function route(toPath = location.pathname, newParams = {}, options = {}, depth =
   Object.assign(__WEBPACK_IMPORTED_MODULE_0__observables__["a" /* params */], newParams);
 
   __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].length);
+  toPath = __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].concat(toPath);
 
   return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */);
 }

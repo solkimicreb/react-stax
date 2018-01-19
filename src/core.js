@@ -44,6 +44,7 @@ export function route (
   Object.assign(params, newParams)
 
   path.splice(depth, path.length)
+  toPath = path.concat(toPath)
 
   return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */)
 }
