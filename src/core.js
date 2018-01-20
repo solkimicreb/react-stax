@@ -46,7 +46,9 @@ export function route (
   path.splice(depth, path.length)
   toPath = path.concat(toPath)
 
-  return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */)
+  return routeFromDepth(depth, toPath, true).then(
+    finishRouting /*, finishRouting */
+  )
 }
 
 function routeFromDepth (depth, toPath, initial) {
@@ -62,7 +64,9 @@ function routeFromDepth (depth, toPath, initial) {
     router.route(fromPage, toPage, initial)
   )
 
-  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath, false))
+  return Promise.all(routings).then(() =>
+    routeFromDepth(++depth, toPath, false)
+  )
 }
 
 function finishRouting () {

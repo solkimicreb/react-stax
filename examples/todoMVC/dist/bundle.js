@@ -7024,11 +7024,11 @@ function raw(obj) {
 /* unused harmony export notEmpty */
 /* harmony export (immutable) */ __webpack_exports__["a"] = clear;
 function toPathArray(path) {
-  return path.split('/').filter(notEmpty);
+  return path.split("/").filter(notEmpty);
 }
 
 function toPathString(path) {
-  return '/' + path.filter(notEmpty).join('/');
+  return "/" + path.filter(notEmpty).join("/");
 }
 
 function toQuery(params) {
@@ -7036,21 +7036,21 @@ function toQuery(params) {
 
   for (let key in params) {
     let value = params[key];
-    if (value !== undefined && value !== '') {
+    if (value !== undefined && value !== "") {
       key = encodeURIComponent(key);
       value = encodeURIComponent(JSON.stringify(value));
       queryTokens.push(`${key}=${value}`);
     }
   }
-  return queryTokens.length ? '?' + queryTokens.join('&') : '';
+  return queryTokens.length ? "?" + queryTokens.join("&") : "";
 }
 
 function toParams(queryString) {
-  const queryTokens = queryString.slice(1).split('&').filter(notEmpty);
+  const queryTokens = queryString.slice(1).split("&").filter(notEmpty);
 
   const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split('=');
+    const keyValue = token.split("=");
     const key = decodeURIComponent(keyValue[0]);
     const value = JSON.parse(decodeURIComponent(keyValue[1]));
     params[key] = value;
@@ -7059,7 +7059,7 @@ function toParams(queryString) {
 }
 
 function notEmpty(token) {
-  return token !== '';
+  return token !== "";
 }
 
 function clear(obj) {
@@ -7114,7 +7114,7 @@ function route(toPath = location.pathname, newParams = {}, options = {}, depth =
 
   // push the current state, only use replaceState later
   if (options.history !== false) {
-    history.pushState(history.state, '');
+    history.pushState(history.state, "");
   }
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
@@ -7126,7 +7126,8 @@ function route(toPath = location.pathname, newParams = {}, options = {}, depth =
   __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].length);
   toPath = __WEBPACK_IMPORTED_MODULE_0__observables__["b" /* path */].concat(toPath);
 
-  return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */);
+  return routeFromDepth(depth, toPath, true).then(finishRouting /*, finishRouting */
+  );
 }
 
 function routeFromDepth(depth, toPath, initial) {
@@ -7149,7 +7150,7 @@ function finishRouting() {
   // if it was an error, rethrow the error here!!
 }
 
-window.addEventListener('popstate', () => route(location.pathname, history.state, { history: false }));
+window.addEventListener("popstate", () => route(location.pathname, history.state, { history: false }));
 
 /***/ }),
 /* 73 */
@@ -23425,7 +23426,7 @@ const urlScheduler = new __WEBPACK_IMPORTED_MODULE_1__nx_js_queue_util__["a" /* 
 
 function syncUrl() {
   const url = Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["d" /* toPathString */])(path) + Object(__WEBPACK_IMPORTED_MODULE_2__urlUtils__["e" /* toQuery */])(params) + location.hash;
-  history.replaceState(rawParams, '', url);
+  history.replaceState(rawParams, "", url);
 }
 
 Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["b" /* observe */])(syncUrl, { scheduler: urlScheduler });
@@ -23440,7 +23441,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["b" /* observe */])(sy
 
 
 
-const STORAGE_NAME = 'STORAGE';
+const STORAGE_NAME = "STORAGE";
 const rawStorage = JSON.parse(localStorage.getItem(STORAGE_NAME)) || {};
 const storage = Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["a" /* observable */])(rawStorage);
 /* harmony export (immutable) */ __webpack_exports__["a"] = storage;
@@ -23991,7 +23992,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   // create a todo on Enter key press
   createTodo(ev) {
     if (ev.keyCode === 13 && ev.target.value) {
-      todos.create(ev.target.value);
+      __WEBPACK_IMPORTED_MODULE_3__store__["a" /* default */].create(ev.target.value);
       ev.target.value = '';
     }
   }

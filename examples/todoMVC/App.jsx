@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { view, Link, params } from 'react-easy-stack'
+import { view, Link } from 'react-easy-stack'
 import TodoItem from './TodoItem'
 import todosStore from './store'
 
@@ -8,7 +8,7 @@ class App extends Component {
   // create a todo on Enter key press
   createTodo (ev) {
     if (ev.keyCode === 13 && ev.target.value) {
-      todos.create(ev.target.value)
+      todosStore.create(ev.target.value)
       ev.target.value = ''
     }
   }

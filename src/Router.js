@@ -1,6 +1,6 @@
 import React, { Component, PropTypes, Children, cloneElement } from 'react'
-import { registerRouter, releaseRouter, route, isRouting } from './core'
-import { path, params, urlScheduler } from './observables'
+import { registerRouter, releaseRouter, isRouting } from './core'
+import { path, params } from './observables'
 import Lazy from './Lazy'
 
 export default class Router extends Component {

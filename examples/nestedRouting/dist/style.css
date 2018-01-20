@@ -17,7 +17,7 @@ a.active div {
 }
 
 .router {
-  transition: opacity 2s;
+  transition: opacity .2s;
 }
 
 .router.leave {

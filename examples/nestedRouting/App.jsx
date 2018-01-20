@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import RaisedButton from 'material-ui/RaisedButton'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import { Router, Link } from 'react-easy-stack'
@@ -17,9 +16,9 @@ export default class App extends Component {
             <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
           </Drawer>
 
-          <Router className='page router' leaveClass='leave' enterClass='enter' duration={2000} defaultPage='profile'>
+          <Router className='page router' leaveClass='leave' enterClass='enter' duration={200} defaultPage='profile'>
             <Profile page='profile' />
-            <Settings page='settings' />
+            <Settings page='settings' resolve={() => new Promise(resolve => setTimeout(resolve, 1000))} />
           </Router>
         </div>
       </MuiThemeProvider>

@@ -1,10 +1,4 @@
-import React, {
-  Component,
-  Children,
-  PropTypes,
-  createElement,
-  cloneElement
-} from 'react'
+import { Component, PropTypes, createElement, cloneElement } from 'react'
 import { view } from 'react-easy-state'
 import { toPathArray, toQuery } from './urlUtils'
 import { route } from './core'
