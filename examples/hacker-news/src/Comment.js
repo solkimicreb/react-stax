@@ -13,7 +13,7 @@ class RawComment extends Component {
     this.store.comment = await fetchComment(this.props.id)
   }
 
-  toggleVisibility () {
+  toggleVisibility = () => {
     this.store.hidden = !this.store.hidden
   }
 

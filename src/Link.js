@@ -1,8 +1,9 @@
-import { Component, PropTypes, createElement, cloneElement } from 'react'
+import { Component, createElement, cloneElement } from 'react'
+import PropTypes from 'prop-types'
 import { view } from 'react-easy-state'
 import { toPathArray, toQuery } from './urlUtils'
 import { route } from './core'
-import { params, path } from './observables'
+import { params, path } from 'react-easy-params'
 
 class Link extends Component {
   static propTypes = {
@@ -57,7 +58,7 @@ class Link extends Component {
     return true
   }
 
-  onClick (ev) {
+  onClick = (ev) => {
     ev.preventDefault()
     const { onClick, params, options, to } = this.props
     if (onClick) {
@@ -69,9 +70,9 @@ class Link extends Component {
 
   render () {
     let { to, element, children, activeClass, params, className } = this.props
-    const { onClick, isLinkActive } = this
+    const { onClick } = this
 
-    if (activeClass && isLinkActive()) {
+    if (activeClass && this.isLinkActive()) {
       className = `${className} ${activeClass}`
     }
     const href = to + toQuery(params)

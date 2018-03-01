@@ -1,21 +1,23 @@
 import { store, params } from 'react-easy-stack'
 import { fetchStoriesByType } from '../api'
 
-export default store({
+const storiesStore = store({
   stories: [],
   pages: 0,
   hasMore: true,
   async resolveStories () {
-    this.stories = await fetchStoriesByType(params.type, 0, this.pages)
+    storiesStore.stories = await fetchStoriesByType(params.type, 0, storiesStore.pages)
   },
   async fetchPage (page) {
     const stories = await fetchStoriesByType(params.type, page)
     if (!stories.length) {
-      this.hasMore = false
+      storiesStore.hasMore = false
     } else {
-      this.stories.push(...stories)
-      this.hasMore = true
+      storiesStore.stories.push(...stories)
+      storiesStore.hasMore = true
     }
-    this.pages = page
+    storiesStore.pages = page
   }
 })
+
+export default storiesStore

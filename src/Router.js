@@ -1,7 +1,8 @@
-import React, { Component, PropTypes, Children, cloneElement } from 'react'
-import { registerRouter, releaseRouter, isRouting } from './core'
-import { path, params } from './observables'
-import Lazy from './Lazy'
+import React, { Component, Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
+import { registerRouter, releaseRouter, isRouting } from './core';
+import { path, params } from 'react-easy-params';
+import Lazy from './Lazy';
 
 export default class Router extends Component {
   static propTypes = {
@@ -28,40 +29,40 @@ export default class Router extends Component {
     easyRouterDepth: PropTypes.number
   };
 
-  get depth () {
-    return this.context.easyRouterDepth || 0
+  get depth() {
+    return this.context.easyRouterDepth || 0;
   }
 
-  getChildContext () {
-    return { easyRouterDepth: this.depth + 1 }
+  getChildContext() {
+    return { easyRouterDepth: this.depth + 1 };
   }
 
   state = {};
 
-  componentWillMount () {
-    registerRouter(this, this.depth)
+  componentWillMount() {
+    registerRouter(this, this.depth);
   }
 
-  componentWillUnmount () {
-    releaseRouter(this, this.depth)
+  componentWillUnmount() {
+    releaseRouter(this, this.depth);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (!isRouting) {
-      this.route(path[this.depth], path[this.depth])
+      this.route(path[this.depth], path[this.depth]);
     }
   }
 
-  route (fromPage, toPage, initial) {
-    const { alwaysRoute } = this.props
-    const { currentView } = this.state
-    const startTime = Date.now()
-    toPage = this.selectPage(toPage)
+  route(fromPage, toPage, initial) {
+    const { alwaysRoute } = this.props;
+    const { currentView } = this.state;
+    const startTime = Date.now();
+    toPage = this.selectPage(toPage);
 
     if (alwaysRoute || !currentView || toPage !== fromPage) {
-      const defaultPrevented = this.onRoute(fromPage, toPage)
+      const defaultPrevented = this.onRoute(fromPage, toPage);
       if (defaultPrevented) {
-        throw new Error('Routing prevented')
+        throw new Error('Routing prevented');
       }
 
       return Promise.resolve()
@@ -70,29 +71,29 @@ export default class Router extends Component {
         .then(() => this.selectView(toPage))
         .then(() => this.resolveData())
         .then(() => initial && !alwaysRoute && this.waitDuration(startTime))
-        .then(() => this.finishRouting(toPage))
+        .then(() => this.finishRouting(toPage));
     }
   }
 
-  selectPage (toPage) {
-    const { children, defaultPage } = this.props
-    const pages = Children.map(children, child => child.props.page)
-    return pages.indexOf(toPage) === -1 ? defaultPage : toPage
+  selectPage(toPage) {
+    const { children, defaultPage } = this.props;
+    const pages = Children.map(children, child => child.props.page);
+    return pages.indexOf(toPage) === -1 ? defaultPage : toPage;
   }
 
-  startRouting () {
-    const { leaveClass } = this.props
+  startRouting() {
+    const { leaveClass } = this.props;
 
     if (leaveClass) {
       return new Promise(resolve => {
-        this.setState({ statusClass: leaveClass }, resolve)
-      })
+        this.setState({ statusClass: leaveClass }, resolve);
+      });
     }
   }
 
-  onRoute (fromPage, toPage) {
-    const { onRoute } = this.props
-    let defaultPrevented = false
+  onRoute(fromPage, toPage) {
+    const { onRoute } = this.props;
+    let defaultPrevented = false;
 
     if (onRoute) {
       onRoute({
@@ -100,27 +101,27 @@ export default class Router extends Component {
         fromPage,
         toPage,
         preventDefault: () => (defaultPrevented = true)
-      })
+      });
     }
-    return defaultPrevented
+    return defaultPrevented;
   }
 
-  selectView (toPage) {
-    const { children } = this.props
+  selectView(toPage) {
+    const { children } = this.props;
     const view = Children.toArray(children).find(
       child => child.props.page === toPage
-    )
+    );
 
-    this.currentView = view.type === Lazy ? view.props.load() : view
+    this.currentView = view.type === Lazy ? view.props.load() : view;
   }
 
-  resolveData () {
-    const { resolve, defaultParams } = this.currentView.props
+  resolveData() {
+    const { resolve, defaultParams } = this.currentView.props;
 
     if (defaultParams) {
       for (let key in defaultParams) {
         if (!(key in params)) {
-          params[key] = defaultParams[key]
+          params[key] = defaultParams[key];
         }
       }
     }
@@ -132,35 +133,39 @@ export default class Router extends Component {
           .then(
             data => (this.currentView = cloneElement(this.currentView, data))
           )
-      )
+      );
     }
   }
 
-  waitDuration (startTime) {
-    const { duration } = this.props
+  waitDuration(startTime) {
+    const { duration } = this.props;
     if (duration) {
-      const diff = Date.now() - startTime
-      return new Promise(resolve => setTimeout(resolve, duration - diff))
+      const diff = Date.now() - startTime;
+      return new Promise(resolve => setTimeout(resolve, duration - diff));
     }
   }
 
-  finishRouting (toPage) {
-    const { enterClass } = this.props
-    const { currentView } = this
+  finishRouting(toPage) {
+    const { enterClass } = this.props;
+    const { currentView } = this;
 
-    path[this.depth] = toPage
-    this.currentView = undefined
+    path[this.depth] = toPage;
+    this.currentView = undefined;
 
     return new Promise(resolve => {
-      this.setState({ currentView, statusClass: enterClass }, resolve)
-    })
+      this.setState({ currentView, statusClass: enterClass }, resolve);
+    });
   }
 
-  render () {
-    let { className } = this.props
-    const { statusClass, currentView } = this.state
+  render() {
+    let { className, style } = this.props;
+    const { statusClass, currentView } = this.state;
 
-    className = `${className} ${statusClass}`
-    return <div className={className}>{currentView || null}</div>
+    className = `${className} ${statusClass}`;
+    return (
+      <div className={className} style={style}>
+        {currentView || null}
+      </div>
+    );
   }
 }

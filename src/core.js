@@ -1,4 +1,4 @@
-import { path, params, urlScheduler } from './observables'
+import { path, params, scheduler } from 'react-easy-params'
 import { toPathArray, clear } from './urlUtils'
 
 const routers = []
@@ -29,8 +29,8 @@ export function route (
   isRouting = true
   toPath = toPathArray(toPath)
 
-  urlScheduler.process()
-  urlScheduler.stop()
+  scheduler.process()
+  scheduler.stop()
 
   // push the current state, only use replaceState later
   if (options.history !== false) {
@@ -71,7 +71,7 @@ function routeFromDepth (depth, toPath, initial) {
 
 function finishRouting () {
   isRouting = false
-  urlScheduler.start()
+  scheduler.start()
   // if it was an error, rethrow the error here!!
 }
 

@@ -16,7 +16,7 @@ class TimeAgo extends Component {
     this.updateTime()
   }
 
-  updateTime () {
+  updateTime = () => {
     const startTime = this.props.startTime * 1000
     this.store.timeAgo = timeago().format(startTime)
 
