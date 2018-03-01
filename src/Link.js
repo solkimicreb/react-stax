@@ -65,7 +65,7 @@ class Link extends Component {
       onClick(ev)
     }
 
-    route(to, params, options, this.linkDepth)
+    route({ to, params, options }, this.linkDepth)
   }
 
   render () {

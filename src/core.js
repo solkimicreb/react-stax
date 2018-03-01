@@ -20,10 +20,11 @@ export function releaseRouter (router, depth) {
   }
 }
 
-export function route (
-  toPath = location.pathname,
-  newParams = {},
-  options = {},
+export function route ({
+    to: toPath = location.pathname,
+    params: newParams = {},
+    options = {}
+  },
   depth = 0
 ) {
   isRouting = true
