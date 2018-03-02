@@ -3,7 +3,7 @@ import { toPathArray, toParams } from './urlUtils'
 
 const routers = []
 
-export let isRouting = false
+let isRouting = false
 
 export function registerRouter (router, depth) {
   let routersAtDepth = routers[depth]
@@ -11,6 +11,10 @@ export function registerRouter (router, depth) {
     routersAtDepth = routers[depth] = new Set()
   }
   routersAtDepth.add(router)
+  // route the router if we are not routing currently
+  if (!isRouting) {
+    router.route(path[depth], path[depth])
+  }
 }
 
 export function releaseRouter (router, depth) {
@@ -71,7 +75,7 @@ function routeFromDepth (depth, toPath) {
   )
 
   return Promise.all(routings).then(() =>
-    routeFromDepth(++depth, toPath, false)
+    routeFromDepth(++depth, toPath)
   )
 }
 

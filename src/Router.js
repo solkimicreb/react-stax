@@ -6,17 +6,7 @@ import { path, params } from 'react-easy-params';
 export default class Router extends Component {
   static propTypes = {
     onRoute: PropTypes.func,
-    alwaysRoute: PropTypes.bool,
-    className: PropTypes.string,
-    enterClass: PropTypes.string,
-    leaveClass: PropTypes.string,
-    duration: PropTypes.number
-  };
-
-  static defaultProps = {
-    className: '',
-    enterClass: '',
-    leaveClass: ''
+    className: PropTypes.string
   };
 
   static childContextTypes = {
@@ -38,14 +28,11 @@ export default class Router extends Component {
   state = {};
 
   componentWillUnmount() {
-    releaseRouter(this, this.depth);
+    releaseRouter(this, this.depth)
   }
 
   componentDidMount() {
-    registerRouter(this, this.depth);
-    if (!isRouting) {
-      this.route(path[this.depth], path[this.depth]);
-    }
+    registerRouter(this, this.depth)
   }
 
   route(fromPage, toPage) {
@@ -56,18 +43,23 @@ export default class Router extends Component {
       throw new Error('Routing prevented')
     }
 
+    this.setDefaultParams()
     const currentView = this.selectPage(toPage)
 
     return Promise.resolve()
       .then(() => this.resolveData(currentView))
       .then(currentView => this.enter(currentView))
+  }
 
-    // not good! this won't rerender with setState in case only the resolved props change
-    /*if (!currentView || toPage !== fromPage) {
-      routing = routing
-        // .then(() => !initial && this.leave())
+  setDefaultParams () {
+    const { defaultParams } = this.props
+    if (defaultParams) {
+      for (let key in defaultParams) {
+        if (params[key] === undefined) {
+          params[key] = defaultParams[key]
+        }
+      }
     }
-    return routing*/
   }
 
   selectPage(toPage) {
@@ -83,7 +75,7 @@ export default class Router extends Component {
     return currentView
   }
 
-  onRoute(fromPage, toPage) {
+  onRoute (fromPage, toPage) {
     const { onRoute } = this.props;
     let defaultPrevented = false;
 
@@ -95,73 +87,49 @@ export default class Router extends Component {
         preventDefault: () => (defaultPrevented = true)
       });
     }
-    return defaultPrevented;
+    return defaultPrevented
   }
 
-  resolveData(currentView) {
-    const { resolve, defaultParams } = currentView.props;
-
-    // this does not belong here
-    if (defaultParams) {
-      for (let key in defaultParams) {
-        if (!(key in params)) {
-          params[key] = defaultParams[key];
-        }
-      }
-    }
+  resolveData (currentView) {
+    const { resolve } = currentView.props
 
     if (resolve) {
       return Promise.resolve()
         .then(resolve)
-        .then(
-          data => {
-            if (isValidElement(data)) {
-              return data
-            }
-            if (typeof data === 'object') {
-              return cloneElement(currentView, data)
-            }
-            return currentView
-          }
-      )
+        .then(data => this.handleResolvedData(data, currentView))
     }
     return currentView
   }
 
-  /*leave () {
-    const { leaveClass } = this.props;
-
-    if (leaveClass) {
-      return new Promise(resolve => {
-        this.setState({ statusClass: leaveClass }, resolve);
-      });
+  handleResolvedData (data, currentView) {
+    if (isValidElement(data)) {
+      return data
     }
+    if (typeof data === 'object') {
+      return cloneElement(currentView, data)
+    }
+    return currentView
   }
 
-  waitDuration(startTime) {
-    const { duration } = this.props;
-    if (duration) {
-      const diff = Date.now() - startTime;
-      return new Promise(resolve => setTimeout(resolve, duration - diff));
-    }
-  }*/
-
   enter(currentView) {
-    path[this.depth] = currentView.props.page;
+    const { currentView: oldView } = this.state
+    path[this.depth] = currentView.props.page
 
-    return new Promise(resolve =>
-      this.setState({ currentView }, resolve)
-    )
+    if (currentView !== oldView) {
+      return new Promise(resolve =>
+        this.setState({ currentView }, resolve)
+      )
+    }
   }
 
   render() {
-    let { className, style } = this.props
+    const { className, style } = this.props
     const { currentView } = this.state
 
     return (
       <div className={className} style={style}>
         {currentView || null}
       </div>
-    );
+    )
   }
 }
