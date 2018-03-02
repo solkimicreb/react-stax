@@ -1,5 +1,5 @@
 import { path, params, scheduler } from 'react-easy-params'
-import { toPathArray, clear } from './urlUtils'
+import { toPathArray, toParams } from './urlUtils'
 
 const routers = []
 
@@ -27,6 +27,7 @@ export function route ({
   },
   depth = 0
 ) {
+  console.log('global route', toPath, newParams, options, depth)
   isRouting = true
   toPath = toPathArray(toPath)
 
@@ -40,29 +41,33 @@ export function route ({
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
-    clear(params)
+    for (let key of Object.keys(params)) {
+      delete params[key]
+    }
   }
   Object.assign(params, newParams)
 
   path.splice(depth, path.length)
   toPath = path.concat(toPath)
 
-  return routeFromDepth(depth, toPath, true).then(
-    finishRouting /*, finishRouting */
+  return routeFromDepth(depth, toPath).then(
+    onRoutingSuccess, onRoutingError
   )
 }
 
-function routeFromDepth (depth, toPath, initial) {
+function routeFromDepth (depth, toPath) {
   const fromPage = path[depth]
   const toPage = toPath[depth]
   let routersAtDepth = routers[depth]
+
+  console.log('route from depth', depth, toPath)
 
   if (!(routersAtDepth && routersAtDepth.size)) {
     return Promise.resolve()
   }
 
   const routings = Array.from(routersAtDepth).map(router =>
-    router.route(fromPage, toPage, initial)
+    router.route(fromPage, toPage)
   )
 
   return Promise.all(routings).then(() =>
@@ -70,12 +75,17 @@ function routeFromDepth (depth, toPath, initial) {
   )
 }
 
-function finishRouting () {
+function onRoutingSuccess () {
   isRouting = false
+  scheduler.process()
   scheduler.start()
-  // if it was an error, rethrow the error here!!
+}
+
+function onRoutingError (error) {
+  onRoutingSuccess()
+  throw error
 }
 
 window.addEventListener('popstate', () =>
-  route(location.pathname, history.state, { history: false })
+  route({ to: location.pathname, params: toParams(location.search), options: { history: false } })
 )

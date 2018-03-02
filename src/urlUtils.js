@@ -39,13 +39,3 @@ export function toParams (queryString) {
 export function notEmpty (token) {
   return token !== ''
 }
-
-export function clear (obj) {
-  if (Array.isArray(obj)) {
-    obj.length = 0
-  } else {
-    for (let key of Object.keys(obj)) {
-      delete obj[key]
-    }
-  }
-}

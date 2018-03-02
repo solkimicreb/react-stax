@@ -1,8 +1,7 @@
-import React, { Component, Children, cloneElement } from 'react';
+import React, { Component, Children, isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import { registerRouter, releaseRouter, isRouting } from './core';
 import { path, params } from 'react-easy-params';
-import Lazy from './Lazy';
 
 export default class Router extends Component {
   static propTypes = {
@@ -15,7 +14,6 @@ export default class Router extends Component {
   };
 
   static defaultProps = {
-    alwaysRoute: false,
     className: '',
     enterClass: '',
     leaveClass: ''
@@ -39,56 +37,50 @@ export default class Router extends Component {
 
   state = {};
 
-  componentWillMount() {
-    registerRouter(this, this.depth);
-  }
-
   componentWillUnmount() {
     releaseRouter(this, this.depth);
   }
 
   componentDidMount() {
+    registerRouter(this, this.depth);
     if (!isRouting) {
       this.route(path[this.depth], path[this.depth]);
     }
   }
 
-  route(fromPage, toPage, initial) {
-    const { alwaysRoute } = this.props;
-    const { currentView } = this.state;
-    const startTime = Date.now();
-    toPage = this.selectPage(toPage);
+  route(fromPage, toPage) {
+    const startTime = Date.now()
 
-    if (alwaysRoute || !currentView || toPage !== fromPage) {
-      const defaultPrevented = this.onRoute(fromPage, toPage);
-      if (defaultPrevented) {
-        throw new Error('Routing prevented');
-      }
-
-      return Promise.resolve()
-        .then(() => initial && this.startRouting())
-        .then(() => initial && alwaysRoute && this.waitDuration(startTime))
-        .then(() => this.selectView(toPage))
-        .then(() => this.resolveData())
-        .then(() => initial && !alwaysRoute && this.waitDuration(startTime))
-        .then(() => this.finishRouting(toPage));
+    const defaultPrevented = this.onRoute(fromPage, toPage)
+    if (defaultPrevented) {
+      throw new Error('Routing prevented')
     }
+
+    const currentView = this.selectPage(toPage)
+
+    return Promise.resolve()
+      .then(() => this.resolveData(currentView))
+      .then(currentView => this.enter(currentView))
+
+    // not good! this won't rerender with setState in case only the resolved props change
+    /*if (!currentView || toPage !== fromPage) {
+      routing = routing
+        // .then(() => !initial && this.leave())
+    }
+    return routing*/
   }
 
   selectPage(toPage) {
-    const { children, defaultPage } = this.props;
-    const pages = Children.map(children, child => child.props.page);
-    return pages.indexOf(toPage) === -1 ? defaultPage : toPage;
-  }
-
-  startRouting() {
-    const { leaveClass } = this.props;
-
-    if (leaveClass) {
-      return new Promise(resolve => {
-        this.setState({ statusClass: leaveClass }, resolve);
-      });
+    const { children, defaultPage } = this.props
+    let currentView = Children.toArray(children).find(
+      child => child.props.page === toPage
+    )
+    if (!currentView) {
+      currentView = Children.toArray(children).find(
+        child => child.props.page === defaultPage
+      )
     }
+    return currentView
   }
 
   onRoute(fromPage, toPage) {
@@ -106,18 +98,10 @@ export default class Router extends Component {
     return defaultPrevented;
   }
 
-  selectView(toPage) {
-    const { children } = this.props;
-    const view = Children.toArray(children).find(
-      child => child.props.page === toPage
-    );
+  resolveData(currentView) {
+    const { resolve, defaultParams } = currentView.props;
 
-    this.currentView = view.type === Lazy ? view.props.load() : view;
-  }
-
-  resolveData() {
-    const { resolve, defaultParams } = this.currentView.props;
-
+    // this does not belong here
     if (defaultParams) {
       for (let key in defaultParams) {
         if (!(key in params)) {
@@ -127,13 +111,30 @@ export default class Router extends Component {
     }
 
     if (resolve) {
-      return (
-        resolve()
-          // BAD -> not guaranteed to be a promise
-          .then(
-            data => (this.currentView = cloneElement(this.currentView, data))
-          )
-      );
+      return Promise.resolve()
+        .then(resolve)
+        .then(
+          data => {
+            if (isValidElement(data)) {
+              return data
+            }
+            if (typeof data === 'object') {
+              return cloneElement(currentView, data)
+            }
+            return currentView
+          }
+      )
+    }
+    return currentView
+  }
+
+  /*leave () {
+    const { leaveClass } = this.props;
+
+    if (leaveClass) {
+      return new Promise(resolve => {
+        this.setState({ statusClass: leaveClass }, resolve);
+      });
     }
   }
 
@@ -143,25 +144,20 @@ export default class Router extends Component {
       const diff = Date.now() - startTime;
       return new Promise(resolve => setTimeout(resolve, duration - diff));
     }
-  }
+  }*/
 
-  finishRouting(toPage) {
-    const { enterClass } = this.props;
-    const { currentView } = this;
+  enter(currentView) {
+    path[this.depth] = currentView.props.page;
 
-    path[this.depth] = toPage;
-    this.currentView = undefined;
-
-    return new Promise(resolve => {
-      this.setState({ currentView, statusClass: enterClass }, resolve);
-    });
+    return new Promise(resolve =>
+      this.setState({ currentView }, resolve)
+    )
   }
 
   render() {
-    let { className, style } = this.props;
-    const { statusClass, currentView } = this.state;
+    let { className, style } = this.props
+    const { currentView } = this.state
 
-    className = `${className} ${statusClass}`;
     return (
       <div className={className} style={style}>
         {currentView || null}
