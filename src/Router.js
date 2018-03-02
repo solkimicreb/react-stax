@@ -1,6 +1,6 @@
 import React, { Component, Children, isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
-import { registerRouter, releaseRouter, isRouting } from './core';
+import { registerRouter, releaseRouter } from './core';
 import { path, params } from 'react-easy-params';
 
 export default class Router extends Component {
@@ -36,23 +36,25 @@ export default class Router extends Component {
   }
 
   route(fromPage, toPage) {
-    const startTime = Date.now()
+    console.log('rrrr', fromPage, toPage)
 
     const defaultPrevented = this.onRoute(fromPage, toPage)
+    // this should stop all routers (including the other parallel ones)
     if (defaultPrevented) {
       throw new Error('Routing prevented')
     }
 
-    this.setDefaultParams()
     const currentView = this.selectPage(toPage)
+    path[this.depth] = currentView.props.page
+    this.setDefaultParams(currentView)
 
     return Promise.resolve()
       .then(() => this.resolveData(currentView))
       .then(currentView => this.enter(currentView))
   }
 
-  setDefaultParams () {
-    const { defaultParams } = this.props
+  setDefaultParams (currentView) {
+    const { defaultParams } = currentView.props
     if (defaultParams) {
       for (let key in defaultParams) {
         if (params[key] === undefined) {
@@ -85,7 +87,7 @@ export default class Router extends Component {
         fromPage,
         toPage,
         preventDefault: () => (defaultPrevented = true)
-      });
+      })
     }
     return defaultPrevented
   }
@@ -113,12 +115,9 @@ export default class Router extends Component {
 
   enter(currentView) {
     const { currentView: oldView } = this.state
-    path[this.depth] = currentView.props.page
 
     if (currentView !== oldView) {
-      return new Promise(resolve =>
-        this.setState({ currentView }, resolve)
-      )
+      return new Promise(resolve => this.setState({ currentView }, resolve))
     }
   }
 
