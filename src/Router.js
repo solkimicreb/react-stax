@@ -36,8 +36,8 @@ export default class Router extends Component {
   }
 
   route(fromPage, toPage) {
-    console.log('rrrr', fromPage, toPage)
-
+    const { maxWait } = this.props
+    const startTime = Date.now()
     const defaultPrevented = this.onRoute(fromPage, toPage)
     // this should stop all routers (including the other parallel ones)
     if (defaultPrevented) {
@@ -45,12 +45,16 @@ export default class Router extends Component {
     }
 
     const currentView = this.selectPage(toPage)
+    // do not do this for slave routers
     path[this.depth] = currentView.props.page
     this.setDefaultParams(currentView)
 
-    return Promise.resolve()
-      .then(() => this.resolveData(currentView))
-      .then(currentView => this.enter(currentView))
+    // this is bad!! it should re-render after each
+    /*return Promise.race(
+      this.composeWithWait(maxWait, startTime, this.resolveData(currentView, startTime))
+    )*/
+    return this.resolveData(currentView)
+      .then(currentView => this.enter(currentView, startTime))
   }
 
   setDefaultParams (currentView) {
@@ -66,15 +70,16 @@ export default class Router extends Component {
 
   selectPage(toPage) {
     const { children, defaultPage } = this.props
-    let currentView = Children.toArray(children).find(
-      child => child.props.page === toPage
-    )
-    if (!currentView) {
-      currentView = Children.toArray(children).find(
-        child => child.props.page === defaultPage
-      )
-    }
-    return currentView
+    let toView, defaultView
+
+    Children.forEach(children, child => {
+      if (child.props.page === toPage) {
+        toView = child
+      } else if (child.props.page === defaultPage) {
+        defaultView === child
+      }
+    })
+    return toView || defaultView
   }
 
   onRoute (fromPage, toPage) {
@@ -93,6 +98,7 @@ export default class Router extends Component {
   }
 
   resolveData (currentView) {
+    const { minWait } = this.props
     const { resolve } = currentView.props
 
     if (resolve) {
@@ -100,7 +106,7 @@ export default class Router extends Component {
         .then(resolve)
         .then(data => this.handleResolvedData(data, currentView))
     }
-    return currentView
+    return Promise.resolve(currentView)
   }
 
   handleResolvedData (data, currentView) {
@@ -113,11 +119,26 @@ export default class Router extends Component {
     return currentView
   }
 
-  enter(currentView) {
+  wait (waitMs, startTime) {
+    const duration = Date.now() - startTime
+    if (waitMs && 0 < (waitMs - duration)) {
+      return new Promise(resolve => setTimeout(resolve, waitMs - duration))
+    }
+    return Promise.resolve()
+  }
+
+  enter (currentView, startTime) {
+    const { minWait } = this.props
     const { currentView: oldView } = this.state
 
-    if (currentView !== oldView) {
-      return new Promise(resolve => this.setState({ currentView }, resolve))
+    console.log(oldView === currentView)
+    // ez a condition nem jo! -> ha csak a propok valtoznak a resolve miatt
+    // nem renderel ujra
+    if (!oldView || currentView.props.page !== oldView.props.page) {
+      return this.wait(minWait, startTime)
+        .then(() =>
+          new Promise(resolve => this.setState({ currentView }, resolve))
+        )
     }
   }
 

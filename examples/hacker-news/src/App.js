@@ -34,6 +34,7 @@ function App () {
         </div>
       </nav>
       <Router
+        minWait={1000}
         className='router'
         defaultPage='stories'
         alwaysRoute

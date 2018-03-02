@@ -13,7 +13,6 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!isRouting) {
-    console.log('ROUTE!!!')
     router.route(path[depth], path[depth])
   }
 }
