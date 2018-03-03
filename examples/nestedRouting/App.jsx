@@ -16,9 +16,9 @@ export default class App extends Component {
             <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
           </Drawer>
 
-          <Router className='page router' leaveClass='leave' enterClass='enter' duration={200} defaultPage='profile'>
+          <Router className='page router' defaultPage='profile'>
             <Profile page='profile' />
-            <Settings page='settings' resolve={() => new Promise(resolve => setTimeout(resolve, 1000))} />
+            <Settings page='settings' />
           </Router>
         </div>
       </MuiThemeProvider>

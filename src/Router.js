@@ -41,6 +41,8 @@ export default class Router extends Component {
     const { timeout } = this.props
     const currentView = this.selectPage(toPage)
     // do not do this for slave routers
+
+    console.log(currentView, toPage)
     path[this.depth] = currentView.props.page
     this.setDefaultParams(currentView)
 
@@ -74,7 +76,7 @@ export default class Router extends Component {
       if (child.props.page === toPage) {
         toView = child
       } else if (child.props.page === defaultPage) {
-        defaultView === child
+        defaultView = child
       }
     })
     return toView || defaultView
