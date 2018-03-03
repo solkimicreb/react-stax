@@ -20300,10 +20300,10 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     let pending = true;
     if (timeout) {
-      this.wait(timeout).then(() => pending && this.enter(this.addLoader(currentView)));
+      this.wait(timeout).then(() => pending && this.enter(currentView, 'pending'));
     }
 
-    return this.resolveData(currentView).then(currentView => this.enter(currentView)).then(() => pending = false);
+    return this.resolveData(currentView).then(currentView => this.enter(currentView, 'fulfilled'), () => this.enter(currentView, 'rejected')).then(() => pending = false);
   }
 
   setDefaultParams(currentView) {
@@ -20365,18 +20365,20 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return currentView;
   }
 
-  addLoader(currentView) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { isLoading: true });
-  }
-
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  enter(currentView) {
+  enter(currentView, pageStatus) {
+    currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { pageStatus });
     return new Promise(resolve => this.setState({ currentView }, resolve));
   }
 
+  // maybe set the needed params to the currentView in case of componentWillReceiveProps
+  // to allow custom props on children
+
+  // issue -> if children (like child props) change -> it renders out the same exact view ):
+  // bad!!
   render() {
     const { className, style } = this.props;
     const { currentView } = this.state;

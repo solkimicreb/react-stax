@@ -21681,10 +21681,10 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     let pending = true;
     if (timeout) {
-      this.wait(timeout).then(() => pending && this.enter(this.addLoader(currentView)));
+      this.wait(timeout).then(() => pending && this.enter(currentView, 'pending'));
     }
 
-    return this.resolveData(currentView).then(currentView => this.enter(currentView)).then(() => pending = false);
+    return this.resolveData(currentView).then(currentView => this.enter(currentView, 'fulfilled'), () => this.enter(currentView, 'rejected')).then(() => pending = false);
   }
 
   setDefaultParams(currentView) {
@@ -21746,18 +21746,20 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return currentView;
   }
 
-  addLoader(currentView) {
-    return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { isLoading: true });
-  }
-
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  enter(currentView) {
+  enter(currentView, pageStatus) {
+    currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { pageStatus });
     return new Promise(resolve => this.setState({ currentView }, resolve));
   }
 
+  // maybe set the needed params to the currentView in case of componentWillReceiveProps
+  // to allow custom props on children
+
+  // issue -> if children (like child props) change -> it renders out the same exact view ):
+  // bad!!
   render() {
     const { className, style } = this.props;
     const { currentView } = this.state;
@@ -23683,15 +23685,24 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
                   null,
                   'User'
                 )
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
+                { to: '/profile' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
+                  null,
+                  'Profile'
+                )
               )
             )
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-          { className: 'page router', defaultPage: 'profile', timeout: 500 },
+          { className: 'page router', defaultPage: 'profile', timeout: 1000 },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile' }),
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings' })
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings', resolve: wait })
         )
       )
     );
@@ -23701,6 +23712,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
 
 function wait() {
+  throw new Error('hi');
   return new Promise(resolve => setTimeout(resolve, 3000));
 }
 
@@ -37864,14 +37876,15 @@ exports.default = CardActions;
 
 class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   render() {
-    const { isLoading } = this.props;
+    const { pageStatus } = this.props;
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      isLoading && 'LOADING',
+      'status: ',
+      pageStatus,
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["b" /* Router */],
-        { defaultPage: 'privacy', timeout: 500, className: 'router' },
+        { defaultPage: 'privacy', className: 'router' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
           { page: 'privacy' },

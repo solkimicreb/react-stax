@@ -20,13 +20,14 @@ export default class App extends Component {
               <div page='settings'>
                 <Link to='privacy'><MenuItem>Privacy</MenuItem></Link>
                 <Link to='user'><MenuItem>User</MenuItem></Link>
+                <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
               </div>
             </Router>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile' timeout={500}>
+          <Router className='page router' defaultPage='profile' timeout={1000}>
             <Profile page='profile'/>
-            <Settings page='settings'/>
+            <Settings page='settings' resolve={wait}/>
           </Router>
         </div>
       </MuiThemeProvider>
@@ -35,5 +36,6 @@ export default class App extends Component {
 }
 
 function wait () {
+  throw new Error('hi')
   return new Promise(resolve => setTimeout(resolve, 3000))
 }

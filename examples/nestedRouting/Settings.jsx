@@ -3,11 +3,11 @@ import { Router, Link } from 'react-easy-stack'
 
 export default class Settings extends Component {
   render () {
-    const { isLoading } = this.props
+    const { pageStatus } = this.props
     return (
       <div>
-        {isLoading && 'LOADING'}
-        <Router defaultPage='privacy' timeout={500} className='router'>
+        status: {pageStatus}
+        <Router defaultPage='privacy' className='router'>
           <div page='privacy'>Privacy Settings</div>
           <div page='user'>User Settings</div>
         </Router>
