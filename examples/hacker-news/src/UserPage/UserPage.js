@@ -5,7 +5,7 @@ function UserPage ({ id, created, karma, about, isLoading }) {
   console.log('RENDER USER', id)
   return (
     <div>
-      <p>LOADING: {isLoading}</p>
+      <p>{isLoading && 'LOADING'}</p>
       <p>user: {id}</p>
       <p>created: {created}</p>
       <p>karma: {karma}</p>

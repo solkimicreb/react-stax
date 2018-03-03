@@ -6,6 +6,7 @@ import { path, params } from 'react-easy-params';
 export default class Router extends Component {
   static propTypes = {
     onRoute: PropTypes.func,
+    defaultPage: PropTypes.string.isRequired,
     className: PropTypes.string,
     timeout: PropTypes.number
   };
@@ -116,8 +117,6 @@ export default class Router extends Component {
   }
 
   addLoader (currentView) {
-    console.log('add loader')
-    // only if it has no isLoading prop I guess
     return cloneElement(currentView, { isLoading: true })
   }
 
