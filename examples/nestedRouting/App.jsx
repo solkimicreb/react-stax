@@ -12,16 +12,28 @@ export default class App extends Component {
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
-            <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
+            <Router defaultPage='profile'>
+              <div page='profile'>
+                <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
+                <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
+              </div>
+              <div page='settings'>
+                <Link to='privacy'><MenuItem>Privacy</MenuItem></Link>
+                <Link to='user'><MenuItem>User</MenuItem></Link>
+              </div>
+            </Router>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile'>
-            <Profile page='profile' />
-            <Settings page='settings' />
+          <Router className='page router' defaultPage='profile' timeout={500}>
+            <Profile page='profile'/>
+            <Settings page='settings'/>
           </Router>
         </div>
       </MuiThemeProvider>
     )
   }
+}
+
+function wait () {
+  return new Promise(resolve => setTimeout(resolve, 3000))
 }

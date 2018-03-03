@@ -46,6 +46,8 @@ export default class Router extends Component {
     path[this.depth] = currentView.props.page
     this.setDefaultParams(currentView)
 
+    console.log('props', this.props)
+
     let pending = true
     if (timeout) {
       this.wait(timeout)

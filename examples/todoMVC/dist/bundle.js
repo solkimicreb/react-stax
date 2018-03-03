@@ -20296,6 +20296,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = currentView.props.page;
     this.setDefaultParams(currentView);
 
+    console.log('props', this.props);
+
     let pending = true;
     if (timeout) {
       this.wait(timeout).then(() => pending && this.enter(this.addLoader(currentView)));

@@ -21677,6 +21677,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = currentView.props.page;
     this.setDefaultParams(currentView);
 
+    console.log('props', this.props);
+
     let pending = true;
     if (timeout) {
       this.wait(timeout).then(() => pending && this.enter(this.addLoader(currentView)));
@@ -23637,27 +23639,57 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
           __WEBPACK_IMPORTED_MODULE_2_material_ui_Drawer___default.a,
           null,
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-            { to: '/profile' },
+            __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
+            { defaultPage: 'profile' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
-              null,
-              'Profile'
-            )
-          ),
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-            { to: '/settings' },
+              'div',
+              { page: 'profile' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
+                { to: '/profile' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
+                  null,
+                  'Profile'
+                )
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
+                { to: '/settings' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
+                  null,
+                  'Settings'
+                )
+              )
+            ),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
-              null,
-              'Settings'
+              'div',
+              { page: 'settings' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
+                { to: 'privacy' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
+                  null,
+                  'Privacy'
+                )
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
+                { to: 'user' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
+                  null,
+                  'User'
+                )
+              )
             )
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-          { className: 'page router', defaultPage: 'profile' },
+          { className: 'page router', defaultPage: 'profile', timeout: 500 },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile' }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings' })
         )
@@ -23667,6 +23699,10 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = App;
 
+
+function wait() {
+  return new Promise(resolve => setTimeout(resolve, 3000));
+}
 
 /***/ }),
 /* 129 */
@@ -37828,22 +37864,14 @@ exports.default = CardActions;
 
 class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   render() {
+    const { isLoading } = this.props;
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["a" /* Link */],
-        { to: 'privacy' },
-        'Privacy'
-      ),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["a" /* Link */],
-        { to: 'user' },
-        'User'
-      ),
+      isLoading && 'LOADING',
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["b" /* Router */],
-        { defaultPage: 'privacy', className: 'router' },
+        { defaultPage: 'privacy', timeout: 500, className: 'router' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
           { page: 'privacy' },
@@ -37860,6 +37888,10 @@ class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Settings;
 
+
+function wait() {
+  return new Promise(resolve => setTimeout(resolve, 3000));
+}
 
 /***/ })
 /******/ ]);
