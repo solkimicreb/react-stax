@@ -62,21 +62,22 @@ export function route ({
 function routeFromDepth (depth, toPath) {
   const fromPage = path[depth]
   const toPage = toPath[depth]
-  let routersAtDepth = routers[depth]
+  const routersAtDepth = Array.from(routers[depth] || [])
 
-  console.log('route from depth', depth, toPath)
+  const defaultPrevented = routersAtDepth.some(
+    router => router.onRoute(fromPage, toPage)
+  )
 
-  if (!(routersAtDepth && routersAtDepth.size)) {
+  if (!routersAtDepth.length || defaultPrevented) {
     return Promise.resolve()
   }
 
-  const routings = Array.from(routersAtDepth).map(router =>
-    router.route(fromPage, toPage)
+  const routings = routersAtDepth.map(
+    router => router.route(fromPage, toPage)
   )
 
-  return Promise.all(routings).then(() =>
-    routeFromDepth(++depth, toPath)
-  )
+  return Promise.all(routings)
+    .then(() => routeFromDepth(++depth, toPath))
 }
 
 function onRoutingSuccess () {

@@ -36,14 +36,6 @@ export default class Router extends Component {
   }
 
   route(fromPage, toPage) {
-    const { maxWait } = this.props
-    const startTime = Date.now()
-    const defaultPrevented = this.onRoute(fromPage, toPage)
-    // this should stop all routers (including the other parallel ones)
-    if (defaultPrevented) {
-      throw new Error('Routing prevented')
-    }
-
     const currentView = this.selectPage(toPage)
     // do not do this for slave routers
     path[this.depth] = currentView.props.page
@@ -54,7 +46,7 @@ export default class Router extends Component {
       this.composeWithWait(maxWait, startTime, this.resolveData(currentView, startTime))
     )*/
     return this.resolveData(currentView)
-      .then(currentView => this.enter(currentView, startTime))
+      .then(currentView => this.enter(currentView))
   }
 
   setDefaultParams (currentView) {
@@ -98,7 +90,6 @@ export default class Router extends Component {
   }
 
   resolveData (currentView) {
-    const { minWait } = this.props
     const { resolve } = currentView.props
 
     if (resolve) {
@@ -127,18 +118,16 @@ export default class Router extends Component {
     return Promise.resolve()
   }
 
-  enter (currentView, startTime) {
-    const { minWait } = this.props
+  enter (currentView) {
     const { currentView: oldView } = this.state
 
     console.log(oldView === currentView)
     // ez a condition nem jo! -> ha csak a propok valtoznak a resolve miatt
     // nem renderel ujra
     if (!oldView || currentView.props.page !== oldView.props.page) {
-      return this.wait(minWait, startTime)
-        .then(() =>
-          new Promise(resolve => this.setState({ currentView }, resolve))
-        )
+      // only wait if there is a current view (root level element)
+      // detect root level comp with change!
+      return new Promise(resolve => this.setState({ currentView }, resolve))
     }
   }
 
