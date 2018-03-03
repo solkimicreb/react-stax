@@ -34,13 +34,9 @@ function App () {
         </div>
       </nav>
       <Router
-        minWait={1000}
+        timeout={500}
         className='router'
         defaultPage='stories'
-        alwaysRoute
-        enterClass='enter'
-        leaveClass='leave'
-        duration={150}
       >
         <StoriesPage
           page='stories'

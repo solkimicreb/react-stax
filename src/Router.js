@@ -6,7 +6,8 @@ import { path, params } from 'react-easy-params';
 export default class Router extends Component {
   static propTypes = {
     onRoute: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    timeout: PropTypes.number
   };
 
   static childContextTypes = {
@@ -36,17 +37,21 @@ export default class Router extends Component {
   }
 
   route(fromPage, toPage) {
+    const { timeout } = this.props
     const currentView = this.selectPage(toPage)
     // do not do this for slave routers
     path[this.depth] = currentView.props.page
     this.setDefaultParams(currentView)
 
-    // this is bad!! it should re-render after each
-    /*return Promise.race(
-      this.composeWithWait(maxWait, startTime, this.resolveData(currentView, startTime))
-    )*/
+    let pending = true
+    if (timeout) {
+      this.wait(timeout)
+        .then(() => pending && this.enter(this.addLoader(currentView)))
+    }
+
     return this.resolveData(currentView)
       .then(currentView => this.enter(currentView))
+      .then(() => (pending = false))
   }
 
   setDefaultParams (currentView) {
@@ -110,25 +115,18 @@ export default class Router extends Component {
     return currentView
   }
 
-  wait (waitMs, startTime) {
-    const duration = Date.now() - startTime
-    if (waitMs && 0 < (waitMs - duration)) {
-      return new Promise(resolve => setTimeout(resolve, waitMs - duration))
-    }
-    return Promise.resolve()
+  addLoader (currentView) {
+    console.log('add loader')
+    // only if it has no isLoading prop I guess
+    return cloneElement(currentView, { isLoading: true })
+  }
+
+  wait (duration) {
+    return new Promise(resolve => setTimeout(resolve, duration))
   }
 
   enter (currentView) {
-    const { currentView: oldView } = this.state
-
-    console.log(oldView === currentView)
-    // ez a condition nem jo! -> ha csak a propok valtoznak a resolve miatt
-    // nem renderel ujra
-    if (!oldView || currentView.props.page !== oldView.props.page) {
-      // only wait if there is a current view (root level element)
-      // detect root level comp with change!
-      return new Promise(resolve => this.setState({ currentView }, resolve))
-    }
+    return new Promise(resolve => this.setState({ currentView }, resolve))
   }
 
   render() {
