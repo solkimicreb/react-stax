@@ -1711,9 +1711,8 @@ function routeFromDepth(depth, toPath) {
 }
 
 function onRoutingSuccess(options) {
-  console.log('rrrr!!', __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].join('/'), location.pathname);
-  // issue -> url sync is too late
-  if (options.history === true || options.history !== false && __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].join('/') !== location.pathname) {
+  // by default a history item is pushed if the pathname changes!
+  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */]) !== location.pathname) {
     history.pushState(history.state, '');
   }
 
@@ -2089,8 +2088,8 @@ function view(Comp, { devtool: rawDevtool } = {}) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = toPathArray;
-/* unused harmony export toPathString */
-/* harmony export (immutable) */ __webpack_exports__["c"] = toQuery;
+/* harmony export (immutable) */ __webpack_exports__["c"] = toPathString;
+/* harmony export (immutable) */ __webpack_exports__["d"] = toQuery;
 /* harmony export (immutable) */ __webpack_exports__["a"] = toParams;
 /* unused harmony export notEmpty */
 function toPathArray(path) {
@@ -20480,7 +20479,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     if (activeClass && this.isLinkActive()) {
       className = `${className} ${activeClass}`;
     }
-    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["c" /* toQuery */])(params);
+    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["d" /* toQuery */])(params);
 
     const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
     if (element === 'a') {

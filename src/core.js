@@ -1,5 +1,5 @@
 import { path, params, scheduler } from 'react-easy-params'
-import { toPathArray, toParams } from './urlUtils'
+import { toPathArray, toPathString, toParams } from './urlUtils'
 
 const routers = []
 
@@ -77,9 +77,8 @@ function routeFromDepth (depth, toPath) {
 }
 
 function onRoutingSuccess (options) {
-  console.log('rrrr!!', path.join('/'), location.pathname)
-  // issue -> url sync is too late
-  if (options.history === true || (options.history !== false && path.join('/') !== location.pathname)) {
+  // by default a history item is pushed if the pathname changes!
+  if (options.history === true || (options.history !== false && toPathString(path) !== location.pathname)) {
     history.pushState(history.state, '')
   }
 
