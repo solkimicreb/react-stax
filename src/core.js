@@ -31,17 +31,11 @@ export function route ({
   },
   depth = 0
 ) {
-  console.log('global route', toPath, newParams, options, depth)
   isRouting = true
   toPath = toPathArray(toPath)
 
   scheduler.process()
   scheduler.stop()
-
-  // push the current state, only use replaceState later
-  if (options.history !== false) {
-    history.pushState(history.state, '')
-  }
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -51,11 +45,13 @@ export function route ({
   }
   Object.assign(params, newParams)
 
+  // this is bad => keep toPath and path (second part)
   path.splice(depth, path.length)
   toPath = path.concat(toPath)
 
   return routeFromDepth(depth, toPath).then(
-    onRoutingSuccess, onRoutingError
+    () => onRoutingSuccess(options),
+    (error) => onRoutingError(options, error)
   )
 }
 
@@ -80,14 +76,20 @@ function routeFromDepth (depth, toPath) {
     .then(() => routeFromDepth(++depth, toPath))
 }
 
-function onRoutingSuccess () {
-  isRouting = false
+function onRoutingSuccess (options) {
+  console.log('rrrr!!', path.join('/'), location.pathname)
+  // issue -> url sync is too late
+  if (options.history === true || (options.history !== false && path.join('/') !== location.pathname)) {
+    history.pushState(history.state, '')
+  }
+
   scheduler.process()
   scheduler.start()
+  isRouting = false
 }
 
-function onRoutingError (error) {
-  onRoutingSuccess()
+function onRoutingError (options, error) {
+  onRoutingSuccess(options)
   throw error
 }
 

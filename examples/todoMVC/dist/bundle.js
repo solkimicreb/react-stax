@@ -1673,17 +1673,11 @@ function route({
   params: newParams = {},
   options = {}
 }, depth = 0) {
-  console.log('global route', toPath, newParams, options, depth);
   isRouting = true;
   toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toPathArray */])(toPath);
 
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
-
-  // push the current state, only use replaceState later
-  if (options.history !== false) {
-    history.pushState(history.state, '');
-  }
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -1693,10 +1687,11 @@ function route({
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
 
+  // this is bad => keep toPath and path (second part)
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].length);
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].concat(toPath);
 
-  return routeFromDepth(depth, toPath).then(onRoutingSuccess, onRoutingError);
+  return routeFromDepth(depth, toPath).then(() => onRoutingSuccess(options), error => onRoutingError(options, error));
 }
 
 function routeFromDepth(depth, toPath) {
@@ -1715,14 +1710,20 @@ function routeFromDepth(depth, toPath) {
   return Promise.all(routings).then(() => routeFromDepth(++depth, toPath));
 }
 
-function onRoutingSuccess() {
-  isRouting = false;
+function onRoutingSuccess(options) {
+  console.log('rrrr!!', __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].join('/'), location.pathname);
+  // issue -> url sync is too late
+  if (options.history === true || options.history !== false && __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].join('/') !== location.pathname) {
+    history.pushState(history.state, '');
+  }
+
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].start();
+  isRouting = false;
 }
 
-function onRoutingError(error) {
-  onRoutingSuccess();
+function onRoutingError(options, error) {
+  onRoutingSuccess(options);
   throw error;
 }
 
@@ -20292,18 +20293,17 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     const currentView = this.selectPage(toPage);
     // do not do this for slave routers
 
-    console.log(currentView, toPage);
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = currentView.props.page;
     this.setDefaultParams(currentView);
 
-    console.log('props', this.props);
-
     let pending = true;
     if (timeout) {
-      this.wait(timeout).then(() => pending && this.enter(currentView, 'pending'));
+      this.wait(timeout).then(() => pending && this.enter(currentView, undefined));
     }
 
-    return this.resolveData(currentView).then(currentView => this.enter(currentView, 'fulfilled'), () => this.enter(currentView, 'rejected')).then(() => pending = false);
+    return this.resolveData(currentView).then(currentView => this.enter(currentView, true),
+    // do not swallow errors!!
+    () => this.enter(currentView, false)).then(() => pending = false);
   }
 
   setDefaultParams(currentView) {
@@ -20369,8 +20369,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  enter(currentView, pageStatus) {
-    currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { pageStatus });
+  enter(currentView, pageResolved) {
+    currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { pageResolved });
     return new Promise(resolve => this.setState({ currentView }, resolve));
   }
 

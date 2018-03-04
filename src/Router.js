@@ -42,22 +42,20 @@ export default class Router extends Component {
     const currentView = this.selectPage(toPage)
     // do not do this for slave routers
 
-    console.log(currentView, toPage)
     path[this.depth] = currentView.props.page
     this.setDefaultParams(currentView)
-
-    console.log('props', this.props)
 
     let pending = true
     if (timeout) {
       this.wait(timeout)
-        .then(() => pending && this.enter(currentView, 'pending'))
+        .then(() => pending && this.enter(currentView, undefined))
     }
 
     return this.resolveData(currentView)
       .then(
-        currentView => this.enter(currentView, 'fulfilled'),
-        () => this.enter(currentView, 'rejected')
+        currentView => this.enter(currentView, true),
+        // do not swallow errors!!
+        () => this.enter(currentView, false)
       )
       .then(() => (pending = false))
   }
@@ -127,8 +125,8 @@ export default class Router extends Component {
     return new Promise(resolve => setTimeout(resolve, duration))
   }
 
-  enter (currentView, pageStatus) {
-    currentView = cloneElement(currentView, { pageStatus })
+  enter (currentView, pageResolved) {
+    currentView = cloneElement(currentView, { pageResolved })
     return new Promise(resolve => this.setState({ currentView }, resolve))
   }
 
