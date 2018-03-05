@@ -13,7 +13,7 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!isRouting) {
-    router.route(path[depth], path[depth])
+    router._route(path[depth], path[depth])
   }
 }
 
@@ -59,16 +59,12 @@ function routeFromDepth (depth, toPath) {
   const toPage = toPath[depth]
   const routersAtDepth = Array.from(routers[depth] || [])
 
-  const defaultPrevented = routersAtDepth.some(
-    router => router.onRoute(fromPage, toPage)
-  )
-
-  if (!routersAtDepth.length || defaultPrevented) {
+  if (!routersAtDepth.length) {
     return Promise.resolve()
   }
 
   const routings = routersAtDepth.map(
-    router => router.route(fromPage, toPage)
+    router => router._route(fromPage, toPage)
   )
 
   return Promise.all(routings)

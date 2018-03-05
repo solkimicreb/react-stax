@@ -1682,7 +1682,7 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!isRouting) {
-    router.route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
+    router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
   }
 }
 
@@ -1723,13 +1723,11 @@ function routeFromDepth(depth, toPath) {
   const toPage = toPath[depth];
   const routersAtDepth = Array.from(routers[depth] || []);
 
-  const defaultPrevented = routersAtDepth.some(router => router.onRoute(fromPage, toPage));
-
-  if (!routersAtDepth.length || defaultPrevented) {
+  if (!routersAtDepth.length) {
     return Promise.resolve();
   }
 
-  const routings = routersAtDepth.map(router => router.route(fromPage, toPage));
+  const routings = routersAtDepth.map(router => router._route(fromPage, toPage));
 
   return Promise.all(routings).then(() => routeFromDepth(++depth, toPath));
 }
@@ -20286,12 +20284,20 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     Object(__WEBPACK_IMPORTED_MODULE_2__core__["a" /* registerRouter */])(this, this.depth);
   }
 
-  route(fromPage, toPage) {
+  route(routeConfig) {
+    Object(__WEBPACK_IMPORTED_MODULE_2__core__["c" /* route */])(routeConfig, this.depth);
+  }
+
+  _route(fromPage, toPage) {
     const { timeout } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
 
-    // maybe do not do this for slave routers
+    const defaultPrevented = this.onRoute(fromPage, toPage);
+    if (defaultPrevented) {
+      return Promise.resolve();
+    }
+
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
     this.setDefaultParams(toChild);
 
@@ -20300,9 +20306,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       this.wait(timeout).then(() => pending && this.updateState({ toPage }));
     }
 
-    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
-    // do not swallow errors!!
-    () => this.updateState({ toPage, pageResolved: false }));
+    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }), error => this.handleError(error, { toPage, pageResolved: false }));
   }
 
   setDefaultParams(toChild) {
@@ -20355,6 +20359,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
+  }
+
+  handleError(error, state) {
+    return this.updateState(state).then(() => {
+      throw error;
+    });
   }
 
   updateState(state) {

@@ -1,6 +1,6 @@
 import React, { Component, Children, isValidElement, cloneElement } from 'react';
 import PropTypes from 'prop-types';
-import { registerRouter, releaseRouter } from './core';
+import { registerRouter, releaseRouter, route } from './core';
 import { path, params } from 'react-easy-params';
 
 export default class Router extends Component {
@@ -27,7 +27,7 @@ export default class Router extends Component {
     return { easyRouterDepth: this.depth + 1 };
   }
 
-  state = {};
+  state = {}
 
   componentWillUnmount() {
     releaseRouter(this, this.depth)
@@ -37,12 +37,20 @@ export default class Router extends Component {
     registerRouter(this, this.depth)
   }
 
-  route(fromPage, toPage) {
+  route (routeConfig) {
+    route(routeConfig, this.depth)
+  }
+
+  _route(fromPage, toPage) {
     const { timeout } = this.props
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
 
-    // maybe do not do this for slave routers
+    const defaultPrevented = this.onRoute(fromPage, toPage)
+    if (defaultPrevented) {
+      return Promise.resolve()
+    }
+
     path[this.depth] = toPage
     this.setDefaultParams(toChild)
 
@@ -57,8 +65,7 @@ export default class Router extends Component {
       .then(() => (pending = false))
       .then(
         resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
-        // do not swallow errors!!
-        () => this.updateState({ toPage, pageResolved: false })
+        error => this.handleError(error, { toPage, pageResolved: false })
       )
   }
 
@@ -112,6 +119,13 @@ export default class Router extends Component {
 
   wait (duration) {
     return new Promise(resolve => setTimeout(resolve, duration))
+  }
+
+  handleError (error, state) {
+    return this.updateState(state)
+      .then(() => {
+        throw error
+      })
   }
 
   updateState (state) {

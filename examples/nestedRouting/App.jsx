@@ -7,7 +7,8 @@ import Profile from './Profile'
 import Settings from './Settings'
 
 const appStore = store({
-  border: 'solid 3px green'
+  border: 'solid 3px green',
+  protected: false
 })
 
 class App extends Component {
@@ -15,12 +16,29 @@ class App extends Component {
     appStore.border = (appStore.border === 'none') ? 'solid 3px green' : 'none'
   }
 
+  toggleProtect = () => {
+    appStore.protected = !appStore.protected
+  }
+
+  componentDidCatch (error, info) {
+    console.log('APP', error, info)
+  }
+
+  onRoute = ({ preventDefault, toPage, fromPage, target }) => {
+    console.log('onRoute', fromPage, toPage)
+    if (appStore.protected && toPage === 'profile') {
+      preventDefault()
+      console.log('route')
+      target.route({ to: '/settings/user' })
+    }
+  }
+
   render () {
     return (
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Router defaultPage='profile'>
+            <Router defaultPage='profile' onRoute={this.onRoute}>
               <div page='profile'>
                 <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
                 <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
@@ -32,10 +50,11 @@ class App extends Component {
               </div>
             </Router>
             <button onClick={this.toggleStyle}>Toggle Style</button>
+            <button onClick={this.toggleProtect}>{appStore.protected ? 'Allow' : 'Protect'}</button>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile'>
-            <Profile page='profile' style={{ border: appStore.border }}/>
+          <Router className='page router' defaultPage='profile' onRoute={this.onRoute}>
+            <Profile page='profile' /*resolve={wait}*/ /*style={{ border: appStore.border }}*//>
             <Settings page='settings'/>
           </Router>
         </div>

@@ -1795,7 +1795,7 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!isRouting) {
-    router.route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
+    router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
   }
 }
 
@@ -1836,13 +1836,11 @@ function routeFromDepth(depth, toPath) {
   const toPage = toPath[depth];
   const routersAtDepth = Array.from(routers[depth] || []);
 
-  const defaultPrevented = routersAtDepth.some(router => router.onRoute(fromPage, toPage));
-
-  if (!routersAtDepth.length || defaultPrevented) {
+  if (!routersAtDepth.length) {
     return Promise.resolve();
   }
 
-  const routings = routersAtDepth.map(router => router.route(fromPage, toPage));
+  const routings = routersAtDepth.map(router => router._route(fromPage, toPage));
 
   return Promise.all(routings).then(() => routeFromDepth(++depth, toPath));
 }
@@ -21667,12 +21665,20 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     Object(__WEBPACK_IMPORTED_MODULE_2__core__["a" /* registerRouter */])(this, this.depth);
   }
 
-  route(fromPage, toPage) {
+  route(routeConfig) {
+    Object(__WEBPACK_IMPORTED_MODULE_2__core__["c" /* route */])(routeConfig, this.depth);
+  }
+
+  _route(fromPage, toPage) {
     const { timeout } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
 
-    // maybe do not do this for slave routers
+    const defaultPrevented = this.onRoute(fromPage, toPage);
+    if (defaultPrevented) {
+      return Promise.resolve();
+    }
+
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
     this.setDefaultParams(toChild);
 
@@ -21681,9 +21687,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       this.wait(timeout).then(() => pending && this.updateState({ toPage }));
     }
 
-    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
-    // do not swallow errors!!
-    () => this.updateState({ toPage, pageResolved: false }));
+    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }), error => this.handleError(error, { toPage, pageResolved: false }));
   }
 
   setDefaultParams(toChild) {
@@ -21736,6 +21740,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
+  }
+
+  handleError(error, state) {
+    return this.updateState(state).then(() => {
+      throw error;
+    });
   }
 
   updateState(state) {
@@ -23621,7 +23631,8 @@ __WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 
 
 const appStore = Object(__WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["e" /* store */])({
-  border: 'solid 3px green'
+  border: 'solid 3px green',
+  protected: false
 });
 
 class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
@@ -23630,7 +23641,20 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     return _temp = super(...args), this.toggleStyle = () => {
       appStore.border = appStore.border === 'none' ? 'solid 3px green' : 'none';
+    }, this.toggleProtect = () => {
+      appStore.protected = !appStore.protected;
+    }, this.onRoute = ({ preventDefault, toPage, fromPage, target }) => {
+      console.log('onRoute', fromPage, toPage);
+      if (appStore.protected && toPage === 'profile') {
+        preventDefault();
+        console.log('route');
+        target.route({ to: '/settings/user' });
+      }
     }, _temp;
+  }
+
+  componentDidCatch(error, info) {
+    console.log('APP', error, info);
   }
 
   render() {
@@ -23645,7 +23669,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
           null,
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-            { defaultPage: 'profile' },
+            { defaultPage: 'profile', onRoute: this.onRoute },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'div',
               { page: 'profile' },
@@ -23704,12 +23728,17 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
             'button',
             { onClick: this.toggleStyle },
             'Toggle Style'
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'button',
+            { onClick: this.toggleProtect },
+            appStore.protected ? 'Allow' : 'Protect'
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-          { className: 'page router', defaultPage: 'profile' },
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile', style: { border: appStore.border } }),
+          { className: 'page router', defaultPage: 'profile', onRoute: this.onRoute },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile' /*resolve={wait}*/ /*style={{ border: appStore.border }}*/ }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings' })
         )
       )
@@ -36399,22 +36428,29 @@ var HotKeyHolder = exports.HotKeyHolder = function () {
 
 
 
-function CardExampleWithAvatar({ style }) {
-  console.log('style', style);
-  return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-    'div',
-    { style: style },
-    [1, 2, 3, 4, 5].map(val => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["Card"],
-      { key: val },
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardHeader"], { title: 'Profile', subtitle: 'Your User Profile', avatar: 'http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' }),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardText"],
-        null,
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi. Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque. Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.!!!!!'
-      )
-    ))
-  );
+class CardExampleWithAvatar extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+  componentDidCatch(error, info) {
+    console.log('PROFILE', error, info);
+  }
+
+  render() {
+    const { style } = this.props;
+
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'div',
+      { style: style },
+      [1, 2, 3, 4, 5].map(val => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["Card"],
+        { key: val },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardHeader"], { title: 'Profile', subtitle: 'Your User Profile', avatar: 'http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardText"],
+          null,
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi. Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque. Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.!!!!!'
+        )
+      ))
+    );
+  }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (CardExampleWithAvatar);
