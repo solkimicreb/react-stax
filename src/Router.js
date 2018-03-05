@@ -39,29 +39,31 @@ export default class Router extends Component {
 
   route(fromPage, toPage) {
     const { timeout } = this.props
-    const currentView = this.selectPage(toPage)
-    // do not do this for slave routers
+    const toChild = this.selectChild(toPage)
+    toPage = toChild.props.page
 
-    path[this.depth] = currentView.props.page
-    this.setDefaultParams(currentView)
+    // maybe do not do this for slave routers
+    path[this.depth] = toPage
+    this.setDefaultParams(toChild)
 
     let pending = true
     if (timeout) {
       this.wait(timeout)
-        .then(() => pending && this.enter(currentView, undefined))
+        .then(() => pending && this.updateState({ toPage }))
     }
 
-    return this.resolveData(currentView)
-      .then(
-        currentView => this.enter(currentView, true),
-        // do not swallow errors!!
-        () => this.enter(currentView, false)
-      )
+    return Promise.resolve()
+      .then(() => this.resolveData(toChild))
       .then(() => (pending = false))
+      .then(
+        resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
+        // do not swallow errors!!
+        () => this.updateState({ toPage, pageResolved: false })
+      )
   }
 
-  setDefaultParams (currentView) {
-    const { defaultParams } = currentView.props
+  setDefaultParams (toChild) {
+    const { defaultParams } = toChild.props
     if (defaultParams) {
       for (let key in defaultParams) {
         if (params[key] === undefined) {
@@ -71,23 +73,23 @@ export default class Router extends Component {
     }
   }
 
-  selectPage(toPage) {
+  selectChild (toPage) {
     const { children, defaultPage } = this.props
-    let toView, defaultView
+    let toChild, defaultChild
 
     Children.forEach(children, child => {
       if (child.props.page === toPage) {
-        toView = child
+        toChild = child
       } else if (child.props.page === defaultPage) {
-        defaultView = child
+        defaultChild = child
       }
     })
-    return toView || defaultView
+    return toChild || defaultChild
   }
 
   onRoute (fromPage, toPage) {
-    const { onRoute } = this.props;
-    let defaultPrevented = false;
+    const { onRoute } = this.props
+    let defaultPrevented = false
 
     if (onRoute) {
       onRoute({
@@ -100,48 +102,41 @@ export default class Router extends Component {
     return defaultPrevented
   }
 
-  resolveData (currentView) {
-    const { resolve } = currentView.props
+  resolveData (toChild) {
+    const { resolve } = toChild.props
 
     if (resolve) {
-      return Promise.resolve()
-        .then(resolve)
-        .then(data => this.handleResolvedData(data, currentView))
+      return resolve()
     }
-    return Promise.resolve(currentView)
-  }
-
-  handleResolvedData (data, currentView) {
-    if (isValidElement(data)) {
-      return data
-    }
-    if (typeof data === 'object') {
-      return cloneElement(currentView, data)
-    }
-    return currentView
   }
 
   wait (duration) {
     return new Promise(resolve => setTimeout(resolve, duration))
   }
 
-  enter (currentView, pageResolved) {
-    currentView = cloneElement(currentView, { pageResolved })
-    return new Promise(resolve => this.setState({ currentView }, resolve))
+  updateState (state) {
+    return new Promise(resolve => this.setState(state, resolve))
   }
 
-  // maybe set the needed params to the currentView in case of componentWillReceiveProps
-  // to allow custom props on children
-
-  // issue -> if children (like child props) change -> it renders out the same exact view ):
-  // bad!!
   render() {
     const { className, style } = this.props
-    const { currentView } = this.state
+    const { toPage, resolvedData, pageResolved } = this.state
+
+    let toChild
+    if (!toPage) {
+      toChild = null
+    } else if (isValidElement(resolvedData)) {
+      toChild = cloneElement(resolvedData, { pageResolved })
+    } else {
+      toChild = cloneElement(
+        this.selectChild(toPage),
+        Object.assign({}, { pageResolved }, resolvedData)
+      )
+    }
 
     return (
       <div className={className} style={style}>
-        {currentView || null}
+        {toChild || null}
       </div>
     )
   }

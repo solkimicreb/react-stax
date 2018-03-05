@@ -45,7 +45,6 @@ export function route ({
   }
   Object.assign(params, newParams)
 
-  // this is bad => keep toPath and path (second part)
   path.splice(depth, path.length)
   toPath = path.concat(toPath)
 

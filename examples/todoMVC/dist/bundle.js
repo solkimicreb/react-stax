@@ -366,7 +366,7 @@ if (process.env.NODE_ENV === 'production') {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_easy_stack__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_easy_stack__ = __webpack_require__(30);
 
 
 __WEBPACK_IMPORTED_MODULE_0_react_easy_stack__["d" /* storage */].todos = __WEBPACK_IMPORTED_MODULE_0_react_easy_stack__["d" /* storage */].todos || [];
@@ -719,7 +719,7 @@ if (process.env.NODE_ENV !== 'production') {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return storage; });
 /* unused harmony export setStorage */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return scheduler; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__nx_js_queue_util__ = __webpack_require__(90);
 
 
@@ -992,7 +992,7 @@ __WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TodoItem__ = __webpack_require__(265);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store__ = __webpack_require__(126);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1095,7 +1095,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_classnames__ = __webpack_require__(266);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_easy_stack__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_easy_stack__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store__ = __webpack_require__(126);
 
 
@@ -1194,6 +1194,31 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ }),
 
 /***/ 30:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_easy_state__ = __webpack_require__(52);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_0_react_easy_state__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_0_react_easy_state__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_easy_params__ = __webpack_require__(20);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1_react_easy_params__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_1_react_easy_params__["d"]; });
+/* unused harmony reexport path */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Router__ = __webpack_require__(91);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Router__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core__ = __webpack_require__(32);
+/* unused harmony reexport route */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Link__ = __webpack_require__(92);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_4__Link__["a"]; });
+
+
+
+
+
+
+/***/ }),
+
+/***/ 31:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1633,7 +1658,7 @@ function raw(obj) {
 
 /***/ }),
 
-/***/ 31:
+/***/ 32:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1687,7 +1712,6 @@ function route({
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
 
-  // this is bad => keep toPath and path (second part)
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].length);
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].concat(toPath);
 
@@ -1727,31 +1751,6 @@ function onRoutingError(options, error) {
 }
 
 window.addEventListener('popstate', () => route({ to: location.pathname, params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* toParams */])(location.search), options: { history: false } }));
-
-/***/ }),
-
-/***/ 39:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_easy_state__ = __webpack_require__(52);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return __WEBPACK_IMPORTED_MODULE_0_react_easy_state__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_0_react_easy_state__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_easy_params__ = __webpack_require__(20);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1_react_easy_params__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_1_react_easy_params__["d"]; });
-/* unused harmony reexport path */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Router__ = __webpack_require__(91);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core__ = __webpack_require__(31);
-/* unused harmony reexport route */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Link__ = __webpack_require__(92);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_4__Link__["a"]; });
-
-
-
-
-
 
 /***/ }),
 
@@ -2002,7 +2001,7 @@ module.exports = focusNode;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return view; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__nx_js_observer_util__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__nx_js_observer_util__ = __webpack_require__(31);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__nx_js_observer_util__["a"]; });
 
 
@@ -20257,7 +20256,7 @@ Object.defineProperties( Queue.prototype, prototypeAccessors );
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_easy_params__ = __webpack_require__(20);
 
 
@@ -20289,24 +20288,25 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   route(fromPage, toPage) {
     const { timeout } = this.props;
-    const currentView = this.selectPage(toPage);
-    // do not do this for slave routers
+    const toChild = this.selectChild(toPage);
+    toPage = toChild.props.page;
 
-    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = currentView.props.page;
-    this.setDefaultParams(currentView);
+    // maybe do not do this for slave routers
+    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
+    this.setDefaultParams(toChild);
 
     let pending = true;
     if (timeout) {
-      this.wait(timeout).then(() => pending && this.enter(currentView, undefined));
+      this.wait(timeout).then(() => pending && this.updateState({ toPage }));
     }
 
-    return this.resolveData(currentView).then(currentView => this.enter(currentView, true),
+    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
     // do not swallow errors!!
-    () => this.enter(currentView, false)).then(() => pending = false);
+    () => this.updateState({ toPage, pageResolved: false }));
   }
 
-  setDefaultParams(currentView) {
-    const { defaultParams } = currentView.props;
+  setDefaultParams(toChild) {
+    const { defaultParams } = toChild.props;
     if (defaultParams) {
       for (let key in defaultParams) {
         if (__WEBPACK_IMPORTED_MODULE_3_react_easy_params__["a" /* params */][key] === undefined) {
@@ -20316,18 +20316,18 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
   }
 
-  selectPage(toPage) {
+  selectChild(toPage) {
     const { children, defaultPage } = this.props;
-    let toView, defaultView;
+    let toChild, defaultChild;
 
     __WEBPACK_IMPORTED_MODULE_0_react__["Children"].forEach(children, child => {
       if (child.props.page === toPage) {
-        toView = child;
+        toChild = child;
       } else if (child.props.page === defaultPage) {
-        defaultView = child;
+        defaultChild = child;
       }
     });
-    return toView || defaultView;
+    return toChild || defaultChild;
   }
 
   onRoute(fromPage, toPage) {
@@ -20345,47 +20345,39 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return defaultPrevented;
   }
 
-  resolveData(currentView) {
-    const { resolve } = currentView.props;
+  resolveData(toChild) {
+    const { resolve } = toChild.props;
 
     if (resolve) {
-      return Promise.resolve().then(resolve).then(data => this.handleResolvedData(data, currentView));
+      return resolve();
     }
-    return Promise.resolve(currentView);
-  }
-
-  handleResolvedData(data, currentView) {
-    if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(data)) {
-      return data;
-    }
-    if (typeof data === 'object') {
-      return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, data);
-    }
-    return currentView;
   }
 
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  enter(currentView, pageResolved) {
-    currentView = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(currentView, { pageResolved });
-    return new Promise(resolve => this.setState({ currentView }, resolve));
+  updateState(state) {
+    return new Promise(resolve => this.setState(state, resolve));
   }
 
-  // maybe set the needed params to the currentView in case of componentWillReceiveProps
-  // to allow custom props on children
-
-  // issue -> if children (like child props) change -> it renders out the same exact view ):
-  // bad!!
   render() {
     const { className, style } = this.props;
-    const { currentView } = this.state;
+    const { toPage, resolvedData, pageResolved } = this.state;
+
+    let toChild;
+    if (!toPage) {
+      toChild = null;
+    } else if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(resolvedData)) {
+      toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(resolvedData, { pageResolved });
+    } else {
+      toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(this.selectChild(toPage), Object.assign({}, { pageResolved }, resolvedData));
+    }
 
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       { className: className, style: style },
-      currentView || null
+      toChild || null
     );
   }
 }
@@ -20416,7 +20408,7 @@ Router.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_easy_state__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__urlUtils__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_easy_params__ = __webpack_require__(20);
 
 

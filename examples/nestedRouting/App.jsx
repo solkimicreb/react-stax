@@ -2,11 +2,19 @@ import React, { Component } from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
-import { Router, Link } from 'react-easy-stack'
+import { Router, Link, view, store } from 'react-easy-stack'
 import Profile from './Profile'
 import Settings from './Settings'
 
-export default class App extends Component {
+const appStore = store({
+  border: 'solid 3px green'
+})
+
+class App extends Component {
+  toggleStyle = () => {
+    appStore.border = (appStore.border === 'none') ? 'solid 3px green' : 'none'
+  }
+
   render () {
     return (
       <MuiThemeProvider>
@@ -23,17 +31,20 @@ export default class App extends Component {
                 <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
               </div>
             </Router>
+            <button onClick={this.toggleStyle}>Toggle Style</button>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile' timeout={1000}>
-            <Profile page='profile'/>
-            <Settings page='settings' resolve={wait}/>
+          <Router className='page router' defaultPage='profile'>
+            <Profile page='profile' style={{ border: appStore.border }}/>
+            <Settings page='settings'/>
           </Router>
         </div>
       </MuiThemeProvider>
     )
   }
 }
+
+export default view(App)
 
 function wait () {
   throw new Error('hi')
