@@ -11,6 +11,16 @@ const appStore = store({
   protected: false
 })
 
+const enterAnimation = {
+  keyframes: { opacity: [0, 1], transform: ['translateX(-50px)', 'none'] },
+  options: 200
+}
+
+const leaveAnimation = {
+  keyframes: { opacity: [1, 0], transform: ['none', 'translateX(50px)'] },
+  options: 200
+}
+
 class App extends Component {
   toggleStyle = () => {
     appStore.border = (appStore.border === 'none') ? 'solid 3px green' : 'none'
@@ -20,15 +30,9 @@ class App extends Component {
     appStore.protected = !appStore.protected
   }
 
-  componentDidCatch (error, info) {
-    console.log('APP', error, info)
-  }
-
   onRoute = ({ preventDefault, toPage, fromPage, target }) => {
-    console.log('onRoute', fromPage, toPage)
     if (appStore.protected && toPage === 'profile') {
       preventDefault()
-      console.log('route')
       target.route({ to: '/settings/user' })
     }
   }
@@ -38,7 +42,7 @@ class App extends Component {
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Router defaultPage='profile' onRoute={this.onRoute}>
+            <Router defaultPage='profile' /*onRoute={this.onRoute}*/>
               <div page='profile'>
                 <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
                 <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
@@ -53,9 +57,9 @@ class App extends Component {
             <button onClick={this.toggleProtect}>{appStore.protected ? 'Allow' : 'Protect'}</button>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile' onRoute={this.onRoute}>
-            <Profile page='profile' /*resolve={wait}*/ /*style={{ border: appStore.border }}*//>
-            <Settings page='settings'/>
+          <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} timeout={800}/*onRoute={this.onRoute}*/>
+            <Profile page='profile' /*style={{ border: appStore.border }}*//>
+            <Settings page='settings' resolve={wait}/>
           </Router>
         </div>
       </MuiThemeProvider>
@@ -66,6 +70,5 @@ class App extends Component {
 export default view(App)
 
 function wait () {
-  throw new Error('hi')
   return new Promise(resolve => setTimeout(resolve, 3000))
 }

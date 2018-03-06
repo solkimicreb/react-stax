@@ -1712,13 +1712,16 @@ function route({
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
 
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(depth, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].length);
-  toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].concat(toPath);
+  // path.splice(depth, path.length)
+  // issue -> if old path is too long it remains later!
+  toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
+  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(toPath.length);
 
   return routeFromDepth(depth, toPath).then(() => onRoutingSuccess(options), error => onRoutingError(options, error));
 }
 
 function routeFromDepth(depth, toPath) {
+  // issue this might change too early with parallel routers
   const fromPage = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth];
   const toPage = toPath[depth];
   const routersAtDepth = Array.from(routers[depth] || []);
@@ -20265,7 +20268,9 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {}, _temp;
+    return _temp = super(...args), this.state = {}, this.saveRef = routerNode => {
+      this.routerNode = routerNode;
+    }, _temp;
   }
 
   get depth() {
@@ -20289,24 +20294,35 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   _route(fromPage, toPage) {
-    const { timeout } = this.props;
+    const { timeout, enterAnimation, leaveAnimation } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
+    const { resolve } = toChild.props;
 
     const defaultPrevented = this.onRoute(fromPage, toPage);
     if (defaultPrevented) {
       return Promise.resolve();
     }
 
+    // maybe do not do this until the parallel routers are all finished
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
     this.setDefaultParams(toChild);
 
+    const routingThreads = [];
     let pending = true;
-    if (timeout) {
-      this.wait(timeout).then(() => pending && this.updateState({ toPage }));
+    let timedOut = false;
+
+    if (resolve && timeout) {
+      routingThreads.push(this.wait(timeout).then(() => pending && this.animate(leaveAnimation, fromPage, toPage)).then(() => pending && this.updateState({ toPage, pageResolved: undefined })).then(() => timedOut = true));
     }
 
-    return Promise.resolve().then(() => this.resolveData(toChild)).then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }), error => this.handleError(error, { toPage, pageResolved: false }));
+    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(() => !timedOut && this.animate(leaveAnimation, fromPage, toPage))
+    // this should come after!
+    .then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }), error => this.handleError(error, { toPage, pageResolved: false })));
+
+    const routing = Promise.race(routingThreads);
+    routing.then(() => this.animate(enterAnimation, fromPage, toPage));
+    return routing;
   }
 
   setDefaultParams(toChild) {
@@ -20349,14 +20365,6 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return defaultPrevented;
   }
 
-  resolveData(toChild) {
-    const { resolve } = toChild.props;
-
-    if (resolve) {
-      return resolve();
-    }
-  }
-
   wait(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
@@ -20369,6 +20377,13 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   updateState(state) {
     return new Promise(resolve => this.setState(state, resolve));
+  }
+
+  animate({ keyframes, options } = {}, fromPage, toPage) {
+    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
+      const animation = this.routerNode.animate(keyframes, options);
+      return new Promise(resolve => animation.onfinish = resolve);
+    }
   }
 
   render() {
@@ -20386,7 +20401,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
-      { className: className, style: style },
+      { className: className, style: style, ref: this.saveRef },
       toChild || null
     );
   }

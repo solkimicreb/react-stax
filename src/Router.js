@@ -42,31 +42,48 @@ export default class Router extends Component {
   }
 
   _route(fromPage, toPage) {
-    const { timeout } = this.props
+    const { timeout, enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
+    const { resolve } = toChild.props
 
     const defaultPrevented = this.onRoute(fromPage, toPage)
     if (defaultPrevented) {
       return Promise.resolve()
     }
 
+    // maybe do not do this until the parallel routers are all finished
     path[this.depth] = toPage
     this.setDefaultParams(toChild)
 
+    const routingThreads = []
     let pending = true
-    if (timeout) {
-      this.wait(timeout)
-        .then(() => pending && this.updateState({ toPage }))
+    let timedOut = false
+
+    if (resolve && timeout) {
+      routingThreads.push(
+        this.wait(timeout)
+          .then(() => pending && this.animate(leaveAnimation, fromPage, toPage))
+          .then(() => pending && this.updateState({ toPage, pageResolved: undefined }))
+          .then(() => (timedOut = true))
+      )
     }
 
-    return Promise.resolve()
-      .then(() => this.resolveData(toChild))
-      .then(() => (pending = false))
-      .then(
-        resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
-        error => this.handleError(error, { toPage, pageResolved: false })
-      )
+    routingThreads.push(
+      Promise.resolve()
+        .then(() => resolve && resolve())
+        .then(() => !timedOut && this.animate(leaveAnimation, fromPage, toPage))
+        // this should come after!
+        .then(() => (pending = false))
+        .then(
+          resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
+          error => this.handleError(error, { toPage, pageResolved: false })
+        )
+    )
+
+    const routing = Promise.race(routingThreads)
+    routing.then(() => this.animate(enterAnimation, fromPage, toPage))
+    return routing
   }
 
   setDefaultParams (toChild) {
@@ -109,14 +126,6 @@ export default class Router extends Component {
     return defaultPrevented
   }
 
-  resolveData (toChild) {
-    const { resolve } = toChild.props
-
-    if (resolve) {
-      return resolve()
-    }
-  }
-
   wait (duration) {
     return new Promise(resolve => setTimeout(resolve, duration))
   }
@@ -130,6 +139,17 @@ export default class Router extends Component {
 
   updateState (state) {
     return new Promise(resolve => this.setState(state, resolve))
+  }
+
+  saveRef = routerNode => {
+    this.routerNode = routerNode
+  }
+
+  animate ({ keyframes, options } = {}, fromPage, toPage) {
+    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
+      const animation = this.routerNode.animate(keyframes, options)
+      return new Promise(resolve => animation.onfinish = resolve)
+    }
   }
 
   render() {
@@ -149,7 +169,7 @@ export default class Router extends Component {
     }
 
     return (
-      <div className={className} style={style}>
+      <div className={className} style={style} ref={this.saveRef}>
         {toChild || null}
       </div>
     )

@@ -45,8 +45,10 @@ export function route ({
   }
   Object.assign(params, newParams)
 
-  path.splice(depth, path.length)
-  toPath = path.concat(toPath)
+  // path.splice(depth, path.length)
+  // issue -> if old path is too long it remains later!
+  toPath = path.slice(0, depth).concat(toPath)
+  path.splice(toPath.length)
 
   return routeFromDepth(depth, toPath).then(
     () => onRoutingSuccess(options),
@@ -55,6 +57,7 @@ export function route ({
 }
 
 function routeFromDepth (depth, toPath) {
+  // issue this might change too early with parallel routers
   const fromPage = path[depth]
   const toPage = toPath[depth]
   const routersAtDepth = Array.from(routers[depth] || [])
