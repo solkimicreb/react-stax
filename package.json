@@ -1,7 +1,7 @@
 {
   "name": "react-easy-stack",
-  "version": "3.0.1",
-  "description": "React Easy State provides a healthy balance of local and global state management in a simple, scalable way",
+  "version": "0.1.0-alpha.0",
+  "description": "React Easy Stack (WIP)",
   "main": "dist/cjs.es5.js",
   "module": "dist/es.es5.js",
   "files": [
@@ -38,12 +38,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:solkimicreb/react-easy-state.git"
+    "url": "git@github.com:solkimicreb/react-easy-stack.git"
   },
   "bugs": {
-    "url": "https://github.com/solkimicreb/react-easy-state/issues"
+    "url": "https://github.com/solkimicreb/react-easy-stack/issues"
   },
-  "homepage": "https://github.com/solkimicreb/react-easy-state#readme",
+  "homepage": "https://github.com/solkimicreb/react-easy-stack#readme",
   "license": "MIT",
   "keywords": [
     "observable",
@@ -101,7 +101,6 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "sinon": "3.1.0",
     "standard": "10.0.3",
-    "timeago.js": "^3.0.2",
     "webpack": "^3.5.2"
   },
   "engines": {
