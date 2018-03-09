@@ -21678,17 +21678,16 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     const { timeout, enterAnimation, leaveAnimation } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
-    const { resolve } = toChild.props;
+
+    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
+    this.setDefaultParams(toChild);
 
     const defaultPrevented = this.onRoute(fromPage, toPage);
     if (defaultPrevented) {
       return Promise.resolve();
     }
 
-    // maybe do not do this until the parallel routers are all finished
-    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
-    this.setDefaultParams(toChild);
-
+    const { resolve } = toChild.props;
     const routingThreads = [];
     let pending = true;
     let timedOut = false;

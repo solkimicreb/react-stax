@@ -45,17 +45,16 @@ export default class Router extends Component {
     const { timeout, enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
-    const { resolve } = toChild.props
+
+    path[this.depth] = toPage
+    this.setDefaultParams(toChild)
 
     const defaultPrevented = this.onRoute(fromPage, toPage)
     if (defaultPrevented) {
       return Promise.resolve()
     }
 
-    // maybe do not do this until the parallel routers are all finished
-    path[this.depth] = toPage
-    this.setDefaultParams(toChild)
-
+    const { resolve } = toChild.props
     const routingThreads = []
     let pending = true
     let timedOut = false
