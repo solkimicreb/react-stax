@@ -1700,13 +1700,14 @@ function route({
 }, depth = 0) {
   if (routing) {
     routing.cancelled = true;
+  } else {
+    // only process if we are not yet routing to prevent mid routing flash!
+    __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   }
   const localRouting = routing = {};
+  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
   toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toPathArray */])(toPath);
-
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {

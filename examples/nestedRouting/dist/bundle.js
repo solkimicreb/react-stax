@@ -1813,13 +1813,14 @@ function route({
 }, depth = 0) {
   if (routing) {
     routing.cancelled = true;
+  } else {
+    // only process if we are not yet routing to prevent mid routing flash!
+    __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   }
   const localRouting = routing = {};
+  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
   toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toPathArray */])(toPath);
-
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -23678,9 +23679,8 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       appStore.border = appStore.border === 'none' ? 'solid 3px green' : 'none';
     }, this.toggleProtect = () => {
       appStore.protected = !appStore.protected;
-    }, this.onRoute = ({ preventDefault, toPage, fromPage, target }) => {
+    }, this.onRoute = ({ toPage, fromPage, target }) => {
       if (appStore.protected && toPage === 'profile') {
-        preventDefault();
         target.route({ to: '/settings/user' });
       }
     }, _temp;
@@ -23766,7 +23766,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-          { className: 'page router', defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, timeout: 800 /*onRoute={this.onRoute}*/ },
+          { className: 'page router', defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, timeout: 800, onRoute: this.onRoute },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile' /*style={{ border: appStore.border }}*/ }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings', resolve: wait })
         )

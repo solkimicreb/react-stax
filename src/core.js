@@ -33,13 +33,15 @@ export function route ({
 ) {
   if (routing) {
     routing.cancelled = true
+  } else {
+    // only process if we are not yet routing to prevent mid routing flash!
+    scheduler.process()
   }
   const localRouting = routing = {}
+  scheduler.stop()
 
   toPath = toPathArray(toPath)
 
-  scheduler.process()
-  scheduler.stop()
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
