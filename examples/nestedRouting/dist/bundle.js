@@ -21788,7 +21788,10 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     } else if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(resolvedData)) {
       toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(resolvedData, { pageResolved });
     } else {
-      toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(this.selectChild(toPage), Object.assign({}, { pageResolved }, resolvedData));
+      toChild = this.selectChild(toPage);
+      if (toChild.props.resolve) {
+        toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(this.selectChild(toPage), Object.assign({}, { pageResolved }, resolvedData));
+      }
     }
 
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -37972,7 +37975,7 @@ class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         { defaultPage: 'privacy', className: 'router', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, timeout: 1000 },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { page: 'privacy', resolve: wait },
+          { page: 'privacy' },
           'Privacy Settings'
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

@@ -169,10 +169,13 @@ export default class Router extends Component {
     } else if (isValidElement(resolvedData)) {
       toChild = cloneElement(resolvedData, { pageResolved })
     } else {
-      toChild = cloneElement(
-        this.selectChild(toPage),
-        Object.assign({}, { pageResolved }, resolvedData)
-      )
+      toChild = this.selectChild(toPage)
+      if (toChild.props.resolve) {
+        toChild = cloneElement(
+          this.selectChild(toPage),
+          Object.assign({}, { pageResolved }, resolvedData)
+        )
+      }
     }
 
     return (

@@ -18,7 +18,7 @@ export default class Settings extends Component {
       <div>
         status: {pageResolved ? 'loaded' : 'loading'}
         <Router defaultPage='privacy' className='router' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} timeout={1000}>
-          <div page='privacy' resolve={wait}>Privacy Settings</div>
+          <div page='privacy'>Privacy Settings</div>
           <div page='user'>User Settings</div>
         </Router>
       </div>
