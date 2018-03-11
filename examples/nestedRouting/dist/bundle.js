@@ -21772,6 +21772,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
+    // compare it with path[depth] instead of fromPage?? -> nope!
     if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
@@ -21884,30 +21885,35 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   render() {
-    let { to, element, children, activeClass, params, className } = this.props;
+    let { to, element, children, activeClass, activeStyle, style, params, className } = this.props;
     const { onClick } = this;
 
     if (activeClass && this.isLinkActive()) {
       className = `${className} ${activeClass}`;
     }
+    if (activeStyle && this.isLinkActive()) {
+      style = Object.assign({}, style, activeStyle);
+    }
     const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["d" /* toQuery */])(params);
 
     const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
     if (element === 'a') {
-      return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(anchor, { className }, children);
+      return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(anchor, { className, style }, children);
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])(element, { className }, anchor);
+    return Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])(element, { className, style }, anchor);
   }
 }
 
 Link.propTypes = {
   to: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
   element: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
-  activeClass: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
   params: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
   options: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
-  onClick: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
-  className: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string
+  className: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
+  style: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
+  activeClass: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
+  activeStyle: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
+  onClick: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func
 };
 Link.contextTypes = {
   easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
@@ -21915,7 +21921,8 @@ Link.contextTypes = {
 Link.defaultProps = {
   element: 'a',
   activeClass: '',
-  className: ''
+  className: '',
+  style: {}
 };
 /* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_2_react_easy_state__["b" /* view */])(Link));
 
@@ -23674,6 +23681,10 @@ const leaveAnimation = {
   options: 200
 };
 
+const activeStyle = {
+  textDecoration: 'underline'
+};
+
 class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   constructor(...args) {
     var _temp;
@@ -23707,7 +23718,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               { page: 'profile' },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: '/profile' },
+                { to: '/profile', activeStyle: activeStyle },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,
@@ -23716,7 +23727,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               ),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: '/settings' },
+                { to: '/settings', activeStyle: activeStyle },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,
@@ -23729,7 +23740,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               { page: 'settings' },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: 'privacy' },
+                { to: 'privacy', activeStyle: activeStyle },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,
@@ -23738,7 +23749,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               ),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: 'user' },
+                { to: 'user', activeStyle: activeStyle },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,
@@ -23747,7 +23758,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               ),
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: '/profile' },
+                { to: '/profile', activeStyle: activeStyle },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,

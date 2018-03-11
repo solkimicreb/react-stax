@@ -153,6 +153,7 @@ export default class Router extends Component {
   }
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
+    // compare it with path[depth] instead of fromPage?? -> nope!
     if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
       const animation = this.routerNode.animate(keyframes, options)
       return new Promise(resolve => animation.onfinish = resolve)

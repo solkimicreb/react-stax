@@ -21,6 +21,10 @@ const leaveAnimation = {
   options: 200
 }
 
+const activeStyle = {
+  textDecoration: 'underline'
+}
+
 class App extends Component {
   toggleStyle = () => {
     appStore.border = (appStore.border === 'none') ? 'solid 3px green' : 'none'
@@ -43,13 +47,13 @@ class App extends Component {
           <Drawer>
             <Router defaultPage='profile' /*onRoute={this.onRoute}*/>
               <div page='profile'>
-                <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
-                <Link to='/settings'><MenuItem>Settings</MenuItem></Link>
+                <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
+                <Link to='/settings' activeStyle={activeStyle}><MenuItem>Settings</MenuItem></Link>
               </div>
               <div page='settings'>
-                <Link to='privacy'><MenuItem>Privacy</MenuItem></Link>
-                <Link to='user'><MenuItem>User</MenuItem></Link>
-                <Link to='/profile'><MenuItem>Profile</MenuItem></Link>
+                <Link to='privacy' activeStyle={activeStyle}><MenuItem>Privacy</MenuItem></Link>
+                <Link to='user' activeStyle={activeStyle}><MenuItem>User</MenuItem></Link>
+                <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
               </div>
             </Router>
             <button onClick={this.toggleStyle}>Toggle Style</button>

@@ -58,7 +58,7 @@ export function route ({
 
   return routeFromDepth(depth, toPath, localRouting).then(
     () => !localRouting.cancelled && onRoutingSuccess(options),
-    (error) => !localRouting.cancelled && onRoutingError(options, error)
+    error => !localRouting.cancelled && onRoutingError(options, error)
   )
 }
 

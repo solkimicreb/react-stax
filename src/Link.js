@@ -9,11 +9,13 @@ class Link extends Component {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
-    activeClass: PropTypes.string,
     params: PropTypes.object,
     options: PropTypes.object,
-    onClick: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    style: PropTypes.object,
+    activeClass: PropTypes.string,
+    activeStyle: PropTypes.object,
+    onClick: PropTypes.func
   };
 
   static contextTypes = {
@@ -23,7 +25,8 @@ class Link extends Component {
   static defaultProps = {
     element: 'a',
     activeClass: '',
-    className: ''
+    className: '',
+    style: {}
   };
 
   get linkDepth () {
@@ -69,19 +72,22 @@ class Link extends Component {
   }
 
   render () {
-    let { to, element, children, activeClass, params, className } = this.props
+    let { to, element, children, activeClass, activeStyle, style, params, className } = this.props
     const { onClick } = this
 
     if (activeClass && this.isLinkActive()) {
       className = `${className} ${activeClass}`
     }
+    if (activeStyle && this.isLinkActive()) {
+      style = Object.assign({}, style, activeStyle)
+    }
     const href = to + toQuery(params)
 
     const anchor = createElement('a', { onClick, href }, children)
     if (element === 'a') {
-      return cloneElement(anchor, { className }, children)
+      return cloneElement(anchor, { className, style }, children)
     }
-    return createElement(element, { className }, anchor)
+    return createElement(element, { className, style }, anchor)
   }
 }
 
