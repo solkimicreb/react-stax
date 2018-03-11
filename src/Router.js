@@ -42,6 +42,11 @@ export default class Router extends Component {
   }
 
   _route(fromPage, toPage) {
+    if (this.routing) {
+      this.routing.cancelled = true
+    }
+    const routing = this.routing = {}
+
     const { timeout, enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
@@ -49,8 +54,8 @@ export default class Router extends Component {
     path[this.depth] = toPage
     this.setDefaultParams(toChild)
 
-    const defaultPrevented = this.onRoute(fromPage, toPage)
-    if (defaultPrevented) {
+    this.onRoute(fromPage, toPage)
+    if (routing.cancelled) {
       return Promise.resolve()
     }
 
@@ -62,8 +67,8 @@ export default class Router extends Component {
     if (resolve && timeout) {
       routingThreads.push(
         this.wait(timeout)
-          .then(() => pending && this.animate(leaveAnimation, fromPage, toPage))
-          .then(() => pending && this.updateState({ toPage, pageResolved: undefined }))
+          .then(() => !routing.cancelled && pending && this.animate(leaveAnimation, fromPage, toPage))
+          .then(() => !routing.cancelled && pending && this.updateState({ toPage, pageResolved: undefined }))
           .then(() => (timedOut = true))
       )
     }
@@ -71,18 +76,24 @@ export default class Router extends Component {
     routingThreads.push(
       Promise.resolve()
         .then(() => resolve && resolve())
-        .then(() => !timedOut && this.animate(leaveAnimation, fromPage, toPage))
-        // this should come after!
-        .then(() => (pending = false))
+        .then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
+        // issue -> resolvedData is incorrect
         .then(
-          resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }),
-          error => this.handleError(error, { toPage, pageResolved: false })
+          resolvedData => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }),
+          error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false })
         )
+        // this won't run in case of errors
+        .then(() => (pending = false))
     )
 
-    const routing = Promise.race(routingThreads)
-    routing.then(() => this.animate(enterAnimation, fromPage, toPage))
-    return routing
+    const routingPromise = Promise.race(routingThreads)
+    routingPromise
+      .then(() => !routing.cancelled && this.animate(enterAnimation, fromPage, toPage))
+
+    Promise.all(routingThreads)
+      .then(() => (this.routing = undefined))
+
+    return routingPromise
   }
 
   setDefaultParams (toChild) {
@@ -112,17 +123,14 @@ export default class Router extends Component {
 
   onRoute (fromPage, toPage) {
     const { onRoute } = this.props
-    let defaultPrevented = false
 
     if (onRoute) {
       onRoute({
         target: this,
         fromPage,
-        toPage,
-        preventDefault: () => (defaultPrevented = true)
+        toPage
       })
     }
-    return defaultPrevented
   }
 
   wait (duration) {
@@ -169,7 +177,7 @@ export default class Router extends Component {
 
     return (
       <div className={className} style={style} ref={this.saveRef}>
-        {toChild || null}
+        {toChild}
       </div>
     )
   }

@@ -3,7 +3,7 @@ import { toPathArray, toPathString, toParams } from './urlUtils'
 
 const routers = []
 
-let isRouting = false
+let routing
 
 export function registerRouter (router, depth) {
   let routersAtDepth = routers[depth]
@@ -12,7 +12,7 @@ export function registerRouter (router, depth) {
   }
   routersAtDepth.add(router)
   // route the router if we are not routing currently
-  if (!isRouting) {
+  if (!routing) {
     router._route(path[depth], path[depth])
   }
 }
@@ -31,7 +31,11 @@ export function route ({
   },
   depth = 0
 ) {
-  isRouting = true
+  if (routing) {
+    routing.cancelled = true
+  }
+  const localRouting = routing = {}
+
   toPath = toPathArray(toPath)
 
   scheduler.process()
@@ -50,19 +54,19 @@ export function route ({
   toPath = path.slice(0, depth).concat(toPath)
   path.splice(toPath.length)
 
-  return routeFromDepth(depth, toPath).then(
-    () => onRoutingSuccess(options),
-    (error) => onRoutingError(options, error)
+  return routeFromDepth(depth, toPath, localRouting).then(
+    () => !localRouting.cancelled && onRoutingSuccess(options),
+    (error) => !localRouting.cancelled && onRoutingError(options, error)
   )
 }
 
-function routeFromDepth (depth, toPath) {
+function routeFromDepth (depth, toPath, routing) {
   // issue this might change too early with parallel routers
   const fromPage = path[depth]
   const toPage = toPath[depth]
   const routersAtDepth = Array.from(routers[depth] || [])
 
-  if (!routersAtDepth.length) {
+  if (routing.cancelled || !routersAtDepth.length) {
     return Promise.resolve()
   }
 
@@ -71,7 +75,7 @@ function routeFromDepth (depth, toPath) {
   )
 
   return Promise.all(routings)
-    .then(() => routeFromDepth(++depth, toPath))
+    .then(() => routeFromDepth(++depth, toPath, routing))
 }
 
 function onRoutingSuccess (options) {
@@ -82,7 +86,7 @@ function onRoutingSuccess (options) {
 
   scheduler.process()
   scheduler.start()
-  isRouting = false
+  routing = undefined
 }
 
 function onRoutingError (options, error) {

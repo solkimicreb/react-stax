@@ -1672,7 +1672,7 @@ function raw(obj) {
 
 const routers = [];
 
-let isRouting = false;
+let routing;
 
 function registerRouter(router, depth) {
   let routersAtDepth = routers[depth];
@@ -1681,7 +1681,7 @@ function registerRouter(router, depth) {
   }
   routersAtDepth.add(router);
   // route the router if we are not routing currently
-  if (!isRouting) {
+  if (!routing) {
     router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
   }
 }
@@ -1698,7 +1698,11 @@ function route({
   params: newParams = {},
   options = {}
 }, depth = 0) {
-  isRouting = true;
+  if (routing) {
+    routing.cancelled = true;
+  }
+  const localRouting = routing = {};
+
   toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toPathArray */])(toPath);
 
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
@@ -1717,22 +1721,22 @@ function route({
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(toPath.length);
 
-  return routeFromDepth(depth, toPath).then(() => onRoutingSuccess(options), error => onRoutingError(options, error));
+  return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingSuccess(options), error => !localRouting.cancelled && onRoutingError(options, error));
 }
 
-function routeFromDepth(depth, toPath) {
+function routeFromDepth(depth, toPath, routing) {
   // issue this might change too early with parallel routers
   const fromPage = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth];
   const toPage = toPath[depth];
   const routersAtDepth = Array.from(routers[depth] || []);
 
-  if (!routersAtDepth.length) {
+  if (routing.cancelled || !routersAtDepth.length) {
     return Promise.resolve();
   }
 
   const routings = routersAtDepth.map(router => router._route(fromPage, toPage));
 
-  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath));
+  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath, routing));
 }
 
 function onRoutingSuccess(options) {
@@ -1743,7 +1747,7 @@ function onRoutingSuccess(options) {
 
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].start();
-  isRouting = false;
+  routing = undefined;
 }
 
 function onRoutingError(options, error) {
@@ -20294,6 +20298,11 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   _route(fromPage, toPage) {
+    if (this.routing) {
+      this.routing.cancelled = true;
+    }
+    const routing = this.routing = {};
+
     const { timeout, enterAnimation, leaveAnimation } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
@@ -20301,8 +20310,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
     this.setDefaultParams(toChild);
 
-    const defaultPrevented = this.onRoute(fromPage, toPage);
-    if (defaultPrevented) {
+    this.onRoute(fromPage, toPage);
+    if (routing.cancelled) {
       return Promise.resolve();
     }
 
@@ -20312,16 +20321,21 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     let timedOut = false;
 
     if (resolve && timeout) {
-      routingThreads.push(this.wait(timeout).then(() => pending && this.animate(leaveAnimation, fromPage, toPage)).then(() => pending && this.updateState({ toPage, pageResolved: undefined })).then(() => timedOut = true));
+      routingThreads.push(this.wait(timeout).then(() => !routing.cancelled && pending && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && pending && this.updateState({ toPage, pageResolved: undefined })).then(() => timedOut = true));
     }
 
-    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(() => !timedOut && this.animate(leaveAnimation, fromPage, toPage))
-    // this should come after!
-    .then(() => pending = false).then(resolvedData => this.updateState({ toPage, pageResolved: true, resolvedData }), error => this.handleError(error, { toPage, pageResolved: false })));
+    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
+    // issue -> resolvedData is incorrect
+    .then(resolvedData => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
+    // this won't run in case of errors
+    .then(() => pending = false));
 
-    const routing = Promise.race(routingThreads);
-    routing.then(() => this.animate(enterAnimation, fromPage, toPage));
-    return routing;
+    const routingPromise = Promise.race(routingThreads);
+    routingPromise.then(() => !routing.cancelled && this.animate(enterAnimation, fromPage, toPage));
+
+    Promise.all(routingThreads).then(() => this.routing = undefined);
+
+    return routingPromise;
   }
 
   setDefaultParams(toChild) {
@@ -20351,17 +20365,14 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
   onRoute(fromPage, toPage) {
     const { onRoute } = this.props;
-    let defaultPrevented = false;
 
     if (onRoute) {
       onRoute({
         target: this,
         fromPage,
-        toPage,
-        preventDefault: () => defaultPrevented = true
+        toPage
       });
     }
-    return defaultPrevented;
   }
 
   wait(duration) {
@@ -20401,7 +20412,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       { className: className, style: style, ref: this.saveRef },
-      toChild || null
+      toChild
     );
   }
 }
