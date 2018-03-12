@@ -5,7 +5,7 @@ import React, {
   cloneElement
 } from 'react'
 import PropTypes from 'prop-types'
-import { registerRouter, releaseRouter, route } from './core'
+import { registerRouter, releaseRouter, routeFromDepth } from './core'
 import { path, params } from 'react-easy-params'
 import { toPathArray, reThrow, defaults, RoutingStatus } from './urlUtils'
 
@@ -44,11 +44,11 @@ export default class Router extends Component {
     registerRouter(this, this.depth)
   }
 
-  route (routeConfig) {
-    route(routeConfig, this.depth)
+  route ({ to, params, options } = {}) {
+    routeFromDepth(to, params, options, this.depth)
   }
 
-  _route (fromPage, toPage) {
+  switch (fromPage, toPage) {
     if (this.routingStatus) {
       this.routingStatus.cancelled = true
     }

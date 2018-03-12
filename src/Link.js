@@ -2,7 +2,7 @@ import { Component, createElement, cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
 import { toPathArray, toQuery } from './urlUtils'
-import { route } from './core'
+import { routeFromDepth } from './core'
 import { params, path, scheduler } from 'react-easy-params'
 
 export default class Link extends Component {
@@ -79,7 +79,7 @@ export default class Link extends Component {
       onClick(ev)
     }
 
-    route({ to, params, options }, this.linkDepth)
+    routeFromDepth(to, params, options, this.linkDepth)
   };
 
   render () {

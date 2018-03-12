@@ -19,7 +19,7 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
-    router._route(path[depth], path[depth])
+    router.switch(path[depth], path[depth])
   }
 }
 
@@ -30,9 +30,12 @@ export function releaseRouter (router, depth) {
   }
 }
 
-export function route (
-  { to: toPath = location.pathname, params: newParams = {}, options = {} },
-  depth = 0
+export function route ({ to, params, options } = {}) {
+  routeFromDepth(to, params, options, 0)
+}
+
+export function routeFromDepth (
+  toPath = location.pathname, newParams = {}, options = {}, depth = 0
 ) {
   if (routingStatus) {
     routingStatus.cancelled = true
@@ -51,13 +54,13 @@ export function route (
 
   toPath = path.slice(0, depth).concat(toPathArray(toPath))
 
-  return routeFromDepth(toPath, depth, status).then(
+  return switchRoutersFromDepth(toPath, depth, status).then(
     status.check(() => onRoutingEnd(options), 'cancelled'),
     reThrow(status.check(() => onRoutingEnd(options), 'cancelled'))
   )
 }
 
-function routeFromDepth (toPath, depth, status) {
+function switchRoutersFromDepth (toPath, depth, status) {
   const routersAtDepth = Array.from(routers[depth] || [])
 
   if (!routersAtDepth.length) {
@@ -65,9 +68,9 @@ function routeFromDepth (toPath, depth, status) {
   }
 
   return Promise.all(
-    routersAtDepth.map(router => router._route(path[depth], toPath[depth]))
+    routersAtDepth.map(router => router.switch(path[depth], toPath[depth]))
   ).then(
-    status.check(() => routeFromDepth(toPath, ++depth, status), 'cancelled')
+    status.check(() => switchRoutersFromDepth(toPath, ++depth, status), 'cancelled')
   )
 }
 

@@ -1664,7 +1664,8 @@ module.exports = shallowEqual;
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = registerRouter;
 /* harmony export (immutable) */ __webpack_exports__["b"] = releaseRouter;
-/* harmony export (immutable) */ __webpack_exports__["c"] = route;
+/* unused harmony export route */
+/* harmony export (immutable) */ __webpack_exports__["c"] = routeFromDepth;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_easy_params__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__urlUtils__ = __webpack_require__(33);
 
@@ -1681,7 +1682,7 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
+    router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
   }
 }
 
@@ -1692,7 +1693,11 @@ function releaseRouter(router, depth) {
   }
 }
 
-function route({ to: toPath = location.pathname, params: newParams = {}, options = {} }, depth = 0) {
+function route({ to, params, options } = {}) {
+  routeFromDepth(to, params, options, 0);
+}
+
+function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
   if (routingStatus) {
     routingStatus.cancelled = true;
   } else {
@@ -1710,17 +1715,17 @@ function route({ to: toPath = location.pathname, params: newParams = {}, options
 
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathArray */])(toPath));
 
-  return routeFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* reThrow */])(status.check(() => onRoutingEnd(options), 'cancelled')));
+  return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* reThrow */])(status.check(() => onRoutingEnd(options), 'cancelled')));
 }
 
-function routeFromDepth(toPath, depth, status) {
+function switchRoutersFromDepth(toPath, depth, status) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (!routersAtDepth.length) {
     return Promise.resolve();
   }
 
-  return Promise.all(routersAtDepth.map(router => router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(status.check(() => routeFromDepth(toPath, ++depth, status), 'cancelled'));
+  return Promise.all(routersAtDepth.map(router => router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status), 'cancelled'));
 }
 
 function onRoutingEnd(options) {
@@ -20310,11 +20315,11 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     Object(__WEBPACK_IMPORTED_MODULE_2__core__["a" /* registerRouter */])(this, this.depth);
   }
 
-  route(routeConfig) {
-    Object(__WEBPACK_IMPORTED_MODULE_2__core__["c" /* route */])(routeConfig, this.depth);
+  route({ to, params, options } = {}) {
+    Object(__WEBPACK_IMPORTED_MODULE_2__core__["c" /* routeFromDepth */])(to, params, options, this.depth);
   }
 
-  _route(fromPage, toPage) {
+  switch(fromPage, toPage) {
     if (this.routingStatus) {
       this.routingStatus.cancelled = true;
     }
@@ -20474,7 +20479,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         onClick(ev);
       }
 
-      Object(__WEBPACK_IMPORTED_MODULE_4__core__["c" /* route */])({ to, params, options }, this.linkDepth);
+      Object(__WEBPACK_IMPORTED_MODULE_4__core__["c" /* routeFromDepth */])(to, params, options, this.linkDepth);
     }, _temp;
   }
 
