@@ -29,7 +29,7 @@ export default class Link extends PureComponent {
     style: {}
   };
 
-  state = {}
+  state = {};
 
   get linkDepth () {
     const { to } = this.props

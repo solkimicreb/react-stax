@@ -56,7 +56,7 @@ export function routeFromDepth (
   Object.assign(params, newParams)
   toPath = path.slice(0, depth).concat(toPathArray(toPath))
 
-  const onEnd = status.check(() => onRoutingEnd(options), 'cancelled')
+  const onEnd = status.check(() => onRoutingEnd(options))
   return switchRoutersFromDepth(toPath, depth, status).then(
     onEnd,
     rethrow(onEnd)
@@ -70,14 +70,14 @@ function switchRoutersFromDepth (toPath, depth, status) {
     return Promise.resolve()
   }
 
+  // check routersAtDepth defaultPage -> throw an error if they differ
+  // somehow make joint resolution
+  // issue with parallel routing -> there is a slight tearing!!
+  // I need joint resolution!
+
   return Promise.all(
     routersAtDepth.map(router => router.switch(path[depth], toPath[depth]))
-  ).then(
-    status.check(
-      () => switchRoutersFromDepth(toPath, ++depth, status),
-      'cancelled'
-    )
-  )
+  ).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }
 
 function onRoutingEnd (options) {

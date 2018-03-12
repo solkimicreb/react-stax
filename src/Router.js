@@ -28,7 +28,7 @@ export default class Router extends PureComponent {
   static childContextTypes = { easyRouterDepth: PropTypes.number };
   static contextTypes = { easyRouterDepth: PropTypes.number };
 
-  state = {}
+  state = {};
 
   getChildContext () {
     return { easyRouterDepth: this.depth + 1 }
@@ -75,70 +75,43 @@ export default class Router extends PureComponent {
 
     const resolveThreads = []
 
-    // improve if cases, improve flag toggle, improve promise.finally cases
     if (resolve && timeout) {
-      resolveThreads.push(
-        this.wait(timeout)
-          .then(
-            status.check(
-              () => {
-                this.animate(leaveAnimation, fromPage, toPage)
-                status.timedout = true
-              },
-              'resolved',
-              'cancelled'
-            )
-          )
-          .then(
-            status.check(
-              () => this.replaceState({ toPage }),
-              'resolved',
-              'cancelled'
-            )
-          )
-      )
+      resolveThreads.push(this.wait(timeout))
     }
 
-    let resolvedData
+    let resolvedData, pageResolved, timedout
     resolveThreads.push(
       Promise.resolve()
         .then(() => resolve && resolve())
-        .then(data => (resolvedData = data))
-        .then(
-          status.check(
-            () => {
-              this.animate(leaveAnimation, fromPage, toPage)
-              status.resolved = true
-            },
-            'timedout',
-            'cancelled'
-          )
-        )
-        .then(
-          // issue: set status.resolved = true here
-          // also somehow propagate resolvedData here from the top
-          status.check(
-            () =>
-              this.replaceState({ toPage, pageResolved: true, resolvedData }),
-            'cancelled'
-          ),
-          rethrow(
-            status.check(
-              () => this.replaceState({ toPage, pageResolved: false }),
-              'cancelled'
-            )
-          )
-        )
+        .then(data => {
+          resolvedData = data
+          pageResolved = true
+        }, rethrow(() => (pageResolved = false)))
     )
 
-    Promise.all(resolveThreads).then(() => (this.routingStatus = undefined))
-
     const routingPromise = Promise.race(resolveThreads)
-    routingPromise.then(
-      status.check(
-        () => this.animate(enterAnimation, fromPage, toPage),
-        'cancelled'
+      .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
+      .then(
+        status.check(() => {
+          this.replaceState({ toPage, pageResolved, resolvedData })
+          if (pageResolved === undefined) {
+            timedout = true
+          }
+        })
       )
+
+    Promise.all(resolveThreads)
+      .then(
+        status.check(() => {
+          if (timedout) {
+            return this.replaceState({ toPage, pageResolved, resolvedData })
+          }
+        })
+      )
+      .then(() => (this.routingStatus = undefined))
+
+    routingPromise.then(
+      status.check(() => this.animate(enterAnimation, fromPage, toPage))
     )
 
     return routingPromise

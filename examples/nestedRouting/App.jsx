@@ -61,7 +61,7 @@ class App extends Component {
           </Drawer>
 
           <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} onRoute={this.onRoute}>
-            <Profile page='profile' /* style={{ border: appStore.border }} *//>
+            <Profile page='profile' style={{ border: appStore.border }} />
             <Settings page='settings' defaultParams={{ hello: 'World' }} resolve={wait} timeout={800} />
           </Router>
         </div>
@@ -73,7 +73,7 @@ class App extends Component {
 export default view(App)
 
 function wait () {
-  return new Promise(resolve => setTimeout(resolve, 5000))
+  return new Promise(resolve => setTimeout(resolve, 3000))
     .then(() => ({ data: 'Hello World!' }))
     // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }

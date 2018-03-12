@@ -1827,7 +1827,7 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathArray */])(toPath));
 
-  const onEnd = status.check(() => onRoutingEnd(options), 'cancelled');
+  const onEnd = status.check(() => onRoutingEnd(options));
   return switchRoutersFromDepth(toPath, depth, status).then(onEnd, Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* rethrow */])(onEnd));
 }
 
@@ -1838,7 +1838,12 @@ function switchRoutersFromDepth(toPath, depth, status) {
     return Promise.resolve();
   }
 
-  return Promise.all(routersAtDepth.map(router => router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status), 'cancelled'));
+  // check routersAtDepth defaultPage -> throw an error if they differ
+  // somehow make joint resolution
+  // issue with parallel routing -> there is a slight tearing!!
+  // I need joint resolution!
+
+  return Promise.all(routersAtDepth.map(router => router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
 function onRoutingEnd(options) {
@@ -1932,8 +1937,8 @@ function defaults(obj, defaultProps) {
 }
 
 class RoutingStatus {
-  check(fn, ...flags) {
-    return () => flags.some(flag => this[flag]) ? undefined : fn();
+  check(fn) {
+    return () => this.cancelled ? undefined : fn();
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = RoutingStatus;
@@ -21731,27 +21736,30 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
     const resolveThreads = [];
 
-    // improve if cases, improve flag toggle, improve promise.finally cases
     if (resolve && timeout) {
-      resolveThreads.push(this.wait(timeout).then(status.check(() => {
-        this.animate(leaveAnimation, fromPage, toPage);
-        status.timedout = true;
-      }, 'resolved', 'cancelled')).then(status.check(() => this.replaceState({ toPage }), 'resolved', 'cancelled')));
+      resolveThreads.push(this.wait(timeout));
     }
 
-    let resolvedData;
-    resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(status.check(() => {
-      this.animate(leaveAnimation, fromPage, toPage);
-      status.resolved = true;
-    }, 'timedout', 'cancelled')).then(
-    // issue: set status.resolved = true here
-    // also somehow propagate resolvedData here from the top
-    status.check(() => this.replaceState({ toPage, pageResolved: true, resolvedData }), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(status.check(() => this.replaceState({ toPage, pageResolved: false }), 'cancelled'))));
+    let resolvedData, pageResolved, timedout;
+    resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => {
+      resolvedData = data;
+      pageResolved = true;
+    }, Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(() => pageResolved = false)));
 
-    Promise.all(resolveThreads).then(() => this.routingStatus = undefined);
+    const routingPromise = Promise.race(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => {
+      this.replaceState({ toPage, pageResolved, resolvedData });
+      if (pageResolved === undefined) {
+        timedout = true;
+      }
+    }));
 
-    const routingPromise = Promise.race(resolveThreads);
-    routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage), 'cancelled'));
+    Promise.all(resolveThreads).then(status.check(() => {
+      if (timedout) {
+        return this.replaceState({ toPage, pageResolved, resolvedData });
+      }
+    })).then(() => this.routingStatus = undefined);
+
+    routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
     return routingPromise;
   }
@@ -23818,7 +23826,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
           { className: 'page router', defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, onRoute: this.onRoute },
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile' /* style={{ border: appStore.border }} */ }),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile', style: { border: appStore.border } }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings', defaultParams: { hello: 'World' }, resolve: wait, timeout: 800 })
         )
       )
@@ -23829,7 +23837,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["f" /* view */])(App));
 
 function wait() {
-  return new Promise(resolve => setTimeout(resolve, 5000)).then(() => ({ data: 'Hello World!' }));
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({ data: 'Hello World!' }));
   // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }
 
