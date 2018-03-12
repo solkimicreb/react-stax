@@ -5,10 +5,11 @@ import { path, params } from 'react-easy-params';
 
 export default class Router extends Component {
   static propTypes = {
-    onRoute: PropTypes.func,
     defaultPage: PropTypes.string.isRequired,
+    onRoute: PropTypes.func,
     className: PropTypes.string,
-    timeout: PropTypes.number
+    enterAnimation: PropTypes.object,
+    leaveAnimation: PropTypes.object
   };
 
   static childContextTypes = {
@@ -47,7 +48,7 @@ export default class Router extends Component {
     }
     const routing = this.routing = {}
 
-    const { timeout, enterAnimation, leaveAnimation } = this.props
+    const { enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
 
@@ -59,7 +60,7 @@ export default class Router extends Component {
       return Promise.resolve()
     }
 
-    const { resolve } = toChild.props
+    const { resolve, timeout } = toChild.props
     const routingThreads = []
     let pending = true
     let timedOut = false

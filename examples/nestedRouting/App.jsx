@@ -60,9 +60,9 @@ class App extends Component {
             <button onClick={this.toggleProtect}>{appStore.protected ? 'Allow' : 'Protect'}</button>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} timeout={800} onRoute={this.onRoute}>
+          <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} onRoute={this.onRoute}>
             <Profile page='profile' /*style={{ border: appStore.border }}*//>
-            <Settings page='settings' resolve={wait}/>
+            <Settings page='settings' resolve={wait} timeout={800}/>
           </Router>
         </div>
       </MuiThemeProvider>

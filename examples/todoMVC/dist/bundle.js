@@ -20303,7 +20303,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
     const routing = this.routing = {};
 
-    const { timeout, enterAnimation, leaveAnimation } = this.props;
+    const { enterAnimation, leaveAnimation } = this.props;
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
 
@@ -20315,7 +20315,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       return Promise.resolve();
     }
 
-    const { resolve } = toChild.props;
+    const { resolve, timeout } = toChild.props;
     const routingThreads = [];
     let pending = true;
     let timedOut = false;
@@ -20423,10 +20423,11 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony export (immutable) */ __webpack_exports__["a"] = Router;
 
 Router.propTypes = {
-  onRoute: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
   defaultPage: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string.isRequired,
+  onRoute: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
   className: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
-  timeout: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
+  enterAnimation: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
+  leaveAnimation: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object
 };
 Router.childContextTypes = {
   easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
