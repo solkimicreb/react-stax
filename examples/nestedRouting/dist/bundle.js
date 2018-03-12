@@ -21860,7 +21860,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.onClick = ev => {
+    return _temp = super(...args), this.state = {}, this.onClick = ev => {
       ev.preventDefault();
       const { onClick, params, options, to } = this.props;
       if (onClick) {
@@ -21922,12 +21922,13 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
       params,
       className
     } = this.props;
+    const { isActive } = this.state;
     const { onClick } = this;
 
-    if (activeClass && this.isLinkActive()) {
+    if (activeClass && isActive) {
       className = `${className} ${activeClass}`;
     }
-    if (activeStyle && this.isLinkActive()) {
+    if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle);
     }
     const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["h" /* toQuery */])(params);

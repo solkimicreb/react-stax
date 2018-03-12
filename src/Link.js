@@ -29,6 +29,8 @@ export default class Link extends PureComponent {
     style: {}
   };
 
+  state = {}
+
   get linkDepth () {
     const { to } = this.props
     const depth = this.context.easyRouterDepth || 0
@@ -93,12 +95,13 @@ export default class Link extends PureComponent {
       params,
       className
     } = this.props
+    const { isActive } = this.state
     const { onClick } = this
 
-    if (activeClass && this.isLinkActive()) {
+    if (activeClass && isActive) {
       className = `${className} ${activeClass}`
     }
-    if (activeStyle && this.isLinkActive()) {
+    if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle)
     }
     const href = to + toQuery(params)
