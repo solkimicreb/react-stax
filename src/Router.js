@@ -2,6 +2,7 @@ import React, { Component, Children, isValidElement, cloneElement } from 'react'
 import PropTypes from 'prop-types';
 import { registerRouter, releaseRouter, route } from './core';
 import { path, params } from 'react-easy-params';
+import { toPathArray } from './urlUtils'
 
 export default class Router extends Component {
   static propTypes = {
@@ -155,8 +156,8 @@ export default class Router extends Component {
   }
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
-    // compare it with path[depth] instead of fromPage?? -> nope!
-    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
+    const currentPage = toPathArray(location.pathname)[this.depth]
+    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
       const animation = this.routerNode.animate(keyframes, options)
       return new Promise(resolve => animation.onfinish = resolve)
     }

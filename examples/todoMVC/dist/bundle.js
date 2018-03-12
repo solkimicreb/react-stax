@@ -1717,8 +1717,6 @@ function route({
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
 
-  // path.splice(depth, path.length)
-  // issue -> if old path is too long it remains later!
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
 
   return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingSuccess(options), error => !localRouting.cancelled && onRoutingError(options, error));
@@ -20263,6 +20261,8 @@ Object.defineProperties( Queue.prototype, prototypeAccessors );
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_easy_params__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__urlUtils__ = __webpack_require__(53);
+
 
 
 
@@ -20389,8 +20389,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
-    // compare it with path[depth] instead of fromPage?? -> nope!
-    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage) {
+    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["b" /* toPathArray */])(location.pathname)[this.depth];
+    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
     }
