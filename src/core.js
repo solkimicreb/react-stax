@@ -1,5 +1,5 @@
 import { path, params, scheduler } from 'react-easy-params'
-import { toPathArray, toPathString, toParams, reThrow } from './urlUtils'
+import { toPathArray, toPathString, toParams, reThrow, clear } from './urlUtils'
 
 const routers = []
 
@@ -45,9 +45,7 @@ export function route ({
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
-    for (let key of Object.keys(params)) {
-      delete params[key]
-    }
+    clear(params)
   }
   Object.assign(params, newParams)
 

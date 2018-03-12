@@ -62,7 +62,7 @@ class App extends Component {
 
           <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} onRoute={this.onRoute}>
             <Profile page='profile' /*style={{ border: appStore.border }}*//>
-            <Settings page='settings' resolve={wait} timeout={800}/>
+            <Settings page='settings' defaultParams={{ hello: 'World' }} resolve={wait} timeout={800}/>
           </Router>
         </div>
       </MuiThemeProvider>

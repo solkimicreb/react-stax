@@ -46,3 +46,17 @@ export function reThrow (fn) {
     throw error
   }
 }
+
+export function clear (obj) {
+  for (let key of Object.keys(obj)) {
+    delete obj[key]
+  }
+}
+
+export function defaults (obj, defaultProps) {
+  for (let key in defaultProps) {
+    if (obj[key] === undefined) {
+      obj[key] = defaultProps[key]
+    }
+  }
+}
