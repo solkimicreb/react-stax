@@ -21826,7 +21826,7 @@ Router.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_easy_state__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nx_js_observer_util__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__urlUtils__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_easy_params__ = __webpack_require__(20);
@@ -21857,6 +21857,14 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     const depth = this.context.easyRouterDepth || 0;
     const isRelative = !to || to[0] !== '/';
     return isRelative ? depth : 0;
+  }
+
+  componentDidMount() {
+    this.activityUpdater = Object(__WEBPACK_IMPORTED_MODULE_2__nx_js_observer_util__["b" /* observe */])(() => this.setState({ isActive: this.isLinkActive() }), { scheduler: __WEBPACK_IMPORTED_MODULE_5_react_easy_params__["c" /* scheduler */] });
+  }
+
+  componentWillUnmount() {
+    Object(__WEBPACK_IMPORTED_MODULE_2__nx_js_observer_util__["c" /* unobserve */])(this.activityUpdater);
   }
 
   isLinkActive() {
@@ -21903,6 +21911,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])(element, { className, style }, anchor);
   }
 }
+/* harmony export (immutable) */ __webpack_exports__["a"] = Link;
 
 Link.propTypes = {
   to: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
@@ -21924,7 +21933,6 @@ Link.defaultProps = {
   className: '',
   style: {}
 };
-/* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_2_react_easy_state__["b" /* view */])(Link));
 
 /***/ }),
 /* 93 */

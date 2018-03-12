@@ -1,11 +1,11 @@
 import { Component, createElement, cloneElement } from 'react'
 import PropTypes from 'prop-types'
-import { view } from 'react-easy-state'
+import { observe, unobserve } from '@nx-js/observer-util'
 import { toPathArray, toQuery } from './urlUtils'
 import { route } from './core'
-import { params, path } from 'react-easy-params'
+import { params, path, scheduler } from 'react-easy-params'
 
-class Link extends Component {
+export default class Link extends Component {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
@@ -34,6 +34,14 @@ class Link extends Component {
     const depth = this.context.easyRouterDepth || 0
     const isRelative = !to || to[0] !== '/'
     return isRelative ? depth : 0
+  }
+
+  componentDidMount () {
+    this.activityUpdater = observe(() => this.setState({ isActive: this.isLinkActive()}), { scheduler })
+  }
+
+  componentWillUnmount () {
+    unobserve(this.activityUpdater)
   }
 
   isLinkActive () {
@@ -90,5 +98,3 @@ class Link extends Component {
     return createElement(element, { className, style }, anchor)
   }
 }
-
-export default view(Link)
