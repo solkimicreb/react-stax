@@ -1,5 +1,5 @@
 import { path, params, scheduler } from 'react-easy-params'
-import { toPathArray, toPathString, toParams } from './urlUtils'
+import { toPathArray, toPathString, toParams, reThrow } from './urlUtils'
 
 const routers = []
 
@@ -54,8 +54,8 @@ export function route ({
   toPath = path.slice(0, depth).concat(toPath)
 
   return routeFromDepth(depth, toPath, localRouting).then(
-    () => !localRouting.cancelled && onRoutingSuccess(options),
-    error => !localRouting.cancelled && onRoutingError(options, error)
+    () => !localRouting.cancelled && onRoutingEnd(options),
+    reThrow(() => !localRouting.cancelled && onRoutingEnd(options, error))
   )
 }
 
@@ -77,7 +77,7 @@ function routeFromDepth (depth, toPath, routing) {
     .then(() => routeFromDepth(++depth, toPath, routing))
 }
 
-function onRoutingSuccess (options) {
+function onRoutingEnd (options) {
   // by default a history item is pushed if the pathname changes!
   if (options.history === true || (options.history !== false && toPathString(path) !== location.pathname)) {
     history.pushState(history.state, '')
@@ -86,11 +86,6 @@ function onRoutingSuccess (options) {
   scheduler.process()
   scheduler.start()
   routing = undefined
-}
-
-function onRoutingError (options, error) {
-  onRoutingSuccess(options)
-  throw error
 }
 
 window.addEventListener('popstate', () =>

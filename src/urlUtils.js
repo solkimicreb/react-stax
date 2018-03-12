@@ -39,3 +39,10 @@ export function toParams (queryString) {
 export function notEmpty (token) {
   return token !== ''
 }
+
+export function reThrow (fn) {
+  return error => {
+    fn()
+    throw error
+  }
+}

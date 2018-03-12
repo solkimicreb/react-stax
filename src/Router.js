@@ -2,7 +2,7 @@ import React, { Component, Children, isValidElement, cloneElement } from 'react'
 import PropTypes from 'prop-types';
 import { registerRouter, releaseRouter, route } from './core';
 import { path, params } from 'react-easy-params';
-import { toPathArray } from './urlUtils'
+import { toPathArray, reThrow } from './urlUtils'
 
 export default class Router extends Component {
   static propTypes = {
@@ -83,7 +83,7 @@ export default class Router extends Component {
         .then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
         .then(
           () => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }),
-          error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false })
+          reThrow(() => !routing.cancelled && this.updateState({ toPage, pageResolved: false }))
         )
         // this won't run in case of errors
         .then(() => (pending = false))
@@ -138,13 +138,6 @@ export default class Router extends Component {
 
   wait (duration) {
     return new Promise(resolve => setTimeout(resolve, duration))
-  }
-
-  handleError (error, state) {
-    return this.updateState(state)
-      .then(() => {
-        throw error
-      })
   }
 
   updateState (state) {

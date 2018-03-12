@@ -1820,7 +1820,7 @@ function route({
   const localRouting = routing = {};
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
-  toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toPathArray */])(toPath);
+  toPath = Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* toPathArray */])(toPath);
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -1832,7 +1832,7 @@ function route({
 
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
 
-  return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingSuccess(options), error => !localRouting.cancelled && onRoutingError(options, error));
+  return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingEnd(options), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* reThrow */])(() => !localRouting.cancelled && onRoutingEnd(options, error)));
 }
 
 function routeFromDepth(depth, toPath, routing) {
@@ -1850,9 +1850,9 @@ function routeFromDepth(depth, toPath, routing) {
   return Promise.all(routings).then(() => routeFromDepth(++depth, toPath, routing));
 }
 
-function onRoutingSuccess(options) {
+function onRoutingEnd(options) {
   // by default a history item is pushed if the pathname changes!
-  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */]) !== location.pathname) {
+  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */]) !== location.pathname) {
     history.pushState(history.state, '');
   }
 
@@ -1861,12 +1861,7 @@ function onRoutingSuccess(options) {
   routing = undefined;
 }
 
-function onRoutingError(options, error) {
-  onRoutingSuccess(options);
-  throw error;
-}
-
-window.addEventListener('popstate', () => route({ to: location.pathname, params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* toParams */])(location.search), options: { history: false } }));
+window.addEventListener('popstate', () => route({ to: location.pathname, params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* toParams */])(location.search), options: { history: false } }));
 
 /***/ }),
 /* 33 */
@@ -2465,11 +2460,12 @@ function view(Comp, { devtool: rawDevtool } = {}) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = toPathArray;
-/* harmony export (immutable) */ __webpack_exports__["c"] = toPathString;
-/* harmony export (immutable) */ __webpack_exports__["d"] = toQuery;
-/* harmony export (immutable) */ __webpack_exports__["a"] = toParams;
+/* harmony export (immutable) */ __webpack_exports__["c"] = toPathArray;
+/* harmony export (immutable) */ __webpack_exports__["d"] = toPathString;
+/* harmony export (immutable) */ __webpack_exports__["e"] = toQuery;
+/* harmony export (immutable) */ __webpack_exports__["b"] = toParams;
 /* unused harmony export notEmpty */
+/* harmony export (immutable) */ __webpack_exports__["a"] = reThrow;
 function toPathArray(path) {
   return path.split('/').filter(notEmpty);
 }
@@ -2507,6 +2503,13 @@ function toParams(queryString) {
 
 function notEmpty(token) {
   return token !== '';
+}
+
+function reThrow(fn) {
+  return error => {
+    fn();
+    throw error;
+  };
 }
 
 /***/ }),
@@ -21706,7 +21709,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }
 
     let resolvedData;
-    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
+    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["a" /* reThrow */])(() => !routing.cancelled && this.updateState({ toPage, pageResolved: false })))
     // this won't run in case of errors
     .then(() => pending = false));
 
@@ -21759,18 +21762,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  handleError(error, state) {
-    return this.updateState(state).then(() => {
-      throw error;
-    });
-  }
-
   updateState(state) {
     return new Promise(resolve => this.setState(state, resolve));
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
-    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["b" /* toPathArray */])(location.pathname)[this.depth];
+    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* toPathArray */])(location.pathname)[this.depth];
     if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
@@ -21874,7 +21871,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   isLinkPathActive() {
     const { to } = this.props;
     if (to) {
-      const linkPath = Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["b" /* toPathArray */])(to);
+      const linkPath = Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["c" /* toPathArray */])(to);
       return linkPath.every((page, i) => page === __WEBPACK_IMPORTED_MODULE_5_react_easy_params__["b" /* path */][i + this.linkDepth]);
     }
     return true;
@@ -21902,7 +21899,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     if (activeStyle && this.isLinkActive()) {
       style = Object.assign({}, style, activeStyle);
     }
-    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["d" /* toQuery */])(params);
+    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["e" /* toQuery */])(params);
 
     const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
     if (element === 'a') {
