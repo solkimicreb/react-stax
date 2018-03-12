@@ -1693,11 +1693,7 @@ function releaseRouter(router, depth) {
   }
 }
 
-function route({
-  to: toPath = location.pathname,
-  params: newParams = {},
-  options = {}
-}, depth = 0) {
+function route({ to: toPath = location.pathname, params: newParams = {}, options = {} }, depth = 0) {
   if (routing) {
     routing.cancelled = true;
   } else {
@@ -1717,22 +1713,17 @@ function route({
 
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
 
-  return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingEnd(options), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* reThrow */])(() => !localRouting.cancelled && onRoutingEnd(options, error)));
+  return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingEnd(options), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* reThrow */])(() => !localRouting.cancelled && onRoutingEnd(options)));
 }
 
 function routeFromDepth(depth, toPath, routing) {
-  // issue this might change too early with parallel routers
-  const fromPage = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth];
-  const toPage = toPath[depth];
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (routing.cancelled || !routersAtDepth.length) {
     return Promise.resolve();
   }
 
-  const routings = routersAtDepth.map(router => router._route(fromPage, toPage));
-
-  return Promise.all(routings).then(() => routeFromDepth(++depth, toPath, routing));
+  return Promise.all(routersAtDepth.map(router => router._route(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(() => routeFromDepth(++depth, toPath, routing));
 }
 
 function onRoutingEnd(options) {
@@ -1746,7 +1737,11 @@ function onRoutingEnd(options) {
   routing = undefined;
 }
 
-window.addEventListener('popstate', () => route({ to: location.pathname, params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* toParams */])(location.search), options: { history: false } }));
+window.addEventListener('popstate', () => route({
+  to: location.pathname,
+  params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* toParams */])(location.search),
+  options: { history: false }
+}));
 
 /***/ }),
 
@@ -20516,7 +20511,16 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   }
 
   render() {
-    let { to, element, children, activeClass, activeStyle, style, params, className } = this.props;
+    let {
+      to,
+      element,
+      children,
+      activeClass,
+      activeStyle,
+      style,
+      params,
+      className
+    } = this.props;
     const { onClick } = this;
 
     if (activeClass && this.isLinkActive()) {

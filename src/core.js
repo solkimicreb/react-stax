@@ -1,5 +1,11 @@
 import { path, params, scheduler } from 'react-easy-params'
-import { toPathArray, toPathString, toParams, reThrow, clear } from './urlUtils'
+import {
+  toPathArray,
+  toPathString,
+  toParams,
+  reThrow,
+  clear
+} from './urlUtils'
 
 const routers = []
 
@@ -24,11 +30,8 @@ export function releaseRouter (router, depth) {
   }
 }
 
-export function route ({
-    to: toPath = location.pathname,
-    params: newParams = {},
-    options = {}
-  },
+export function route (
+  { to: toPath = location.pathname, params: newParams = {}, options = {} },
   depth = 0
 ) {
   if (routing) {
@@ -37,11 +40,10 @@ export function route ({
     // only process if we are not yet routing to prevent mid routing flash!
     scheduler.process()
   }
-  const localRouting = routing = {}
+  const localRouting = (routing = {})
   scheduler.stop()
 
   toPath = toPathArray(toPath)
-
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -53,31 +55,28 @@ export function route ({
 
   return routeFromDepth(depth, toPath, localRouting).then(
     () => !localRouting.cancelled && onRoutingEnd(options),
-    reThrow(() => !localRouting.cancelled && onRoutingEnd(options, error))
+    reThrow(() => !localRouting.cancelled && onRoutingEnd(options))
   )
 }
 
 function routeFromDepth (depth, toPath, routing) {
-  // issue this might change too early with parallel routers
-  const fromPage = path[depth]
-  const toPage = toPath[depth]
   const routersAtDepth = Array.from(routers[depth] || [])
 
   if (routing.cancelled || !routersAtDepth.length) {
     return Promise.resolve()
   }
 
-  const routings = routersAtDepth.map(
-    router => router._route(fromPage, toPage)
-  )
-
-  return Promise.all(routings)
-    .then(() => routeFromDepth(++depth, toPath, routing))
+  return Promise.all(
+    routersAtDepth.map(router => router._route(path[depth], toPath[depth]))
+  ).then(() => routeFromDepth(++depth, toPath, routing))
 }
 
 function onRoutingEnd (options) {
   // by default a history item is pushed if the pathname changes!
-  if (options.history === true || (options.history !== false && toPathString(path) !== location.pathname)) {
+  if (
+    options.history === true ||
+    (options.history !== false && toPathString(path) !== location.pathname)
+  ) {
     history.pushState(history.state, '')
   }
 
@@ -87,5 +86,9 @@ function onRoutingEnd (options) {
 }
 
 window.addEventListener('popstate', () =>
-  route({ to: location.pathname, params: toParams(location.search), options: { history: false } })
+  route({
+    to: location.pathname,
+    params: toParams(location.search),
+    options: { history: false }
+  })
 )

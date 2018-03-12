@@ -45,7 +45,7 @@ class App extends Component {
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Router defaultPage='profile' /*onRoute={this.onRoute}*/>
+            <Router defaultPage='profile' /* onRoute={this.onRoute} */>
               <div page='profile'>
                 <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
                 <Link to='/settings' activeStyle={activeStyle}><MenuItem>Settings</MenuItem></Link>
@@ -61,8 +61,8 @@ class App extends Component {
           </Drawer>
 
           <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} onRoute={this.onRoute}>
-            <Profile page='profile' /*style={{ border: appStore.border }}*//>
-            <Settings page='settings' defaultParams={{ hello: 'World' }} resolve={wait} timeout={800}/>
+            <Profile page='profile' /* style={{ border: appStore.border }} *//>
+            <Settings page='settings' defaultParams={{ hello: 'World' }} resolve={wait} timeout={800} />
           </Router>
         </div>
       </MuiThemeProvider>

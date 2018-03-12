@@ -1,7 +1,12 @@
-import React, { Component, Children, isValidElement, cloneElement } from 'react';
-import PropTypes from 'prop-types';
-import { registerRouter, releaseRouter, route } from './core';
-import { path, params } from 'react-easy-params';
+import React, {
+  Component,
+  Children,
+  isValidElement,
+  cloneElement
+} from 'react'
+import PropTypes from 'prop-types'
+import { registerRouter, releaseRouter, route } from './core'
+import { path, params } from 'react-easy-params'
 import { toPathArray, reThrow, defaults } from './urlUtils'
 
 export default class Router extends Component {
@@ -21,21 +26,21 @@ export default class Router extends Component {
     easyRouterDepth: PropTypes.number
   };
 
-  get depth() {
-    return this.context.easyRouterDepth || 0;
+  get depth () {
+    return this.context.easyRouterDepth || 0
   }
 
-  getChildContext() {
-    return { easyRouterDepth: this.depth + 1 };
+  getChildContext () {
+    return { easyRouterDepth: this.depth + 1 }
   }
 
-  state = {}
+  state = {};
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     releaseRouter(this, this.depth)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     registerRouter(this, this.depth)
   }
 
@@ -43,11 +48,11 @@ export default class Router extends Component {
     route(routeConfig, this.depth)
   }
 
-  _route(fromPage, toPage) {
+  _route (fromPage, toPage) {
     if (this.routing) {
       this.routing.cancelled = true
     }
-    const routing = this.routing = {}
+    const routing = (this.routing = {})
 
     const { enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
@@ -57,7 +62,7 @@ export default class Router extends Component {
 
     path.splice(this.depth, Infinity, toPage)
     if (defaultParams) {
-      defaults(params, defaultParams)  
+      defaults(params, defaultParams)
     }
 
     this.onRoute(fromPage, toPage)
@@ -72,8 +77,18 @@ export default class Router extends Component {
     if (resolve && timeout) {
       routingThreads.push(
         this.wait(timeout)
-          .then(() => !routing.cancelled && pending && this.animate(leaveAnimation, fromPage, toPage))
-          .then(() => !routing.cancelled && pending && this.updateState({ toPage, pageResolved: undefined }))
+          .then(
+            () =>
+              !routing.cancelled &&
+              pending &&
+              this.animate(leaveAnimation, fromPage, toPage)
+          )
+          .then(
+            () =>
+              !routing.cancelled &&
+              pending &&
+              this.updateState({ toPage, pageResolved: undefined })
+          )
           .then(() => (timedOut = true))
       )
     }
@@ -83,21 +98,32 @@ export default class Router extends Component {
       Promise.resolve()
         .then(() => resolve && resolve())
         .then(data => (resolvedData = data))
-        .then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
         .then(
-          () => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }),
-          reThrow(() => !routing.cancelled && this.updateState({ toPage, pageResolved: false }))
+          () =>
+            !routing.cancelled &&
+            !timedOut &&
+            this.animate(leaveAnimation, fromPage, toPage)
+        )
+        .then(
+          () =>
+            !routing.cancelled &&
+            this.updateState({ toPage, pageResolved: true, resolvedData }),
+          reThrow(
+            () =>
+              !routing.cancelled &&
+              this.updateState({ toPage, pageResolved: false })
+          )
         )
         // this won't run in case of errors
         .then(() => (pending = false))
     )
 
     const routingPromise = Promise.race(routingThreads)
-    routingPromise
-      .then(() => !routing.cancelled && this.animate(enterAnimation, fromPage, toPage))
+    routingPromise.then(
+      () => !routing.cancelled && this.animate(enterAnimation, fromPage, toPage)
+    )
 
-    Promise.all(routingThreads)
-      .then(() => (this.routing = undefined))
+    Promise.all(routingThreads).then(() => (this.routing = undefined))
 
     return routingPromise
   }
@@ -138,17 +164,24 @@ export default class Router extends Component {
 
   saveRef = routerNode => {
     this.routerNode = routerNode
-  }
+  };
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
     const currentPage = toPathArray(location.pathname)[this.depth]
-    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
+    if (
+      keyframes &&
+      options &&
+      this.routerNode &&
+      fromPage &&
+      toPage !== fromPage &&
+      toPage !== currentPage
+    ) {
       const animation = this.routerNode.animate(keyframes, options)
-      return new Promise(resolve => animation.onfinish = resolve)
+      return new Promise(resolve => (animation.onfinish = resolve))
     }
   }
 
-  render() {
+  render () {
     const { className, style } = this.props
     const { toPage, resolvedData, pageResolved } = this.state
 

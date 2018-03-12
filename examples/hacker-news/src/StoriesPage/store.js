@@ -6,7 +6,11 @@ const storiesStore = store({
   pages: 0,
   hasMore: true,
   async resolveStories () {
-    storiesStore.stories = await fetchStoriesByType(params.type, 0, storiesStore.pages)
+    storiesStore.stories = await fetchStoriesByType(
+      params.type,
+      0,
+      storiesStore.pages
+    )
   },
   async fetchPage (page) {
     const stories = await fetchStoriesByType(params.type, page)

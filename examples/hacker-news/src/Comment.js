@@ -15,7 +15,7 @@ class RawComment extends Component {
 
   toggleVisibility = () => {
     this.store.hidden = !this.store.hidden
-  }
+  };
 
   render () {
     const { hidden, comment } = this.store

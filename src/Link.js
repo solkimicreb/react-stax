@@ -37,7 +37,10 @@ export default class Link extends Component {
   }
 
   componentDidMount () {
-    this.activityUpdater = observe(() => this.setState({ isActive: this.isLinkActive()}), { scheduler })
+    this.activityUpdater = observe(
+      () => this.setState({ isActive: this.isLinkActive() }),
+      { scheduler }
+    )
   }
 
   componentWillUnmount () {
@@ -69,7 +72,7 @@ export default class Link extends Component {
     return true
   }
 
-  onClick = (ev) => {
+  onClick = ev => {
     ev.preventDefault()
     const { onClick, params, options, to } = this.props
     if (onClick) {
@@ -77,10 +80,19 @@ export default class Link extends Component {
     }
 
     route({ to, params, options }, this.linkDepth)
-  }
+  };
 
   render () {
-    let { to, element, children, activeClass, activeStyle, style, params, className } = this.props
+    let {
+      to,
+      element,
+      children,
+      activeClass,
+      activeStyle,
+      style,
+      params,
+      className
+    } = this.props
     const { onClick } = this
 
     if (activeClass && this.isLinkActive()) {

@@ -28,7 +28,7 @@ class TimeAgo extends Component {
     } else {
       this.timeout = setTimeout(() => this.updateTime(), HOUR)
     }
-  }
+  };
 
   componentWillUnmount () {
     clearTimeout(this.timeout)

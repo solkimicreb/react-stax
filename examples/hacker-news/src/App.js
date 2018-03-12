@@ -33,11 +33,7 @@ function App () {
           </div>
         </div>
       </nav>
-      <Router
-        timeout={500}
-        className='router'
-        defaultPage='stories'
-      >
+      <Router timeout={500} className='router' defaultPage='stories'>
         <StoriesPage
           page='stories'
           resolve={resolveStories}
