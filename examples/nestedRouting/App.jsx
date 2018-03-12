@@ -74,4 +74,6 @@ export default view(App)
 
 function wait () {
   return new Promise(resolve => setTimeout(resolve, 3000))
+    .then(() => ({ data: 'Hello World!' }))
+    .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }

@@ -21706,9 +21706,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       routingThreads.push(this.wait(timeout).then(() => !routing.cancelled && pending && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && pending && this.updateState({ toPage, pageResolved: undefined })).then(() => timedOut = true));
     }
 
-    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
-    // issue -> resolvedData is incorrect
-    .then(resolvedData => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
+    let resolvedData;
+    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
     // this won't run in case of errors
     .then(() => pending = false));
 
@@ -21787,7 +21786,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     if (!toPage) {
       toChild = null;
     } else if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(resolvedData)) {
-      toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(resolvedData, { pageResolved });
+      // no need to pass pageResolved here, it would always be true
+      toChild = resolvedData;
     } else {
       toChild = this.selectChild(toPage);
       if (toChild.props.resolve) {
@@ -23800,7 +23800,11 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["f" /* view */])(App));
 
 function wait() {
-  return new Promise(resolve => setTimeout(resolve, 3000));
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({ data: 'Hello World!' })).then(() => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+    'p',
+    { onClick: () => console.log('Look Ma!') },
+    'I am a paragraph!!'
+  ));
 }
 
 /***/ }),
@@ -37983,12 +37987,22 @@ const leaveAnimation = {
 
 class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
   render() {
-    const { pageResolved } = this.props;
+    const { pageResolved, data } = this.props;
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      'status: ',
-      pageResolved ? 'loaded' : 'loading',
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'status: ',
+        pageResolved ? 'loaded' : 'loading'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'data: ',
+        pageResolved ? data : 'unknown'
+      ),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["b" /* Router */],
         { defaultPage: 'privacy', className: 'router', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, timeout: 1000 },

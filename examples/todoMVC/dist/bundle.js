@@ -20325,9 +20325,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       routingThreads.push(this.wait(timeout).then(() => !routing.cancelled && pending && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && pending && this.updateState({ toPage, pageResolved: undefined })).then(() => timedOut = true));
     }
 
-    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
-    // issue -> resolvedData is incorrect
-    .then(resolvedData => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
+    let resolvedData;
+    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage)).then(() => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }), error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false }))
     // this won't run in case of errors
     .then(() => pending = false));
 
@@ -20406,7 +20405,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     if (!toPage) {
       toChild = null;
     } else if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(resolvedData)) {
-      toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(resolvedData, { pageResolved });
+      // no need to pass pageResolved here, it would always be true
+      toChild = resolvedData;
     } else {
       toChild = this.selectChild(toPage);
       if (toChild.props.resolve) {

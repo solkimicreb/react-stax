@@ -13,10 +13,11 @@ const leaveAnimation = {
 
 export default class Settings extends Component {
   render () {
-    const { pageResolved } = this.props
+    const { pageResolved, data } = this.props
     return (
       <div>
-        status: {pageResolved ? 'loaded' : 'loading'}
+        <p>status: {pageResolved ? 'loaded' : 'loading'}</p>
+        <p>data: {pageResolved ? data : 'unknown'}</p>
         <Router defaultPage='privacy' className='router' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} timeout={1000}>
           <div page='privacy'>Privacy Settings</div>
           <div page='user'>User Settings</div>

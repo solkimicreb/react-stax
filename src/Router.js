@@ -73,13 +73,14 @@ export default class Router extends Component {
       )
     }
 
+    let resolvedData
     routingThreads.push(
       Promise.resolve()
         .then(() => resolve && resolve())
+        .then(data => (resolvedData = data))
         .then(() => !routing.cancelled && !timedOut && this.animate(leaveAnimation, fromPage, toPage))
-        // issue -> resolvedData is incorrect
         .then(
-          resolvedData => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }),
+          () => !routing.cancelled && this.updateState({ toPage, pageResolved: true, resolvedData }),
           error => !routing.cancelled && this.handleError(error, { toPage, pageResolved: false })
         )
         // this won't run in case of errors
@@ -168,7 +169,8 @@ export default class Router extends Component {
     if (!toPage) {
       toChild = null
     } else if (isValidElement(resolvedData)) {
-      toChild = cloneElement(resolvedData, { pageResolved })
+      // no need to pass pageResolved here, it would always be true
+      toChild = resolvedData
     } else {
       toChild = this.selectChild(toPage)
       if (toChild.props.resolve) {
