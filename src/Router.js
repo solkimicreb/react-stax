@@ -51,7 +51,7 @@ export default class Router extends Component {
     const toChild = this.selectChild(toPage)
     toPage = toChild.props.page
 
-    path[this.depth] = toPage
+    path.splice(this.depth, Infinity, toPage)
     this.setDefaultParams(toChild)
 
     this.onRoute(fromPage, toPage)

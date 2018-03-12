@@ -1833,7 +1833,6 @@ function route({
   // path.splice(depth, path.length)
   // issue -> if old path is too long it remains later!
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(toPath);
-  __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].splice(toPath.length);
 
   return routeFromDepth(depth, toPath, localRouting).then(() => !localRouting.cancelled && onRoutingSuccess(options), error => !localRouting.cancelled && onRoutingError(options, error));
 }
@@ -21689,7 +21688,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     const toChild = this.selectChild(toPage);
     toPage = toChild.props.page;
 
-    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */][this.depth] = toPage;
+    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */].splice(this.depth, Infinity, toPage);
     this.setDefaultParams(toChild);
 
     this.onRoute(fromPage, toPage);

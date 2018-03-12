@@ -54,7 +54,6 @@ export function route ({
   // path.splice(depth, path.length)
   // issue -> if old path is too long it remains later!
   toPath = path.slice(0, depth).concat(toPath)
-  path.splice(toPath.length)
 
   return routeFromDepth(depth, toPath, localRouting).then(
     () => !localRouting.cancelled && onRoutingSuccess(options),
