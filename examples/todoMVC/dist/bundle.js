@@ -1646,10 +1646,10 @@ module.exports = shallowEqual;
 /* unused harmony reexport path */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Router__ = __webpack_require__(91);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Link__ = __webpack_require__(92);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_3__Link__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core__ = __webpack_require__(32);
 /* unused harmony reexport route */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Link__ = __webpack_require__(92);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_4__Link__["a"]; });
 
 
 
@@ -1712,10 +1712,10 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
     Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* clear */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */]);
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
-
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathArray */])(toPath));
 
-  return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* reThrow */])(status.check(() => onRoutingEnd(options), 'cancelled')));
+  const onEnd = status.check(() => onRoutingEnd(options), 'cancelled');
+  return switchRoutersFromDepth(toPath, depth, status).then(onEnd, Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* rethrow */])(onEnd));
 }
 
 function switchRoutersFromDepth(toPath, depth, status) {
@@ -1756,7 +1756,7 @@ window.addEventListener('popstate', () => route({
 /* harmony export (immutable) */ __webpack_exports__["h"] = toQuery;
 /* harmony export (immutable) */ __webpack_exports__["e"] = toParams;
 /* unused harmony export notEmpty */
-/* harmony export (immutable) */ __webpack_exports__["d"] = reThrow;
+/* harmony export (immutable) */ __webpack_exports__["d"] = rethrow;
 /* harmony export (immutable) */ __webpack_exports__["b"] = clear;
 /* harmony export (immutable) */ __webpack_exports__["c"] = defaults;
 function toPathArray(path) {
@@ -1798,7 +1798,7 @@ function notEmpty(token) {
   return token !== '';
 }
 
-function reThrow(fn) {
+function rethrow(fn) {
   return error => {
     fn();
     throw error;
@@ -20290,7 +20290,13 @@ Object.defineProperties( Queue.prototype, prototypeAccessors );
 
 
 
-class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+const stateShell = {
+  toPage: undefined,
+  pageResolved: undefined,
+  resolvedData: undefined
+};
+
+class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   constructor(...args) {
     var _temp;
 
@@ -20299,12 +20305,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     }, _temp;
   }
 
-  get depth() {
-    return this.context.easyRouterDepth || 0;
-  }
-
   getChildContext() {
     return { easyRouterDepth: this.depth + 1 };
+  }
+
+  get depth() {
+    return this.context.easyRouterDepth || 0;
   }
 
   componentWillUnmount() {
@@ -20342,25 +20348,29 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       return Promise.resolve();
     }
 
-    const routingThreads = [];
-    let pending = true;
-    let timedOut = false;
+    const resolveThreads = [];
 
+    // improve if cases, improve flag toggle, improve promise.finally cases
     if (resolve && timeout) {
-      routingThreads.push(this.wait(timeout).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage), 'resolved', 'cancelled')).then(status.check(() => this.updateState({ toPage, pageResolved: undefined }), 'resolved', 'cancelled')).then(() => status.timedout = true));
+      resolveThreads.push(this.wait(timeout).then(status.check(() => {
+        this.animate(leaveAnimation, fromPage, toPage);
+        status.timedout = true;
+      }, 'resolved', 'cancelled')).then(status.check(() => this.replaceState({ toPage }), 'resolved', 'cancelled')));
     }
 
     let resolvedData;
-    routingThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage), 'timedout', 'cancelled')).then(
-    // make these general later
-    status.check(() => this.updateState({ toPage, pageResolved: true, resolvedData }), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* reThrow */])(status.check(() => this.updateState({ toPage, pageResolved: false }), 'cancelled')))
-    // this won't run in case of errors
-    .then(() => status.resolved = true));
+    resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => resolvedData = data).then(status.check(() => {
+      this.animate(leaveAnimation, fromPage, toPage);
+      status.resolved = true;
+    }, 'timedout', 'cancelled')).then(
+    // issue: set status.resolved = true here
+    // also somehow propagate resolvedData here from the top
+    status.check(() => this.replaceState({ toPage, pageResolved: true, resolvedData }), 'cancelled'), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(status.check(() => this.replaceState({ toPage, pageResolved: false }), 'cancelled'))));
 
-    const routingPromise = Promise.race(routingThreads);
+    Promise.all(resolveThreads).then(() => this.routingStatus = undefined);
+
+    const routingPromise = Promise.race(resolveThreads);
     routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage), 'cancelled'));
-
-    Promise.all(routingThreads).then(() => this.routingStatus = undefined);
 
     return routingPromise;
   }
@@ -20395,7 +20405,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return new Promise(resolve => setTimeout(resolve, duration));
   }
 
-  updateState(state) {
+  replaceState(state) {
+    Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(state, stateShell);
     return new Promise(resolve => this.setState(state, resolve));
   }
 
@@ -20436,16 +20447,13 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 Router.propTypes = {
   defaultPage: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string.isRequired,
   onRoute: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
-  className: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
   enterAnimation: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
-  leaveAnimation: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object
+  leaveAnimation: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object,
+  className: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
+  style: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object
 };
-Router.childContextTypes = {
-  easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
-};
-Router.contextTypes = {
-  easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number
-};
+Router.childContextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
+Router.contextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
 
 /***/ }),
 
@@ -20468,7 +20476,7 @@ Router.contextTypes = {
 
 
 
-class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   constructor(...args) {
     var _temp;
 

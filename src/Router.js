@@ -1,5 +1,5 @@
 import React, {
-  Component,
+  PureComponent,
   Children,
   isValidElement,
   cloneElement
@@ -7,34 +7,36 @@ import React, {
 import PropTypes from 'prop-types'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 import { path, params } from 'react-easy-params'
-import { toPathArray, reThrow, defaults, RoutingStatus } from './urlUtils'
+import { toPathArray, rethrow, defaults, RoutingStatus } from './urlUtils'
 
-export default class Router extends Component {
+const stateShell = {
+  toPage: undefined,
+  pageResolved: undefined,
+  resolvedData: undefined
+}
+
+export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string.isRequired,
     onRoute: PropTypes.func,
-    className: PropTypes.string,
     enterAnimation: PropTypes.object,
-    leaveAnimation: PropTypes.object
+    leaveAnimation: PropTypes.object,
+    className: PropTypes.string,
+    style: PropTypes.object
   };
 
-  static childContextTypes = {
-    easyRouterDepth: PropTypes.number
-  };
+  static childContextTypes = { easyRouterDepth: PropTypes.number };
+  static contextTypes = { easyRouterDepth: PropTypes.number };
 
-  static contextTypes = {
-    easyRouterDepth: PropTypes.number
-  };
-
-  get depth () {
-    return this.context.easyRouterDepth || 0
-  }
+  state = {}
 
   getChildContext () {
     return { easyRouterDepth: this.depth + 1 }
   }
 
-  state = {};
+  get depth () {
+    return this.context.easyRouterDepth || 0
+  }
 
   componentWillUnmount () {
     releaseRouter(this, this.depth)
@@ -71,70 +73,73 @@ export default class Router extends Component {
       return Promise.resolve()
     }
 
-    const routingThreads = []
-    let pending = true
-    let timedOut = false
+    const resolveThreads = []
 
+    // improve if cases, improve flag toggle, improve promise.finally cases
     if (resolve && timeout) {
-      routingThreads.push(
+      resolveThreads.push(
         this.wait(timeout)
           .then(
             status.check(
-              () => this.animate(leaveAnimation, fromPage, toPage),
+              () => {
+                this.animate(leaveAnimation, fromPage, toPage)
+                status.timedout = true
+              },
               'resolved',
               'cancelled'
             )
           )
           .then(
             status.check(
-              () => this.updateState({ toPage, pageResolved: undefined }),
+              () => this.replaceState({ toPage }),
               'resolved',
               'cancelled'
             )
           )
-          .then(() => (status.timedout = true))
       )
     }
 
     let resolvedData
-    routingThreads.push(
+    resolveThreads.push(
       Promise.resolve()
         .then(() => resolve && resolve())
         .then(data => (resolvedData = data))
         .then(
           status.check(
-            () => this.animate(leaveAnimation, fromPage, toPage),
+            () => {
+              this.animate(leaveAnimation, fromPage, toPage)
+              status.resolved = true
+            },
             'timedout',
             'cancelled'
           )
         )
         .then(
-          // make these general later
+          // issue: set status.resolved = true here
+          // also somehow propagate resolvedData here from the top
           status.check(
             () =>
-              this.updateState({ toPage, pageResolved: true, resolvedData }),
+              this.replaceState({ toPage, pageResolved: true, resolvedData }),
             'cancelled'
           ),
-          reThrow(
+          rethrow(
             status.check(
-              () => this.updateState({ toPage, pageResolved: false }),
+              () => this.replaceState({ toPage, pageResolved: false }),
               'cancelled'
             )
           )
         )
-        // this won't run in case of errors
-        .then(() => (status.resolved = true))
     )
 
-    const routingPromise = Promise.race(routingThreads)
+    Promise.all(resolveThreads).then(() => (this.routingStatus = undefined))
+
+    const routingPromise = Promise.race(resolveThreads)
     routingPromise.then(
       status.check(
         () => this.animate(enterAnimation, fromPage, toPage),
         'cancelled'
       )
     )
-
-    Promise.all(routingThreads).then(() => (this.routingStatus = undefined))
 
     return routingPromise
   }
@@ -169,7 +174,8 @@ export default class Router extends Component {
     return new Promise(resolve => setTimeout(resolve, duration))
   }
 
-  updateState (state) {
+  replaceState (state) {
+    defaults(state, stateShell)
     return new Promise(resolve => this.setState(state, resolve))
   }
 

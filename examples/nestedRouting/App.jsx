@@ -51,7 +51,7 @@ class App extends Component {
                 <Link to='/settings' activeStyle={activeStyle}><MenuItem>Settings</MenuItem></Link>
               </div>
               <div page='settings'>
-                <Link to='privacy' activeStyle={activeStyle}><MenuItem>Privacy</MenuItem></Link>
+                <Link to='privacy' params={{ hello: 'World' }} activeStyle={activeStyle}><MenuItem>Privacy</MenuItem></Link>
                 <Link to='user' activeStyle={activeStyle}><MenuItem>User</MenuItem></Link>
                 <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
               </div>

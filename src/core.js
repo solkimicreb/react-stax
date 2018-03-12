@@ -3,7 +3,7 @@ import {
   toPathArray,
   toPathString,
   toParams,
-  reThrow,
+  rethrow,
   clear,
   RoutingStatus
 } from './urlUtils'
@@ -35,7 +35,10 @@ export function route ({ to, params, options } = {}) {
 }
 
 export function routeFromDepth (
-  toPath = location.pathname, newParams = {}, options = {}, depth = 0
+  toPath = location.pathname,
+  newParams = {},
+  options = {},
+  depth = 0
 ) {
   if (routingStatus) {
     routingStatus.cancelled = true
@@ -51,12 +54,12 @@ export function routeFromDepth (
     clear(params)
   }
   Object.assign(params, newParams)
-
   toPath = path.slice(0, depth).concat(toPathArray(toPath))
 
+  const onEnd = status.check(() => onRoutingEnd(options), 'cancelled')
   return switchRoutersFromDepth(toPath, depth, status).then(
-    status.check(() => onRoutingEnd(options), 'cancelled'),
-    reThrow(status.check(() => onRoutingEnd(options), 'cancelled'))
+    onEnd,
+    rethrow(onEnd)
   )
 }
 
@@ -70,7 +73,10 @@ function switchRoutersFromDepth (toPath, depth, status) {
   return Promise.all(
     routersAtDepth.map(router => router.switch(path[depth], toPath[depth]))
   ).then(
-    status.check(() => switchRoutersFromDepth(toPath, ++depth, status), 'cancelled')
+    status.check(
+      () => switchRoutersFromDepth(toPath, ++depth, status),
+      'cancelled'
+    )
   )
 }
 

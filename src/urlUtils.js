@@ -40,7 +40,7 @@ export function notEmpty (token) {
   return token !== ''
 }
 
-export function reThrow (fn) {
+export function rethrow (fn) {
   return error => {
     fn()
     throw error

@@ -13,7 +13,6 @@ const leaveAnimation = {
 
 export default class Settings extends Component {
   render () {
-    console.log('render settings')
     const { pageResolved, data } = this.props
     return (
       <div>

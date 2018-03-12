@@ -1,11 +1,11 @@
-import { Component, createElement, cloneElement } from 'react'
+import { PureComponent, createElement, cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
 import { toPathArray, toQuery } from './urlUtils'
 import { routeFromDepth } from './core'
 import { params, path, scheduler } from 'react-easy-params'
 
-export default class Link extends Component {
+export default class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
     element: PropTypes.string,
