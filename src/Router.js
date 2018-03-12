@@ -56,8 +56,8 @@ export default class Router extends PureComponent {
     }
     const status = (this.routingStatus = new RoutingStatus())
 
-    const { enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
+    const { enterAnimation, leaveAnimation } = this.props
     const { resolve, timeout, page, defaultParams } = toChild.props
     // name this better
     toPage = page
@@ -74,22 +74,23 @@ export default class Router extends PureComponent {
     }
 
     const resolveThreads = []
+    let resolvedData, pageResolved, timedout
 
-    if (resolve && timeout) {
-      resolveThreads.push(this.wait(timeout))
+    if (resolve) {
+      resolveThreads.push(
+        Promise.resolve()
+          .then(() => resolve && resolve())
+          .then(data => {
+            resolvedData = data
+            pageResolved = true
+          }, rethrow(() => (pageResolved = false)))
+      )
+      if (timeout) {
+        resolveThreads.push(this.wait(timeout))
+      }
     }
 
-    let resolvedData, pageResolved, timedout
-    resolveThreads.push(
-      Promise.resolve()
-        .then(() => resolve && resolve())
-        .then(data => {
-          resolvedData = data
-          pageResolved = true
-        }, rethrow(() => (pageResolved = false)))
-    )
-
-    const routingPromise = Promise.race(resolveThreads)
+    const routingPromise = promiseRace(resolveThreads)
       .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
       .then(
         status.check(() => {
@@ -100,6 +101,10 @@ export default class Router extends PureComponent {
         })
       )
 
+    routingPromise.then(
+      status.check(() => this.animate(enterAnimation, fromPage, toPage))
+    )
+
     Promise.all(resolveThreads)
       .then(
         status.check(() => {
@@ -109,10 +114,6 @@ export default class Router extends PureComponent {
         })
       )
       .then(() => (this.routingStatus = undefined))
-
-    routingPromise.then(
-      status.check(() => this.animate(enterAnimation, fromPage, toPage))
-    )
 
     return routingPromise
   }
@@ -197,4 +198,8 @@ export default class Router extends PureComponent {
       </div>
     )
   }
+}
+
+function promiseRace (promises) {
+  return promises.length ? Promise.race(promises) : Promise.resolve()
 }

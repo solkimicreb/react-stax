@@ -21717,8 +21717,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     }
     const status = this.routingStatus = new __WEBPACK_IMPORTED_MODULE_4__urlUtils__["a" /* RoutingStatus */]();
 
-    const { enterAnimation, leaveAnimation } = this.props;
     const toChild = this.selectChild(toPage);
+    const { enterAnimation, leaveAnimation } = this.props;
     const { resolve, timeout, page, defaultParams } = toChild.props;
     // name this better
     toPage = page;
@@ -21735,31 +21735,32 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     }
 
     const resolveThreads = [];
+    let resolvedData, pageResolved, timedout;
 
-    if (resolve && timeout) {
-      resolveThreads.push(this.wait(timeout));
+    if (resolve) {
+      resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => {
+        resolvedData = data;
+        pageResolved = true;
+      }, Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(() => pageResolved = false)));
+      if (timeout) {
+        resolveThreads.push(this.wait(timeout));
+      }
     }
 
-    let resolvedData, pageResolved, timedout;
-    resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => {
-      resolvedData = data;
-      pageResolved = true;
-    }, Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(() => pageResolved = false)));
-
-    const routingPromise = Promise.race(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => {
+    const routingPromise = promiseRace(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => {
       this.replaceState({ toPage, pageResolved, resolvedData });
       if (pageResolved === undefined) {
         timedout = true;
       }
     }));
 
+    routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
+
     Promise.all(resolveThreads).then(status.check(() => {
       if (timedout) {
         return this.replaceState({ toPage, pageResolved, resolvedData });
       }
     })).then(() => this.routingStatus = undefined);
-
-    routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
     return routingPromise;
   }
@@ -21833,6 +21834,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Router;
 
+
 Router.propTypes = {
   defaultPage: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string.isRequired,
   onRoute: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
@@ -21843,6 +21845,9 @@ Router.propTypes = {
 };
 Router.childContextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
 Router.contextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
+function promiseRace(promises) {
+  return promises.length ? Promise.race(promises) : Promise.resolve();
+}
 
 /***/ }),
 /* 92 */
