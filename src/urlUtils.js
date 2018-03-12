@@ -60,3 +60,9 @@ export function defaults (obj, defaultProps) {
     }
   }
 }
+
+export class RoutingStatus {
+  check (fn, ...flags) {
+    return () => (flags.some(flag => this[flag]) ? undefined : fn())
+  }
+}

@@ -4,12 +4,12 @@ import {
   toPathString,
   toParams,
   reThrow,
-  clear
+  clear,
+  RoutingStatus
 } from './urlUtils'
 
 const routers = []
-
-let routing
+let routingStatus
 
 export function registerRouter (router, depth) {
   let routersAtDepth = routers[depth]
@@ -18,7 +18,7 @@ export function registerRouter (router, depth) {
   }
   routersAtDepth.add(router)
   // route the router if we are not routing currently
-  if (!routing) {
+  if (!routingStatus) {
     router._route(path[depth], path[depth])
   }
 }
@@ -34,16 +34,14 @@ export function route (
   { to: toPath = location.pathname, params: newParams = {}, options = {} },
   depth = 0
 ) {
-  if (routing) {
-    routing.cancelled = true
+  if (routingStatus) {
+    routingStatus.cancelled = true
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
     scheduler.process()
   }
-  const localRouting = (routing = {})
+  const status = (routingStatus = new RoutingStatus())
   scheduler.stop()
-
-  toPath = toPathArray(toPath)
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -51,24 +49,26 @@ export function route (
   }
   Object.assign(params, newParams)
 
-  toPath = path.slice(0, depth).concat(toPath)
+  toPath = path.slice(0, depth).concat(toPathArray(toPath))
 
-  return routeFromDepth(depth, toPath, localRouting).then(
-    () => !localRouting.cancelled && onRoutingEnd(options),
-    reThrow(() => !localRouting.cancelled && onRoutingEnd(options))
+  return routeFromDepth(toPath, depth, status).then(
+    status.check(() => onRoutingEnd(options), 'cancelled'),
+    reThrow(status.check(() => onRoutingEnd(options), 'cancelled'))
   )
 }
 
-function routeFromDepth (depth, toPath, routing) {
+function routeFromDepth (toPath, depth, status) {
   const routersAtDepth = Array.from(routers[depth] || [])
 
-  if (routing.cancelled || !routersAtDepth.length) {
+  if (!routersAtDepth.length) {
     return Promise.resolve()
   }
 
   return Promise.all(
     routersAtDepth.map(router => router._route(path[depth], toPath[depth]))
-  ).then(() => routeFromDepth(++depth, toPath, routing))
+  ).then(
+    status.check(() => routeFromDepth(toPath, ++depth, status), 'cancelled')
+  )
 }
 
 function onRoutingEnd (options) {
@@ -82,7 +82,7 @@ function onRoutingEnd (options) {
 
   scheduler.process()
   scheduler.start()
-  routing = undefined
+  routingStatus = undefined
 }
 
 window.addEventListener('popstate', () =>

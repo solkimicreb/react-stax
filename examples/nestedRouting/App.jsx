@@ -73,7 +73,7 @@ class App extends Component {
 export default view(App)
 
 function wait () {
-  return new Promise(resolve => setTimeout(resolve, 3000))
+  return new Promise(resolve => setTimeout(resolve, 5000))
     .then(() => ({ data: 'Hello World!' }))
     // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }

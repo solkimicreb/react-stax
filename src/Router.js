@@ -7,7 +7,7 @@ import React, {
 import PropTypes from 'prop-types'
 import { registerRouter, releaseRouter, route } from './core'
 import { path, params } from 'react-easy-params'
-import { toPathArray, reThrow, defaults } from './urlUtils'
+import { toPathArray, reThrow, defaults, RoutingStatus } from './urlUtils'
 
 export default class Router extends Component {
   static propTypes = {
@@ -49,10 +49,10 @@ export default class Router extends Component {
   }
 
   _route (fromPage, toPage) {
-    if (this.routing) {
-      this.routing.cancelled = true
+    if (this.routingStatus) {
+      this.routingStatus.cancelled = true
     }
-    const routing = (this.routing = {})
+    const status = (this.routingStatus = new RoutingStatus())
 
     const { enterAnimation, leaveAnimation } = this.props
     const toChild = this.selectChild(toPage)
@@ -66,7 +66,8 @@ export default class Router extends Component {
     }
 
     this.onRoute(fromPage, toPage)
-    if (routing.cancelled) {
+    // maybe I do not need this check!, only needed because onRoute can cancel the routing
+    if (status.cancelled) {
       return Promise.resolve()
     }
 
@@ -78,18 +79,20 @@ export default class Router extends Component {
       routingThreads.push(
         this.wait(timeout)
           .then(
-            () =>
-              !routing.cancelled &&
-              pending &&
-              this.animate(leaveAnimation, fromPage, toPage)
+            status.check(
+              () => this.animate(leaveAnimation, fromPage, toPage),
+              'resolved',
+              'cancelled'
+            )
           )
           .then(
-            () =>
-              !routing.cancelled &&
-              pending &&
-              this.updateState({ toPage, pageResolved: undefined })
+            status.check(
+              () => this.updateState({ toPage, pageResolved: undefined }),
+              'resolved',
+              'cancelled'
+            )
           )
-          .then(() => (timedOut = true))
+          .then(() => (status.timedout = true))
       )
     }
 
@@ -99,31 +102,39 @@ export default class Router extends Component {
         .then(() => resolve && resolve())
         .then(data => (resolvedData = data))
         .then(
-          () =>
-            !routing.cancelled &&
-            !timedOut &&
-            this.animate(leaveAnimation, fromPage, toPage)
+          status.check(
+            () => this.animate(leaveAnimation, fromPage, toPage),
+            'timedout',
+            'cancelled'
+          )
         )
         .then(
-          () =>
-            !routing.cancelled &&
-            this.updateState({ toPage, pageResolved: true, resolvedData }),
-          reThrow(
+          // make these general later
+          status.check(
             () =>
-              !routing.cancelled &&
-              this.updateState({ toPage, pageResolved: false })
+              this.updateState({ toPage, pageResolved: true, resolvedData }),
+            'cancelled'
+          ),
+          reThrow(
+            status.check(
+              () => this.updateState({ toPage, pageResolved: false }),
+              'cancelled'
+            )
           )
         )
         // this won't run in case of errors
-        .then(() => (pending = false))
+        .then(() => (status.resolved = true))
     )
 
     const routingPromise = Promise.race(routingThreads)
     routingPromise.then(
-      () => !routing.cancelled && this.animate(enterAnimation, fromPage, toPage)
+      status.check(
+        () => this.animate(enterAnimation, fromPage, toPage),
+        'cancelled'
+      )
     )
 
-    Promise.all(routingThreads).then(() => (this.routing = undefined))
+    Promise.all(routingThreads).then(() => (this.routingStatus = undefined))
 
     return routingPromise
   }
