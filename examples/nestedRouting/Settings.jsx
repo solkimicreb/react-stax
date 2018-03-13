@@ -16,6 +16,7 @@ export default class Settings extends Component {
     const { pageResolved, data } = this.props
     return (
       <div>
+        <p>resolved: {pageResolved === false ? 'false' : 'undefined'}</p>
         <p>status: {pageResolved ? 'loaded' : 'loading'}</p>
         <p>data: {pageResolved ? data : 'unknown'}</p>
         <Router defaultPage='privacy' className='router' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>

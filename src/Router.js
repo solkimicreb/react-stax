@@ -1,19 +1,8 @@
-import React, {
-  PureComponent,
-  Children,
-  isValidElement,
-  cloneElement
-} from 'react'
+import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 import { path, params } from 'react-easy-params'
-import { defaults } from './urlUtils'
-
-const stateShell = {
-  toPage: undefined,
-  pageResolved: undefined,
-  resolvedData: undefined
-}
+import { defaults, rethrow } from './urlUtils'
 
 export default class Router extends PureComponent {
   static propTypes = {
@@ -28,8 +17,6 @@ export default class Router extends PureComponent {
   static childContextTypes = { easyRouterDepth: PropTypes.number };
   static contextTypes = { easyRouterDepth: PropTypes.number };
 
-  state = {};
-
   getChildContext () {
     return { easyRouterDepth: this.depth + 1 }
   }
@@ -37,6 +24,8 @@ export default class Router extends PureComponent {
   get depth () {
     return this.context.easyRouterDepth || 0
   }
+
+  state = {};
 
   componentWillUnmount () {
     releaseRouter(this, this.depth)
@@ -65,7 +54,11 @@ export default class Router extends PureComponent {
 
   resolve (toChild, status) {
     const { resolve, timeout, page: toPage } = toChild.props
-    const nextState = { toPage }
+    const nextState = {
+      toPage,
+      resolvedData: undefined,
+      pageResolved: undefined
+    }
 
     if (resolve) {
       const resolveThreads = []
@@ -73,17 +66,20 @@ export default class Router extends PureComponent {
 
       const resolveThread = Promise.resolve()
         .then(resolve)
-        .then(resolvedData =>
-          Object.assign(nextState, { resolvedData, pageResolved: true })
+        .then(
+          resolvedData =>
+            Object.assign(nextState, { resolvedData, pageResolved: true }),
+          rethrow(() => Object.assign(nextState, { pageResolved: false }))
         )
       resolveThread.then(
-        status.check(() => timedout && this.replaceState(nextState))
+        status.check(() => timedout && this.updateState(nextState)),
+        rethrow(status.check(() => timedout && this.updateState(nextState)))
       )
       resolveThreads.push(resolveThread)
 
       if (timeout) {
         resolveThreads.push(
-          this.wait(timeout).then(() => {
+          new Promise(resolve => setTimeout(resolve, timeout)).then(() => {
             timedout = true
             return nextState
           })
@@ -95,18 +91,15 @@ export default class Router extends PureComponent {
     return nextState
   }
 
-  // I shouldn't need fromPage here
   switch (nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props
     const { toPage: fromPage } = this.state
     const { toPage } = nextState
 
-    // leave, update
     const switchPromise = Promise.resolve()
       .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
-      .then(status.check(() => this.replaceState(nextState)))
+      .then(status.check(() => this.updateState(nextState)))
 
-    // enter
     switchPromise.then(
       status.check(() => this.animate(enterAnimation, fromPage, toPage))
     )
@@ -139,14 +132,8 @@ export default class Router extends PureComponent {
       })
   }
 
-  wait (duration) {
-    return new Promise(resolve => setTimeout(resolve, duration))
-  }
-
-  replaceState (state) {
-    // maybe remove the defaults here (handle this in resolve)
-    defaults(state, stateShell)
-    return new Promise(resolve => this.setState(state, resolve))
+  updateState (nextState) {
+    return new Promise(resolve => this.setState(nextState, resolve))
   }
 
   saveRef = routerNode => (this.routerNode = routerNode);
@@ -165,13 +152,13 @@ export default class Router extends PureComponent {
     let toChild
     if (!toPage) {
       toChild = null
-    } else if (isValidElement(resolvedData)) {
+    } else if (React.isValidElement(resolvedData)) {
       // no need to pass pageResolved here, it would always be true
       toChild = resolvedData
     } else {
       toChild = this.selectChild(toPage)
       if (toChild.props.resolve) {
-        toChild = cloneElement(
+        toChild = React.cloneElement(
           this.selectChild(toPage),
           Object.assign({}, { pageResolved }, resolvedData)
         )

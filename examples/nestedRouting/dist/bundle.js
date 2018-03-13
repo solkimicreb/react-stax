@@ -21676,12 +21676,6 @@ Object.defineProperties( Queue.prototype, prototypeAccessors );
 
 
 
-const stateShell = {
-  toPage: undefined,
-  pageResolved: undefined,
-  resolvedData: undefined
-};
-
 class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   constructor(...args) {
     var _temp;
@@ -21724,18 +21718,22 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
   resolve(toChild, status) {
     const { resolve, timeout, page: toPage } = toChild.props;
-    const nextState = { toPage };
+    const nextState = {
+      toPage,
+      resolvedData: undefined,
+      pageResolved: undefined
+    };
 
     if (resolve) {
       const resolveThreads = [];
       let timedout;
 
-      const resolveThread = Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true }));
-      resolveThread.then(status.check(() => timedout && this.replaceState(nextState)));
+      const resolveThread = Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true }), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* rethrow */])(() => Object.assign(nextState, { pageResolved: false })));
+      resolveThread.then(status.check(() => timedout && this.updateState(nextState)), Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* rethrow */])(status.check(() => timedout && this.updateState(nextState))));
       resolveThreads.push(resolveThread);
 
       if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => {
+        resolveThreads.push(new Promise(resolve => setTimeout(resolve, timeout)).then(() => {
           timedout = true;
           return nextState;
         }));
@@ -21746,16 +21744,13 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     return nextState;
   }
 
-  // I shouldn't need fromPage here
   switch(nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props;
     const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
-    // leave, update
-    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
+    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.updateState(nextState)));
 
-    // enter
     switchPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
     return switchPromise;
@@ -21785,14 +21780,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     });
   }
 
-  wait(duration) {
-    return new Promise(resolve => setTimeout(resolve, duration));
-  }
-
-  replaceState(state) {
-    // maybe remove the defaults here (handle this in resolve)
-    Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["b" /* defaults */])(state, stateShell);
-    return new Promise(resolve => this.setState(state, resolve));
+  updateState(nextState) {
+    return new Promise(resolve => this.setState(nextState, resolve));
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
@@ -21809,13 +21798,13 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     let toChild;
     if (!toPage) {
       toChild = null;
-    } else if (Object(__WEBPACK_IMPORTED_MODULE_0_react__["isValidElement"])(resolvedData)) {
+    } else if (__WEBPACK_IMPORTED_MODULE_0_react___default.a.isValidElement(resolvedData)) {
       // no need to pass pageResolved here, it would always be true
       toChild = resolvedData;
     } else {
       toChild = this.selectChild(toPage);
       if (toChild.props.resolve) {
-        toChild = Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(this.selectChild(toPage), Object.assign({}, { pageResolved }, resolvedData));
+        toChild = __WEBPACK_IMPORTED_MODULE_0_react___default.a.cloneElement(this.selectChild(toPage), Object.assign({}, { pageResolved }, resolvedData));
       }
     }
 
@@ -21936,11 +21925,11 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     }
     const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["g" /* toQuery */])(params);
 
-    const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
+    const anchor = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('a', { onClick, href }, children);
     if (element === 'a') {
-      return Object(__WEBPACK_IMPORTED_MODULE_0_react__["cloneElement"])(anchor, { className, style }, children);
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.cloneElement(anchor, { className, style }, children);
     }
-    return Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])(element, { className, style }, anchor);
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(element, { className, style }, anchor);
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Link;
@@ -23833,6 +23822,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
 function wait() {
   return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({ data: 'Hello World!' }));
+  //.then(() => Promise.reject('Screw you!!'))
   // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }
 
@@ -38020,6 +38010,12 @@ class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'p',
+        null,
+        'resolved: ',
+        pageResolved === false ? 'false' : 'undefined'
+      ),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'p',
         null,

@@ -1,4 +1,4 @@
-import { PureComponent, createElement, cloneElement } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
 import { toPathArray, toQuery } from './urlUtils'
@@ -106,10 +106,10 @@ export default class Link extends PureComponent {
     }
     const href = to + toQuery(params)
 
-    const anchor = createElement('a', { onClick, href }, children)
+    const anchor = React.createElement('a', { onClick, href }, children)
     if (element === 'a') {
-      return cloneElement(anchor, { className, style }, children)
+      return React.cloneElement(anchor, { className, style }, children)
     }
-    return createElement(element, { className, style }, anchor)
+    return React.createElement(element, { className, style }, anchor)
   }
 }
