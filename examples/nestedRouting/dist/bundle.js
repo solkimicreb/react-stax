@@ -1827,8 +1827,7 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
   toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathArray */])(toPath));
 
-  const onEnd = status.check(() => onRoutingEnd(options));
-  return switchRoutersFromDepth(toPath, depth, status).then(onEnd, Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* rethrow */])(onEnd));
+  return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options)), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* rethrow */])(status.check(() => onRoutingEnd(options))));
 }
 
 function switchRoutersFromDepth(toPath, depth, status) {
@@ -21735,32 +21734,24 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     }
 
     const resolveThreads = [];
-    let resolvedData, pageResolved, timedout;
+    const nextState = { toPage };
+    let timedout;
 
     if (resolve) {
-      resolveThreads.push(Promise.resolve().then(() => resolve && resolve()).then(data => {
-        resolvedData = data;
-        pageResolved = true;
-      }, Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["d" /* rethrow */])(() => pageResolved = false)));
+      resolveThreads.push(Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true })).then(status.check(() => timedout && this.replaceState(nextState))));
       if (timeout) {
-        resolveThreads.push(this.wait(timeout));
+        resolveThreads.push(this.wait(timeout).then(() => timedout = true));
       }
     }
 
-    const routingPromise = promiseRace(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => {
-      this.replaceState({ toPage, pageResolved, resolvedData });
-      if (pageResolved === undefined) {
-        timedout = true;
-      }
-    }));
+    // leave, update
+    const routingPromise = promiseRace(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
 
+    // enter
     routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
-    Promise.all(resolveThreads).then(status.check(() => {
-      if (timedout) {
-        return this.replaceState({ toPage, pageResolved, resolvedData });
-      }
-    })).then(() => this.routingStatus = undefined);
+    // if it was not resolved update again, after the resolve
+    Promise.all(resolveThreads).then(() => this.routingStatus = undefined);
 
     return routingPromise;
   }

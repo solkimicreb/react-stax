@@ -74,46 +74,35 @@ export default class Router extends PureComponent {
     }
 
     const resolveThreads = []
-    let resolvedData, pageResolved, timedout
+    const nextState = { toPage }
+    let timedout
 
     if (resolve) {
       resolveThreads.push(
         Promise.resolve()
-          .then(() => resolve && resolve())
-          .then(data => {
-            resolvedData = data
-            pageResolved = true
-          }, rethrow(() => (pageResolved = false)))
+          .then(resolve)
+          .then(resolvedData =>
+            Object.assign(nextState, { resolvedData, pageResolved: true })
+          )
+          .then(status.check(() => timedout && this.replaceState(nextState)))
       )
       if (timeout) {
-        resolveThreads.push(this.wait(timeout))
+        resolveThreads.push(this.wait(timeout).then(() => (timedout = true)))
       }
     }
 
+    // leave, update
     const routingPromise = promiseRace(resolveThreads)
       .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
-      .then(
-        status.check(() => {
-          this.replaceState({ toPage, pageResolved, resolvedData })
-          if (pageResolved === undefined) {
-            timedout = true
-          }
-        })
-      )
+      .then(status.check(() => this.replaceState(nextState)))
 
+    // enter
     routingPromise.then(
       status.check(() => this.animate(enterAnimation, fromPage, toPage))
     )
 
-    Promise.all(resolveThreads)
-      .then(
-        status.check(() => {
-          if (timedout) {
-            return this.replaceState({ toPage, pageResolved, resolvedData })
-          }
-        })
-      )
-      .then(() => (this.routingStatus = undefined))
+    // if it was not resolved update again, after the resolve
+    Promise.all(resolveThreads).then(() => (this.routingStatus = undefined))
 
     return routingPromise
   }

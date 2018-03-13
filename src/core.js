@@ -56,10 +56,9 @@ export function routeFromDepth (
   Object.assign(params, newParams)
   toPath = path.slice(0, depth).concat(toPathArray(toPath))
 
-  const onEnd = status.check(() => onRoutingEnd(options))
   return switchRoutersFromDepth(toPath, depth, status).then(
-    onEnd,
-    rethrow(onEnd)
+    status.check(() => onRoutingEnd(options)),
+    rethrow(status.check(() => onRoutingEnd(options)))
   )
 }
 
