@@ -139,7 +139,10 @@ export default class Router extends PureComponent {
   saveRef = routerNode => (this.routerNode = routerNode);
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
-    if (keyframes && options && fromPage && fromPage !== toPage) {
+    // experimental!! -> this doesn't play well with global store resolves
+    const { animate } = this.props
+
+    if (keyframes && options && fromPage && (animate || fromPage !== toPage)) {
       if (typeof options !== 'object') {
         options = { duration: options }
       }

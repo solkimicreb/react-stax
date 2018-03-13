@@ -1,7 +1,7 @@
 import React from 'react'
 import { view, Link, Router } from 'react-easy-stack'
 import classNames from 'classnames'
-import { StoriesPage, resolveStories } from './StoriesPage'
+import { StoriesPage, initStories } from './StoriesPage'
 import { StoryPage, resolveStory } from './StoryPage'
 import { UserPage, resolveUser } from './UserPage'
 import appStore from './appStore'
@@ -9,12 +9,12 @@ import { STORY_TYPES } from './config'
 
 const enterAnimation = {
   keyframes: { opacity: [0, 1], transform: ['translateX(-15px)', 'none'] },
-  options: 150
+  options: 500
 }
 
 const leaveAnimation = {
   keyframes: { opacity: [1, 0], transform: ['none', 'translateX(15px)'] },
-  options: 150
+  options: 500
 }
 
 function App () {
@@ -44,10 +44,10 @@ function App () {
           </div>
         </div>
       </nav>
-      <Router className='router' defaultPage='stories' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>
+      <Router className='router' defaultPage='stories' animate={true} enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>
         <StoriesPage
           page='stories'
-          resolve={resolveStories}
+          resolve={initStories}
           defaultParams={{ type: 'top' }}
         />
         <StoryPage page='story' resolve={resolveStory} />
