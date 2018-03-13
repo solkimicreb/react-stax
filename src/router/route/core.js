@@ -1,11 +1,12 @@
-import { path, params, scheduler } from 'react-easy-params'
+import { path, params } from '../params'
 import {
   toPathArray,
   toPathString,
   toParams,
   rethrow,
-  clear
-} from './urlUtils'
+  clear,
+  scheduler
+} from '../utils'
 
 const routers = []
 let routingStatus

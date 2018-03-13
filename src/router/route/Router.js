@@ -1,8 +1,8 @@
 import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
+import { path, params } from '../params'
+import { defaults, rethrow } from '../utils'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
-import { path, params } from 'react-easy-params'
-import { defaults, rethrow } from './urlUtils'
 
 export default class Router extends PureComponent {
   static propTypes = {

@@ -58,14 +58,12 @@
     "es6 proxy"
   ],
   "dependencies": {
+    "@nx-js/observer-util": "^4.0.0",
     "@nx-js/queue-util": "^1.0.0",
-    "prop-types": "^15.6.1",
-    "react-easy-params": "^2.0.1",
-    "react-easy-state": "^5.0.0"
+    "prop-types": "^15.6.1"
   },
   "peerDependencies": {
-    "react": "*",
-    "@nx-js/observer-util": "^4.0.0"
+    "react": "*"
   },
   "devDependencies": {
     "babel-core": "6.25.0",
