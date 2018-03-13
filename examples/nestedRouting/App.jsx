@@ -27,42 +27,81 @@ const activeStyle = {
 
 class App extends Component {
   toggleStyle = () => {
-    appStore.border = (appStore.border === 'none') ? 'solid 3px green' : 'none'
-  }
+    appStore.border = appStore.border === 'none' ? 'solid 3px green' : 'none'
+  };
 
   toggleProtect = () => {
     appStore.protected = !appStore.protected
-  }
+  };
+
+  toggleAnimate = () => {
+    appStore.animate = !appStore.animate
+  };
 
   onRoute = ({ toPage, fromPage, target }) => {
     if (appStore.protected && toPage === 'profile') {
       target.route({ to: '/settings/user' })
     }
-  }
+  };
 
   render () {
     return (
       <MuiThemeProvider>
         <div>
           <Drawer>
-            <Router defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}/* onRoute={this.onRoute} */>
+            <Router
+              defaultPage='profile'
+              enterAnimation={enterAnimation}
+              leaveAnimation={leaveAnimation} /* onRoute={this.onRoute} */
+            >
               <div page='profile'>
-                <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
-                <Link to='/settings' activeStyle={activeStyle}><MenuItem>Settings</MenuItem></Link>
+                <Link to='/profile' activeStyle={activeStyle}>
+                  <MenuItem>Profile</MenuItem>
+                </Link>
+                <Link to='/settings' activeStyle={activeStyle}>
+                  <MenuItem>Settings</MenuItem>
+                </Link>
               </div>
               <div page='settings'>
-                <Link to='privacy' params={{ hello: 'World' }} activeStyle={activeStyle}><MenuItem>Privacy</MenuItem></Link>
-                <Link to='user' activeStyle={activeStyle}><MenuItem>User</MenuItem></Link>
-                <Link to='/profile' activeStyle={activeStyle}><MenuItem>Profile</MenuItem></Link>
+                <Link
+                  to='privacy'
+                  params={{ hello: 'World' }}
+                  activeStyle={activeStyle}
+                >
+                  <MenuItem>Privacy</MenuItem>
+                </Link>
+                <Link to='user' activeStyle={activeStyle}>
+                  <MenuItem>User</MenuItem>
+                </Link>
+                <Link to='/profile' activeStyle={activeStyle}>
+                  <MenuItem>Profile</MenuItem>
+                </Link>
               </div>
             </Router>
             <button onClick={this.toggleStyle}>Toggle Style</button>
-            <button onClick={this.toggleProtect}>{appStore.protected ? 'Allow' : 'Protect'}</button>
+            <button onClick={this.toggleProtect}>
+              {appStore.protected ? 'Allow' : 'Protect'}
+            </button>
+            <button onClick={this.toggleAnimate}>
+              {appStore.animate ? 'Block' : 'Animate'}
+            </button>
           </Drawer>
 
-          <Router className='page router' defaultPage='profile' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation} onRoute={this.onRoute}>
+          <Router
+            className='page router'
+            defaultPage='profile'
+            animate={appStore.animate}
+            enterAnimation={enterAnimation}
+            leaveAnimation={leaveAnimation}
+            onRoute={this.onRoute}
+          >
             <Profile page='profile' style={{ border: appStore.border }} />
-            <Settings page='settings' defaultParams={{ hello: 'World' }} resolve={wait} timeout={800} />
+            <Settings
+              page='settings'
+              defaultParams={{ hello: 'World' }}
+              resolve={wait}
+              timeout={800}
+            />
           </Router>
         </div>
       </MuiThemeProvider>
@@ -73,8 +112,9 @@ class App extends Component {
 export default view(App)
 
 function wait () {
-  return new Promise(resolve => setTimeout(resolve, 3000))
-    .then(() => ({ data: 'Hello World!' }))
-    //.then(() => Promise.reject('Screw you!!'))
-    // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({
+    data: 'Hello World!'
+  }))
+  // .then(() => Promise.reject('Screw you!!'))
+  // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }

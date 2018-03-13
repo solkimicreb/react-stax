@@ -44,7 +44,13 @@ function App () {
           </div>
         </div>
       </nav>
-      <Router className='router' defaultPage='stories' animate={true} enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>
+      <Router
+        className='router'
+        defaultPage='stories'
+        animate
+        enterAnimation={enterAnimation}
+        leaveAnimation={leaveAnimation}
+      >
         <StoriesPage
           page='stories'
           resolve={initStories}

@@ -21245,9 +21245,13 @@ for (var alias in aliases) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__ = __webpack_require__(17);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(90);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__view__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["a"]; });
+
+
+
+console.log('SOTRE', __WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["a" /* observable */]);
 
 
 
@@ -23748,6 +23752,8 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       appStore.border = appStore.border === 'none' ? 'solid 3px green' : 'none';
     }, this.toggleProtect = () => {
       appStore.protected = !appStore.protected;
+    }, this.toggleAnimate = () => {
+      appStore.animate = !appStore.animate;
     }, this.onRoute = ({ toPage, fromPage, target }) => {
       if (appStore.protected && toPage === 'profile') {
         target.route({ to: '/settings/user' });
@@ -23767,7 +23773,11 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
           null,
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-            { defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation /* onRoute={this.onRoute} */ },
+            {
+              defaultPage: 'profile',
+              enterAnimation: enterAnimation,
+              leaveAnimation: leaveAnimation /* onRoute={this.onRoute} */
+            },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'div',
               { page: 'profile' },
@@ -23795,7 +23805,11 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
               { page: 'settings' },
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["a" /* Link */],
-                { to: 'privacy', params: { hello: 'World' }, activeStyle: activeStyle },
+                {
+                  to: 'privacy',
+                  params: { hello: 'World' },
+                  activeStyle: activeStyle
+                },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   __WEBPACK_IMPORTED_MODULE_3_material_ui_MenuItem___default.a,
                   null,
@@ -23831,13 +23845,30 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
             'button',
             { onClick: this.toggleProtect },
             appStore.protected ? 'Allow' : 'Protect'
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'button',
+            { onClick: this.toggleAnimate },
+            appStore.animate ? 'Block' : 'Animate'
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-          { className: 'page router', defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation, onRoute: this.onRoute },
+          {
+            className: 'page router',
+            defaultPage: 'profile',
+            animate: appStore.animate,
+            enterAnimation: enterAnimation,
+            leaveAnimation: leaveAnimation,
+            onRoute: this.onRoute
+          },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__Profile__["a" /* default */], { page: 'profile', style: { border: appStore.border } }),
-          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], { page: 'settings', defaultParams: { hello: 'World' }, resolve: wait, timeout: 800 })
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Settings__["a" /* default */], {
+            page: 'settings',
+            defaultParams: { hello: 'World' },
+            resolve: wait,
+            timeout: 800
+          })
         )
       )
     );
@@ -23847,8 +23878,10 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["f" /* view */])(App));
 
 function wait() {
-  return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({ data: 'Hello World!' }));
-  //.then(() => Promise.reject('Screw you!!'))
+  return new Promise(resolve => setTimeout(resolve, 3000)).then(() => ({
+    data: 'Hello World!'
+  }));
+  // .then(() => Promise.reject('Screw you!!'))
   // .then(() => <p onClick={() => console.log('Look Ma!')}>I am a paragraph!!</p>)
 }
 
@@ -36541,7 +36574,11 @@ class CardExampleWithAvatar extends __WEBPACK_IMPORTED_MODULE_0_react__["Compone
       [1, 2, 3, 4, 5].map(val => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["Card"],
         { key: val },
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardHeader"], { title: 'Profile', subtitle: 'Your User Profile', avatar: 'http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardHeader"], {
+          title: 'Profile',
+          subtitle: 'Your User Profile',
+          avatar: 'http://www.planwallpaper.com/static/images/2ba7dbaa96e79e4c81dd7808706d2bb7_large.jpeg'
+        }),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           __WEBPACK_IMPORTED_MODULE_2_material_ui_Card__["CardText"],
           null,
@@ -38056,7 +38093,12 @@ class Settings extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
       ),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_1_react_easy_stack__["b" /* Router */],
-        { defaultPage: 'privacy', className: 'router', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation },
+        {
+          defaultPage: 'privacy',
+          className: 'router',
+          enterAnimation: enterAnimation,
+          leaveAnimation: leaveAnimation
+        },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
           { page: 'privacy' },

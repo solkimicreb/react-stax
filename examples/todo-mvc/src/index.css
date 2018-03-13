@@ -19,11 +19,6 @@ button {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-a {
-	text-decoration: none;
-	color: inherit;
-}
-
 body {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	line-height: 1.4em;
