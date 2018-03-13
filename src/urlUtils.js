@@ -60,9 +60,3 @@ export function defaults (obj, defaultProps) {
     }
   }
 }
-
-export class RoutingStatus {
-  check (fn) {
-    return () => (this.cancelled ? undefined : fn())
-  }
-}

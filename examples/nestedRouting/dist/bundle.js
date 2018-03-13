@@ -1787,6 +1787,12 @@ exports.default = {
 const routers = [];
 let routingStatus;
 
+class RoutingStatus {
+  check(fn) {
+    return () => this.cancelled ? undefined : fn();
+  }
+}
+
 function registerRouter(router, depth) {
   let routersAtDepth = routers[depth];
   if (!routersAtDepth) {
@@ -1795,11 +1801,12 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
+    // TODO improve this
     if (router.routingStatus) {
       router.routingStatus.cancelled = true;
     }
     // I could make this into the global routing status, but it would kell parallel inting
-    const status = router.routingStatus = new __WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* RoutingStatus */]();
+    const status = router.routingStatus = new RoutingStatus();
     Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], status));
   }
 }
@@ -1823,17 +1830,17 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
     // only process if we are not yet routing to prevent mid routing flash!
     __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   }
-  const status = routingStatus = new __WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* RoutingStatus */]();
+  const status = routingStatus = new RoutingStatus();
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].stop();
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
-    Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["b" /* clear */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */]);
+    Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* clear */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */]);
   }
   Object.assign(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["a" /* params */], newParams);
-  toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathArray */])(toPath));
+  toPath = __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["e" /* toPathArray */])(toPath));
 
-  return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options)), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* rethrow */])(status.check(() => onRoutingEnd(options))));
+  return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options)), Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["c" /* rethrow */])(status.check(() => onRoutingEnd(options))));
 }
 
 function switchRoutersFromDepth(toPath, depth, status) {
@@ -1859,7 +1866,7 @@ function switchRoutersFromDepth(toPath, depth, status) {
 
 function onRoutingEnd(options) {
   // by default a history item is pushed if the pathname changes!
-  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["g" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */]) !== location.pathname) {
+  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["f" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */]) !== location.pathname) {
     history.pushState(history.state, '');
   }
 
@@ -1869,7 +1876,7 @@ function onRoutingEnd(options) {
 
 window.addEventListener('popstate', () => route({
   to: location.pathname,
-  params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["e" /* toParams */])(location.search),
+  params: Object(__WEBPACK_IMPORTED_MODULE_1__urlUtils__["d" /* toParams */])(location.search),
   options: { history: false }
 }));
 
@@ -1878,14 +1885,14 @@ window.addEventListener('popstate', () => route({
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["f"] = toPathArray;
-/* harmony export (immutable) */ __webpack_exports__["g"] = toPathString;
-/* harmony export (immutable) */ __webpack_exports__["h"] = toQuery;
-/* harmony export (immutable) */ __webpack_exports__["e"] = toParams;
+/* harmony export (immutable) */ __webpack_exports__["e"] = toPathArray;
+/* harmony export (immutable) */ __webpack_exports__["f"] = toPathString;
+/* harmony export (immutable) */ __webpack_exports__["g"] = toQuery;
+/* harmony export (immutable) */ __webpack_exports__["d"] = toParams;
 /* unused harmony export notEmpty */
-/* harmony export (immutable) */ __webpack_exports__["d"] = rethrow;
-/* harmony export (immutable) */ __webpack_exports__["b"] = clear;
-/* harmony export (immutable) */ __webpack_exports__["c"] = defaults;
+/* harmony export (immutable) */ __webpack_exports__["c"] = rethrow;
+/* harmony export (immutable) */ __webpack_exports__["a"] = clear;
+/* harmony export (immutable) */ __webpack_exports__["b"] = defaults;
 function toPathArray(path) {
   return path.split('/').filter(notEmpty);
 }
@@ -1945,14 +1952,6 @@ function defaults(obj, defaultProps) {
     }
   }
 }
-
-class RoutingStatus {
-  check(fn) {
-    return () => this.cancelled ? undefined : fn();
-  }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = RoutingStatus;
-
 
 /***/ }),
 /* 34 */
@@ -21725,7 +21724,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */].splice(this.depth, Infinity, page);
     if (defaultParams) {
-      Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(__WEBPACK_IMPORTED_MODULE_3_react_easy_params__["a" /* params */], defaultParams);
+      Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["b" /* defaults */])(__WEBPACK_IMPORTED_MODULE_3_react_easy_params__["a" /* params */], defaultParams);
     }
     this.onRoute(fromPage, page);
 
@@ -21799,12 +21798,12 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
   replaceState(state) {
     // maybe remove the defaults here (handle this in resolve)
-    Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(state, stateShell);
+    Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["b" /* defaults */])(state, stateShell);
     return new Promise(resolve => this.setState(state, resolve));
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
-    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["f" /* toPathArray */])(location.pathname)[this.depth];
+    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["e" /* toPathArray */])(location.pathname)[this.depth];
     if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
@@ -21905,7 +21904,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   isLinkPathActive() {
     const { to } = this.props;
     if (to) {
-      const linkPath = Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["f" /* toPathArray */])(to);
+      const linkPath = Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["e" /* toPathArray */])(to);
       return linkPath.every((page, i) => page === __WEBPACK_IMPORTED_MODULE_5_react_easy_params__["b" /* path */][i + this.linkDepth]);
     }
     return true;
@@ -21943,7 +21942,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle);
     }
-    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["h" /* toQuery */])(params);
+    const href = to + Object(__WEBPACK_IMPORTED_MODULE_3__urlUtils__["g" /* toQuery */])(params);
 
     const anchor = Object(__WEBPACK_IMPORTED_MODULE_0_react__["createElement"])('a', { onClick, href }, children);
     if (element === 'a') {

@@ -4,12 +4,17 @@ import {
   toPathString,
   toParams,
   rethrow,
-  clear,
-  RoutingStatus
+  clear
 } from './urlUtils'
 
 const routers = []
 let routingStatus
+
+class RoutingStatus {
+  check (fn) {
+    return () => (this.cancelled ? undefined : fn())
+  }
+}
 
 export function registerRouter (router, depth) {
   let routersAtDepth = routers[depth]
@@ -19,6 +24,7 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
+    // TODO improve this
     if (router.routingStatus) {
       router.routingStatus.cancelled = true
     }
