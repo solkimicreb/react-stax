@@ -20405,6 +20405,10 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
     if (keyframes && options && fromPage && fromPage !== toPage) {
+      if (typeof options !== 'object') {
+        options = { duration: options };
+      }
+      options.fill = options.fill || 'forwards';
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
     }

@@ -140,6 +140,10 @@ export default class Router extends PureComponent {
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
     if (keyframes && options && fromPage && fromPage !== toPage) {
+      if (typeof options !== 'object') {
+        options = { duration: options }
+      }
+      options.fill = options.fill || 'forwards'
       const animation = this.routerNode.animate(keyframes, options)
       return new Promise(resolve => (animation.onfinish = resolve))
     }

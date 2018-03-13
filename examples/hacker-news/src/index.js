@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import 'web-animations-js'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import './reset.css'

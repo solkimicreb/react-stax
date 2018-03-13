@@ -7,6 +7,16 @@ import { UserPage, resolveUser } from './UserPage'
 import appStore from './appStore'
 import { STORY_TYPES } from './config'
 
+const enterAnimation = {
+  keyframes: { opacity: [0, 1], transform: ['translateX(-15px)', 'none'] },
+  options: 150
+}
+
+const leaveAnimation = {
+  keyframes: { opacity: [1, 0], transform: ['none', 'translateX(15px)'] },
+  options: 150
+}
+
 function App () {
   const { loading, dark, toggleTheme } = appStore
   const appClass = classNames('app', { dark })
@@ -21,6 +31,7 @@ function App () {
               <Link
                 to='stories'
                 params={{ type }}
+                options={{ history: true }}
                 activeClass='active'
                 key={type}
               >
@@ -33,7 +44,7 @@ function App () {
           </div>
         </div>
       </nav>
-      <Router timeout={500} className='router' defaultPage='stories'>
+      <Router className='router' defaultPage='stories' enterAnimation={enterAnimation} leaveAnimation={leaveAnimation}>
         <StoriesPage
           page='stories'
           resolve={resolveStories}
