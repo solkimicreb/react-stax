@@ -7,7 +7,7 @@ import React, {
 import PropTypes from 'prop-types'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 import { path, params } from 'react-easy-params'
-import { toPathArray, rethrow, defaults, RoutingStatus } from './urlUtils'
+import { toPathArray, rethrow, defaults } from './urlUtils'
 
 const stateShell = {
   toPage: undefined,
@@ -63,37 +63,37 @@ export default class Router extends PureComponent {
     return toChild
   }
 
-  resolve (toChild) {
+  resolve (toChild, status) {
     const { resolve, timeout, page: toPage } = toChild.props
-    const resolveThreads = []
     const nextState = { toPage }
 
     if (resolve) {
-      resolveThreads.push(
-        Promise.resolve()
-          .then(resolve)
-          .then(resolvedData =>
-            Object.assign(nextState, { resolvedData, pageResolved: true })
-          )
-      )
-      // this is not okay like this!!, I would also need a status check
-      // resolveThread.then(() => this.replaceState(nextState))
+      const resolveThreads = []
+      let timedout
+
+      const resolveThread = Promise.resolve()
+        .then(resolve)
+        .then(resolvedData =>
+          Object.assign(nextState, { resolvedData, pageResolved: true })
+        )
+      resolveThread.then(status.check(() => timedout && this.replaceState(nextState)))
+      resolveThreads.push(resolveThread)
+
       if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => nextState))
+        resolveThreads.push(this.wait(timeout).then(() => {
+          timedout = true
+          return nextState
+        }))
       }
+
       return Promise.race(resolveThreads)
     }
     return nextState
   }
 
-  switch (nextState, fromPage) {
+  switch (nextState, fromPage, status) {
     const { enterAnimation, leaveAnimation } = this.props
     const { toPage } = nextState
-
-    if (this.routingStatus) {
-      this.routingStatus.cancelled = true
-    }
-    const status = (this.routingStatus = new RoutingStatus())
 
     // leave, update
     const switchPromise = Promise.resolve()
@@ -125,13 +125,11 @@ export default class Router extends PureComponent {
   onRoute (fromPage, toPage) {
     const { onRoute } = this.props
 
-    if (onRoute) {
-      onRoute({
-        target: this,
-        fromPage,
-        toPage
-      })
-    }
+    onRoute && onRoute({
+      target: this,
+      fromPage,
+      toPage
+    })
   }
 
   wait (duration) {
@@ -139,13 +137,12 @@ export default class Router extends PureComponent {
   }
 
   replaceState (state) {
+    // maybe remove the defaults here (handle this in resolve)
     defaults(state, stateShell)
     return new Promise(resolve => this.setState(state, resolve))
   }
 
-  saveRef = routerNode => {
-    this.routerNode = routerNode
-  };
+  saveRef = routerNode => (this.routerNode = routerNode)
 
   animate ({ keyframes, options } = {}, fromPage, toPage) {
     const currentPage = toPathArray(location.pathname)[this.depth]
@@ -188,8 +185,4 @@ export default class Router extends PureComponent {
       </div>
     )
   }
-}
-
-function promiseRace (promises) {
-  return promises.length ? Promise.race(promises) : Promise.resolve()
 }

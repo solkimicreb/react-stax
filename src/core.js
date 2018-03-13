@@ -19,10 +19,15 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
+    if (router.routingStatus) {
+      router.routingStatus.cancelled = true
+    }
+    // I could make this into the global routing status, but it would kell parallel inting
+    const status = router.routingStatus = new RoutingStatus()
     Promise.resolve()
       .then(() => router.init(path[depth], path[depth]))
-      .then(toChild => router.resolve(toChild))
-      .then(nextState => router.switch(nextState, path[depth]))
+      .then(toChild => router.resolve(toChild, status))
+      .then(nextState => router.switch(nextState, path[depth], status))
   }
 }
 
@@ -44,6 +49,7 @@ export function routeFromDepth (
   depth = 0
 ) {
   if (routingStatus) {
+    console.log('CANCEL!!')
     routingStatus.cancelled = true
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
@@ -73,15 +79,21 @@ function switchRoutersFromDepth (toPath, depth, status) {
   }
 
   // check routersAtDepth defaultPage -> throw an error if they differ
+  // check basePath -> reduce -> add it to the url -> bump depth with basePath length
+  // do not bump the real depth, just the passed arg depth
+  // DO NOT! update the path in the router -> update it here to maintain control
+  // add a new baseDepth param -> increment that one too
 
   const children = routersAtDepth.map(router => router.init(path[depth], toPath[depth]))
+  // path[baseDepth + depth] = children[0].props.page
+  // could work
 
   // add status checks
   return Promise.all(
-    routersAtDepth.map((router, i) => router.resolve(children[i]))
+    routersAtDepth.map((router, i) => router.resolve(children[i], status))
   )
     .then(states => Promise.all(
-      routersAtDepth.map((router, i) => router.switch(states[i], path[depth]))
+      routersAtDepth.map((router, i) => router.switch(states[i], path[depth], status))
     ))
     .then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }
@@ -97,7 +109,6 @@ function onRoutingEnd (options) {
 
   scheduler.process()
   scheduler.start()
-  routingStatus = undefined
 }
 
 window.addEventListener('popstate', () =>

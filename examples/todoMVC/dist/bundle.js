@@ -1682,7 +1682,12 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild)).then(nextState => router.switch(nextState, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]));
+    if (router.routingStatus) {
+      router.routingStatus.cancelled = true;
+    }
+    // I could make this into the global routing status, but it would kell parallel inting
+    const status = router.routingStatus = new __WEBPACK_IMPORTED_MODULE_1__urlUtils__["a" /* RoutingStatus */]();
+    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], status));
   }
 }
 
@@ -1699,6 +1704,7 @@ function route({ to, params, options } = {}) {
 
 function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
   if (routingStatus) {
+    console.log('CANCEL!!');
     routingStatus.cancelled = true;
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
@@ -1725,11 +1731,17 @@ function switchRoutersFromDepth(toPath, depth, status) {
   }
 
   // check routersAtDepth defaultPage -> throw an error if they differ
+  // check basePath -> reduce -> add it to the url -> bump depth with basePath length
+  // do not bump the real depth, just the passed arg depth
+  // DO NOT! update the path in the router -> update it here to maintain control
+  // add a new baseDepth param -> increment that one too
 
   const children = routersAtDepth.map(router => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]));
+  // path[baseDepth + depth] = children[0].props.page
+  // could work
 
   // add status checks
-  return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i]))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
+  return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
 function onRoutingEnd(options) {
@@ -1740,7 +1752,6 @@ function onRoutingEnd(options) {
 
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].process();
   __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["c" /* scheduler */].start();
-  routingStatus = undefined;
 }
 
 window.addEventListener('popstate', () => route({
@@ -20304,9 +20315,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = {}, this.saveRef = routerNode => {
-      this.routerNode = routerNode;
-    }, _temp;
+    return _temp = super(...args), this.state = {}, this.saveRef = routerNode => this.routerNode = routerNode, _temp;
   }
 
   getChildContext() {
@@ -20342,31 +20351,33 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     return toChild;
   }
 
-  resolve(toChild) {
+  resolve(toChild, status) {
     const { resolve, timeout, page: toPage } = toChild.props;
-    const resolveThreads = [];
     const nextState = { toPage };
 
     if (resolve) {
-      resolveThreads.push(Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true })));
-      // this is not okay like this!!, I would also need a status check
-      // resolveThread.then(() => this.replaceState(nextState))
+      const resolveThreads = [];
+      let timedout;
+
+      const resolveThread = Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true }));
+      resolveThread.then(status.check(() => timedout && this.replaceState(nextState)));
+      resolveThreads.push(resolveThread);
+
       if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => nextState));
+        resolveThreads.push(this.wait(timeout).then(() => {
+          timedout = true;
+          return nextState;
+        }));
       }
+
       return Promise.race(resolveThreads);
     }
     return nextState;
   }
 
-  switch(nextState, fromPage) {
+  switch(nextState, fromPage, status) {
     const { enterAnimation, leaveAnimation } = this.props;
     const { toPage } = nextState;
-
-    if (this.routingStatus) {
-      this.routingStatus.cancelled = true;
-    }
-    const status = this.routingStatus = new __WEBPACK_IMPORTED_MODULE_4__urlUtils__["a" /* RoutingStatus */]();
 
     // leave, update
     const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
@@ -20394,13 +20405,11 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   onRoute(fromPage, toPage) {
     const { onRoute } = this.props;
 
-    if (onRoute) {
-      onRoute({
-        target: this,
-        fromPage,
-        toPage
-      });
-    }
+    onRoute && onRoute({
+      target: this,
+      fromPage,
+      toPage
+    });
   }
 
   wait(duration) {
@@ -20408,6 +20417,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   }
 
   replaceState(state) {
+    // maybe remove the defaults here (handle this in resolve)
     Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(state, stateShell);
     return new Promise(resolve => this.setState(state, resolve));
   }
@@ -20446,7 +20456,6 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Router;
 
-
 Router.propTypes = {
   defaultPage: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string.isRequired,
   onRoute: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
@@ -20457,9 +20466,6 @@ Router.propTypes = {
 };
 Router.childContextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
 Router.contextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number };
-function promiseRace(promises) {
-  return promises.length ? Promise.race(promises) : Promise.resolve();
-}
 
 /***/ }),
 
