@@ -1795,7 +1795,7 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]);
+    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild)).then(nextState => router.switch(nextState, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth]));
   }
 }
 
@@ -1838,11 +1838,11 @@ function switchRoutersFromDepth(toPath, depth, status) {
   }
 
   // check routersAtDepth defaultPage -> throw an error if they differ
-  // somehow make joint resolution
-  // issue with parallel routing -> there is a slight tearing!!
-  // I need joint resolution!
 
-  return Promise.all(routersAtDepth.map(router => router.switch(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
+  const children = routersAtDepth.map(router => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]));
+
+  // add status checks
+  return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i]))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
 function onRoutingEnd(options) {
@@ -21710,50 +21710,52 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     Object(__WEBPACK_IMPORTED_MODULE_2__core__["c" /* routeFromDepth */])(to, params, options, this.depth);
   }
 
-  switch(fromPage, toPage) {
+  init(fromPage, toPage) {
+    const toChild = this.selectChild(toPage);
+    const { resolve, timeout, page, defaultParams } = toChild.props;
+
+    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */].splice(this.depth, Infinity, page);
+    if (defaultParams) {
+      Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(__WEBPACK_IMPORTED_MODULE_3_react_easy_params__["a" /* params */], defaultParams);
+    }
+    this.onRoute(fromPage, page);
+
+    return toChild;
+  }
+
+  resolve(toChild) {
+    const { resolve, timeout, page: toPage } = toChild.props;
+    const resolveThreads = [];
+    const nextState = { toPage };
+
+    if (resolve) {
+      resolveThreads.push(Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true })));
+      // this is not okay like this!!, I would also need a status check
+      // resolveThread.then(() => this.replaceState(nextState))
+      if (timeout) {
+        resolveThreads.push(this.wait(timeout).then(() => nextState));
+      }
+      return Promise.race(resolveThreads);
+    }
+    return nextState;
+  }
+
+  switch(nextState, fromPage) {
+    const { enterAnimation, leaveAnimation } = this.props;
+    const { toPage } = nextState;
+
     if (this.routingStatus) {
       this.routingStatus.cancelled = true;
     }
     const status = this.routingStatus = new __WEBPACK_IMPORTED_MODULE_4__urlUtils__["a" /* RoutingStatus */]();
 
-    const toChild = this.selectChild(toPage);
-    const { enterAnimation, leaveAnimation } = this.props;
-    const { resolve, timeout, page, defaultParams } = toChild.props;
-    // name this better
-    toPage = page;
-
-    __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */].splice(this.depth, Infinity, toPage);
-    if (defaultParams) {
-      Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["c" /* defaults */])(__WEBPACK_IMPORTED_MODULE_3_react_easy_params__["a" /* params */], defaultParams);
-    }
-
-    this.onRoute(fromPage, toPage);
-    // maybe I do not need this check!, only needed because onRoute can cancel the routing
-    if (status.cancelled) {
-      return Promise.resolve();
-    }
-
-    const resolveThreads = [];
-    const nextState = { toPage };
-    let timedout;
-
-    if (resolve) {
-      resolveThreads.push(Promise.resolve().then(resolve).then(resolvedData => Object.assign(nextState, { resolvedData, pageResolved: true })).then(status.check(() => timedout && this.replaceState(nextState))));
-      if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => timedout = true));
-      }
-    }
-
     // leave, update
-    const routingPromise = promiseRace(resolveThreads).then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
+    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
 
     // enter
-    routingPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
+    switchPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
-    // if it was not resolved update again, after the resolve
-    Promise.all(resolveThreads).then(() => this.routingStatus = undefined);
-
-    return routingPromise;
+    return switchPromise;
   }
 
   selectChild(toPage) {

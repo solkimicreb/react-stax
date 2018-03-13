@@ -19,7 +19,10 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
-    router.switch(path[depth], path[depth])
+    Promise.resolve()
+      .then(() => router.init(path[depth], path[depth]))
+      .then(toChild => router.resolve(toChild))
+      .then(nextState => router.switch(nextState, path[depth]))
   }
 }
 
@@ -70,13 +73,17 @@ function switchRoutersFromDepth (toPath, depth, status) {
   }
 
   // check routersAtDepth defaultPage -> throw an error if they differ
-  // somehow make joint resolution
-  // issue with parallel routing -> there is a slight tearing!!
-  // I need joint resolution!
 
+  const children = routersAtDepth.map(router => router.init(path[depth], toPath[depth]))
+
+  // add status checks
   return Promise.all(
-    routersAtDepth.map(router => router.switch(path[depth], toPath[depth]))
-  ).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
+    routersAtDepth.map((router, i) => router.resolve(children[i]))
+  )
+    .then(states => Promise.all(
+      routersAtDepth.map((router, i) => router.switch(states[i], path[depth]))
+    ))
+    .then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }
 
 function onRoutingEnd (options) {

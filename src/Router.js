@@ -50,32 +50,23 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth)
   }
 
-  switch (fromPage, toPage) {
-    if (this.routingStatus) {
-      this.routingStatus.cancelled = true
-    }
-    const status = (this.routingStatus = new RoutingStatus())
-
+  init (fromPage, toPage) {
     const toChild = this.selectChild(toPage)
-    const { enterAnimation, leaveAnimation } = this.props
     const { resolve, timeout, page, defaultParams } = toChild.props
-    // name this better
-    toPage = page
 
-    path.splice(this.depth, Infinity, toPage)
+    path.splice(this.depth, Infinity, page)
     if (defaultParams) {
       defaults(params, defaultParams)
     }
+    this.onRoute(fromPage, page)
 
-    this.onRoute(fromPage, toPage)
-    // maybe I do not need this check!, only needed because onRoute can cancel the routing
-    if (status.cancelled) {
-      return Promise.resolve()
-    }
+    return toChild
+  }
 
+  resolve (toChild) {
+    const { resolve, timeout, page: toPage } = toChild.props
     const resolveThreads = []
     const nextState = { toPage }
-    let timedout
 
     if (resolve) {
       resolveThreads.push(
@@ -84,27 +75,37 @@ export default class Router extends PureComponent {
           .then(resolvedData =>
             Object.assign(nextState, { resolvedData, pageResolved: true })
           )
-          .then(status.check(() => timedout && this.replaceState(nextState)))
       )
+      // this is not okay like this!!, I would also need a status check
+      // resolveThread.then(() => this.replaceState(nextState))
       if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => (timedout = true)))
+        resolveThreads.push(this.wait(timeout).then(() => nextState))
       }
+      return Promise.race(resolveThreads)
     }
+    return nextState
+  }
+
+  switch (nextState, fromPage) {
+    const { enterAnimation, leaveAnimation } = this.props
+    const { toPage } = nextState
+
+    if (this.routingStatus) {
+      this.routingStatus.cancelled = true
+    }
+    const status = (this.routingStatus = new RoutingStatus())
 
     // leave, update
-    const routingPromise = promiseRace(resolveThreads)
+    const switchPromise = Promise.resolve()
       .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
       .then(status.check(() => this.replaceState(nextState)))
 
     // enter
-    routingPromise.then(
+    switchPromise.then(
       status.check(() => this.animate(enterAnimation, fromPage, toPage))
     )
 
-    // if it was not resolved update again, after the resolve
-    Promise.all(resolveThreads).then(() => (this.routingStatus = undefined))
-
-    return routingPromise
+    return switchPromise
   }
 
   selectChild (toPage) {
