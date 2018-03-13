@@ -9,6 +9,7 @@ import {
 
 const routers = []
 let routingStatus
+let initStatuses = []
 
 class RoutingStatus {
   check (fn) {
@@ -24,8 +25,8 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
-    // issue -> if there are multiple, I should cancel all
-    const status = routingStatus = new RoutingStatus()
+    const status = new RoutingStatus()
+    initStatuses.push(status)
     Promise.resolve()
       .then(() => router.init(path[depth], path[depth]))
       .then(toChild => router.resolve(toChild, status))
@@ -50,6 +51,11 @@ export function routeFromDepth (
   options = {},
   depth = 0
 ) {
+  // cancel inits
+  if (initStatuses.length) {
+    initStatuses.forEach(status => status.cancelled = true)
+    initStatuses = []
+  }
   if (routingStatus) {
     console.log('CANCEL!!')
     routingStatus.cancelled = true

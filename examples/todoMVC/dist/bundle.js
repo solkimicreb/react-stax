@@ -1673,6 +1673,7 @@ module.exports = shallowEqual;
 
 const routers = [];
 let routingStatus;
+let initStatuses = [];
 
 class RoutingStatus {
   check(fn) {
@@ -1688,8 +1689,8 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    // issue -> if there are multiple, I should cancel all
-    const status = routingStatus = new RoutingStatus();
+    const status = new RoutingStatus();
+    initStatuses.push(status);
     Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, status));
   }
 }
@@ -1706,6 +1707,11 @@ function route({ to, params, options } = {}) {
 }
 
 function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}, depth = 0) {
+  // cancel inits
+  if (initStatuses.length) {
+    initStatuses.forEach(status => status.cancelled = true);
+    initStatuses = [];
+  }
   if (routingStatus) {
     console.log('CANCEL!!');
     routingStatus.cancelled = true;
