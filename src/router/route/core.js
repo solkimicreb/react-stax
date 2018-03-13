@@ -1,4 +1,4 @@
-import { path, params } from '../params'
+import { path, params } from '../integrations'
 import {
   toPathArray,
   toPathString,

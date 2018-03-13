@@ -1653,7 +1653,7 @@ module.exports = shallowEqual;
 /* harmony export (immutable) */ __webpack_exports__["b"] = releaseRouter;
 /* unused harmony export route */
 /* harmony export (immutable) */ __webpack_exports__["c"] = routeFromDepth;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__params__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__integrations__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(18);
 
 
@@ -1678,7 +1678,7 @@ function registerRouter(router, depth) {
   if (!routingStatus) {
     const status = new RoutingStatus();
     initStatuses.push(status);
-    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0__params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0__params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, status));
+    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0__integrations__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0__integrations__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, status));
   }
 }
 
@@ -1710,10 +1710,10 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* clear */])(__WEBPACK_IMPORTED_MODULE_0__params__["a" /* params */]);
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* clear */])(__WEBPACK_IMPORTED_MODULE_0__integrations__["a" /* params */]);
   }
-  Object.assign(__WEBPACK_IMPORTED_MODULE_0__params__["a" /* params */], newParams);
-  toPath = __WEBPACK_IMPORTED_MODULE_0__params__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["f" /* toPathArray */])(toPath));
+  Object.assign(__WEBPACK_IMPORTED_MODULE_0__integrations__["a" /* params */], newParams);
+  toPath = __WEBPACK_IMPORTED_MODULE_0__integrations__["b" /* path */].slice(0, depth).concat(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["f" /* toPathArray */])(toPath));
 
   return switchRoutersFromDepth(toPath, depth, status).then(status.check(() => onRoutingEnd(options)), Object(__WEBPACK_IMPORTED_MODULE_1__utils__["c" /* rethrow */])(status.check(() => onRoutingEnd(options))));
 }
@@ -1725,13 +1725,13 @@ function switchRoutersFromDepth(toPath, depth, status) {
     return Promise.resolve();
   }
 
-  const children = routersAtDepth.map(router => router.init(__WEBPACK_IMPORTED_MODULE_0__params__["b" /* path */][depth], toPath[depth]));
+  const children = routersAtDepth.map(router => router.init(__WEBPACK_IMPORTED_MODULE_0__integrations__["b" /* path */][depth], toPath[depth]));
   return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
 function onRoutingEnd(options) {
   // by default a history item is pushed if the pathname changes!
-  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__utils__["g" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0__params__["b" /* path */]) !== location.pathname) {
+  if (options.history === true || options.history !== false && Object(__WEBPACK_IMPORTED_MODULE_1__utils__["g" /* toPathString */])(__WEBPACK_IMPORTED_MODULE_0__integrations__["b" /* path */]) !== location.pathname) {
     history.pushState(history.state, '');
   }
 
@@ -19957,9 +19957,9 @@ function view(Comp, { devtool: rawDevtool } = {}) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__params__ = __webpack_require__(22);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_0__params__["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_0__params__["c"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__integrations__ = __webpack_require__(22);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_0__integrations__["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_0__integrations__["c"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__route__ = __webpack_require__(95);
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_1__route__["a"]; });
 /* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__route__["b"]; });
@@ -20285,7 +20285,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__nx_js_observer_util__["b" /* observe */])(sy
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__params__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__integrations__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core__ = __webpack_require__(33);
 
@@ -20325,9 +20325,9 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     const toChild = this.selectChild(toPage);
     const { page, defaultParams } = toChild.props;
 
-    __WEBPACK_IMPORTED_MODULE_2__params__["b" /* path */].splice(this.depth, Infinity, page);
+    __WEBPACK_IMPORTED_MODULE_2__integrations__["b" /* path */].splice(this.depth, Infinity, page);
     if (defaultParams) {
-      Object(__WEBPACK_IMPORTED_MODULE_3__utils__["b" /* defaults */])(__WEBPACK_IMPORTED_MODULE_2__params__["a" /* params */], defaultParams);
+      Object(__WEBPACK_IMPORTED_MODULE_3__utils__["b" /* defaults */])(__WEBPACK_IMPORTED_MODULE_2__integrations__["a" /* params */], defaultParams);
     }
     this.onRoute(fromPage, page);
 
@@ -20465,7 +20465,7 @@ Router.contextTypes = { easyRouterDepth: __WEBPACK_IMPORTED_MODULE_1_prop_types_
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nx_js_observer_util__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__params__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__integrations__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core__ = __webpack_require__(33);
 
 
@@ -20512,7 +20512,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     const { to } = this.props;
     if (to) {
       const linkPath = Object(__WEBPACK_IMPORTED_MODULE_3__utils__["f" /* toPathArray */])(to);
-      return linkPath.every((page, i) => page === __WEBPACK_IMPORTED_MODULE_4__params__["b" /* path */][i + this.linkDepth]);
+      return linkPath.every((page, i) => page === __WEBPACK_IMPORTED_MODULE_4__integrations__["b" /* path */][i + this.linkDepth]);
     }
     return true;
   }
@@ -20521,7 +20521,7 @@ class Link extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     const linkParams = this.props.params;
     if (linkParams) {
       for (let param in linkParams) {
-        if (linkParams[param] !== __WEBPACK_IMPORTED_MODULE_4__params__["a" /* params */][param]) {
+        if (linkParams[param] !== __WEBPACK_IMPORTED_MODULE_4__integrations__["a" /* params */][param]) {
           return false;
         }
       }

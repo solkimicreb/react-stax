@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
 import { toPathArray, toQuery, scheduler } from '../utils'
-import { params, path } from '../params'
+import { params, path } from '../integrations'
 import { routeFromDepth } from './core'
 
 export default class Link extends PureComponent {

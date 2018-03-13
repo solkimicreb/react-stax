@@ -1,2 +1,2 @@
-export * from './params'
+export * from './integrations'
 export * from './route'

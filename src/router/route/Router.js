@@ -1,6 +1,6 @@
 import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
-import { path, params } from '../params'
+import { path, params } from '../integrations'
 import { defaults, rethrow } from '../utils'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 
