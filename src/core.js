@@ -53,7 +53,7 @@ export function routeFromDepth (
 ) {
   // cancel inits
   if (initStatuses.length) {
-    initStatuses.forEach(status => status.cancelled = true)
+    initStatuses.forEach(status => (status.cancelled = true))
     initStatuses = []
   }
   if (routingStatus) {
@@ -92,17 +92,23 @@ function switchRoutersFromDepth (toPath, depth, status) {
   // DO NOT! update the path in the router -> update it here to maintain control
   // add a new baseDepth param -> increment that one too
 
-  const children = routersAtDepth.map(router => router.init(path[depth], toPath[depth]))
+  const children = routersAtDepth.map(router =>
+    router.init(path[depth], toPath[depth])
+  )
   // path[baseDepth + depth] = children[0].props.page
   // could work
+
+  // add some extra status checks!!
 
   // add status checks
   return Promise.all(
     routersAtDepth.map((router, i) => router.resolve(children[i], status))
   )
-    .then(states => Promise.all(
-      routersAtDepth.map((router, i) => router.switch(states[i], status))
-    ))
+    .then(states =>
+      Promise.all(
+        routersAtDepth.map((router, i) => router.switch(states[i], status))
+      )
+    )
     .then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }
 

@@ -76,14 +76,18 @@ export default class Router extends PureComponent {
         .then(resolvedData =>
           Object.assign(nextState, { resolvedData, pageResolved: true })
         )
-      resolveThread.then(status.check(() => timedout && this.replaceState(nextState)))
+      resolveThread.then(
+        status.check(() => timedout && this.replaceState(nextState))
+      )
       resolveThreads.push(resolveThread)
 
       if (timeout) {
-        resolveThreads.push(this.wait(timeout).then(() => {
-          timedout = true
-          return nextState
-        }))
+        resolveThreads.push(
+          this.wait(timeout).then(() => {
+            timedout = true
+            return nextState
+          })
+        )
       }
 
       return Promise.race(resolveThreads)
@@ -126,11 +130,12 @@ export default class Router extends PureComponent {
   onRoute (fromPage, toPage) {
     const { onRoute } = this.props
 
-    onRoute && onRoute({
-      target: this,
-      fromPage,
-      toPage
-    })
+    onRoute &&
+      onRoute({
+        target: this,
+        fromPage,
+        toPage
+      })
   }
 
   wait (duration) {
@@ -143,9 +148,10 @@ export default class Router extends PureComponent {
     return new Promise(resolve => this.setState(state, resolve))
   }
 
-  saveRef = routerNode => (this.routerNode = routerNode)
+  saveRef = routerNode => (this.routerNode = routerNode);
 
   animate ({ keyframes, options } = {}, toPage) {
+    // this one should be refactored
     const fromPage = toPathArray(location.pathname)[this.depth]
     if (
       keyframes &&

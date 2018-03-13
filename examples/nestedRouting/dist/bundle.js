@@ -1862,6 +1862,8 @@ function switchRoutersFromDepth(toPath, depth, status) {
   // path[baseDepth + depth] = children[0].props.page
   // could work
 
+  // add some extra status checks!!
+
   // add status checks
   return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
@@ -1896,11 +1898,11 @@ window.addEventListener('popstate', () => route({
 /* harmony export (immutable) */ __webpack_exports__["a"] = clear;
 /* harmony export (immutable) */ __webpack_exports__["b"] = defaults;
 function toPathArray(path) {
-  return path.split('/').filter(notEmpty);
+  return path.split("/").filter(notEmpty);
 }
 
 function toPathString(path) {
-  return '/' + path.filter(notEmpty).join('/');
+  return "/" + path.filter(notEmpty).join("/");
 }
 
 function toQuery(params) {
@@ -1908,21 +1910,21 @@ function toQuery(params) {
 
   for (let key in params) {
     let value = params[key];
-    if (value !== undefined && value !== '') {
+    if (value !== undefined && value !== "") {
       key = encodeURIComponent(key);
       value = encodeURIComponent(JSON.stringify(value));
       queryTokens.push(`${key}=${value}`);
     }
   }
-  return queryTokens.length ? '?' + queryTokens.join('&') : '';
+  return queryTokens.length ? "?" + queryTokens.join("&") : "";
 }
 
 function toParams(queryString) {
-  const queryTokens = queryString.slice(1).split('&').filter(notEmpty);
+  const queryTokens = queryString.slice(1).split("&").filter(notEmpty);
 
   const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split('=');
+    const keyValue = token.split("=");
     const key = decodeURIComponent(keyValue[0]);
     const value = JSON.parse(decodeURIComponent(keyValue[1]));
     params[key] = value;
@@ -1931,7 +1933,7 @@ function toParams(queryString) {
 }
 
 function notEmpty(token) {
-  return token !== '';
+  return token !== "";
 }
 
 function rethrow(fn) {
@@ -21806,6 +21808,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   }
 
   animate({ keyframes, options } = {}, toPage) {
+    // this one should be refactored
     const fromPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["e" /* toPathArray */])(location.pathname)[this.depth];
     if (keyframes && options && this.routerNode && fromPage && fromPage !== toPage) {
       const animation = this.routerNode.animate(keyframes, options);
@@ -23763,7 +23766,7 @@ class App extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
           null,
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             __WEBPACK_IMPORTED_MODULE_4_react_easy_stack__["b" /* Router */],
-            { defaultPage: 'profile' /* onRoute={this.onRoute} */ },
+            { defaultPage: 'profile', enterAnimation: enterAnimation, leaveAnimation: leaveAnimation /* onRoute={this.onRoute} */ },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'div',
               { page: 'profile' },
