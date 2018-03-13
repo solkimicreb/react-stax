@@ -1826,7 +1826,6 @@ function routeFromDepth(toPath = location.pathname, newParams = {}, options = {}
     initStatuses = [];
   }
   if (routingStatus) {
-    console.log('CANCEL!!');
     routingStatus.cancelled = true;
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
@@ -1852,19 +1851,7 @@ function switchRoutersFromDepth(toPath, depth, status) {
     return Promise.resolve();
   }
 
-  // check routersAtDepth defaultPage -> throw an error if they differ
-  // check basePath -> reduce -> add it to the url -> bump depth with basePath length
-  // do not bump the real depth, just the passed arg depth
-  // DO NOT! update the path in the router -> update it here to maintain control
-  // add a new baseDepth param -> increment that one too
-
   const children = routersAtDepth.map(router => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], toPath[depth]));
-  // path[baseDepth + depth] = children[0].props.page
-  // could work
-
-  // add some extra status checks!!
-
-  // add status checks
   return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
@@ -1898,11 +1885,11 @@ window.addEventListener('popstate', () => route({
 /* harmony export (immutable) */ __webpack_exports__["a"] = clear;
 /* harmony export (immutable) */ __webpack_exports__["b"] = defaults;
 function toPathArray(path) {
-  return path.split("/").filter(notEmpty);
+  return path.split('/').filter(notEmpty);
 }
 
 function toPathString(path) {
-  return "/" + path.filter(notEmpty).join("/");
+  return '/' + path.filter(notEmpty).join('/');
 }
 
 function toQuery(params) {
@@ -1910,21 +1897,21 @@ function toQuery(params) {
 
   for (let key in params) {
     let value = params[key];
-    if (value !== undefined && value !== "") {
+    if (value !== undefined && value !== '') {
       key = encodeURIComponent(key);
       value = encodeURIComponent(JSON.stringify(value));
       queryTokens.push(`${key}=${value}`);
     }
   }
-  return queryTokens.length ? "?" + queryTokens.join("&") : "";
+  return queryTokens.length ? '?' + queryTokens.join('&') : '';
 }
 
 function toParams(queryString) {
-  const queryTokens = queryString.slice(1).split("&").filter(notEmpty);
+  const queryTokens = queryString.slice(1).split('&').filter(notEmpty);
 
   const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split("=");
+    const keyValue = token.split('=');
     const key = decodeURIComponent(keyValue[0]);
     const value = JSON.parse(decodeURIComponent(keyValue[1]));
     params[key] = value;
@@ -1933,7 +1920,7 @@ function toParams(queryString) {
 }
 
 function notEmpty(token) {
-  return token !== "";
+  return token !== '';
 }
 
 function rethrow(fn) {
@@ -21724,7 +21711,7 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
 
   init(fromPage, toPage) {
     const toChild = this.selectChild(toPage);
-    const { resolve, timeout, page, defaultParams } = toChild.props;
+    const { page, defaultParams } = toChild.props;
 
     __WEBPACK_IMPORTED_MODULE_3_react_easy_params__["b" /* path */].splice(this.depth, Infinity, page);
     if (defaultParams) {
@@ -21762,13 +21749,14 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   // I shouldn't need fromPage here
   switch(nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props;
+    const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
     // leave, update
-    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, toPage))).then(status.check(() => this.replaceState(nextState)));
+    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
 
     // enter
-    switchPromise.then(status.check(() => this.animate(enterAnimation, toPage)));
+    switchPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
 
     return switchPromise;
   }
@@ -21807,10 +21795,8 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     return new Promise(resolve => this.setState(state, resolve));
   }
 
-  animate({ keyframes, options } = {}, toPage) {
-    // this one should be refactored
-    const fromPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["e" /* toPathArray */])(location.pathname)[this.depth];
-    if (keyframes && options && this.routerNode && fromPage && fromPage !== toPage) {
+  animate({ keyframes, options } = {}, fromPage, toPage) {
+    if (keyframes && options && fromPage && fromPage !== toPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
     }

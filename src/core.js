@@ -57,7 +57,6 @@ export function routeFromDepth (
     initStatuses = []
   }
   if (routingStatus) {
-    console.log('CANCEL!!')
     routingStatus.cancelled = true
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
@@ -86,21 +85,9 @@ function switchRoutersFromDepth (toPath, depth, status) {
     return Promise.resolve()
   }
 
-  // check routersAtDepth defaultPage -> throw an error if they differ
-  // check basePath -> reduce -> add it to the url -> bump depth with basePath length
-  // do not bump the real depth, just the passed arg depth
-  // DO NOT! update the path in the router -> update it here to maintain control
-  // add a new baseDepth param -> increment that one too
-
   const children = routersAtDepth.map(router =>
     router.init(path[depth], toPath[depth])
   )
-  // path[baseDepth + depth] = children[0].props.page
-  // could work
-
-  // add some extra status checks!!
-
-  // add status checks
   return Promise.all(
     routersAtDepth.map((router, i) => router.resolve(children[i], status))
   )

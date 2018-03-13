@@ -7,7 +7,7 @@ import React, {
 import PropTypes from 'prop-types'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 import { path, params } from 'react-easy-params'
-import { toPathArray, rethrow, defaults } from './urlUtils'
+import { defaults } from './urlUtils'
 
 const stateShell = {
   toPage: undefined,
@@ -52,7 +52,7 @@ export default class Router extends PureComponent {
 
   init (fromPage, toPage) {
     const toChild = this.selectChild(toPage)
-    const { resolve, timeout, page, defaultParams } = toChild.props
+    const { page, defaultParams } = toChild.props
 
     path.splice(this.depth, Infinity, page)
     if (defaultParams) {
@@ -98,16 +98,17 @@ export default class Router extends PureComponent {
   // I shouldn't need fromPage here
   switch (nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props
+    const { toPage: fromPage } = this.state
     const { toPage } = nextState
 
     // leave, update
     const switchPromise = Promise.resolve()
-      .then(status.check(() => this.animate(leaveAnimation, toPage)))
+      .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
       .then(status.check(() => this.replaceState(nextState)))
 
     // enter
     switchPromise.then(
-      status.check(() => this.animate(enterAnimation, toPage))
+      status.check(() => this.animate(enterAnimation, fromPage, toPage))
     )
 
     return switchPromise
@@ -150,16 +151,8 @@ export default class Router extends PureComponent {
 
   saveRef = routerNode => (this.routerNode = routerNode);
 
-  animate ({ keyframes, options } = {}, toPage) {
-    // this one should be refactored
-    const fromPage = toPathArray(location.pathname)[this.depth]
-    if (
-      keyframes &&
-      options &&
-      this.routerNode &&
-      fromPage &&
-      fromPage !== toPage
-    ) {
+  animate ({ keyframes, options } = {}, fromPage, toPage) {
+    if (keyframes && options && fromPage && fromPage !== toPage) {
       const animation = this.routerNode.animate(keyframes, options)
       return new Promise(resolve => (animation.onfinish = resolve))
     }
