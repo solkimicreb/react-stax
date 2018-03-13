@@ -24,16 +24,12 @@ export function registerRouter (router, depth) {
   routersAtDepth.add(router)
   // route the router if we are not routing currently
   if (!routingStatus) {
-    // TODO improve this
-    if (router.routingStatus) {
-      router.routingStatus.cancelled = true
-    }
-    // I could make this into the global routing status, but it would kell parallel inting
-    const status = router.routingStatus = new RoutingStatus()
+    // issue -> if there are multiple, I should cancel all
+    const status = routingStatus = new RoutingStatus()
     Promise.resolve()
       .then(() => router.init(path[depth], path[depth]))
       .then(toChild => router.resolve(toChild, status))
-      .then(nextState => router.switch(nextState, path[depth], status))
+      .then(nextState => router.switch(nextState, status))
   }
 }
 
@@ -99,7 +95,7 @@ function switchRoutersFromDepth (toPath, depth, status) {
     routersAtDepth.map((router, i) => router.resolve(children[i], status))
   )
     .then(states => Promise.all(
-      routersAtDepth.map((router, i) => router.switch(states[i], path[depth], status))
+      routersAtDepth.map((router, i) => router.switch(states[i], status))
     ))
     .then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }

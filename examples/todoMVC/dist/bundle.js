@@ -1688,13 +1688,9 @@ function registerRouter(router, depth) {
   routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    // TODO improve this
-    if (router.routingStatus) {
-      router.routingStatus.cancelled = true;
-    }
-    // I could make this into the global routing status, but it would kell parallel inting
-    const status = router.routingStatus = new RoutingStatus();
-    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], status));
+    // issue -> if there are multiple, I should cancel all
+    const status = routingStatus = new RoutingStatus();
+    Promise.resolve().then(() => router.init(__WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth])).then(toChild => router.resolve(toChild, status)).then(nextState => router.switch(nextState, status));
   }
 }
 
@@ -1748,7 +1744,7 @@ function switchRoutersFromDepth(toPath, depth, status) {
   // could work
 
   // add status checks
-  return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], __WEBPACK_IMPORTED_MODULE_0_react_easy_params__["b" /* path */][depth], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
+  return Promise.all(routersAtDepth.map((router, i) => router.resolve(children[i], status))).then(states => Promise.all(routersAtDepth.map((router, i) => router.switch(states[i], status)))).then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)));
 }
 
 function onRoutingEnd(options) {
@@ -20374,15 +20370,16 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     return nextState;
   }
 
-  switch(nextState, fromPage, status) {
+  // I shouldn't need fromPage here
+  switch(nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props;
     const { toPage } = nextState;
 
     // leave, update
-    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, fromPage, toPage))).then(status.check(() => this.replaceState(nextState)));
+    const switchPromise = Promise.resolve().then(status.check(() => this.animate(leaveAnimation, toPage))).then(status.check(() => this.replaceState(nextState)));
 
     // enter
-    switchPromise.then(status.check(() => this.animate(enterAnimation, fromPage, toPage)));
+    switchPromise.then(status.check(() => this.animate(enterAnimation, toPage)));
 
     return switchPromise;
   }
@@ -20421,9 +20418,9 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
     return new Promise(resolve => this.setState(state, resolve));
   }
 
-  animate({ keyframes, options } = {}, fromPage, toPage) {
-    const currentPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["e" /* toPathArray */])(location.pathname)[this.depth];
-    if (keyframes && options && this.routerNode && fromPage && toPage !== fromPage && toPage !== currentPage) {
+  animate({ keyframes, options } = {}, toPage) {
+    const fromPage = Object(__WEBPACK_IMPORTED_MODULE_4__urlUtils__["e" /* toPathArray */])(location.pathname)[this.depth];
+    if (keyframes && options && this.routerNode && fromPage && fromPage !== toPage) {
       const animation = this.routerNode.animate(keyframes, options);
       return new Promise(resolve => animation.onfinish = resolve);
     }

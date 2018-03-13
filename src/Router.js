@@ -91,18 +91,19 @@ export default class Router extends PureComponent {
     return nextState
   }
 
-  switch (nextState, fromPage, status) {
+  // I shouldn't need fromPage here
+  switch (nextState, status) {
     const { enterAnimation, leaveAnimation } = this.props
     const { toPage } = nextState
 
     // leave, update
     const switchPromise = Promise.resolve()
-      .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
+      .then(status.check(() => this.animate(leaveAnimation, toPage)))
       .then(status.check(() => this.replaceState(nextState)))
 
     // enter
     switchPromise.then(
-      status.check(() => this.animate(enterAnimation, fromPage, toPage))
+      status.check(() => this.animate(enterAnimation, toPage))
     )
 
     return switchPromise
@@ -144,15 +145,14 @@ export default class Router extends PureComponent {
 
   saveRef = routerNode => (this.routerNode = routerNode)
 
-  animate ({ keyframes, options } = {}, fromPage, toPage) {
-    const currentPage = toPathArray(location.pathname)[this.depth]
+  animate ({ keyframes, options } = {}, toPage) {
+    const fromPage = toPathArray(location.pathname)[this.depth]
     if (
       keyframes &&
       options &&
       this.routerNode &&
       fromPage &&
-      toPage !== fromPage &&
-      toPage !== currentPage
+      fromPage !== toPage
     ) {
       const animation = this.routerNode.animate(keyframes, options)
       return new Promise(resolve => (animation.onfinish = resolve))
