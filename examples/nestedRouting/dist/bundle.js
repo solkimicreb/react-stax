@@ -21779,10 +21779,11 @@ class Router extends __WEBPACK_IMPORTED_MODULE_0_react__["PureComponent"] {
   }
 
   animate({ keyframes, options } = {}, fromPage, toPage) {
-    // experimental!! -> this doesn't play well with global store resolves
     const { animate } = this.props;
+    const canAnimate = keyframes && options && fromPage;
+    const shouldAnimate = animate !== false && (animate || fromPage !== toPage);
 
-    if (keyframes && options && fromPage && (animate || fromPage !== toPage)) {
+    if (canAnimate && shouldAnimate) {
       if (typeof options !== 'object') {
         options = { duration: options };
       }
