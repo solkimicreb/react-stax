@@ -1,6 +1,5 @@
 {
   "name": "beer-finder",
-  "homepage": "https://solkimicreb.github.io/react-easy-params/examples/beer-finder/build/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,6 +17,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "now-start": "serve build --single",
+    "deploy": "now && now alias"
+  },
+  "devDependencies": {
+    "serve": "^6.5.3"
+  },
+  "now": {
+    "alias": [
+      "easy-beer-finder"
+    ]
   }
 }

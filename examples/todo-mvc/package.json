@@ -17,7 +17,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "now-start": "serve build --single"
+    "now-start": "serve build --single",
+    "deploy": "now && now alias"
   },
   "now": {
     "alias": [
