@@ -10,7 +10,10 @@
     "react-scripts": "1.1.1"
   },
   "devDependencies": {
-    "serve": "^6.5.3"
+    "serve": "^6.5.3",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,6 +22,10 @@
     "eject": "react-scripts eject",
     "now-start": "serve build --single",
     "deploy": "now && now alias"
+  },
+  "jest": {
+    "testURL": "http://react-easy-stack.com",
+    "setupFiles": ["<rootDir>/src/setupTests.js"]
   },
   "now": {
     "alias": [

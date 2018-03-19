@@ -1,11 +1,8 @@
 import { store, storage, params } from 'react-easy-stack'
 import * as stack from 'react-easy-stack'
-import { observable as sstore } from '@nx-js/observer-util'
 
 params.filter = params.filter || 'all'
 storage.todos = storage.todos || []
-
-console.log('stack', stack, sstore)
 
 // a complex global store with a lot of derived data (getters and setters)
 // use 'todos' instead of 'this' in the store methods to make them passable as callbacks
@@ -49,7 +46,7 @@ const todos = store({
     todos.allCompleted = !todos.allCompleted
   },
   clearCompleted () {
-    storage.todos = todos.active
+    storage.todos = storage.todos.filter(todo => !todo.completed)
   }
 })
 

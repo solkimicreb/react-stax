@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import toJSON from 'enzyme-to-json'
-import App from '../examples/todoMVC/App'
+import App from '../App'
 
 describe('TodoMVC App', () => {
   const app = mount(<App />)

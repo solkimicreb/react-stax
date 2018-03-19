@@ -26,18 +26,16 @@
     "build-toc": "node ./scripts/buildToc.js"
   },
   "jest": {
+    "projects": ["<rootDir>/examples/*"],
+    "testURL": "http://react-easy-stack.com",
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
     "collectCoverageFrom": [
       "**/src/**",
       "**/examples/**/*.{js,jsx}",
-      "!**/examples/**/build/**",
-      "!**/examples/**/index.js",
-      "!**/examples/stop-watch/**",
-      "!**/examples/**/beer-finder/**"
-    ],
-    "setupTestFrameworkScriptFile": "./scripts/testSetup.js"
+      "!**/examples/**/build/**"
+    ]
   },
   "author": {
     "name": "Miklos Bertalan",
@@ -85,6 +83,8 @@
     "moment": "2.20.1",
     "pre-push": "0.1.1",
     "prettier": "^1.6.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "rollup": "^0.56.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.2",
