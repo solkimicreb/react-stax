@@ -1,12 +1,11 @@
 import { AsyncStorage, BackHandler, Text, View } from 'react-native'
 import { Queue, priorities } from '@nx-js/queue-util'
+import isNode, * as node from './node'
 
-// export node stuff if we are in node!
-
-export const scheduler = new Queue(priorities.LOW)
+export const scheduler = isNode ? node.scheduler : new Queue(priorities.LOW)
 
 // TODO -> this is async, which messes up the purpose -> I have to turn all of them into async
-export const localStorage = AsyncStorage
+export const localStorage = isNode ? node.localStorage : AsyncStorage
 
 function updateUrl (url = '') {
   let tokens = url.split('?')
@@ -17,29 +16,38 @@ function updateUrl (url = '') {
 }
 
 const historyItems = []
-export const history = {
-  replaceState (state, title, url) {
-    historyItems.pop()
-    historyItems.push(url)
-    updateUrl(url)
-  },
-  pushState (url) {
-    historyItems.push(url)
-    updateUrl(url)
+export const history = isNode
+  ? node.history
+  : {
+    replaceState (state, title, url) {
+      historyItems.pop()
+      historyItems.push(url)
+      updateUrl(url)
+    },
+    pushState (url) {
+      historyItems.push(url)
+      updateUrl(url)
+    }
   }
-}
 
-export const location = {
-  pathname: '',
-  search: '',
-  hash: ''
-}
+export const location = isNode
+  ? node.location
+  : {
+    pathname: '',
+    search: '',
+    hash: ''
+  }
 
-export const historyHandler = handler => {
-  const url = historyItems.pop()
-  updateUrl(url)
-  BackHandler.addEventListener('hardwareBackPress', handler)
-}
+export const historyHandler = isNode
+  ? node.historyHandler
+  : handler => {
+    const url = historyItems.pop()
+    updateUrl(url)
+    BackHandler.addEventListener('hardwareBackPress', handler)
+  }
+
+export const anchor = Text
+export const div = View
 
 export function normalizeProps (props) {
   delete props.className
@@ -50,6 +58,3 @@ export function normalizeProps (props) {
   }
   return props
 }
-
-export const anchor = Text
-export const div = View

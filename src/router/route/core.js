@@ -1,12 +1,6 @@
 import { path, params } from '../integrations'
 import { scheduler, location, history, historyHandler } from 'env'
-import {
-  toPathArray,
-  toPathString,
-  toParams,
-  rethrow,
-  clear
-} from '../utils'
+import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils'
 
 const routers = []
 let routingStatus

@@ -23,6 +23,11 @@
     "now-start": "serve build --single",
     "deploy": "now && now alias"
   },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  },
   "now": {
     "alias": [
       "easy-todo-mvc"

@@ -1,14 +1,21 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { view, store, params, storage, Router, Link } from 'react-native-easy-stack'
+import React from 'react'
+import { StyleSheet, Text, View, Button } from 'react-native'
+import {
+  view,
+  store,
+  params,
+  storage,
+  Router,
+  Link
+} from 'react-native-easy-stack'
 
 storage.counter = storage.counter || 0
 
 class App extends React.Component {
-  increment = () => storage.counter++
-  decrement = () => storage.counter--
+  increment = () => storage.counter++;
+  decrement = () => storage.counter--;
 
-  render() {
+  render () {
     return (
       <View style={styles.container}>
         <Link to='profile'>Profile</Link>
@@ -21,7 +28,7 @@ class App extends React.Component {
         <Button onPress={this.increment} title='Increment' />
         <Button onPress={this.decrement} title='Decrement' />
       </View>
-    );
+    )
   }
 }
 
@@ -30,8 +37,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    justifyContent: 'center'
+  }
+})
 
 export default view(App)

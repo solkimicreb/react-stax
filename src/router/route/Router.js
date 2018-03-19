@@ -174,6 +174,10 @@ export default class Router extends PureComponent {
       }
     }
 
-    return React.createElement(div, normalizeProps({ className, style, ref: this.saveRef }), [ toChild ])
+    return React.createElement(
+      div,
+      normalizeProps({ className, style, ref: this.saveRef }),
+      [toChild]
+    )
   }
 }

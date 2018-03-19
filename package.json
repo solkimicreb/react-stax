@@ -29,7 +29,6 @@
     "projects": [
       "<rootDir>/examples/*"
     ],
-    "testURL": "http://react-easy-stack.com",
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

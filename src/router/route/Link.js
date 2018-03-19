@@ -110,10 +110,22 @@ export default class Link extends PureComponent {
     }
     const href = to + toQuery(params)
 
-    const link = React.createElement(anchor, normalizeProps({ onClick, href }), children)
+    const link = React.createElement(
+      anchor,
+      normalizeProps({ onClick, href }),
+      children
+    )
     if (element === anchor) {
-      return React.cloneElement(link, normalizeProps({ className, style }), children)
+      return React.cloneElement(
+        link,
+        normalizeProps({ className, style }),
+        children
+      )
     }
-    return React.createElement(element, normalizeProps({ className, style }), link)
+    return React.createElement(
+      element,
+      normalizeProps({ className, style }),
+      link
+    )
   }
 }
