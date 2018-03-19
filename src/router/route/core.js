@@ -1,11 +1,11 @@
 import { path, params } from '../integrations'
+import { scheduler, location, history, historyHandler } from 'env'
 import {
   toPathArray,
   toPathString,
   toParams,
   rethrow,
-  clear,
-  scheduler
+  clear
 } from '../utils'
 
 const routers = []
@@ -113,7 +113,7 @@ function onRoutingEnd (options) {
   scheduler.start()
 }
 
-window.addEventListener('popstate', () =>
+historyHandler(() =>
   route({
     to: location.pathname,
     params: toParams(location.search),

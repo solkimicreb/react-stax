@@ -1,14 +1,16 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
-import { toPathArray, toQuery, scheduler } from '../utils'
+import { scheduler, anchor, normalizeProps } from 'env'
+import { toPathArray, toQuery } from '../utils'
 import { params, path } from '../integrations'
 import { routeFromDepth } from './core'
 
 export default class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
-    element: PropTypes.string,
+    // TODO refine this later (string or element)
+    element: PropTypes.any,
     params: PropTypes.object,
     options: PropTypes.object,
     className: PropTypes.string,
@@ -23,7 +25,7 @@ export default class Link extends PureComponent {
   };
 
   static defaultProps = {
-    element: 'a',
+    element: anchor,
     activeClass: '',
     className: '',
     style: {}
@@ -76,9 +78,11 @@ export default class Link extends PureComponent {
 
   onClick = ev => {
     ev.preventDefault()
-    const { onClick, params, options, to } = this.props
+    const { onClick, onPress, params, options, to } = this.props
     if (onClick) {
       onClick(ev)
+    } else if (onPress) {
+      onPress(ev)
     }
 
     routeFromDepth(to, params, options, this.linkDepth)
@@ -106,10 +110,10 @@ export default class Link extends PureComponent {
     }
     const href = to + toQuery(params)
 
-    const anchor = React.createElement('a', { onClick, href }, children)
-    if (element === 'a') {
-      return React.cloneElement(anchor, { className, style }, children)
+    const link = React.createElement(anchor, normalizeProps({ onClick, href }), children)
+    if (element === anchor) {
+      return React.cloneElement(link, normalizeProps({ className, style }), children)
     }
-    return React.createElement(element, { className, style }, anchor)
+    return React.createElement(element, normalizeProps({ className, style }), link)
   }
 }

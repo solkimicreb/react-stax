@@ -1,0 +1,31 @@
+dependencies: \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTRootContentView.m \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTRootContentView.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTRootView.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTView.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTBorderStyle.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTComponent.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTPointerEvents.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTPerformanceLogger.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTRootViewInternal.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTTouchHandler.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Modules/RCTUIManager.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTViewManager.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTConvert.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTAnimationType.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTLog.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/RCTTextDecorationLineType.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/Yoga.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/miklosbertalan/react-easy-stack/examples/native-dummy/node_modules/react-native/React/Views/UIView+React.h

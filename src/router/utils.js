@@ -1,7 +1,3 @@
-import { Queue, priorities } from '@nx-js/queue-util'
-
-export const scheduler = new Queue(priorities.LOW)
-
 export function toPathArray (path) {
   return path.split('/').filter(notEmpty)
 }

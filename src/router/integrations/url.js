@@ -1,6 +1,6 @@
 import { observable, observe } from '@nx-js/observer-util'
+import { scheduler, location, history } from 'env'
 import {
-  scheduler,
   toQuery,
   toParams,
   toPathArray,

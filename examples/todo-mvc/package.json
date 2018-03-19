@@ -23,10 +23,6 @@
     "now-start": "serve build --single",
     "deploy": "now && now alias"
   },
-  "jest": {
-    "testURL": "http://react-easy-stack.com",
-    "setupFiles": ["<rootDir>/src/setupTests.js"]
-  },
   "now": {
     "alias": [
       "easy-todo-mvc"

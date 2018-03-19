@@ -4,9 +4,12 @@ const del = require('del')
 const babel = require('babel-core')
 const buble = require('buble')
 const rollup = require('rollup')
+const aliasPlugin = require('rollup-plugin-alias')
 const resolvePlugin = require('rollup-plugin-node-resolve')
 const babelPlugin = require('rollup-plugin-babel')
 const externalsPlugin = require('rollup-plugin-auto-external')
+
+const env = process.env.BUILD_ENV || 'browser'
 
 const bundles = [
   {
@@ -15,6 +18,9 @@ const bundles = [
       plugins: [
         babelPlugin({ exclude: 'node_modules/**' }),
         resolvePlugin(),
+        aliasPlugin({
+          env: path.resolve('src/env', `${env}.js`)
+        }),
         externalsPlugin({ dependencies: true, peerDependecies: true })
       ]
     },
@@ -28,6 +34,9 @@ const bundles = [
       plugins: [
         babelPlugin({ exclude: 'node_modules/**' }),
         resolvePlugin(),
+        aliasPlugin({
+          env: path.resolve('src/env', `${env}.js`)
+        }),
         externalsPlugin({ dependencies: true, peerDependecies: true })
       ]
     },
@@ -41,6 +50,9 @@ const bundles = [
       plugins: [
         babelPlugin({ exclude: 'node_modules/**' }),
         resolvePlugin(),
+        aliasPlugin({
+          env: path.resolve('src/env', `${env}.js`)
+        }),
         externalsPlugin({ dependencies: false, peerDependecies: true })
       ]
     },
@@ -93,3 +105,4 @@ async function build () {
 }
 
 build()
+

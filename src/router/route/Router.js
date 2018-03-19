@@ -1,5 +1,6 @@
 import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
+import { div, normalizeProps } from 'env'
 import { path, params } from '../integrations'
 import { defaults, rethrow } from '../utils'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
@@ -173,10 +174,6 @@ export default class Router extends PureComponent {
       }
     }
 
-    return (
-      <div className={className} style={style} ref={this.saveRef}>
-        {toChild}
-      </div>
-    )
+    return React.createElement(div, normalizeProps({ className, style, ref: this.saveRef }), [ toChild ])
   }
 }
