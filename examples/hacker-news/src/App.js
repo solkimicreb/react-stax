@@ -47,7 +47,7 @@ function App () {
       <Router
         className='router'
         defaultPage='stories'
-        animate
+        animate={true}
         enterAnimation={enterAnimation}
         leaveAnimation={leaveAnimation}
       >

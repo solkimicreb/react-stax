@@ -279,7 +279,7 @@ label[for='toggle-all'] {
 	left: 0;
 }
 
-.filters button {
+.filters a {
 	color: inherit;
 	margin: 3px;
 	padding: 3px 7px;
@@ -288,11 +288,11 @@ label[for='toggle-all'] {
 	border-radius: 3px;
 }
 
-.filters button:hover {
+.filters a:hover {
 	border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters button.selected {
+.filters a.selected {
 	border-color: rgba(175, 47, 47, 0.2);
 }
 

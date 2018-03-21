@@ -16,7 +16,6 @@ STORY_TYPES.forEach(type => {
   })
 })
 
-//
 api.child('updates').on('value', snapshot => {
   const { items = [], profiles = [] } = snapshot.val()
   items.forEach(id => cache.delete(`item/${id}`))
@@ -58,11 +57,7 @@ export function fetchStoriesByType (type, startPage, endPage) {
 
 export async function fetchStories (ids = []) {
   const stories = await Promise.all(ids.map(fetchStory))
-  return stories.filter(notNull)
-}
-
-function notNull (story) {
-  return story !== null
+  return stories.filter(story => story !== null)
 }
 
 export function fetchStory (id) {

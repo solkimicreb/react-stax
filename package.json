@@ -1,18 +1,18 @@
 {
-  "name": "react-native-easy-stack",
+  "name": "react-easy-stack",
   "version": "0.1.0-alpha.5",
   "description": "React state management with a minimal API. Made with ES6 Proxies.",
-  "main": "dist/cjs.es5.js",
-  "module": "dist/es.es5.js",
+  "main": "dist/cjs.es6.js",
+  "module": "dist/es.es6.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",
     "types"
   ],
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest",
+    "test-coverage": "jest --coverage",
     "test-watch": "jest --watch",
-    "test-update": "jest --updateSnapshot",
     "test-builds": "node ./scripts/testBuilds.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "lint": "standard",
@@ -20,23 +20,10 @@
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
     "deploy-examples": "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
-    "link-examples": "npm link && COMMAND='npm link react-easy-state' node ./scripts/runOnExamples.js",
+    "link-examples": "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
     "unlink-examples": "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
     "build": "node ./scripts/build.js",
     "build-toc": "node ./scripts/buildToc.js"
-  },
-  "jest": {
-    "projects": [
-      "<rootDir>/examples/*"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "collectCoverageFrom": [
-      "**/src/**",
-      "**/examples/**/*.{js,jsx}",
-      "!**/examples/**/build/**"
-    ]
   },
   "author": {
     "name": "Miklos Bertalan",
@@ -63,7 +50,8 @@
     "react": "*"
   },
   "optionalDependencies": {
-    "react-native": "*"
+    "react-native": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
     "@types/react": "^16.0.35",
@@ -79,26 +67,21 @@
     "buble": "^0.19.3",
     "coveralls": "^3.0.0",
     "del": "^3.0.0",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.1",
     "jest": "^22.3.0",
     "markdown-toc": "^1.1.0",
-    "moment": "2.20.1",
     "pre-push": "0.1.1",
     "prettier": "^1.6.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
     "rollup": "^0.56.0",
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "sinon": "^4.3.0",
     "standard": "^10.0.3"
   },
   "engines": {
     "node": ">=6.0.0"
+  },
+  "jest": {
   },
   "standard": {
     "parser": "babel-eslint",
@@ -112,6 +95,6 @@
   },
   "pre-push": [
     "lint",
-    "test"
+    "test-coverage"
   ]
 }

@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family=Space+Mono');
+
+* {
+  font: 50px 'Space Mono', monospace;
+  text-align: center;
+  color: #2c3e50;
+}
+
+div {
+  line-height: 1;
+}
+
+small {
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+body {
+  margin: 100px auto;
+}
+
+button {
+  font-size: 16px;
+  margin: 0 10px;
+  width: 90px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  border: solid 2px;
+  border-radius: 3px;
+}
+
+button:active, button:hover {
+  background-color: lightgrey;
+}

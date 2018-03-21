@@ -1,20 +1,23 @@
 import { store, storage, params } from 'react-easy-stack'
-import * as stack from 'react-easy-stack'
+import { defaults } from 'lodash'
 
-params.filter = params.filter || 'all'
-storage.todos = storage.todos || []
+defaults(params, { filter: 'all' })
+defaults(storage, { todos: [] })
 
 // a complex global store with a lot of derived data (getters and setters)
 // use 'todos' instead of 'this' in the store methods to make them passable as callbacks
-const todos = store({
+const todosStore = store({
+  get active () {
+    return storage.todos.filter(todo => !todo.completed)
+  },
+  get completed () {
+    return storage.todos.filter(todo => todo.completed)
+  },
   get todos () {
     switch (params.filter) {
-      case 'completed':
-        return storage.todos.filter(todo => todo.completed)
-      case 'active':
-        return storage.todos.filter(todo => !todo.completed)
-      default:
-        return storage.todos
+      case 'completed': return todosStore.completed
+      case 'active': return todosStore.active
+      default: return storage.todos
     }
   },
   get isEmpty () {
@@ -30,7 +33,10 @@ const todos = store({
     storage.todos.forEach(todo => (todo.completed = completed))
   },
   get activeCount () {
-    return storage.todos.filter(todo => !todo.completed).length
+    return todosStore.active.length
+  },
+  clearCompleted () {
+    storage.todos = todosStore.active
   },
   create (title) {
     storage.todos.push({ title })
@@ -43,11 +49,8 @@ const todos = store({
     todo.completed = !todo.completed
   },
   toggleAll () {
-    todos.allCompleted = !todos.allCompleted
-  },
-  clearCompleted () {
-    storage.todos = storage.todos.filter(todo => !todo.completed)
+    todosStore.allCompleted = !todosStore.allCompleted
   }
 })
 
-export default todos
+export default todosStore
