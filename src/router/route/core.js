@@ -80,17 +80,15 @@ function switchRoutersFromDepth (toPath, depth, status) {
     return Promise.resolve()
   }
 
-  const children = routersAtDepth.map(router =>
-    router.init(path[depth], toPath[depth])
-  )
   return Promise.all(
-    routersAtDepth.map((router, i) => router.resolve(children[i], status))
+    routersAtDepth.map(router => router.init(path[depth], toPath[depth]))
   )
-    .then(states =>
-      Promise.all(
-        routersAtDepth.map((router, i) => router.switch(states[i], status))
-      )
-    )
+    .then(children => Promise.all(
+      routersAtDepth.map((router, i) => router.resolve(children[i], status))
+    ))
+    .then(states =>Promise.all(
+      routersAtDepth.map((router, i) => router.switch(states[i], status))
+    ))
     .then(status.check(() => switchRoutersFromDepth(toPath, ++depth, status)))
 }
 

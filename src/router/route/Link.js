@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
-import { scheduler, anchor, normalizeProps } from 'env'
+import { scheduler, location, anchor, normalizeProps } from 'env'
 import { toPathArray, toQuery } from '../utils'
 import { params, path } from '../integrations'
 import { routeFromDepth } from './core'
@@ -108,7 +108,9 @@ export default class Link extends PureComponent {
     if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle)
     }
-    const href = to + toQuery(params)
+    // TODO: this has an issue -> it should be always the whole new path!
+    // calculate it from depth, to, location.pathname
+    const href = (to || location.pathname) + toQuery(params)
 
     const link = React.createElement(
       anchor,

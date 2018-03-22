@@ -42,15 +42,22 @@ export default class Router extends PureComponent {
 
   init (fromPage, toPage) {
     const toChild = this.selectChild(toPage)
-    const { page, defaultParams } = toChild.props
+    const { onRoute } = this.props
+    const { defaultParams } = toChild.props
+    toPage = toChild.props.page
 
-    path.splice(this.depth, Infinity, page)
+    path.splice(this.depth, Infinity, toPage)
     if (defaultParams) {
       defaults(params, defaultParams)
     }
-    this.onRoute(fromPage, page)
 
-    return toChild
+    if (!onRoute) {
+      return Promise.resolve(toChild)
+    }
+
+    return Promise.resolve()
+      .then(() => onRoute({ target: this, fromPage, toPage }))
+      .then(() => toChild)
   }
 
   resolve (toChild, status) {
@@ -72,9 +79,11 @@ export default class Router extends PureComponent {
             Object.assign(nextState, { resolvedData, pageResolved: true }),
           rethrow(() => Object.assign(nextState, { pageResolved: false }))
         )
+
+      // TODO: check this to always work as expected!
       resolveThread.then(
         status.check(() => timedout && this.updateState(nextState)),
-        rethrow(status.check(() => timedout && this.updateState(nextState)))
+        rethrow(status.check(() => this.updateState(nextState)))
       )
       resolveThreads.push(resolveThread)
 
@@ -120,17 +129,6 @@ export default class Router extends PureComponent {
       }
     })
     return toChild || defaultChild
-  }
-
-  onRoute (fromPage, toPage) {
-    const { onRoute } = this.props
-
-    onRoute &&
-      onRoute({
-        target: this,
-        fromPage,
-        toPage
-      })
   }
 
   updateState (nextState) {
