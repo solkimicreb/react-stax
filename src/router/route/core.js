@@ -1,5 +1,5 @@
 import { path, params } from '../integrations'
-import { scheduler, location, history, historyHandler } from 'env'
+import { compScheduler, integrationScheduler, location, history, historyHandler } from 'env'
 import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils'
 
 const routers = []
@@ -55,10 +55,11 @@ export function routeFromDepth (
     routingStatus.cancelled = true
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
-    scheduler.process()
+    integrationScheduler.process()
   }
   const status = (routingStatus = new RoutingStatus())
-  scheduler.stop()
+  compScheduler.stop()
+  integrationScheduler.stop()
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
@@ -80,6 +81,7 @@ function switchRoutersFromDepth (toPath, depth, status) {
     return Promise.resolve()
   }
 
+  // maybe add status checks here for cancellation
   return Promise.all(
     routersAtDepth.map(router => router.init(path[depth], toPath[depth]))
   )
@@ -101,8 +103,10 @@ function onRoutingEnd (options) {
     history.pushState(history.state, '')
   }
 
-  scheduler.process()
-  scheduler.start()
+  integrationScheduler.process()
+  integrationScheduler.start()
+  compScheduler.process()
+  compScheduler.start()
 }
 
 historyHandler(() =>

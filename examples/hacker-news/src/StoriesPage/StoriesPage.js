@@ -5,8 +5,7 @@ import StoryItem from '../StoryItem'
 import store from './store'
 
 function StoriesPage (props) {
-  let { fetchPage, hasMore, stories } = store
-  stories = props.stories || stories
+  const { fetchPage, hasMore, stories } = store
   return (
     <InfiniteScroll
       loadMore={fetchPage}

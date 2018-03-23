@@ -1,0 +1,32 @@
+{
+  "name": "generic-concrete-salad",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "lodash": "^4.17.5",
+    "material-ui": "^1.0.0-beta.4",
+    "material-ui-icons": "^1.0.0-beta.35",
+    "material-ui-search-bar": "^1.0.0-beta.4",
+    "now-purge": "0.0.15",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-easy-stack": "^0.1.0-alpha.7",
+    "react-scripts": "1.1.1",
+    "typeface-roboto": "^0.0.54"
+  },
+  "devDependencies": {
+    "serve": "^6.5.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "now-start": "serve build --single",
+    "deploy": "now && now alias"
+  },
+  "now": {
+    "alias": "easy-product-list"
+  }
+}

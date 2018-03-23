@@ -12,11 +12,6 @@ const storiesStore = store({
       storiesStore.pages
     )
   },
-  async initStories () {
-    return {
-      stories: await fetchStoriesByType(params.type, 0, storiesStore.pages)
-    }
-  },
   async fetchPage (page) {
     const stories = await fetchStoriesByType(params.type, page)
     if (!stories.length) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { view, Link, Router } from 'react-easy-stack'
 import classNames from 'classnames'
-import { StoriesPage, initStories } from './StoriesPage'
+import { StoriesPage, resolveStories } from './StoriesPage'
 import { StoryPage, resolveStory } from './StoryPage'
 import { UserPage, resolveUser } from './UserPage'
 import appStore from './appStore'
@@ -53,7 +53,7 @@ function App () {
       >
         <StoriesPage
           page='stories'
-          resolve={initStories}
+          resolve={resolveStories}
           defaultParams={{ type: 'top' }}
         />
         <StoryPage page='story' resolve={resolveStory} />

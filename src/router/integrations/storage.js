@@ -1,5 +1,5 @@
 import { observable, observe } from '@nx-js/observer-util'
-import { scheduler, localStorage } from 'env'
+import { integrationScheduler as scheduler, localStorage } from 'env'
 
 export let storage
 const STORAGE_NAME = 'REACT_EASY_STORAGE'

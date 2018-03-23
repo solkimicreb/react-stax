@@ -2,8 +2,8 @@ import { Queue, priorities } from '@nx-js/queue-util'
 
 export default typeof global === 'object' && typeof global.process === 'object'
 
-// replace this with a sync scheduler later!! (implement it)
-export const scheduler = new Queue(priorities.LOW)
+export const compScheduler = new Queue(priorities.SYNC)
+export const integrationScheduler = new Queue(priorities.SYNC)
 
 const noop = () => null
 

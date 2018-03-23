@@ -2,7 +2,8 @@ import { AsyncStorage, BackHandler, Text, View } from 'react-native'
 import { Queue, priorities } from '@nx-js/queue-util'
 import isNode, * as node from './node'
 
-export const scheduler = isNode ? node.scheduler : new Queue(priorities.LOW)
+export const compScheduler = isNode ? node.compScheduler : new Queue(priorities.SYNC)
+export const integrationScheduler = isNode ? node.integrationScheduler : new Queue(priorities.LOW)
 
 // TODO -> this is async, which messes up the purpose -> I have to turn all of them into async
 export const localStorage = isNode ? node.localStorage : AsyncStorage
