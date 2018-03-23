@@ -47,6 +47,13 @@ export function rethrow (fn) {
   }
 }
 
+export function log (fn) {
+  return error => {
+    console.error(error)
+    fn()
+  }
+}
+
 export function clear (obj) {
   for (let key of Object.keys(obj)) {
     delete obj[key]

@@ -8,13 +8,13 @@ import appStore from './appStore'
 import { STORY_TYPES } from './config'
 
 const enterAnimation = {
-  keyframes: { opacity: [0, 1], transform: ['translateX(-15px)', 'none'] },
-  options: 500
+  keyframes: { opacity: [0, 1], transform: ['translateY(-15px)', 'none'] },
+  options: 150
 }
 
 const leaveAnimation = {
-  keyframes: { opacity: [1, 0], transform: ['none', 'translateX(15px)'] },
-  options: 500
+  keyframes: { opacity: [1, 0], transform: ['none', 'translateY(15px)'] },
+  options: 150
 }
 
 function App () {

@@ -2,7 +2,7 @@ import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
 import { div, normalizeProps } from 'env'
 import { path, params } from '../integrations'
-import { defaults, rethrow } from '../utils'
+import { defaults, log } from '../utils'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
 
 export default class Router extends PureComponent {
@@ -77,13 +77,12 @@ export default class Router extends PureComponent {
         .then(
           resolvedData =>
             Object.assign(nextState, { resolvedData, pageResolved: true }),
-          rethrow(() => Object.assign(nextState, { pageResolved: false }))
+          log(() => Object.assign(nextState, { pageResolved: false }))
         )
 
       // TODO: check this to always work as expected!
       resolveThread.then(
-        status.check(() => timedout && this.updateState(nextState)),
-        rethrow(status.check(() => this.updateState(nextState)))
+        status.check(() => timedout && this.updateState(nextState))
       )
       resolveThreads.push(resolveThread)
 
@@ -156,6 +155,7 @@ export default class Router extends PureComponent {
     const { className, style } = this.props
     const { toPage, resolvedData, pageResolved } = this.state
 
+    // if the pages changed I need create a new comp!!
     let toChild
     if (!toPage) {
       toChild = null

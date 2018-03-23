@@ -9,15 +9,23 @@
     "react-easy-stack": "^0.1.0-alpha.0",
     "react-scripts": "1.1.1"
   },
+  "devDependencies": {
+    "moment-timezone": "^0.5.14",
+    "react-testing-library": "^1.3.0",
+    "serve": "^6.5.3",
+    "sinon": "^4.4.6"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "now-start": "serve build --single",
+    "deploy": "now && now alias"
   },
-  "devDependencies": {
-    "moment-timezone": "^0.5.14",
-    "react-testing-library": "^1.3.0",
-    "sinon": "^4.4.6"
+  "now": {
+    "alias": [
+      "easy-clock-global"
+    ]
   }
 }

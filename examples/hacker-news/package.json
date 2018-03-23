@@ -13,6 +13,9 @@
     "timeago.js": "^3.0.2",
     "web-animations-js": "^2.3.1"
   },
+  "devDependencies": {
+    "serve": "^6.5.3"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -20,9 +23,6 @@
     "eject": "react-scripts eject",
     "now-start": "serve build --single",
     "deploy": "now && now alias"
-  },
-  "devDependencies": {
-    "serve": "^6.5.3"
   },
   "now": {
     "alias": [

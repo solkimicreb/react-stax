@@ -5,21 +5,16 @@ import { fetchComment } from './api'
 
 class RawComment extends Component {
   store = store({
-    hidden: false,
-    comment: {}
+    hidden: false
   });
-
-  async componentDidMount () {
-    this.store.comment = await fetchComment(this.props.id)
-  }
 
   toggleVisibility = () => {
     this.store.hidden = !this.store.hidden
   };
 
   render () {
-    const { hidden, comment } = this.store
-    const { deleted, dead, text, by, time, kids } = comment
+    const { hidden } = this.store
+    const { deleted, dead, text, by, time, kids, id, comments } = this.props.comment
     const timeAgo = timeago().format(time * 1000)
 
     if (deleted || dead || !text) {
@@ -40,8 +35,8 @@ class RawComment extends Component {
         {!hidden && (
           <div>
             <div dangerouslySetInnerHTML={{ __html: text }} />
-            {kids &&
-              kids.map(commentId => <Comment key={commentId} id={commentId} />)}
+            {comments &&
+              comments.map(comment => <Comment key={comment.id} comment={comment} />)}
           </div>
         )}
       </div>

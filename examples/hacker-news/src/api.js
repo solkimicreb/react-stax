@@ -64,6 +64,19 @@ export function fetchStory (id) {
   return fetch(`item/${id}`)
 }
 
+export async function fetchFullStory (id) {
+  const story = await fetchStory(id)
+  /*await*/ fetchComments(story)
+  return story
+}
+
+export async function fetchComments (item) {
+  if (item !== null && item.kids && item.kids.length) {
+    item.comments = await Promise.all(item.kids.map(fetchComment))
+    /*await*/Promise.all(item.comments.map(fetchComments))
+  }
+}
+
 export function fetchComment (id) {
   return fetch(`item/${id}`)
 }

@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { view } from 'react-easy-stack'
 import StoryItem from '../StoryItem'
 import Comment from '../Comment'
 
-function StoryPage (story) {
+function StoryPage ({ story }) {
+  console.log('c', story.comments)
+  const { text, comments } = story
   return (
     <div>
       <StoryItem story={story} />
-      <div dangerouslySetInnerHTML={{ __html: story.text }} />
-      {story.kids &&
-        story.kids.map(commentId => <Comment key={commentId} id={commentId} />)}
+      <div dangerouslySetInnerHTML={{ __html: text }} />
+      {comments &&
+        comments.map(comment => <Comment key={comment.id} comment={comment} />)}
     </div>
   )
 }
