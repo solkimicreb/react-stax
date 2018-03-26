@@ -1,3 +1,4 @@
+import React from 'react'
 import { Queue, priorities } from '@nx-js/queue-util'
 import isNode, * as node from './node'
 
@@ -13,3 +14,14 @@ export const historyHandler = isNode
 export const anchor = 'a'
 export const div = 'div'
 export const normalizeProps = props => props
+
+export function animate (keyframes, duration, container) {
+  const options = {
+    duration,
+    fill: 'forwards',
+    easing: 'ease-in-out'
+  }
+
+  const animation = container.animate(keyframes, options)
+  return new Promise(resolve => (animation.onfinish = resolve))
+}

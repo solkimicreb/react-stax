@@ -1,13 +1,13 @@
 import sinon from 'sinon'
 import { tz as timezone } from 'moment-timezone'
-import clock from './clock'
+import clock, { reset, toggle, start } from './clock'
 
 describe('Stopwatch store', () => {
   const timers = sinon.useFakeTimers()
   timezone.setDefault('UTC')
 
   afterEach(() => {
-    clock.reset()
+    reset()
   })
 
   afterAll(() => {
@@ -23,27 +23,27 @@ describe('Stopwatch store', () => {
   })
 
   test('should start and stop', () => {
-    clock.toggle()
+    toggle()
 
     timers.tick(2000)
     expect(clock.ticks).toBe(200)
 
-    clock.toggle()
+    toggle()
     timers.tick(4000)
     expect(clock.ticks).toBe(200)
   })
 
   test('should reset', () => {
-    clock.start()
+    start()
     timers.tick(3000)
     expect(clock.ticks).toBe(300)
 
-    clock.reset()
+    reset()
     expect(clock.ticks).toBe(0)
   })
 
   test('should format the time', () => {
-    clock.start()
+    start()
     timers.tick(132020)
     expect(clock.time).toEqual({
       seconds: '02:12',

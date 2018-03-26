@@ -4,7 +4,6 @@ import StoryItem from '../StoryItem'
 import Comment from '../Comment'
 
 function StoryPage ({ story }) {
-  console.log('c', story.comments)
   const { text, comments } = story
   return (
     <div>

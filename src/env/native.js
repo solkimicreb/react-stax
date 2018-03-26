@@ -1,4 +1,5 @@
-import { AsyncStorage, BackHandler, Text, View } from 'react-native'
+import React from 'react'
+import { AsyncStorage, BackHandler, Text, View, Animated } from 'react-native'
 import { Queue, priorities } from '@nx-js/queue-util'
 import isNode, * as node from './node'
 
@@ -52,10 +53,24 @@ export const div = View
 
 export function normalizeProps (props) {
   delete props.className
-  delete props.ref
   if (props.onClick && !props.onPress) {
     props.onPress = props.onClick
     delete props.onClick
   }
   return props
+}
+
+export function animate (keyframes, duration, container) {
+  const animatedValue = new Animated.Value(0)
+  const animation = Animated.timing(animatedValue, { toValue: 1, duration })
+
+  const animations = {}
+  for (let prop in keyframes) {
+    animations[prop] = animatedValue.interpolate({ outputRange: keyframes[prop] })
+  }
+  container.setNativeProps(animations)
+
+  // return a container that is animated maybe
+
+  return new Promise(resolve => animation.start(resolve))
 }

@@ -3,7 +3,7 @@ import { render, Simulate } from 'react-testing-library'
 import sinon from 'sinon'
 import { tz as timezone } from 'moment-timezone'
 import App from './App'
-import clock from './clock'
+import clock, { reset } from './clock'
 
 describe('Stopwatch App', () => {
   const timers = sinon.useFakeTimers()
@@ -14,7 +14,7 @@ describe('Stopwatch App', () => {
   const display = queryByTestId('display')
 
   afterEach(() => {
-    clock.reset()
+    reset()
   })
 
   afterAll(() => {

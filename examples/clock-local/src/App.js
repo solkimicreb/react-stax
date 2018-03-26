@@ -4,15 +4,18 @@ import { view, store } from 'react-easy-stack'
 
 class App extends Component {
   clock = store({
-    time: moment().format('hh:mm:ss A'),
-    id: setInterval(
+    time: moment().format('hh:mm:ss A')
+  });
+
+  componentDidMount () {
+    this.id = setInterval(
       () => (this.clock.time = moment().format('hh:mm:ss A')),
       1000
     )
-  });
+  }
 
   componentWillUnmount () {
-    clearInterval(this.clock.id)
+    clearInterval(this.id)
   }
 
   render () {

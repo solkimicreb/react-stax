@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { params } from 'react-easy-state'
+import { params } from 'react-easy-stack'
 import './index.css'
 import App from './App'
-import appStore from './appStore'
+import appStore, { fetchBeers } from './appStore'
 
-appStore.fetchBeers(params.filter)
+fetchBeers(params.filter)
 ReactDOM.render(<App />, document.getElementById('root'))

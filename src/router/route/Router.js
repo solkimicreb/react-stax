@@ -1,6 +1,6 @@
 import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
-import { div, normalizeProps } from 'env'
+import { div, normalizeProps, animate } from 'env'
 import { path, params } from '../integrations'
 import { defaults, log } from '../utils'
 import { registerRouter, releaseRouter, routeFromDepth } from './core'
@@ -134,20 +134,16 @@ export default class Router extends PureComponent {
     return new Promise(resolve => this.setState(nextState, resolve))
   }
 
-  saveRef = routerNode => (this.routerNode = routerNode);
+  saveRef = container => (this.container = container);
 
-  animate ({ keyframes, options } = {}, fromPage, toPage) {
-    const { animate } = this.props
-    const canAnimate = keyframes && options && fromPage
-    const shouldAnimate = animate !== false && (animate || fromPage !== toPage)
+  animate ({ keyframes, duration } = {}, fromPage, toPage) {
+    const canAnimate = keyframes && duration && fromPage
+    // maybe slightly refactor / rename things here
+    const shouldAnimate = this.props.animate !== false && (this.props.animate || fromPage !== toPage)
 
+    // make these waaay simpler -> only allow duration, have sensible defaults
     if (canAnimate && shouldAnimate) {
-      if (typeof options !== 'object') {
-        options = { duration: options }
-      }
-      options.fill = options.fill || 'forwards'
-      const animation = this.routerNode.animate(keyframes, options)
-      return new Promise(resolve => (animation.onfinish = resolve))
+      return animate(keyframes, duration, this.container)
     }
   }
 
@@ -163,6 +159,7 @@ export default class Router extends PureComponent {
       // no need to pass pageResolved here, it would always be true
       toChild = resolvedData
     } else {
+      /// I should probably still clone here to make a fresh child on each render!
       toChild = this.selectChild(toPage)
       if (toChild.props.resolve) {
         toChild = React.cloneElement(
@@ -175,7 +172,7 @@ export default class Router extends PureComponent {
     return React.createElement(
       div,
       normalizeProps({ className, style, ref: this.saveRef }),
-      [toChild]
+      toChild
     )
   }
 }

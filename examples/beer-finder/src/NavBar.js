@@ -2,10 +2,10 @@ import React from 'react'
 import { view, params } from 'react-easy-stack'
 import SearchBar from 'material-ui-search-bar'
 import { LinearProgress } from 'material-ui/Progress'
-import appStore from './appStore'
+import appStore, { fetchBeers } from './appStore'
 
 async function onRequestSearch (filter) {
-  await appStore.fetchBeers(filter)
+  await fetchBeers(filter)
   params.filter = filter
 }
 

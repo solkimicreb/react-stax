@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import { view } from 'react-easy-stack'
-import clock from './clock'
+import clock, { toggle, reset } from './clock'
 
 function StopWatch () {
-  const { time, toggle, reset, isTicking } = clock
+  const { time, isTicking } = clock
   const label = isTicking ? 'Stop' : 'Start'
 
   return (
