@@ -1,7 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
-import { compScheduler as scheduler, location, anchor, normalizeProps } from 'env'
+import {
+  compScheduler as scheduler,
+  location,
+  anchor,
+  normalizeProps
+} from 'env'
 import { toPathArray, toQuery } from '../utils'
 import { params, path } from '../integrations'
 import { routeFromDepth } from './core'

@@ -4,8 +4,8 @@ import { view } from 'react-easy-stack'
 import todos from './todosStore'
 
 class TodoItem extends Component {
-  remove = () => todos.remove(this.props.id)
-  toggle = () => todos.toggle(this.props.id)
+  remove = () => todos.remove(this.props.id);
+  toggle = () => todos.toggle(this.props.id);
 
   render () {
     const { toggle, remove } = this

@@ -31,6 +31,8 @@ describe('Beer finder app', () => {
 
     await beerFetching
     expect(app.findAllByType(Beer)).toHaveLength(0)
-    expect(textContent(app.findByType(BeerList).children)).toBe('No matching beers found!')
+    expect(textContent(app.findByType(BeerList).children)).toBe(
+      'No matching beers found!'
+    )
   })
 })

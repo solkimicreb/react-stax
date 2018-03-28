@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { view, store, params } from 'react-easy-stack';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
-import appStore from './appStore';
+import React, { Component } from 'react'
+import { view, store, params } from 'react-easy-stack'
+import { FormGroup, FormControlLabel } from 'material-ui/Form'
+import Button from 'material-ui/Button'
+import TextField from 'material-ui/TextField'
+import Checkbox from 'material-ui/Checkbox'
+import appStore, * as app from './appStore'
 
 const productShell = {
   name: '',
@@ -12,7 +12,7 @@ const productShell = {
   price: 0,
   currency: 'EUR',
   available: undefined
-};
+}
 
 const currencies = [
   {
@@ -31,7 +31,7 @@ const currencies = [
     value: 'JPY',
     label: '¥'
   }
-];
+]
 
 class ProductEditor extends Component {
   store = store({
@@ -39,72 +39,72 @@ class ProductEditor extends Component {
   });
 
   onChange = ev => {
-    this.store.changes[ev.target.name] = ev.target.value;
+    this.store.changes[ev.target.name] = ev.target.value
   };
 
   onCheckChange = ev => {
-    this.store.changes[ev.target.name] = ev.target.checked;
+    this.store.changes[ev.target.name] = ev.target.checked
   };
 
   onSave = async () => {
     if (params.id) {
-      await appStore.editProduct(params.id, this.store.changes);
+      await app.editProduct(params.id, this.store.changes)
     } else {
-      const { id } = await appStore.saveProduct(this.store.changes);
-      params.id = id;
+      const { id } = await app.saveProduct(this.store.changes)
+      params.id = id
     }
   };
 
-  render() {
-    const { product } = this.props;
-    const { changes } = this.store;
+  render () {
+    const { product } = this.props
+    const { changes } = this.store
     const { name, description, price, available } = Object.assign(
       {},
       product,
       changes
-    );
-    const label = params.id ? 'Edit Product' : 'Add Product';
+    )
+    const label = params.id ? 'Edit Product' : 'Add Product'
 
     return (
       <FormGroup>
         <TextField
-          name="name"
-          label="Name"
-          margin="dense"
+          name='name'
+          label='Name'
+          margin='dense'
           value={name}
           onChange={this.onChange}
         />
         <TextField
-          name="description"
-          label="Description"
-          margin="dense"
-          multiline={true}
+          name='description'
+          label='Description'
+          margin='dense'
+          multiline
           value={description}
           onChange={this.onChange}
         />
         <TextField
-          name="price"
-          type="number"
-          label="Price"
-          margin="dense"
+          name='price'
+          type='number'
+          label='Price'
+          margin='dense'
           value={price}
           onChange={this.onChange}
         />
         <FormControlLabel
           control={
             <Checkbox
-              name="available"
+              name='available'
               checked={available}
               indeterminate={available === undefined}
               onChange={this.onCheckChange}
             />
           }
-          label="Avaliable"
+          label='Avaliable'
         />
         <Button onClick={this.onSave}>{label}</Button>
       </FormGroup>
-    );
+    )
   }
 }
 
-export default view(ProductEditor);
+export default view(ProductEditor)

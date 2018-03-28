@@ -12,8 +12,12 @@ function StopWatch () {
         {time.seconds}
         <small>{time.fraction}</small>
       </div>
-      <button onClick={toggle} data-testid='toggle'>{label}</button>
-      <button onClick={reset} data-testid='reset'>Reset</button>
+      <button onClick={toggle} data-testid='toggle'>
+        {label}
+      </button>
+      <button onClick={reset} data-testid='reset'>
+        Reset
+      </button>
     </Fragment>
   )
 }

@@ -15,9 +15,12 @@ const todosStore = store({
   },
   get todos () {
     switch (params.filter) {
-      case 'completed': return todosStore.completed
-      case 'active': return todosStore.active
-      default: return storage.todos
+      case 'completed':
+        return todosStore.completed
+      case 'active':
+        return todosStore.active
+      default:
+        return storage.todos
     }
   },
   get isEmpty () {

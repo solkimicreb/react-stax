@@ -9,7 +9,7 @@ async function onRequestSearch (filter) {
   params.filter = filter
 }
 
-export default view(() =>
+export default view(() => (
   <div className='searchbar'>
     <SearchBar
       onRequestSearch={onRequestSearch}
@@ -18,4 +18,4 @@ export default view(() =>
     />
     {appStore.isLoading && <LinearProgress />}
   </div>
-)
+))

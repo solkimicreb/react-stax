@@ -2,8 +2,12 @@ import React from 'react'
 import { Queue, priorities } from '@nx-js/queue-util'
 import isNode, * as node from './node'
 
-export const compScheduler = isNode ? node.compScheduler : new Queue(priorities.SYNC)
-export const integrationScheduler = isNode ? node.integrationScheduler : new Queue(priorities.LOW)
+export const compScheduler = isNode
+  ? node.compScheduler
+  : new Queue(priorities.SYNC)
+export const integrationScheduler = isNode
+  ? node.integrationScheduler
+  : new Queue(priorities.LOW)
 
 export const localStorage = isNode ? node.localStorage : window.localStorage
 export const history = isNode ? node.history : window.history

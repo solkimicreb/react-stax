@@ -1,6 +1,8 @@
 import { Queue, priorities } from '@nx-js/queue-util'
 
-export default typeof global === 'object' && typeof global.process === 'object' && !(global.navigator && global.navigator.product === 'ReactNative')
+export default typeof global === 'object' &&
+  typeof global.process === 'object' &&
+  !(global.navigator && global.navigator.product === 'ReactNative')
 
 export const compScheduler = new Queue(priorities.SYNC)
 export const integrationScheduler = new Queue(priorities.SYNC)

@@ -14,7 +14,16 @@ class RawComment extends Component {
 
   render () {
     const { hidden } = this.store
-    const { deleted, dead, text, by, time, kids, id, comments } = this.props.comment
+    const {
+      deleted,
+      dead,
+      text,
+      by,
+      time,
+      kids,
+      id,
+      comments
+    } = this.props.comment
     const timeAgo = timeago().format(time * 1000)
 
     if (deleted || dead || !text) {
@@ -36,7 +45,9 @@ class RawComment extends Component {
           <div>
             <div dangerouslySetInnerHTML={{ __html: text }} />
             {comments &&
-              comments.map(comment => <Comment key={comment.id} comment={comment} />)}
+              comments.map(comment => (
+                <Comment key={comment.id} comment={comment} />
+              ))}
           </div>
         )}
       </div>

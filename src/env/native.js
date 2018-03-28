@@ -3,8 +3,12 @@ import { AsyncStorage, BackHandler, Text, View, Animated } from 'react-native'
 import { Queue, priorities } from '@nx-js/queue-util'
 import isNode, * as node from './node'
 
-export const compScheduler = isNode ? node.compScheduler : new Queue(priorities.SYNC)
-export const integrationScheduler = isNode ? node.integrationScheduler : new Queue(priorities.LOW)
+export const compScheduler = isNode
+  ? node.compScheduler
+  : new Queue(priorities.SYNC)
+export const integrationScheduler = isNode
+  ? node.integrationScheduler
+  : new Queue(priorities.LOW)
 
 // TODO -> this is async, which messes up the purpose -> I have to turn all of them into async
 export const localStorage = isNode ? node.localStorage : AsyncStorage
@@ -66,11 +70,29 @@ export function animate (keyframes, duration, container) {
 
   const animations = {}
   for (let prop in keyframes) {
-    animations[prop] = animatedValue.interpolate({ outputRange: keyframes[prop] })
+    if (prop === 'transform') {
+      const matches = keyframes[prop].map(keyframe =>
+        keyframe.match(/(.*)\((.*)\)/)
+      )
+      animation[prop] = [
+        {
+          [matches[0][0]]: animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: matches.map(match => match[1])
+          })
+        }
+      ]
+    } else {
+      animations[prop] = animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: keyframes[prop]
+      })
+    }
   }
-  container.setNativeProps(animations)
 
-  // return a container that is animated maybe
+  const animatedProps = new Animated.__PropsOnlyForTests(animations, () =>
+    container.setNativeProps({ style: animatedProps.__getAnimatedValue() })
+  )
 
   return new Promise(resolve => animation.start(resolve))
 }

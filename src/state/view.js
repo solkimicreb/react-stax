@@ -33,7 +33,7 @@ export default function view (Comp, { devtool: rawDevtool } = {}) {
           delete: () => compScheduler.delete(updater)
         },
         lazy: true,
-        debugger: devtool,
+        debugger: devtool
       })
     }
 

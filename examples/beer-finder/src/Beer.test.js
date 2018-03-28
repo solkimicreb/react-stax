@@ -8,7 +8,7 @@ import Beer from './Beer'
 jest.mock('./api')
 
 describe('Beer items', () => {
-  const { root: beer } = TestRenderer.create(<Beer {...beers.yummy[0]}/>)
+  const { root: beer } = TestRenderer.create(<Beer {...beers.yummy[0]} />)
   const card = beer.findByType(Card)
 
   test('should toggle beer data', async () => {

@@ -40,9 +40,9 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth)
   }
 
-  init (fromPage, toPage) {
+  init (fromPage, toPage, fromParams) {
     const toChild = this.selectChild(toPage)
-    const { onRoute } = this.props
+    const { onRoute, defaultPage } = this.props
     const { defaultParams } = toChild.props
     toPage = toChild.props.page
 
@@ -56,7 +56,21 @@ export default class Router extends PureComponent {
     }
 
     return Promise.resolve()
-      .then(() => onRoute({ target: this, fromPage, toPage }))
+      .then(() =>
+        onRoute({
+          target: this,
+          fromPage,
+          toPage,
+          fromParams,
+          toParams: params,
+          preventDefault: fallback =>
+            this.route(
+              fromPage === toPage
+                ? fallback || { to: defaultPage }
+                : { to: fromPage, params: fromParams }
+            )
+        })
+      )
       .then(() => toChild)
   }
 
@@ -88,29 +102,34 @@ export default class Router extends PureComponent {
 
       if (timeout) {
         resolveThreads.push(
-          new Promise(resolve => setTimeout(resolve, timeout)).then(() => {
-            timedout = true
-            return nextState
-          })
+          new Promise(resolve => setTimeout(resolve, timeout)).then(
+            () => (timedout = true)
+          )
         )
       }
 
-      return Promise.race(resolveThreads)
+      return Promise.race(resolveThreads).then(() => nextState)
     }
     return nextState
   }
 
-  switch (nextState, status) {
+  switch (nextState, status, options) {
     const { enterAnimation, leaveAnimation } = this.props
     const { toPage: fromPage } = this.state
     const { toPage } = nextState
 
     const switchPromise = Promise.resolve()
-      .then(status.check(() => this.animate(leaveAnimation, fromPage, toPage)))
+      .then(
+        status.check(() =>
+          this.animate(leaveAnimation, fromPage, toPage, options)
+        )
+      )
       .then(status.check(() => this.updateState(nextState)))
 
     switchPromise.then(
-      status.check(() => this.animate(enterAnimation, fromPage, toPage))
+      status.check(() =>
+        this.animate(enterAnimation, fromPage, toPage, options)
+      )
     )
 
     return switchPromise
@@ -136,10 +155,12 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate ({ keyframes, duration } = {}, fromPage, toPage) {
+  animate ({ keyframes, duration } = {}, fromPage, toPage, options) {
     const canAnimate = keyframes && duration && fromPage
     // maybe slightly refactor / rename things here
-    const shouldAnimate = this.props.animate !== false && (this.props.animate || fromPage !== toPage)
+    // shallow check the old and new params I guess
+    const shouldAnimate =
+      options.animate !== false && (options.animate || fromPage !== toPage)
 
     // make these waaay simpler -> only allow duration, have sensible defaults
     if (canAnimate && shouldAnimate) {
