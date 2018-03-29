@@ -1,20 +1,20 @@
-import React from 'react'
-import { store, view } from 'react-easy-stack'
-import Snackbar from 'material-ui/Snackbar'
+import React from 'react';
+import { store, view } from 'react-easy-stack';
+import Snackbar from 'material-ui/Snackbar';
 
 const notificationStore = store({
   message: '',
   isOpen: false
-})
+});
 
-export function notify (message) {
-  notificationStore.message = message
-  notificationStore.isOpen = true
+export function notify(message) {
+  notificationStore.message = message;
+  notificationStore.isOpen = true;
 }
 
-function closeNotification () {
-  notificationStore.message = ''
-  notificationStore.isOpen = false
+function closeNotification() {
+  notificationStore.message = '';
+  notificationStore.isOpen = false;
 }
 
 export default view(() => (
@@ -22,6 +22,7 @@ export default view(() => (
     open={notificationStore.isOpen}
     onClose={closeNotification}
     message={notificationStore.message}
-    autoHideDuration={2000}
+    key={notificationStore.message}
+    autoHideDuration={5000}
   />
-))
+));
