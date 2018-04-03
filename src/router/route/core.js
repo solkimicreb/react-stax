@@ -1,54 +1,55 @@
-import { path, params } from '../integrations'
+import { path, params } from '../integrations';
 import {
   compScheduler,
   integrationScheduler,
   location,
   history,
   historyHandler
-} from 'env'
-import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils'
+} from 'env';
+import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils';
 
-const routers = []
-let routingStatus
-let initStatuses = []
+const routers = [];
+let routingStatus;
+let initStatuses = [];
+let prevOptions = {};
 
 class RoutingStatus {
-  check (fn) {
-    return () => (this.cancelled ? undefined : fn())
+  check(fn) {
+    return () => (this.cancelled ? undefined : fn());
   }
 }
 
-export function registerRouter (router, depth) {
-  let routersAtDepth = routers[depth]
+export function registerRouter(router, depth) {
+  let routersAtDepth = routers[depth];
   if (!routersAtDepth) {
-    routersAtDepth = routers[depth] = new Set()
+    routersAtDepth = routers[depth] = new Set();
   }
-  routersAtDepth.add(router)
+  routersAtDepth.add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    const status = new RoutingStatus()
-    initStatuses.push(status)
+    const status = new RoutingStatus();
+    initStatuses.push(status);
 
-    const oldParams = Object.assign({}, params)
+    const oldParams = Object.assign({}, params);
     Promise.resolve()
       .then(() => router.init(path[depth], path[depth], oldParams))
       .then(toChild => router.resolve(toChild, status))
-      .then(nextState => router.switch(nextState, status, {}))
+      .then(nextState => router.switch(nextState, status, {}));
   }
 }
 
-export function releaseRouter (router, depth) {
-  const routersAtDepth = routers[depth]
+export function releaseRouter(router, depth) {
+  const routersAtDepth = routers[depth];
   if (routersAtDepth) {
-    routersAtDepth.delete(router)
+    routersAtDepth.delete(router);
   }
 }
 
-export function route ({ to, params, options } = {}) {
-  routeFromDepth(to, params, options, 0)
+export function route({ to, params, options }) {
+  routeFromDepth(to, params, options, 0);
 }
 
-export function routeFromDepth (
+export function routeFromDepth(
   toPath = location.pathname,
   newParams = {},
   options = {},
@@ -56,38 +57,38 @@ export function routeFromDepth (
 ) {
   // cancel inits
   if (initStatuses.length) {
-    initStatuses.forEach(status => (status.cancelled = true))
-    initStatuses = []
+    initStatuses.forEach(status => (status.cancelled = true));
+    initStatuses = [];
   }
   if (routingStatus) {
-    routingStatus.cancelled = true
+    routingStatus.cancelled = true;
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
-    integrationScheduler.process()
+    integrationScheduler.process();
   }
-  const status = (routingStatus = new RoutingStatus())
-  compScheduler.stop()
-  integrationScheduler.stop()
+  const status = (routingStatus = new RoutingStatus());
+  compScheduler.stop();
+  integrationScheduler.stop();
 
   // replace or extend params with nextParams by mutation (do not change the observable ref)
-  const oldParams = Object.assign({}, params)
+  const oldParams = Object.assign({}, params);
   if (!options.inherit) {
-    clear(params)
+    clear(params);
   }
-  Object.assign(params, newParams)
-  toPath = path.slice(0, depth).concat(toPathArray(toPath))
+  Object.assign(params, newParams);
+  toPath = path.slice(0, depth).concat(toPathArray(toPath));
 
   return switchRoutersFromDepth(toPath, depth, status, oldParams, options).then(
     status.check(() => onRoutingEnd(options)),
     rethrow(status.check(() => onRoutingEnd(options)))
-  )
+  );
 }
 
-function switchRoutersFromDepth (toPath, depth, status, oldParams, options) {
-  const routersAtDepth = Array.from(routers[depth] || [])
+function switchRoutersFromDepth(toPath, depth, status, oldParams, options) {
+  const routersAtDepth = Array.from(routers[depth] || []);
 
   if (!routersAtDepth.length) {
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   // maybe add status checks here for cancellation
@@ -112,28 +113,34 @@ function switchRoutersFromDepth (toPath, depth, status, oldParams, options) {
       status.check(() =>
         switchRoutersFromDepth(toPath, ++depth, status, oldParams, options)
       )
-    )
+    );
 }
 
-function onRoutingEnd (options) {
+function onRoutingEnd(options) {
   // by default a history item is pushed if the pathname changes!
   if (
     options.history === true ||
     (options.history !== false && toPathString(path) !== location.pathname)
   ) {
-    history.pushState(history.state, '')
+    history.pushState(options, '');
+    prevOptions = options;
+  } else {
+    history.replaceState(options, '');
   }
 
-  integrationScheduler.process()
-  integrationScheduler.start()
-  compScheduler.process()
-  compScheduler.start()
+  integrationScheduler.process();
+  integrationScheduler.start();
+  compScheduler.process();
+  compScheduler.start();
 }
 
-historyHandler(() =>
+// issue -> it should take the state I was transitioned from (the next state)
+// if I am going forward nextState.animate
+// else prevState.animate
+historyHandler(options =>
   route({
     to: location.pathname,
     params: toParams(location.search),
-    options: { history: false }
+    options: { history: false, animate: prevOptions.animate }
   })
-)
+);

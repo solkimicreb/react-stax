@@ -1,9 +1,9 @@
-import React, { PureComponent, Children } from 'react'
-import PropTypes from 'prop-types'
-import { div, normalizeProps, animate } from 'env'
-import { path, params } from '../integrations'
-import { defaults, log } from '../utils'
-import { registerRouter, releaseRouter, routeFromDepth } from './core'
+import React, { PureComponent, Children } from 'react';
+import PropTypes from 'prop-types';
+import { div, normalizeProps, animate } from 'env';
+import { path, params } from '../integrations';
+import { defaults, log } from '../utils';
+import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {
   static propTypes = {
@@ -18,41 +18,41 @@ export default class Router extends PureComponent {
   static childContextTypes = { easyRouterDepth: PropTypes.number };
   static contextTypes = { easyRouterDepth: PropTypes.number };
 
-  getChildContext () {
-    return { easyRouterDepth: this.depth + 1 }
+  getChildContext() {
+    return { easyRouterDepth: this.depth + 1 };
   }
 
-  get depth () {
-    return this.context.easyRouterDepth || 0
+  get depth() {
+    return this.context.easyRouterDepth || 0;
   }
 
   state = {};
 
-  componentWillUnmount () {
-    releaseRouter(this, this.depth)
+  componentWillUnmount() {
+    releaseRouter(this, this.depth);
   }
 
-  componentDidMount () {
-    registerRouter(this, this.depth)
+  componentDidMount() {
+    registerRouter(this, this.depth);
   }
 
-  route ({ to, params, options } = {}) {
-    routeFromDepth(to, params, options, this.depth)
+  route({ to, params, options } = {}) {
+    routeFromDepth(to, params, options, this.depth);
   }
 
-  init (fromPage, toPage, fromParams) {
-    const toChild = this.selectChild(toPage)
-    const { onRoute, defaultPage } = this.props
-    const { defaultParams } = toChild.props
-    toPage = toChild.props.page
+  init(fromPage, toPage, fromParams) {
+    const toChild = this.selectChild(toPage);
+    const { onRoute, defaultPage } = this.props;
+    const { defaultParams } = toChild.props;
+    toPage = toChild.props.page;
 
-    path.splice(this.depth, Infinity, toPage)
+    path.splice(this.depth, Infinity, toPage);
     if (defaultParams) {
-      defaults(params, defaultParams)
+      defaults(params, defaultParams);
     }
 
     if (!onRoute) {
-      return Promise.resolve(toChild)
+      return Promise.resolve(toChild);
     }
 
     return Promise.resolve()
@@ -71,20 +71,20 @@ export default class Router extends PureComponent {
             )
         })
       )
-      .then(() => toChild)
+      .then(() => toChild);
   }
 
-  resolve (toChild, status) {
-    const { resolve, timeout, page: toPage } = toChild.props
+  resolve(toChild, status) {
+    const { resolve, timeout, page: toPage } = toChild.props;
     const nextState = {
       toPage,
       resolvedData: undefined,
       pageResolved: undefined
-    }
+    };
 
     if (resolve) {
-      const resolveThreads = []
-      let timedout
+      const resolveThreads = [];
+      let timedout;
 
       const resolveThread = Promise.resolve()
         .then(resolve)
@@ -92,31 +92,31 @@ export default class Router extends PureComponent {
           resolvedData =>
             Object.assign(nextState, { resolvedData, pageResolved: true }),
           log(() => Object.assign(nextState, { pageResolved: false }))
-        )
+        );
 
       // TODO: check this to always work as expected!
       resolveThread.then(
         status.check(() => timedout && this.updateState(nextState))
-      )
-      resolveThreads.push(resolveThread)
+      );
+      resolveThreads.push(resolveThread);
 
       if (timeout) {
         resolveThreads.push(
           new Promise(resolve => setTimeout(resolve, timeout)).then(
             () => (timedout = true)
           )
-        )
+        );
       }
 
-      return Promise.race(resolveThreads).then(() => nextState)
+      return Promise.race(resolveThreads).then(() => nextState);
     }
-    return nextState
+    return nextState;
   }
 
-  switch (nextState, status, options) {
-    const { enterAnimation, leaveAnimation } = this.props
-    const { toPage: fromPage } = this.state
-    const { toPage } = nextState
+  switch(nextState, status, options) {
+    const { enterAnimation, leaveAnimation } = this.props;
+    const { toPage: fromPage } = this.state;
+    const { toPage } = nextState;
 
     const switchPromise = Promise.resolve()
       .then(
@@ -124,69 +124,65 @@ export default class Router extends PureComponent {
           this.animate(leaveAnimation, fromPage, toPage, options)
         )
       )
-      .then(status.check(() => this.updateState(nextState)))
+      .then(status.check(() => this.updateState(nextState)));
 
     switchPromise.then(
       status.check(() =>
         this.animate(enterAnimation, fromPage, toPage, options)
       )
-    )
+    );
 
-    return switchPromise
+    return switchPromise;
   }
 
-  selectChild (toPage) {
-    const { children, defaultPage } = this.props
-    let toChild, defaultChild
+  selectChild(toPage) {
+    const { children, defaultPage } = this.props;
+    let toChild, defaultChild;
 
     Children.forEach(children, child => {
       if (child.props.page === toPage) {
-        toChild = child
+        toChild = child;
       } else if (child.props.page === defaultPage) {
-        defaultChild = child
+        defaultChild = child;
       }
-    })
-    return toChild || defaultChild
+    });
+    return toChild || defaultChild;
   }
 
-  updateState (nextState) {
-    return new Promise(resolve => this.setState(nextState, resolve))
+  updateState(nextState) {
+    return new Promise(resolve => this.setState(nextState, resolve));
   }
 
   saveRef = container => (this.container = container);
 
-  animate ({ keyframes, duration } = {}, fromPage, toPage, options) {
-    const canAnimate = keyframes && duration && fromPage
-    // maybe slightly refactor / rename things here
-    // shallow check the old and new params I guess
+  animate(animation, fromPage, toPage, options) {
+    const canAnimate = animation && fromPage;
     const shouldAnimate =
-      options.animate !== false && (options.animate || fromPage !== toPage)
-
-    // make these waaay simpler -> only allow duration, have sensible defaults
+      options.animate !== false && (options.animate || fromPage !== toPage);
     if (canAnimate && shouldAnimate) {
-      return animate(keyframes, duration, this.container)
+      return animate(animation, this.container);
     }
   }
 
-  render () {
-    const { className, style } = this.props
-    const { toPage, resolvedData, pageResolved } = this.state
+  render() {
+    const { className, style } = this.props;
+    const { toPage, resolvedData, pageResolved } = this.state;
 
     // if the pages changed I need create a new comp!!
-    let toChild
+    let toChild;
     if (!toPage) {
-      toChild = null
+      toChild = null;
     } else if (React.isValidElement(resolvedData)) {
       // no need to pass pageResolved here, it would always be true
-      toChild = resolvedData
+      toChild = resolvedData;
     } else {
       /// I should probably still clone here to make a fresh child on each render!
-      toChild = this.selectChild(toPage)
+      toChild = this.selectChild(toPage);
       if (toChild.props.resolve) {
         toChild = React.cloneElement(
           this.selectChild(toPage),
           Object.assign({}, { pageResolved }, resolvedData)
-        )
+        );
       }
     }
 
@@ -194,6 +190,6 @@ export default class Router extends PureComponent {
       div,
       normalizeProps({ className, style, ref: this.saveRef }),
       toChild
-    )
+    );
   }
 }

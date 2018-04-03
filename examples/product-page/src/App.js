@@ -8,7 +8,7 @@ import Notification, { notify } from './Notification';
 import appStore, * as app from './appStore';
 
 const appStyle = {
-  maxWidth: 840,
+  maxWidth: 880,
   margin: '50px auto',
   padding: 20
 };
@@ -18,7 +18,7 @@ const enterAnimation = {
     opacity: [0, 1],
     transform: ['translateX(-10px)', 'none']
   },
-  duration: 200
+  duration: 150
 };
 
 const leaveAnimation = {
@@ -26,14 +26,14 @@ const leaveAnimation = {
     opacity: [1, 0],
     transform: ['none', 'translateX(10px)']
   },
-  duration: 200
+  duration: 50
 };
 
 class App extends Component {
   onRoute = ({ toPage, preventDefault }) => {
     if (toPage === 'product' && !appStore.isLoggedIn) {
       route({ to: '/login' });
-      notify('You must be logged in to access the product page');
+      notify('You must be logged in to access the product editor page');
     }
   };
 
@@ -47,7 +47,7 @@ class App extends Component {
           style={appStyle}
           enterAnimation={enterAnimation}
           leaveAnimation={leaveAnimation}
-          animate
+          animate={true}
         >
           <ProductList page="products" resolve={app.search} timeout={800} />
           <ProductEditor page="product" resolve={app.resolveProduct} />

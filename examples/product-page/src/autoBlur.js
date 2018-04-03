@@ -1,29 +1,27 @@
-export default function autoBlur() {
-  function onKeyPress(ev) {
-    const keyCode = ev.which || ev.keyCode;
-    console.log('event', ev.keyCode);
-    if (keyCode === 13) {
-      ev.preventDefault();
-      const tabEvent = new KeyboardEvent('keypress', {
-        keyCode: 9,
-        which: 9,
-        key: 'Tab',
-        code: 'Tab'
-      });
-      console.log('tab', ev.target);
-      console.log(ev.target.dispatchEvent(tabEvent));
-      // ev.target.blur();
+export default function autoBlur(container = window) {
+  function onKeyPress(event) {
+    const keyCode = event.which || event.keyCode;
+    if (keyCode === 13 && event.target.matches('input, select')) {
+      const form = event.target.form;
+      if (form) {
+        const inputs = Array.from(
+          form.querySelectorAll(
+            'input:not([readonly]), select:not([readonly]), textarea:not([readonly])'
+          )
+        );
+        const index = inputs.indexOf(document.activeElement) + 1;
+        const input = inputs[index];
+        if (input) {
+          input.focus();
+          input.select();
+        } else {
+          document.activeElement.blur();
+        }
+      } else {
+        document.activeElement.blur();
+      }
     }
   }
-  window.addEventListener('keypress', onKeyPress);
-  return () => window.removeEventListener('keypress', onKeyPress);
+  container.addEventListener('keypress', onKeyPress);
+  return () => container.removeEventListener('keypress', onKeyPress);
 }
-
-class Form {
-  onChange = () => {};
-}
-
-<Form onSubmit={onSubmit} values={{ name: 'Bob', age: 21 }}>
-  <input name="name" />
-  <checkbox>
-</Form>;

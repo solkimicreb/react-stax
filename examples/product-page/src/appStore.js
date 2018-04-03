@@ -39,12 +39,4 @@ export async function register(registerData) {
   appStore.isLoggedIn = true;
 }
 
-export function clearMessage() {
-  appStore.message = '';
-}
-
-export function notify(message) {
-  appStore.message = message;
-}
-
 export default appStore;

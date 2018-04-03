@@ -9,8 +9,8 @@ import appStore from './appStore';
 
 const productStyle = {
   width: 400,
-  maxWidth: '100%',
-  margin: '15px 0'
+  maxWidth: '90%',
+  margin: 15
 };
 
 const productMediaStyle = {
@@ -32,8 +32,10 @@ function Product({ product }) {
         subheader={`${price} ${currency}`}
         action={
           isLoggedIn && (
-            <Link to="/product" params={{ id }} element={IconButton}>
-              <EditIcon />
+            <Link to="/product" params={{ id }}>
+              <IconButton>
+                <EditIcon />
+              </IconButton>
             </Link>
           )
         }

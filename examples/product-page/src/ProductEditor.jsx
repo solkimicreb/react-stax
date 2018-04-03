@@ -11,7 +11,7 @@ const productShell = {
   description: '',
   price: 0,
   currency: 'EUR',
-  available: undefined
+  available: false
 };
 
 class ProductEditor extends Component {
@@ -47,45 +47,46 @@ class ProductEditor extends Component {
     const label = params.id ? 'Edit Product' : 'Add Product';
 
     return (
-      <FormGroup>
-        <TextField
-          name="name"
-          label="Name"
-          margin="dense"
-          value={name}
-          onChange={this.onChange}
-        />
-        <TextField
-          name="description"
-          label="Description"
-          margin="dense"
-          multiline
-          value={description}
-          onChange={this.onChange}
-        />
-        <TextField
-          name="price"
-          type="number"
-          label="Price"
-          margin="dense"
-          value={price}
-          onChange={this.onChange}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="available"
-              checked={available}
-              indeterminate={available === undefined}
-              onChange={this.onCheckChange}
-            />
-          }
-          label="Avaliable"
-        />
-        <Button onClick={this.onSave} variant="raised">
-          {label}
-        </Button>
-      </FormGroup>
+      <form>
+        <FormGroup>
+          <TextField
+            name="name"
+            label="Name"
+            margin="dense"
+            value={name}
+            onChange={this.onChange}
+          />
+          <TextField
+            name="description"
+            label="Description"
+            margin="dense"
+            multiline
+            value={description}
+            onChange={this.onChange}
+          />
+          <TextField
+            name="price"
+            type="number"
+            label="Price"
+            margin="dense"
+            value={price}
+            onChange={this.onChange}
+          />
+          <FormControlLabel
+            label="Avaliable"
+            control={
+              <Checkbox
+                name="available"
+                checked={available}
+                onChange={this.onCheckChange}
+              />
+            }
+          />
+          <Button onClick={this.onSave} variant="raised" color="primary">
+            {label}
+          </Button>
+        </FormGroup>
+      </form>
     );
   }
 }

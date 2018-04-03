@@ -57,6 +57,11 @@ export async function editProduct(id, product) {
   return data;
 }
 
+export async function deleteProduct(id) {
+  const { data } = await api.delete(`/products/${id}`);
+  return data;
+}
+
 export async function login(loginData) {
   loginData = pick(loginData, ['email', 'pass']);
   const { data } = await api.post('/users/login', loginData);
@@ -78,6 +83,3 @@ export async function register(registerData) {
   await api.post('/users/register', registerData);
   return login(registerData);
 }
-
-window.addEventListener('online', () => notify('You are online again'));
-window.addEventListener('offline', () => notify('You are offline'));

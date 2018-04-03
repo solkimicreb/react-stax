@@ -29,34 +29,47 @@ class Login extends Component {
 
   render() {
     return (
-      <FormGroup>
-        <TextField
-          type="email"
-          name="email"
-          label="Email"
-          margin="dense"
-          onChange={this.onChange}
-        />
-        <TextField
-          type="password"
-          name="pass"
-          label="Password"
-          margin="dense"
-          onChange={this.onChange}
-        />
-        <TextField name="username" label="Username" margin="dense" />
-        <Button onClick={this.onRegister} variant="raised" style={buttonStyle}>
-          Register
-        </Button>
-        <Button
-          onClick={this.onLogin}
-          variant="raised"
-          color="primary"
-          style={buttonStyle}
-        >
-          Login
-        </Button>
-      </FormGroup>
+      <form>
+        <FormGroup>
+          <TextField
+            type="email"
+            name="email"
+            label="Email"
+            autoComplete="email"
+            margin="dense"
+            onChange={this.onChange}
+          />
+          <TextField
+            type="password"
+            name="pass"
+            label="Password"
+            autoComplete="current-password"
+            margin="dense"
+            onChange={this.onChange}
+          />
+          <TextField
+            name="username"
+            label="Username"
+            autoComplete="username"
+            margin="dense"
+          />
+          <Button
+            onClick={this.onLogin}
+            variant="raised"
+            color="primary"
+            style={buttonStyle}
+          >
+            Login
+          </Button>
+          <Button
+            onClick={this.onRegister}
+            variant="raised"
+            style={buttonStyle}
+          >
+            Register
+          </Button>
+        </FormGroup>
+      </form>
     );
   }
 }
