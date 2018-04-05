@@ -87,7 +87,7 @@ export default class Router extends PureComponent {
       let timedout;
 
       const resolveThread = Promise.resolve()
-        .then(resolve)
+        .then(() => resolve(toChild.props))
         .then(
           resolvedData =>
             Object.assign(nextState, { resolvedData, pageResolved: true }),
@@ -113,31 +113,31 @@ export default class Router extends PureComponent {
     return nextState;
   }
 
-  switch(nextState, status, options) {
+  switch(nextState, status, options, initial) {
     const { enterAnimation, leaveAnimation } = this.props;
     const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
-    const switchPromise = Promise.resolve()
-      .then(
-        status.check(() =>
-          this.animate(leaveAnimation, fromPage, toPage, options)
-        )
-      )
-      .then(status.check(() => this.updateState(nextState)));
-
-    switchPromise.then(
+    const switchPromise = Promise.resolve().then(
       status.check(() =>
-        this.animate(enterAnimation, fromPage, toPage, options)
+        this.animate(leaveAnimation, fromPage, toPage, options, initial)
       )
     );
 
-    return switchPromise;
+    switchPromise.then(
+      status.check(() =>
+        this.animate(enterAnimation, fromPage, toPage, options, initial)
+      )
+    );
+
+    return switchPromise.then(status.check(() => this.updateState(nextState)));
   }
 
   selectChild(toPage) {
     const { children, defaultPage } = this.props;
     let toChild, defaultChild;
+
+    // if nothing matches!! add a warning -> there is a defaultPage but it matches with no children
 
     Children.forEach(children, child => {
       if (child.props.page === toPage) {
@@ -155,8 +155,9 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(animation, fromPage, toPage, options) {
-    const canAnimate = animation && fromPage;
+  animate(animation, fromPage, toPage, options, initial) {
+    // check if there was an element before
+    const canAnimate = animation && initial;
     const shouldAnimate =
       options.animate !== false && (options.animate || fromPage !== toPage);
     if (canAnimate && shouldAnimate) {
@@ -164,6 +165,7 @@ export default class Router extends PureComponent {
     }
   }
 
+  // the other router is reused!!
   render() {
     const { className, style } = this.props;
     const { toPage, resolvedData, pageResolved } = this.state;

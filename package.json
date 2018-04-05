@@ -1,14 +1,12 @@
 {
   "name": "react-easy-stack",
   "version": "0.1.0-alpha.10",
-  "description": "React state management with a minimal API. Made with ES6 Proxies.",
+  "description":
+    "React state management with a minimal API. Made with ES6 Proxies.",
   "main": "dist/cjs.es5.js",
   "module": "dist/es.es5.js",
   "types": "types/index.d.ts",
-  "files": [
-    "dist",
-    "types"
-  ],
+  "files": ["dist", "types"],
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",
@@ -16,12 +14,16 @@
     "test-builds": "node ./scripts/testBuilds.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "lint": "standard",
-    "lint-fix": "prettier --ignore-path '.gitignore' --write '**/*.{js,jsx}' '!**/build/**' && standard --fix",
+    "lint-fix":
+      "prettier --ignore-path '.gitignore' --write '**/*.{js,jsx}' '!**/build/**' && standard --fix",
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
-    "deploy-examples": "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
-    "link-examples": "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
-    "unlink-examples": "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
+    "deploy-examples":
+      "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
+    "link-examples":
+      "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
+    "unlink-examples":
+      "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
     "build": "node ./scripts/build.js",
     "build-toc": "node ./scripts/buildToc.js"
   },
@@ -38,9 +40,7 @@
   },
   "homepage": "https://github.com/solkimicreb/react-easy-stack#readme",
   "license": "MIT",
-  "keywords": [
-    "TODO"
-  ],
+  "keywords": ["TODO"],
   "dependencies": {
     "@nx-js/observer-util": "^4.1.1",
     "@nx-js/queue-util": "^1.1.1",
@@ -80,16 +80,8 @@
   "jest": {},
   "standard": {
     "parser": "babel-eslint",
-    "env": [
-      "jest"
-    ],
-    "ignore": [
-      "**/build/**",
-      "**/node_modules/**"
-    ]
+    "env": ["jest"],
+    "ignore": ["**/build/**", "**/node_modules/**"]
   },
-  "pre-push": [
-    "lint",
-    "test-coverage"
-  ]
+  "pre-push": ["lint", "test-coverage"]
 }

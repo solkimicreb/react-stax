@@ -78,13 +78,27 @@ export function routeFromDepth(
   Object.assign(params, newParams);
   toPath = path.slice(0, depth).concat(toPathArray(toPath));
 
-  return switchRoutersFromDepth(toPath, depth, status, oldParams, options).then(
+  return switchRoutersFromDepth(
+    toPath,
+    depth,
+    status,
+    oldParams,
+    options,
+    true
+  ).then(
     status.check(() => onRoutingEnd(options)),
     rethrow(status.check(() => onRoutingEnd(options)))
   );
 }
 
-function switchRoutersFromDepth(toPath, depth, status, oldParams, options) {
+function switchRoutersFromDepth(
+  toPath,
+  depth,
+  status,
+  oldParams,
+  options,
+  initial
+) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (!routersAtDepth.length) {
@@ -105,7 +119,7 @@ function switchRoutersFromDepth(toPath, depth, status, oldParams, options) {
     .then(states =>
       Promise.all(
         routersAtDepth.map((router, i) =>
-          router.switch(states[i], status, options)
+          router.switch(states[i], status, options, initial)
         )
       )
     )
