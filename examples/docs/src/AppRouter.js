@@ -3,18 +3,18 @@ import { Router } from 'react-easy-stack';
 
 const enterAnimation = {
   keyframes: {
-    opacity: [0, 1]
-    //transform: ['translateX(-50px)', 'translateX(10px)', 'none']
+    opacity: [0, 1],
+    transform: ['translateX(100px)', 'none']
   },
   duration: 200
 };
 
 const leaveAnimation = {
   keyframes: {
-    opacity: [1, 0]
-    //transform: ['none', 'translateX(100px)']
+    opacity: [1, 0],
+    transform: ['none', 'translateX(100px)']
   },
-  duration: 100
+  duration: 200
 };
 
 export default function AppRouter({ children, ...props }) {

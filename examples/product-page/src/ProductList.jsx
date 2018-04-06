@@ -7,6 +7,14 @@ import Zoom from 'material-ui/transitions/Zoom';
 import appStore from './appStore';
 import Product from './Product';
 
+const pageStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  padding: 'inherit'
+};
+
 const listStyle = {
   display: 'flex',
   alignItems: 'stretch',
@@ -27,14 +35,14 @@ const notFoundStyle = {
   marginTop: 30
 };
 
-function ProductList({ pageResolved, products }) {
-  const { isLoggedIn } = appStore;
+function ProductList({ pageResolved }) {
+  let { isLoggedIn, products } = appStore;
   if (!pageResolved) {
     products = storage.cache[params.search] || [];
   }
 
   return (
-    <Fragment>
+    <div style={pageStyle}>
       {products.length ? (
         <div style={listStyle}>
           {products.map(product => (
@@ -55,7 +63,7 @@ function ProductList({ pageResolved, products }) {
           </Zoom>,
           document.getElementById('action-button')
         )}
-    </Fragment>
+    </div>
   );
 }
 

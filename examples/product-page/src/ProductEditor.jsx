@@ -6,6 +6,14 @@ import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import appStore, * as app from './appStore';
 
+const pageStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  padding: 'inherit'
+};
+
 const productShell = {
   name: '',
   description: '',
@@ -47,7 +55,7 @@ class ProductEditor extends Component {
     const label = params.id ? 'Edit Product' : 'Add Product';
 
     return (
-      <form>
+      <form style={pageStyle}>
         <FormGroup>
           <TextField
             name="name"

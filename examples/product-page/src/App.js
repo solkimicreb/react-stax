@@ -10,6 +10,7 @@ import appStore, * as app from './appStore';
 const appStyle = {
   maxWidth: 880,
   margin: '50px auto',
+  position: 'relative',
   padding: 20
 };
 
@@ -18,7 +19,9 @@ const enterAnimation = {
     opacity: [0, 1],
     transform: ['translateX(-10px)', 'none']
   },
-  duration: 150
+  delay: 50000,
+  duration: 2000,
+  fill: 'both'
 };
 
 const leaveAnimation = {
@@ -26,7 +29,7 @@ const leaveAnimation = {
     opacity: [1, 0],
     transform: ['none', 'translateX(10px)']
   },
-  duration: 50
+  duration: 50000
 };
 
 class App extends Component {

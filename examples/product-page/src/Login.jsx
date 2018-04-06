@@ -2,9 +2,16 @@ import React, { Component, Fragment } from 'react';
 import { view, store, route } from 'react-easy-stack';
 import { FormGroup } from 'material-ui/Form';
 import Button from 'material-ui/Button';
-// import { TextField } from './autoBlur';
 import TextField from 'material-ui/TextField';
 import * as app from './appStore';
+
+const pageStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  padding: 'inherit'
+};
 
 const buttonStyle = {
   marginTop: 15
@@ -29,7 +36,7 @@ class Login extends Component {
 
   render() {
     return (
-      <form>
+      <form style={pageStyle}>
         <FormGroup>
           <TextField
             type="email"

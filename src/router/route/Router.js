@@ -82,6 +82,11 @@ export default class Router extends PureComponent {
       pageResolved: undefined
     };
 
+    this.fromDOM =
+      this.container &&
+      this.container.firstElementChild &&
+      this.container.firstElementChild.cloneNode(true);
+
     if (resolve) {
       const resolveThreads = [];
       let timedout;
@@ -118,19 +123,36 @@ export default class Router extends PureComponent {
     const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
-    const switchPromise = Promise.resolve().then(
-      status.check(() =>
-        this.animate(leaveAnimation, fromPage, toPage, options, initial)
-      )
-    );
+    const { fromDOM } = this;
 
-    switchPromise.then(
-      status.check(() =>
-        this.animate(enterAnimation, fromPage, toPage, options, initial)
+    return Promise.resolve()
+      .then(status.check(() => this.updateState(nextState)))
+      .then(() => {
+        fromDOM && this.container.appendChild(fromDOM);
+      })
+      .then(
+        status.check(() => {
+          this.animate(
+            enterAnimation,
+            fromPage,
+            toPage,
+            options,
+            initial,
+            this.container && this.container.firstElementChild
+          );
+          return this.animate(
+            leaveAnimation,
+            fromPage,
+            toPage,
+            options,
+            initial,
+            fromDOM
+          );
+        })
       )
-    );
-
-    return switchPromise.then(status.check(() => this.updateState(nextState)));
+      .then(() => {
+        fromDOM && this.container.removeChild(fromDOM);
+      });
   }
 
   selectChild(toPage) {
@@ -155,13 +177,13 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(animation, fromPage, toPage, options, initial) {
+  animate(animation, fromPage, toPage, options, initial, container) {
     // check if there was an element before
     const canAnimate = animation && initial;
     const shouldAnimate =
       options.animate !== false && (options.animate || fromPage !== toPage);
     if (canAnimate && shouldAnimate) {
-      return animate(animation, this.container);
+      return animate(animation, container);
     }
   }
 

@@ -6,7 +6,8 @@ const appStore = store({
 });
 
 export async function search() {
-  return { products: await api.search(params.search) };
+  appStore.products = await api.search(params.search);
+  // return { products: await api.search(params.search) };
 }
 
 export async function resolveProduct() {
