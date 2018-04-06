@@ -82,6 +82,7 @@ export default class Router extends PureComponent {
       pageResolved: undefined
     };
 
+    // improve this -> also this is only needed if I have a leaveAnimation
     this.fromDOM =
       this.container &&
       this.container.firstElementChild &&
@@ -115,44 +116,19 @@ export default class Router extends PureComponent {
 
       return Promise.race(resolveThreads).then(() => nextState);
     }
+
     return nextState;
   }
 
   switch(nextState, status, options, initial) {
-    const { enterAnimation, leaveAnimation } = this.props;
     const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
-    const { fromDOM } = this;
-
     return Promise.resolve()
       .then(status.check(() => this.updateState(nextState)))
-      .then(() => {
-        fromDOM && this.container.appendChild(fromDOM);
-      })
       .then(
-        status.check(() => {
-          this.animate(
-            enterAnimation,
-            fromPage,
-            toPage,
-            options,
-            initial,
-            this.container && this.container.firstElementChild
-          );
-          return this.animate(
-            leaveAnimation,
-            fromPage,
-            toPage,
-            options,
-            initial,
-            fromDOM
-          );
-        })
-      )
-      .then(() => {
-        fromDOM && this.container.removeChild(fromDOM);
-      });
+        status.check(() => this.animate(fromPage, toPage, options, initial))
+      );
   }
 
   selectChild(toPage) {
@@ -177,13 +153,25 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(animation, fromPage, toPage, options, initial, container) {
-    // check if there was an element before
-    const canAnimate = animation && initial;
+  animate(fromPage, toPage, options, initial) {
+    const { enterAnimation, leaveAnimation } = this.props;
     const shouldAnimate =
       options.animate !== false && (options.animate || fromPage !== toPage);
-    if (canAnimate && shouldAnimate) {
-      return animate(animation, container);
+
+    const fromDOM = this.fromDOM;
+    const toDOM = this.container.firstElementChild;
+
+    if (initial && shouldAnimate) {
+      if (enterAnimation && toDOM) {
+        animate(enterAnimation, toDOM);
+      }
+      if (leaveAnimation && fromDOM) {
+        this.container.appendChild(fromDOM);
+        animate(leaveAnimation, fromDOM).then(() => {
+          this.container.removeChild(fromDOM);
+          this.fromDOM = undefined;
+        });
+      }
     }
   }
 

@@ -22,7 +22,7 @@ export const normalizeProps = props => props;
 
 export function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
-  // options.fill = 'forwards';
+  options.fill = 'both';
   const animation = container.animate(options.keyframes, options);
   return new Promise(resolve => (animation.onfinish = resolve));
 }

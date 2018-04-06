@@ -19,7 +19,7 @@ const enterAnimation = {
     opacity: [0, 1],
     transform: ['translateX(-10px)', 'none']
   },
-  delay: 50000,
+  delay: 2000,
   duration: 2000,
   fill: 'both'
 };
@@ -29,7 +29,7 @@ const leaveAnimation = {
     opacity: [1, 0],
     transform: ['none', 'translateX(10px)']
   },
-  duration: 50000
+  duration: 2000
 };
 
 class App extends Component {
