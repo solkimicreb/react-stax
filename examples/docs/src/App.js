@@ -1,124 +1,90 @@
 import React, { Fragment } from 'react';
-import { Link, path } from 'react-easy-stack';
-import ChatIcon from 'react-icons/lib/fa/comments-o';
-import GithubIcon from 'react-icons/lib/fa/github';
-import AppRouter from './AppRouter';
-import NavRouter from './NavRouter';
-import Sidebar, * as sidebar from './Sidebar';
-
-const HTML = ({ __html }) => <div dangerouslySetInnerHTML={{ __html }} />;
-
-const State = () => (
-  <AppRouter defaultPage="intro">
-    <HTML page="intro" resolve={resolveState} />
-    <HTML page="stuff" resolve={resolveState} />
-  </AppRouter>
-);
-
-const Routing = () => (
-  <AppRouter defaultPage="advanced">
-    <HTML page="advanced" resolve={resolveRoute} />
-    <HTML page="base" resolve={resolveRoute} />
-  </AppRouter>
-);
-
-const DocsNav = () => (
-  <Fragment>
-    <Link to="route" activeClass="active">
-      Route
-    </Link>
-    <Link to="state" activeClass="active">
-      State
-    </Link>
-    <NavRouter defaultPage="state" className="nav-router">
-      <div page="route">
-        <Link to="advanced" activeClass="active">
-          Advanced
-        </Link>
-        <Link to="base" activeClass="active">
-          Base
-        </Link>
-      </div>
-      <div page="state">
-        <Link to="intro" activeClass="active">
-          Introduction
-        </Link>
-        <Link to="stuff" activeClass="active">
-          Stuff
-        </Link>
-      </div>
-    </NavRouter>
-  </Fragment>
-);
-
-const docsStyle = {
-  position: 'relative',
-  left: sidebar.sidebarStore.open ? 125 : 0
-};
-
-const DocsContent = () => (
-  <AppRouter defaultPage="state" className="page" style={docsStyle}>
-    <State page="state" />
-    <Routing page="route" />
-  </AppRouter>
-);
-
-const Docs = () => (
-  <Fragment>
-    <Sidebar>
-      <DocsNav />
-    </Sidebar>
-    <DocsContent />
-  </Fragment>
-);
+import { path } from 'react-easy-stack';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import App from './components/App';
+import Page from './components/Page';
+import Router from './components/Router';
+import { TopLink, SideLink } from './components/Link';
 
 async function resolveRoute({ page }) {
   return {
-    __html: await import(`./route/${page}.md`)
+    html: await import(`./route/${page}.md`)
   };
 }
 
 async function resolveState({ page }) {
   return {
-    __html: await import(`./state/${page}.md`)
+    html: await import(`./state/${page}.md`)
   };
 }
 
+const State = () => (
+  <Router defaultPage="intro">
+    <Page page="intro" resolve={resolveState} />
+    <Page page="stuff" resolve={resolveState} />
+  </Router>
+);
+
+const Routing = () => (
+  <Router defaultPage="advanced">
+    <Page page="advanced" resolve={resolveRoute} />
+    <Page page="base" resolve={resolveRoute} />
+  </Router>
+);
+
+const DocsContent = () => (
+  <Router defaultPage="state">
+    <State page="state" />
+    <Routing page="route" />
+  </Router>
+);
+
+const DocsNav = () => (
+  <Router defaultPage="docs">
+    <div page="docs">
+      <SideLink to="route">Route</SideLink>
+      <SideLink to="state">State</SideLink>
+      <Router defaultPage="state">
+        <div page="route">
+          <SideLink to="advanced">Advanced</SideLink>
+          <SideLink to="base">Base</SideLink>
+        </div>
+        <div page="state">
+          <SideLink to="intro">Introduction</SideLink>
+          <SideLink to="stuff">Stuff</SideLink>
+        </div>
+      </Router>
+    </div>
+  </Router>
+);
+
 const Content = () => (
-  <AppRouter defaultPage="home" className="app">
-    <h2 page="home" className="page">
-      HOME
-    </h2>
-    <h2 page="examples" className="page">
-      EXAMPLES
-    </h2>
-    <Docs page="docs" />
-  </AppRouter>
+  <Router defaultPage="home">
+    <Page page="home">HOME</Page>
+    <Page page="examples">EXAMPLES</Page>
+    <DocsContent page="docs" />
+  </Router>
 );
 
 const Nav = () => (
-  <div className="topbar">
-    <GithubIcon className="github-icon" />
-    <div className="navbar">
-      <Link to="home" activeClass="active">
-        Home
-      </Link>
-      <Link to="docs" activeClass="active">
-        Docs
-      </Link>
-      <Link to="examples" activeClass="active">
-        Examples
-      </Link>
-    </div>
-  </div>
+  <Fragment>
+    <TopLink to="home">Home</TopLink>
+    <TopLink to="docs">Docs</TopLink>
+    <TopLink to="examples">Examples</TopLink>
+  </Fragment>
 );
 
 export default () => (
-  <div>
-    <Nav />
-    <Content />
-    <button id="chat-toggle">
-      <ChatIcon size={25} />
-    </button>
-  </div>
+  <Fragment>
+    <Topbar>
+      <Nav />
+    </Topbar>
+    <Sidebar>
+      <DocsNav />
+    </Sidebar>
+    <App>
+      <Content />
+    </App>
+  </Fragment>
 );
