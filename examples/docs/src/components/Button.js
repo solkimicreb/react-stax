@@ -19,6 +19,7 @@ export default styled.button`
     props.dark ? colors.background : colors.backgroundLight};
   width: ${props => getSize(props.size)};
   height: ${props => getSize(props.size)};
+  border: 1px solid ${colors.textLight};
   border-radius: ${props => (props.round ? getSize(props.size) : '3px')};
   cursor: pointer;
   transition: color 0.2s ${ease.both};

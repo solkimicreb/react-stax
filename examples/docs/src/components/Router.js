@@ -2,6 +2,7 @@ import React from 'react';
 import { Router } from 'react-easy-stack';
 import styled from 'styled-components';
 import { ease } from './theme';
+import * as sidebar from './Sidebar';
 
 const enterAnimation = {
   keyframes: {
@@ -32,6 +33,7 @@ const StyledRouter = styled(Router)`
 export default ({ children, ...props }) => (
   <StyledRouter
     {...props}
+    onRoute={sidebar.close}
     enterAnimation={enterAnimation}
     leaveAnimation={leaveAnimation}
   >

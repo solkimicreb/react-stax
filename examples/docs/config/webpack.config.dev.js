@@ -10,6 +10,10 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
+const Prism = require('prismjs');
+const loadLanguages = require('prismjs/components/index.js');
+loadLanguages(['jsx', 'bash']);
+
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 const publicPath = '/';
@@ -125,7 +129,15 @@ module.exports = {
             loader: 'raw-loader'
           },
           {
-            loader: 'markdown-loader'
+            loader: 'markdown-loader',
+            options: {
+              highlight(code, lang) {
+                console.warn(
+                  Prism.highlight(code, Prism.languages[lang], lang)
+                );
+                return Prism.highlight(code, Prism.languages[lang], lang);
+              }
+            }
           }
         ]
       },

@@ -10,7 +10,7 @@ const StyledApp = styled.main`
   position: relative;
   left: ${props => (props.withSidebar ? `${layout.sidebarWidth / 2}px` : 0)};
   max-width: ${layout.appWidth}px;
-  margin: 50px auto;
+  margin: ${layout.topbarHeight + 15}px auto;
 `;
 
 const ChatToggle = Button.extend`

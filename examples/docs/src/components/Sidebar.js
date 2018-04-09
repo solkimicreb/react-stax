@@ -24,20 +24,18 @@ export function isDocked() {
   return sidebarStore.docked;
 }
 
-const StyledToggle = styled.span`
-  cursor: pointer;
-  font-size: 25px;
-  color: ${colors.textLight};
-  float: left;
-  margin-left: 15px;
-`;
+export function close() {
+  if (!sidebarStore.docked) {
+    sidebarStore.open = false;
+  }
+}
 
 export const Toggle = view(
   () =>
     sidebarStore.docked ? null : (
-      <StyledToggle onClick={toggle}>
+      <span onClick={toggle}>
         <MenuIcon />
-      </StyledToggle>
+      </span>
     )
 );
 
@@ -51,7 +49,7 @@ const StyledSidebar = styled.nav`
   border-right: 1px solid #ddd;
   padding: 10px;
   background-color: ${colors.backgroundLight}
-  transition: all 0.2s ${props => (props.open ? ease.out : ease.in)};
+  transition: all 0.1s ${props => (props.open ? ease.out : ease.in)};
   transform: ${props => (props.open ? 'none' : 'translateX(-250px)')};
 `;
 

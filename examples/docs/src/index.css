@@ -11,3 +11,10 @@
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: solid 1px lightgray;
 }
+
+pre {
+  background-color: #24292e !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  color: #f8f8f2;
+}

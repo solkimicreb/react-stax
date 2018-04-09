@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledPage = styled.div`
-  padding: 20px;
+  padding: 10px;
 `;
 
 export default ({ html, children, ...props }) =>

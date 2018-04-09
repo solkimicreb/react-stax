@@ -41,7 +41,7 @@ Easy State has two rules.
 1.  Always wrap you components with `view`.
 2.  Always wrap you state store objects with `store`.
 
-```js
+```jsx
 import React from 'react';
 import { store, view } from 'react-easy-state';
 
@@ -57,12 +57,9 @@ This is enough for it to automatically update your views when needed - no matter
 
 `npm install react-easy-state`
 
-<details>
-<summary><strong>Setting up a quick project</strong></summary>
-
 Easy State supports [Create React App](https://github.com/facebookincubator/create-react-app) without additional configuration. Just run the following commands to get started.
 
-```sh
+```bash
 npx create-react-app my-app
 cd my-app
 npm install react-easy-state
@@ -71,15 +68,13 @@ npm start
 
 _You need npm 5.2+ to use npx._
 
-</details>
-
 ## Usage
 
 ### Creating stores
 
 `store` creates a state store from the passed object and returns it. State stores are just like normal JS objects. (To be precise, they are transparent reactive proxies of the original object.)
 
-```js
+```jsx
 import { store } from 'react-easy-state';
 
 const user = store({

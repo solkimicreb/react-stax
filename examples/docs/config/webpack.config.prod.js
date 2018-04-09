@@ -8,8 +8,13 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const hljs = require('highlight.js');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
+
+const Prism = require('prismjs');
+const loadLanguages = require('prismjs/components/index.js');
+loadLanguages(['jsx', 'bash']);
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -129,7 +134,15 @@ module.exports = {
             loader: 'raw-loader'
           },
           {
-            loader: 'markdown-loader'
+            loader: 'markdown-loader',
+            options: {
+              highlight(code, lang) {
+                console.warn(
+                  Prism.highlight(code, Prism.languages[lang], lang)
+                );
+                return Prism.highlight(code, Prism.languages[lang], lang);
+              }
+            }
           }
         ]
       },

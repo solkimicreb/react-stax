@@ -2,8 +2,9 @@ import React from 'react';
 import { view } from 'react-easy-stack';
 import styled from 'styled-components';
 import GithubIcon from 'react-icons/lib/fa/github';
-import { colors, layout } from './theme';
+import { colors, layout, ease } from './theme';
 import { Toggle as SidebarToggle } from './Sidebar';
+import Icon from './Icon';
 
 const StyledTopbar = styled.nav`
   position: fixed;
@@ -19,23 +20,31 @@ const StyledTopbar = styled.nav`
 const StyledNavbar = styled.div`
   max-width: ${layout.appWidth}px;
   margin: auto;
+  text-align: center;
 `;
 
-const StyledIcon = styled.span`
-  cursor: pointer;
-  font-size: 30px;
-  color: ${colors.textLight};
+const LeftIcon = Icon.extend`
+  float: left;
+  position: relative;
+  left: 10px;
+  top: 8px;
+`;
+
+const RightIcon = Icon.extend`
   float: right;
-  margin-right: 15px;
+  position: relative;
+  right: 10px;
+  top: 4px;
 `;
 
-// float right and left (the icons)
 export default view(({ children }) => (
   <StyledTopbar>
-    <SidebarToggle />
-    <StyledIcon>
+    <LeftIcon size={25}>
+      <SidebarToggle />
+    </LeftIcon>
+    <RightIcon>
       <GithubIcon />
-    </StyledIcon>
+    </RightIcon>
     <StyledNavbar>{children}</StyledNavbar>
   </StyledTopbar>
 ));
