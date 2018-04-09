@@ -20,26 +20,26 @@ const StyledTopbar = styled.nav`
 const StyledNavbar = styled.div`
   max-width: ${layout.appWidth}px;
   margin: auto;
-  text-align: center;
+  padding-left: 45px;
 `;
 
 const LeftIcon = Icon.extend`
   float: left;
   position: relative;
-  left: 10px;
-  top: 8px;
+  left: 15px;
+  top: 10px;
 `;
 
 const RightIcon = Icon.extend`
   float: right;
   position: relative;
-  right: 10px;
+  right: 15px;
   top: 4px;
 `;
 
 export default view(({ children }) => (
   <StyledTopbar>
-    <LeftIcon size={25}>
+    <LeftIcon size={20}>
       <SidebarToggle />
     </LeftIcon>
     <RightIcon>

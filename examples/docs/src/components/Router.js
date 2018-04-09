@@ -8,7 +8,7 @@ const enterAnimation = {
   keyframes: {
     opacity: [0, 1]
   },
-  duration: 200,
+  duration: 175,
   ease: ease.in
 };
 
@@ -16,7 +16,7 @@ const leaveAnimation = {
   keyframes: {
     opacity: [1, 0]
   },
-  duration: 200,
+  duration: 150,
   ease: ease.out
 };
 

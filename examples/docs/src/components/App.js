@@ -15,8 +15,8 @@ const StyledApp = styled.main`
 
 const ChatToggle = Button.extend`
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  right: 10px;
+  bottom: 10px;
 `;
 
 export default view(({ children }) => (

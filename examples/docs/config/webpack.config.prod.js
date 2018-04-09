@@ -137,9 +137,6 @@ module.exports = {
             loader: 'markdown-loader',
             options: {
               highlight(code, lang) {
-                console.warn(
-                  Prism.highlight(code, Prism.languages[lang], lang)
-                );
                 return Prism.highlight(code, Prism.languages[lang], lang);
               }
             }

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { path } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
+import SideSection from './components/SideSection';
 import App from './components/App';
 import Page from './components/Page';
 import Router from './components/Router';
@@ -43,18 +44,14 @@ const DocsContent = () => (
 const DocsNav = () => (
   <Router defaultPage="docs">
     <div page="docs">
-      <SideLink to="route">Route</SideLink>
-      <SideLink to="state">State</SideLink>
-      <Router defaultPage="state">
-        <div page="route">
-          <SideLink to="advanced">Advanced</SideLink>
-          <SideLink to="base">Base</SideLink>
-        </div>
-        <div page="state">
-          <SideLink to="intro">Introduction</SideLink>
-          <SideLink to="stuff">Stuff</SideLink>
-        </div>
-      </Router>
+      <SideSection name="route">
+        <SideLink to="advanced">Advanced</SideLink>
+        <SideLink to="base">Base</SideLink>
+      </SideSection>
+      <SideSection name="state">
+        <SideLink to="intro">Introduction</SideLink>
+        <SideLink to="stuff">Stuff</SideLink>
+      </SideSection>
     </div>
   </Router>
 );

@@ -10,7 +10,8 @@ export const colors = {
 export const layout = {
   topbarHeight: 50,
   sidebarWidth: 250,
-  appWidth: 800
+  appWidth: 800,
+  touchZone: 50
 };
 
 export const ease = {

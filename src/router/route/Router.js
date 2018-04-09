@@ -5,6 +5,8 @@ import { path, params } from '../integrations';
 import { defaults, log } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
+const DUMMY_CHILD = { props: {} };
+
 export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string.isRequired,
@@ -41,11 +43,11 @@ export default class Router extends PureComponent {
   }
 
   init(fromPage, toPage, fromParams) {
-    const toChild = this.selectChild(toPage);
+    const toChild = this.selectChild(toPage) || DUMMY_CHILD;
     const { onRoute, defaultPage } = this.props;
     const { defaultParams } = toChild.props;
-    toPage = toChild.props.page;
 
+    toPage = toChild.props.page;
     path.splice(this.depth, Infinity, toPage);
     if (defaultParams) {
       defaults(params, defaultParams);
