@@ -14,7 +14,7 @@ export const historyHandler = isNode
   : handler => window.addEventListener('popstate', handler);
 export const anchor = 'a';
 export const div = 'div';
-export const normalizeProps = props => props;
+export const span = 'span';
 
 export function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases

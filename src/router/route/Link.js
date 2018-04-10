@@ -1,12 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
-import {
-  integrationScheduler as scheduler,
-  location,
-  anchor,
-  normalizeProps
-} from 'env';
+import { integrationScheduler as scheduler, location, anchor, span } from 'env';
 import { toPathArray, toQuery, addExtraProps } from '../utils';
 import { params, path } from '../integrations';
 import { routeFromDepth } from './core';
@@ -30,7 +25,8 @@ export default class Link extends PureComponent {
   };
 
   static defaultProps = {
-    element: anchor,
+    // rework this later! to be RN compatible
+    element: span,
     activeClass: '',
     className: '',
     style: {}
@@ -38,7 +34,7 @@ export default class Link extends PureComponent {
 
   state = {};
 
-  get linkDepth() {
+  get depth() {
     const { to } = this.props;
     const depth = this.context.easyRouterDepth || 0;
     const isRelative = !to || to[0] !== '/';
@@ -64,7 +60,7 @@ export default class Link extends PureComponent {
     const { to } = this.props;
     if (to) {
       const linkPath = toPathArray(to);
-      return linkPath.every((page, i) => page === path[i + this.linkDepth]);
+      return linkPath.every((page, i) => page === path[i + this.depth]);
     }
     return true;
   }
@@ -82,26 +78,20 @@ export default class Link extends PureComponent {
   }
 
   onClick = ev => {
+    const { params, options, to } = this.props;
+    routeFromDepth(to, params, options, this.depth);
     ev.preventDefault();
-    const { onClick, onPress, params, options, to } = this.props;
-    if (onClick) {
-      onClick(ev);
-    } else if (onPress) {
-      onPress(ev);
-    }
-
-    routeFromDepth(to, params, options, this.linkDepth);
   };
 
   render() {
     let {
       to,
+      params,
       element,
       children,
       activeClass,
       activeStyle,
       style,
-      params,
       className
     } = this.props;
     const { isActive } = this.state;
@@ -117,17 +107,10 @@ export default class Link extends PureComponent {
     // calculate it from depth, to, location.pathname
     const href = (to || location.pathname) + toQuery(params);
 
-    const link = React.createElement(
-      anchor,
-      normalizeProps({ onClick, href }),
-      children
+    return React.createElement(
+      element,
+      addExtraProps({ className, style }, this.props, Link.propTypes),
+      React.createElement(anchor, { onClick, href }, children)
     );
-
-    const props = normalizeProps(
-      addExtraProps({ className, style }, this.props, Link.propTypes)
-    );
-    return element === anchor
-      ? React.cloneElement(link, props, children)
-      : React.createElement(element, props, link);
   }
 }

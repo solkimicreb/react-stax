@@ -7,29 +7,28 @@ import Page from './components/Page';
 import Router from './components/Router';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 
-async function resolveRoute({ page }) {
-  return {
-    html: await import(`./route/${page}.md`)
-  };
+async function resolveRoute({ toPage = 'base' }) {
+  const html = await import(`./route/${toPage}.md`);
+  return <Page html={html} />;
 }
 
-async function resolveState({ page }) {
-  return {
-    html: await import(`./state/${page}.md`)
-  };
+async function resolveState({ toPage = 'intro' }) {
+  console.log('resolve state', toPage);
+  const html = await import(`./state/${toPage}.md`);
+  return <Page page={toPage} html={html} />;
 }
 
 const State = () => (
-  <Router defaultPage="intro">
-    <Page page="intro" resolve={resolveState} />
-    <Page page="stuff" resolve={resolveState} />
+  <Router defaultPage="intro" onRoute={resolveState}>
+    <Page page="intro" />
+    <Page page="stuff" />
   </Router>
 );
 
 const Routing = () => (
-  <Router defaultPage="advanced">
-    <Page page="advanced" resolve={resolveRoute} />
-    <Page page="base" resolve={resolveRoute} />
+  <Router defaultPage="advanced" onRoute={resolveRoute}>
+    <Page page="advanced" />
+    <Page page="base" />
   </Router>
 );
 
@@ -41,20 +40,18 @@ const DocsContent = () => (
 );
 
 const DocsNav = () => (
-  <Router defaultPage="docs">
-    <OriginalRouter page="docs" defaultPage="state">
-      <SideSectionLink to="/docs/state">State</SideSectionLink>
-      <div page="state">
-        <SideLink to="intro">Introduction</SideLink>
-        <SideLink to="stuff">Stuff</SideLink>
-      </div>
-      <SideSectionLink to="/docs/route">Route</SideSectionLink>
-      <div page="route">
-        <SideLink to="advanced">Advanced</SideLink>
-        <SideLink to="base">Base</SideLink>
-      </div>
-    </OriginalRouter>
-  </Router>
+  <div>
+    <SideSectionLink to="/docs/state">State</SideSectionLink>
+    <div page="state">
+      <SideLink to="/docs/state/intro">Introduction</SideLink>
+      <SideLink to="/docs/state/stuff">Stuff</SideLink>
+    </div>
+    <SideSectionLink to="/docs/route">Route</SideSectionLink>
+    <div page="route">
+      <SideLink to="/docs/route/advanced">Advanced</SideLink>
+      <SideLink to="/docs/route/base">Base</SideLink>
+    </div>
+  </div>
 );
 
 const Content = () => (

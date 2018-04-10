@@ -36,7 +36,6 @@ export default view(({ children, ...props }) => {
   return (
     <StyledRouter
       {...props}
-      onRoute={sidebar.close}
       enterAnimation={enterAnimation}
       leaveAnimation={leaveAnimation}
     >

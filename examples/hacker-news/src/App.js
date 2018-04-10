@@ -23,13 +23,13 @@ const leaveAnimation = {
 };
 
 function onRoute({ toPage }) {
-  if (toPage === 'stories') {
-    params.type = params.type || 'top';
-    return resolveStories();
-  } else if (toPage === 'story') {
+  if (toPage === 'story') {
     return resolveStory();
   } else if (toPage === 'user') {
     return resolveUser();
+  } else {
+    params.type = params.type || 'top';
+    return resolveStories();
   }
 }
 

@@ -100,9 +100,6 @@ function onRoutingEnd(options) {
   integrationScheduler.start();
 }
 
-// issue -> it should take the state I was transitioned from (the next state)
-// if I am going forward nextState.animate
-// else prevState.animate
 historyHandler(() =>
   route({
     to: location.pathname,
