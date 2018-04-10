@@ -13,7 +13,7 @@
   max-width: 900px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
-  transition: color .3s;
+  transition: color 0.3s;
 }
 
 .topnav .links {
@@ -30,10 +30,11 @@
 
 .topnav a {
   margin: 0 15px;
-  transition: .3s color;
+  transition: 0.3s color;
 }
 
-.topnav a.active, .topnav a:hover {
+.topnav a.active,
+.topnav a:hover {
   color: rgba(255, 255, 255, 1);
 }
 
@@ -74,7 +75,7 @@ a {
   --accent-color: #0366d6;
   --bg-color: #242938;
 
-  transition: color .2s, background-color .2s;
+  transition: color 0.2s, background-color 0.2s;
 
   color: var(--text-color);
   background-color: var(--bg-color);
@@ -86,7 +87,16 @@ a {
 .router {
   max-width: 900px;
   margin: auto;
-  transition: .15s opacity;
+  position: relative;
+  transition: 0.15s opacity;
+}
+
+.router > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .router.enter {

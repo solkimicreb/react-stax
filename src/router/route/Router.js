@@ -2,7 +2,7 @@ import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
 import { div, normalizeProps, animate } from 'env';
 import { path, params } from '../integrations';
-import { defaults, log } from '../utils';
+import { log, addExtraProps } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {
@@ -10,9 +10,7 @@ export default class Router extends PureComponent {
     defaultPage: PropTypes.string.isRequired,
     onRoute: PropTypes.func,
     enterAnimation: PropTypes.object,
-    leaveAnimation: PropTypes.object,
-    className: PropTypes.string,
-    style: PropTypes.object
+    leaveAnimation: PropTypes.object
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -42,60 +40,49 @@ export default class Router extends PureComponent {
 
   update(fromPage, toPage, fromParams, status) {
     return Promise.resolve()
-      .then(() => this.init(fromPage, toPage, fromParams))
-      .then(toChild => this.resolve(toChild, status))
+      .then(() => this.init(toPage))
+      .then(toPage => this.resolve(fromPage, toPage, fromParams, status))
       .then(nextState => this.switch(nextState, status));
   }
 
-  init(fromPage, toPage, fromParams) {
+  init(toPage) {
     const { onRoute, defaultPage } = this.props;
     const toChild = this.selectChild(toPage);
-    const { defaultParams } = toChild.props;
+    // if no child found, leave toPage as it is!
 
     toPage = toChild.props.page;
     path.splice(this.depth, Infinity, toPage);
 
-    if (defaultParams) {
-      defaults(params, defaultParams);
-    }
-
     // improve this -> also this is only needed if I have a leaveAnimation
-    this.fromDOM =
-      this.container &&
-      this.container.firstElementChild &&
-      this.container.firstElementChild.cloneNode(true);
+    const { firstElementChild } = this.container;
+    this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
 
-    if (!onRoute) {
-      return Promise.resolve(toChild);
-    }
-
-    return Promise.resolve()
-      .then(() =>
-        onRoute({
-          target: this,
-          fromPage,
-          toPage,
-          fromParams,
-          toParams: params
-        })
-      )
-      .then(() => toChild);
+    return toPage;
   }
 
-  resolve(toChild, status) {
-    const { resolve, timeout, page: toPage } = toChild.props;
+  resolve(fromPage, toPage, fromParams, status) {
+    const { onRoute, timeout } = this.props;
+
     const nextState = {
       toPage,
       resolvedData: undefined,
       pageResolved: undefined
     };
 
-    if (resolve) {
+    if (onRoute) {
       const resolveThreads = [];
       let timedout;
 
       const resolveThread = Promise.resolve()
-        .then(() => resolve(toChild.props))
+        .then(() =>
+          onRoute({
+            target: this,
+            fromPage,
+            toPage,
+            fromParams,
+            toParams: params
+          })
+        )
         .then(
           resolvedData =>
             Object.assign(nextState, { resolvedData, pageResolved: true }),
@@ -177,7 +164,7 @@ export default class Router extends PureComponent {
 
   // the other router is reused!!
   render() {
-    const { className, style } = this.props;
+    const { onRoute } = this.props;
     const { toPage, resolvedData, pageResolved } = this.state;
 
     // if the pages changed I need create a new comp!!
@@ -191,17 +178,19 @@ export default class Router extends PureComponent {
     } else {
       /// I should probably still clone here to make a fresh child on each render!
       toChild = this.selectChild(toPage);
-      if (toChild.props.resolve) {
+      if (onRoute) {
         toChild = React.cloneElement(
-          this.selectChild(toPage),
-          Object.assign({}, { pageResolved }, resolvedData)
+          toChild,
+          Object.assign({ pageResolved }, resolvedData)
         );
       }
     }
 
     return React.createElement(
       div,
-      normalizeProps({ className, style, ref: this.saveRef }),
+      normalizeProps(
+        addExtraProps({ ref: this.saveRef }, this.props, Router.propTypes)
+      ),
       toChild
     );
   }

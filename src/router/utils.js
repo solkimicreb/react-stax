@@ -1,69 +1,78 @@
-export function toPathArray (path) {
-  return path.split('/').filter(notEmpty)
+export function toPathArray(path) {
+  return path.split('/').filter(notEmpty);
 }
 
-export function toPathString (path) {
-  return '/' + path.filter(notEmpty).join('/')
+export function toPathString(path) {
+  return '/' + path.filter(notEmpty).join('/');
 }
 
-export function toQuery (params) {
-  const queryTokens = []
+export function toQuery(params) {
+  const queryTokens = [];
 
   for (let key in params) {
-    let value = params[key]
+    let value = params[key];
     if (value !== undefined && value !== '') {
-      key = encodeURIComponent(key)
-      value = encodeURIComponent(JSON.stringify(value))
-      queryTokens.push(`${key}=${value}`)
+      key = encodeURIComponent(key);
+      value = encodeURIComponent(JSON.stringify(value));
+      queryTokens.push(`${key}=${value}`);
     }
   }
-  return queryTokens.length ? '?' + queryTokens.join('&') : ''
+  return queryTokens.length ? '?' + queryTokens.join('&') : '';
 }
 
-export function toParams (queryString) {
+export function toParams(queryString) {
   const queryTokens = queryString
     .slice(1)
     .split('&')
-    .filter(notEmpty)
+    .filter(notEmpty);
 
-  const params = {}
+  const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split('=')
-    const key = decodeURIComponent(keyValue[0])
-    const value = JSON.parse(decodeURIComponent(keyValue[1]))
-    params[key] = value
+    const keyValue = token.split('=');
+    const key = decodeURIComponent(keyValue[0]);
+    const value = JSON.parse(decodeURIComponent(keyValue[1]));
+    params[key] = value;
   }
-  return params
+  return params;
 }
 
-export function notEmpty (token) {
-  return token !== ''
+export function notEmpty(token) {
+  return token !== '';
 }
 
-export function rethrow (fn) {
+export function rethrow(fn) {
   return error => {
-    fn()
-    throw error
-  }
+    fn();
+    throw error;
+  };
 }
 
-export function log (fn) {
+export function log(fn) {
   return error => {
-    console.error(error)
-    fn()
-  }
+    console.error(error);
+    fn();
+  };
 }
 
-export function clear (obj) {
+export function clear(obj) {
   for (let key of Object.keys(obj)) {
-    delete obj[key]
+    delete obj[key];
   }
 }
 
-export function defaults (obj, defaultProps) {
+export function defaults(obj, defaultProps) {
   for (let key in defaultProps) {
     if (obj[key] === undefined) {
-      obj[key] = defaultProps[key]
+      obj[key] = defaultProps[key];
     }
   }
+}
+
+export function addExtraProps(props, extraProps, defaultProps) {
+  for (let key in extraProps) {
+    if (!(key in defaultProps)) {
+      props[key] = extraProps[key];
+    }
+  }
+  return props;
 }

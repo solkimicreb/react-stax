@@ -7,7 +7,7 @@ import {
   anchor,
   normalizeProps
 } from 'env';
-import { toPathArray, toQuery } from '../utils';
+import { toPathArray, toQuery, addExtraProps } from '../utils';
 import { params, path } from '../integrations';
 import { routeFromDepth } from './core';
 
@@ -18,11 +18,11 @@ export default class Link extends PureComponent {
     element: PropTypes.any,
     params: PropTypes.object,
     options: PropTypes.object,
+    onClick: PropTypes.function,
     className: PropTypes.string,
     style: PropTypes.object,
     activeClass: PropTypes.string,
-    activeStyle: PropTypes.object,
-    onClick: PropTypes.func
+    activeStyle: PropTypes.object
   };
 
   static contextTypes = {
@@ -122,17 +122,12 @@ export default class Link extends PureComponent {
       normalizeProps({ onClick, href }),
       children
     );
-    if (element === anchor) {
-      return React.cloneElement(
-        link,
-        normalizeProps({ className, style }),
-        children
-      );
-    }
-    return React.createElement(
-      element,
-      normalizeProps({ className, style }),
-      link
+
+    const props = normalizeProps(
+      addExtraProps({ className, style }, this.props, Link.propTypes)
     );
+    return element === anchor
+      ? React.cloneElement(link, props, children)
+      : React.createElement(element, props, link);
   }
 }

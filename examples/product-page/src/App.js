@@ -29,14 +29,21 @@ const leaveAnimation = {
     opacity: [1, 0],
     transform: ['none', 'translateX(10px)']
   },
-  duration: 200
+  duration: 200,
+  fill: 'both'
 };
 
 class App extends Component {
   onRoute = ({ toPage }) => {
-    if (toPage === 'product' && !appStore.isLoggedIn) {
-      route({ to: '/login' });
-      notify('You must be logged in to access the product editor page');
+    if (toPage === 'product') {
+      if (appStore.isLoggedIn) {
+        return app.resolveProduct();
+      } else {
+        route({ to: '/login' });
+        notify('You must be logged in to access the product editor page');
+      }
+    } else if (toPage === 'products') {
+      return app.search();
     }
   };
 
@@ -47,12 +54,13 @@ class App extends Component {
         <Router
           defaultPage="products"
           onRoute={this.onRoute}
-          style={appStyle}
+          timeout={800}
           enterAnimation={enterAnimation}
           leaveAnimation={leaveAnimation}
+          style={appStyle}
         >
-          <ProductList page="products" resolve={app.search} timeout={800} />
-          <ProductEditor page="product" resolve={app.resolveProduct} />
+          <ProductList page="products" />
+          <ProductEditor page="product" />
           <Login page="login" />
         </Router>
         <Notification />
