@@ -7,30 +7,18 @@ import Page from './components/Page';
 import Router from './components/Router';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 
-async function resolveRoute({ toPage = 'base' }) {
+async function resolveRoute({ toPage }) {
   const html = await import(`./route/${toPage}.md`);
-  return <Page html={html} />;
+  return <Page page={toPage} html={html} />;
 }
 
-async function resolveState({ toPage = 'intro' }) {
-  console.log('resolve state', toPage);
+async function resolveState({ toPage }) {
   const html = await import(`./state/${toPage}.md`);
   return <Page page={toPage} html={html} />;
 }
 
-const State = () => (
-  <Router defaultPage="intro" onRoute={resolveState}>
-    <Page page="intro" />
-    <Page page="stuff" />
-  </Router>
-);
-
-const Routing = () => (
-  <Router defaultPage="advanced" onRoute={resolveRoute}>
-    <Page page="advanced" />
-    <Page page="base" />
-  </Router>
-);
+const State = () => <Router defaultPage="intro" onRoute={resolveState} />;
+const Routing = () => <Router defaultPage="advanced" onRoute={resolveRoute} />;
 
 const DocsContent = () => (
   <Router defaultPage="state">

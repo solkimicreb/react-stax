@@ -42,6 +42,8 @@ export default class Router extends PureComponent {
     const { firstElementChild } = this.container;
     this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
 
+    toPage = toPage || this.props.defaultPage;
+
     return Promise.resolve()
       .then(() => this.resolve(fromPage, toPage, fromParams, status))
       .then(resolvedData => this.switch({ toPage, resolvedData }, status));
@@ -62,25 +64,18 @@ export default class Router extends PureComponent {
   }
 
   switch(nextState, status) {
-    path.splice(this.depth, Infinity, nextState.toPage);
+    this.updatePath(nextState);
 
+    // maybe I don't need a check for the first one
     return Promise.resolve()
       .then(status.check(() => this.updateState(nextState)))
       .then(status.check(() => this.animate()));
   }
 
   selectChild(toPage) {
-    const { children, defaultPage } = this.props;
-    let toChild, defaultChild;
-
-    Children.forEach(children, child => {
-      if (child.props.page === toPage) {
-        toChild = child;
-      } else if (child.props.page === defaultPage) {
-        defaultChild = child;
-      }
-    });
-    return toChild || defaultChild || null;
+    return Children.toArray(this.props.children).find(
+      child => child.props.page === toPage
+    );
   }
 
   updateState(nextState) {
@@ -106,6 +101,20 @@ export default class Router extends PureComponent {
           this.fromDOM = undefined;
         });
       }
+    }
+  }
+
+  updatePath({ toPage, resolvedData }) {
+    const toChild = React.isValidElement(resolvedData)
+      ? resolvedData
+      : this.selectChild(toPage);
+
+    if (toChild) {
+      const { page } = toChild.props;
+      if (!page) {
+        throw new Error('Router children must have a page property.');
+      }
+      path[this.depth] = page;
     }
   }
 

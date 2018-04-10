@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
-import { integrationScheduler as scheduler, location, anchor, span } from 'env';
+import { integrationScheduler as scheduler, location, anchor } from 'env';
 import { toPathArray, toQuery, addExtraProps } from '../utils';
 import { params, path } from '../integrations';
 import { routeFromDepth } from './core';
@@ -26,7 +26,7 @@ export default class Link extends PureComponent {
 
   static defaultProps = {
     // rework this later! to be RN compatible
-    element: span,
+    element: anchor,
     activeClass: '',
     className: '',
     style: {}
@@ -109,8 +109,12 @@ export default class Link extends PureComponent {
 
     return React.createElement(
       element,
-      addExtraProps({ className, style }, this.props, Link.propTypes),
-      React.createElement(anchor, { onClick, href }, children)
+      addExtraProps(
+        { href, onClick, className, style },
+        this.props,
+        Link.propTypes
+      ),
+      children
     );
   }
 }

@@ -60,15 +60,24 @@ export function routeFromDepth(
     clear(params);
   }
   Object.assign(params, newParams);
-  toPath = path.slice(0, depth).concat(toPathArray(toPath));
 
-  return switchRoutersFromDepth(toPath, depth, status, oldParams).then(
-    status.check(() => onRoutingEnd(options)),
-    rethrow(status.check(() => onRoutingEnd(options)))
+  const fromPath = path.slice();
+  toPath = path.slice(0, depth).concat(toPathArray(toPath));
+  path.splice(depth, Infinity);
+
+  return switchRoutersFromDepth(
+    fromPath,
+    toPath,
+    depth,
+    status,
+    oldParams
+  ).then(
+    status.check(() => onRoutingEnd(options, depth)),
+    rethrow(status.check(() => onRoutingEnd(options, depth)))
   );
 }
 
-function switchRoutersFromDepth(toPath, depth, status, oldParams) {
+function switchRoutersFromDepth(fromPath, toPath, depth, status, oldParams) {
   const router = routers[depth];
 
   if (!router) {
@@ -77,10 +86,10 @@ function switchRoutersFromDepth(toPath, depth, status, oldParams) {
 
   // maybe add status checks here for cancellation
   return router
-    .update(path[depth], toPath[depth], oldParams, status)
+    .update(fromPath[depth], toPath[depth], oldParams, status)
     .then(
       status.check(() =>
-        switchRoutersFromDepth(toPath, ++depth, status, oldParams)
+        switchRoutersFromDepth(fromPath, toPath, ++depth, status, oldParams)
       )
     );
 }
