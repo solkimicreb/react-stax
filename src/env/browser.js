@@ -2,9 +2,6 @@ import React from 'react';
 import { Queue, priorities } from '@nx-js/queue-util';
 import isNode, * as node from './node';
 
-export const compScheduler = isNode
-  ? node.compScheduler
-  : new Queue(priorities.SYNC);
 export const integrationScheduler = isNode
   ? node.integrationScheduler
   : new Queue(priorities.LOW);
@@ -21,7 +18,11 @@ export const normalizeProps = props => props;
 
 export function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
-  options.fill = 'both';
-  const animation = container.animate(options.keyframes, options);
-  return new Promise(resolve => (animation.onfinish = resolve));
+  // options.fill = 'both';
+  if (typeof container.animate === 'function') {
+    const animation = container.animate(options.keyframes, options);
+    return new Promise(resolve => (animation.onfinish = resolve));
+  } else {
+    console.warn('You should polyfill the webanimation API.');
+  }
 }

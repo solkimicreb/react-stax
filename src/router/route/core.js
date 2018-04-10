@@ -4,7 +4,7 @@ import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils';
 
 const routers = [];
 let routingStatus;
-let initStatuses = [];
+let initStatus;
 
 class RoutingStatus {
   check(fn) {
@@ -13,17 +13,16 @@ class RoutingStatus {
 }
 
 export function registerRouter(router, depth) {
+  if (routers[depth]) {
+    throw new Error('Parallel routers are not supported.');
+  }
   routers[depth] = router;
   // route the router if we are not routing currently
   if (!routingStatus) {
-    const status = new RoutingStatus();
-    initStatuses.push(status);
+    initStatus = initStatus || new RoutingStatus();
 
     const oldParams = Object.assign({}, params);
-    Promise.resolve()
-      .then(() => router.init(path[depth], path[depth], oldParams))
-      .then(toChild => router.resolve(toChild, status))
-      .then(nextState => router.switch(nextState, status, {}));
+    router.update(path[depth], path[depth], oldParams, initStatus);
   }
 }
 
@@ -42,9 +41,9 @@ export function routeFromDepth(
   depth = 0
 ) {
   // cancel inits
-  if (initStatuses.length) {
-    initStatuses.forEach(status => (status.cancelled = true));
-    initStatuses = [];
+  if (initStatus) {
+    initStatus.cancelled = true;
+    initStatus = undefined;
   }
   if (routingStatus) {
     routingStatus.cancelled = true;
@@ -78,9 +77,7 @@ function switchRoutersFromDepth(toPath, depth, status, oldParams) {
 
   // maybe add status checks here for cancellation
   return router
-    .init(path[depth], toPath[depth], oldParams)
-    .then(child => router.resolve(child, status))
-    .then(state => router.switch(state, status))
+    .update(path[depth], toPath[depth], oldParams, status)
     .then(
       status.check(() =>
         switchRoutersFromDepth(toPath, ++depth, status, oldParams)

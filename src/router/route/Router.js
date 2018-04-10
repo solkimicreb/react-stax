@@ -40,19 +40,30 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth);
   }
 
+  update(fromPage, toPage, fromParams, status) {
+    return Promise.resolve()
+      .then(() => this.init(fromPage, toPage, fromParams))
+      .then(toChild => this.resolve(toChild, status))
+      .then(nextState => this.switch(nextState, status));
+  }
+
   init(fromPage, toPage, fromParams) {
     const { onRoute, defaultPage } = this.props;
     const toChild = this.selectChild(toPage);
     const { defaultParams } = toChild.props;
 
-    // what if the master router is only loading later??
     toPage = toChild.props.page;
-    path[this.depth] = toPage;
-    // this was not okay -> what's up with lazy loaded parallel root routers
-    // path.splice(this.depth, Infinity, toPage);
+    path.splice(this.depth, Infinity, toPage);
+
     if (defaultParams) {
       defaults(params, defaultParams);
     }
+
+    // improve this -> also this is only needed if I have a leaveAnimation
+    this.fromDOM =
+      this.container &&
+      this.container.firstElementChild &&
+      this.container.firstElementChild.cloneNode(true);
 
     if (!onRoute) {
       return Promise.resolve(toChild);
@@ -65,13 +76,7 @@ export default class Router extends PureComponent {
           fromPage,
           toPage,
           fromParams,
-          toParams: params,
-          preventDefault: fallback =>
-            this.route(
-              fromPage === toPage
-                ? fallback || { to: defaultPage }
-                : { to: fromPage, params: fromParams }
-            )
+          toParams: params
         })
       )
       .then(() => toChild);
@@ -84,12 +89,6 @@ export default class Router extends PureComponent {
       resolvedData: undefined,
       pageResolved: undefined
     };
-
-    // improve this -> also this is only needed if I have a leaveAnimation
-    this.fromDOM =
-      this.container &&
-      this.container.firstElementChild &&
-      this.container.firstElementChild.cloneNode(true);
 
     if (resolve) {
       const resolveThreads = [];
@@ -124,12 +123,9 @@ export default class Router extends PureComponent {
   }
 
   switch(nextState, status) {
-    const { toPage: fromPage } = this.state;
-    const { toPage } = nextState;
-
     return Promise.resolve()
       .then(status.check(() => this.updateState(nextState)))
-      .then(status.check(() => this.animate(fromPage, toPage)));
+      .then(status.check(() => this.animate()));
   }
 
   selectChild(toPage) {
@@ -159,18 +155,17 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(fromPage, toPage) {
+  animate() {
     const { enterAnimation, leaveAnimation } = this.props;
-    const shouldAnimate = fromPage !== toPage; // maybe check if we have both fromDOM and toDOM
-
     const fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
-    if (shouldAnimate) {
-      if (enterAnimation && toDOM) {
+    // use the animate prop here to decide when to animate
+    if (fromDOM && toDOM) {
+      if (enterAnimation) {
         animate(enterAnimation, toDOM);
       }
-      if (leaveAnimation && fromDOM) {
+      if (leaveAnimation) {
         this.container.appendChild(fromDOM);
         animate(leaveAnimation, fromDOM).then(() => {
           this.container.removeChild(fromDOM);

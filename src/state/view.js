@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { observe, unobserve } from '@nx-js/observer-util';
-import { compScheduler } from 'env';
 
 const DUMMY_STATE = {};
 
@@ -26,12 +25,8 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
 
       // create a reactive render for the component
       // run a dummy setState to schedule a new reactive render, avoid forceUpdate
-      const updater = () => this.setState(DUMMY_STATE);
       this.render = observe(this.render, {
-        scheduler: updater /*{
-          add: () => compScheduler.add(updater),
-          delete: () => compScheduler.delete(updater)
-        },*/,
+        scheduler: () => this.setState(DUMMY_STATE),
         lazy: true,
         debugger: devtool
       });

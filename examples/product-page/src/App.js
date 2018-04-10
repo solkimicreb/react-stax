@@ -19,8 +19,8 @@ const enterAnimation = {
     opacity: [0, 1],
     transform: ['translateX(-10px)', 'none']
   },
-  delay: 2000,
-  duration: 2000,
+  delay: 200,
+  duration: 200,
   fill: 'both'
 };
 
@@ -29,11 +29,11 @@ const leaveAnimation = {
     opacity: [1, 0],
     transform: ['none', 'translateX(10px)']
   },
-  duration: 2000
+  duration: 200
 };
 
 class App extends Component {
-  onRoute = ({ toPage, preventDefault }) => {
+  onRoute = ({ toPage }) => {
     if (toPage === 'product' && !appStore.isLoggedIn) {
       route({ to: '/login' });
       notify('You must be logged in to access the product editor page');
@@ -50,7 +50,6 @@ class App extends Component {
           style={appStyle}
           enterAnimation={enterAnimation}
           leaveAnimation={leaveAnimation}
-          animate={true}
         >
           <ProductList page="products" resolve={app.search} timeout={800} />
           <ProductEditor page="product" resolve={app.resolveProduct} />
