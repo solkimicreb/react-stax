@@ -5,8 +5,6 @@ import { path, params } from '../integrations';
 import { defaults, log } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
-const DUMMY_CHILD = { props: {} };
-
 export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string.isRequired,
@@ -20,12 +18,12 @@ export default class Router extends PureComponent {
   static childContextTypes = { easyRouterDepth: PropTypes.number };
   static contextTypes = { easyRouterDepth: PropTypes.number };
 
-  getChildContext() {
-    return { easyRouterDepth: this.depth + 1 };
-  }
-
   get depth() {
     return this.context.easyRouterDepth || 0;
+  }
+
+  getChildContext() {
+    return { easyRouterDepth: this.depth + 1 };
   }
 
   state = {};
@@ -43,12 +41,15 @@ export default class Router extends PureComponent {
   }
 
   init(fromPage, toPage, fromParams) {
-    const toChild = this.selectChild(toPage) || DUMMY_CHILD;
     const { onRoute, defaultPage } = this.props;
+    const toChild = this.selectChild(toPage);
     const { defaultParams } = toChild.props;
 
+    // what if the master router is only loading later??
     toPage = toChild.props.page;
-    path.splice(this.depth, Infinity, toPage);
+    path[this.depth] = toPage;
+    // this was not okay -> what's up with lazy loaded parallel root routers
+    // path.splice(this.depth, Infinity, toPage);
     if (defaultParams) {
       defaults(params, defaultParams);
     }
@@ -122,22 +123,18 @@ export default class Router extends PureComponent {
     return nextState;
   }
 
-  switch(nextState, status, options, initial) {
+  switch(nextState, status) {
     const { toPage: fromPage } = this.state;
     const { toPage } = nextState;
 
     return Promise.resolve()
       .then(status.check(() => this.updateState(nextState)))
-      .then(
-        status.check(() => this.animate(fromPage, toPage, options, initial))
-      );
+      .then(status.check(() => this.animate(fromPage, toPage)));
   }
 
   selectChild(toPage) {
     const { children, defaultPage } = this.props;
     let toChild, defaultChild;
-
-    // if nothing matches!! add a warning -> there is a defaultPage but it matches with no children
 
     Children.forEach(children, child => {
       if (child.props.page === toPage) {
@@ -146,7 +143,14 @@ export default class Router extends PureComponent {
         defaultChild = child;
       }
     });
-    return toChild || defaultChild;
+
+    const selectedChild = toChild || defaultChild;
+    if (!selectedChild) {
+      throw new Error(
+        'Routers must have a defaultPage prop and a child with a matching page prop.'
+      );
+    }
+    return selectedChild;
   }
 
   updateState(nextState) {
@@ -155,15 +159,14 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(fromPage, toPage, options, initial) {
+  animate(fromPage, toPage) {
     const { enterAnimation, leaveAnimation } = this.props;
-    const shouldAnimate =
-      options.animate !== false && (options.animate || fromPage !== toPage);
+    const shouldAnimate = fromPage !== toPage; // maybe check if we have both fromDOM and toDOM
 
     const fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
-    if (initial && shouldAnimate) {
+    if (shouldAnimate) {
       if (enterAnimation && toDOM) {
         animate(enterAnimation, toDOM);
       }
@@ -183,6 +186,7 @@ export default class Router extends PureComponent {
     const { toPage, resolvedData, pageResolved } = this.state;
 
     // if the pages changed I need create a new comp!!
+    // also select children with no pages!!
     let toChild;
     if (!toPage) {
       toChild = null;

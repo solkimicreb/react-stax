@@ -1,24 +1,8 @@
 import React from 'react';
-import { Router } from 'react-easy-stack';
+import { Router, view } from 'react-easy-stack';
 import styled from 'styled-components';
 import { ease } from './theme';
 import * as sidebar from './Sidebar';
-
-const enterAnimation = {
-  keyframes: {
-    opacity: [0, 1]
-  },
-  duration: 175,
-  ease: ease.in
-};
-
-const leaveAnimation = {
-  keyframes: {
-    opacity: [1, 0]
-  },
-  duration: 150,
-  ease: ease.out
-};
 
 const StyledRouter = styled(Router)`
   position: relative;
@@ -30,13 +14,33 @@ const StyledRouter = styled(Router)`
   }
 `;
 
-export default ({ children, ...props }) => (
-  <StyledRouter
-    {...props}
-    onRoute={sidebar.close}
-    enterAnimation={enterAnimation}
-    leaveAnimation={leaveAnimation}
-  >
-    {children}
-  </StyledRouter>
-);
+export default view(({ children, ...props }) => {
+  const enterAnimation = {
+    keyframes: {
+      opacity: [0, 1]
+    },
+    delay: sidebar.isDocked() ? 0 : 140,
+    duration: 150,
+    ease: ease.in
+  };
+
+  const leaveAnimation = {
+    keyframes: {
+      opacity: [1, 0]
+    },
+    delay: sidebar.isDocked() ? 0 : 140,
+    duration: 125,
+    ease: ease.out
+  };
+
+  return (
+    <StyledRouter
+      {...props}
+      onRoute={sidebar.close}
+      enterAnimation={enterAnimation}
+      leaveAnimation={leaveAnimation}
+    >
+      {children}
+    </StyledRouter>
+  );
+});

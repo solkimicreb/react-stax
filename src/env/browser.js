@@ -14,8 +14,7 @@ export const history = isNode ? node.history : window.history;
 export const location = isNode ? node.location : window.location;
 export const historyHandler = isNode
   ? node.historyHandler
-  : handler =>
-      window.addEventListener('popstate', ev => handler(ev.state || {}));
+  : handler => window.addEventListener('popstate', handler);
 export const anchor = 'a';
 export const div = 'div';
 export const normalizeProps = props => props;

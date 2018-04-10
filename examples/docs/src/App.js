@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react';
-import { path } from 'react-easy-stack';
+import { path, Router as OriginalRouter } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
-import SideSection from './components/SideSection';
 import App from './components/App';
 import Page from './components/Page';
 import Router from './components/Router';
-import { TopLink, SideLink } from './components/Link';
+import { TopLink, SideLink, SideSectionLink } from './components/Link';
 
 async function resolveRoute({ page }) {
   return {
@@ -43,16 +42,18 @@ const DocsContent = () => (
 
 const DocsNav = () => (
   <Router defaultPage="docs">
-    <div page="docs">
-      <SideSection name="route">
-        <SideLink to="advanced">Advanced</SideLink>
-        <SideLink to="base">Base</SideLink>
-      </SideSection>
-      <SideSection name="state">
+    <OriginalRouter page="docs" defaultPage="state">
+      <SideSectionLink to="/docs/state">State</SideSectionLink>
+      <div page="state">
         <SideLink to="intro">Introduction</SideLink>
         <SideLink to="stuff">Stuff</SideLink>
-      </SideSection>
-    </div>
+      </div>
+      <SideSectionLink to="/docs/route">Route</SideSectionLink>
+      <div page="route">
+        <SideLink to="advanced">Advanced</SideLink>
+        <SideLink to="base">Base</SideLink>
+      </div>
+    </OriginalRouter>
   </Router>
 );
 

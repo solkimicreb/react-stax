@@ -82,11 +82,13 @@ export const Toggle = view(
 
 const StyledSidebar = styled.nav`
   position: fixed;
-  top: ${layout.topbarHeight}px;
+  top: 0;
   left: -250px;
   bottom: 0;
   width: ${layout.sidebarWidth}px;
-  z-index: 100;
+  margin-top: ${layout.topbarHeight}px;
+  overflow-y: scroll;
+  z-index: 40;
   border-right: 1px solid #ddd;
   padding: 10px;
   background-color: ${colors.backgroundLight}
