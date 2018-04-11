@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
-import { path, Router as OriginalRouter } from 'react-easy-stack';
+import { path, view } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import App from './components/App';
 import Page from './components/Page';
 import Router from './components/Router';
+import Notification, { notify } from './components/Notification';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 
 async function resolveRoute({ toPage }) {
@@ -20,13 +21,6 @@ async function resolveState({ toPage }) {
 const State = () => <Router defaultPage="intro" onRoute={resolveState} />;
 const Routing = () => <Router defaultPage="advanced" onRoute={resolveRoute} />;
 
-const DocsContent = () => (
-  <Router defaultPage="state">
-    <State page="state" />
-    <Routing page="route" />
-  </Router>
-);
-
 const DocsNav = () => (
   <div>
     <SideSectionLink to="/docs/state">State</SideSectionLink>
@@ -40,6 +34,18 @@ const DocsNav = () => (
       <SideLink to="/docs/route/base">Base</SideLink>
     </div>
   </div>
+);
+
+const DocsContent = () => (
+  <Fragment>
+    <Sidebar>
+      <DocsNav />
+    </Sidebar>
+    <Router defaultPage="state">
+      <State page="state" />
+      <Routing page="route" />
+    </Router>
+  </Fragment>
 );
 
 const Content = () => (
@@ -63,11 +69,9 @@ export default () => (
     <Topbar>
       <Nav />
     </Topbar>
-    <Sidebar>
-      <DocsNav />
-    </Sidebar>
     <App>
       <Content />
     </App>
+    <Notification />
   </Fragment>
 );

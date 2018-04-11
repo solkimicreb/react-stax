@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Router, view } from 'react-easy-stack';
 import styled from 'styled-components';
 import { ease } from './theme';
 import * as sidebar from './Sidebar';
+import { notify } from './Notification';
 
 const StyledRouter = styled(Router)`
   position: relative;
@@ -14,32 +15,58 @@ const StyledRouter = styled(Router)`
   }
 `;
 
-export default view(({ children, ...props }) => {
-  const enterAnimation = {
-    keyframes: {
-      opacity: [0, 1]
+function getAnimations() {
+  return {
+    enterAnimation: {
+      keyframes: {
+        opacity: [0, 1]
+        // transform: ['translateX(-400px)', 'none']
+      },
+      delay: sidebar.isDocked() ? 0 : 140,
+      fill: 'both',
+      duration: 200,
+      ease: ease.in
     },
-    delay: sidebar.isDocked() ? 0 : 140,
-    duration: 150,
-    ease: ease.in
+    leaveAnimation: {
+      keyframes: {
+        opacity: [1, 0]
+        // transform: ['none', 'translateX(400px)']
+      },
+      delay: sidebar.isDocked() ? 0 : 140,
+      fill: 'both',
+      duration: 200,
+      ease: ease.out
+    }
+  };
+}
+
+class CustomRouter extends Component {
+  onRoute = async ev => {
+    sidebar.close();
+    if (this.props.onRoute) {
+      try {
+        return await this.props.onRoute(ev);
+      } catch (err) {}
+    }
   };
 
-  const leaveAnimation = {
-    keyframes: {
-      opacity: [1, 0]
-    },
-    delay: sidebar.isDocked() ? 0 : 140,
-    duration: 125,
-    ease: ease.out
-  };
+  render() {
+    const { children, ...props } = this.props;
+    const { enterAnimation, leaveAnimation } = getAnimations();
 
-  return (
-    <StyledRouter
-      {...props}
-      enterAnimation={enterAnimation}
-      leaveAnimation={leaveAnimation}
-    >
-      {children}
-    </StyledRouter>
-  );
-});
+    return (
+      <StyledRouter
+        {...props}
+        notFoundPage="404"
+        onRoute={this.onRoute}
+        enterAnimation={enterAnimation}
+        leaveAnimation={leaveAnimation}
+      >
+        {children}
+        <div page="404">Not Found Page!</div>
+      </StyledRouter>
+    );
+  }
+}
+
+export default view(CustomRouter);

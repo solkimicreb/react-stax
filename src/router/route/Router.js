@@ -8,6 +8,7 @@ import { registerRouter, releaseRouter, routeFromDepth } from './core';
 export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string,
+    notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
     enterAnimation: PropTypes.object,
     leaveAnimation: PropTypes.object
@@ -73,9 +74,15 @@ export default class Router extends PureComponent {
   }
 
   selectChild(toPage) {
-    return Children.toArray(this.props.children).find(
-      child => child.props.page === toPage
-    );
+    const { notFoundPage } = this.props;
+    const children = Children.toArray(this.props.children);
+
+    const toChild = children.find(child => child.props.page === toPage);
+    // mounted and has no child
+    if (!toChild && this.container) {
+      return children.find(child => child.props.page === notFoundPage);
+    }
+    return toChild;
   }
 
   updateState(nextState) {
@@ -124,7 +131,6 @@ export default class Router extends PureComponent {
 
     let toChild;
     if (React.isValidElement(resolvedData)) {
-      // no need to pass pageResolved here, it would always be true
       toChild = resolvedData;
     } else {
       /// I should probably still clone here to make a fresh child on each render!
@@ -133,6 +139,8 @@ export default class Router extends PureComponent {
         toChild = React.cloneElement(toChild, resolvedData);
       }
     }
+
+    // on the very first render it displays a not found page!! -> bad!
 
     return React.createElement(
       div,
