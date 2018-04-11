@@ -39,38 +39,47 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth);
   }
 
-  update(fromPage, toPage, fromParams, status) {
-    const { firstElementChild } = this.container;
-    this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
+  route1(fromPage, toPage, fromParams) {
+    const { onRoute, leaveAnimation } = this.props;
 
-    toPage = toPage || this.props.defaultPage;
-
-    return Promise.resolve()
-      .then(() => this.resolve(fromPage, toPage, fromParams, status))
-      .then(resolvedData => this.switch({ toPage, resolvedData }, status));
-  }
-
-  resolve(fromPage, toPage, fromParams) {
-    const { onRoute } = this.props;
+    if (leaveAnimation) {
+      const { firstElementChild } = this.container;
+      this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
+    }
 
     if (onRoute) {
       return onRoute({
         target: this,
         fromPage,
-        toPage,
+        toPage: toPage || this.props.defaultPage,
         fromParams,
         toParams: params
       });
     }
   }
 
-  switch(nextState, status) {
+  route2(toPage, resolvedData) {
+    const nextState = {
+      resolvedData,
+      toPage: toPage || this.props.defaultPage
+    };
     this.updatePath(nextState);
 
-    // maybe I don't need a check for the first one
-    return Promise.resolve()
-      .then(status.check(() => this.updateState(nextState)))
-      .then(status.check(() => this.animate()));
+    return this.updateState(nextState).then(this.animate());
+  }
+
+  updatePath({ toPage, resolvedData }) {
+    const toChild = React.isValidElement(resolvedData)
+      ? resolvedData
+      : this.selectChild(toPage);
+
+    if (toChild) {
+      const { page } = toChild.props;
+      if (!page) {
+        throw new Error('Router children must have a page property.');
+      }
+      path[this.depth] = page;
+    }
   }
 
   selectChild(toPage) {
@@ -108,20 +117,6 @@ export default class Router extends PureComponent {
           this.fromDOM = undefined;
         });
       }
-    }
-  }
-
-  updatePath({ toPage, resolvedData }) {
-    const toChild = React.isValidElement(resolvedData)
-      ? resolvedData
-      : this.selectChild(toPage);
-
-    if (toChild) {
-      const { page } = toChild.props;
-      if (!page) {
-        throw new Error('Router children must have a page property.');
-      }
-      path[this.depth] = page;
     }
   }
 

@@ -4,30 +4,39 @@ import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils';
 
 const routers = [];
 let routingStatus;
-let initStatus;
+let initStatuses = [];
 
+// this is pretty bad, there can be multiple arguments
+// replace this with context and if checks
 class RoutingStatus {
   check(fn) {
-    return () => (this.cancelled ? undefined : fn());
+    return arg => (this.cancelled ? undefined : fn(arg));
   }
 }
 
 export function registerRouter(router, depth) {
-  if (routers[depth]) {
-    throw new Error('Parallel routers are not supported.');
+  if (!routers[depth]) {
+    routers[depth] = new Set();
   }
-  routers[depth] = router;
+  routers[depth].add(router);
   // route the router if we are not routing currently
   if (!routingStatus) {
-    initStatus = initStatus || new RoutingStatus();
+    const status = new RoutingStatus();
+    initStatuses.push(status);
 
     const oldParams = Object.assign({}, params);
-    router.update(path[depth], path[depth], oldParams, initStatus);
+    Promise.resolve()
+      .then(
+        status.check(() => router.route1(path[depth], path[depth], oldParams))
+      )
+      .then(
+        status.check(resolvedData => router.route2(path[depth], resolvedData))
+      );
   }
 }
 
 export function releaseRouter(router, depth) {
-  routers.splice(depth, Infinity);
+  routers[depth].delete(router);
 }
 
 export function route({ to, params, options }) {
@@ -41,9 +50,9 @@ export function routeFromDepth(
   depth = 0
 ) {
   // cancel inits
-  if (initStatus) {
-    initStatus.cancelled = true;
-    initStatus = undefined;
+  if (initStatuses.length) {
+    initStatuses.forEach(status => (status.cancelled = true));
+    initStatuses = [];
   }
   if (routingStatus) {
     routingStatus.cancelled = true;
@@ -78,15 +87,31 @@ export function routeFromDepth(
 }
 
 function switchRoutersFromDepth(fromPath, toPath, depth, status, oldParams) {
-  const router = routers[depth];
+  const routersAtDepth = Array.from(routers[depth] || []);
 
-  if (!router) {
+  if (!routersAtDepth.length) {
     return Promise.resolve();
   }
 
-  // maybe add status checks here for cancellation
-  return router
-    .update(fromPath[depth], toPath[depth], oldParams, status)
+  return Promise.resolve()
+    .then(
+      status.check(() =>
+        Promise.all(
+          routersAtDepth.map(router =>
+            router.route1(fromPath[depth], toPath[depth], oldParams)
+          )
+        )
+      )
+    )
+    .then(
+      status.check(resolvedData =>
+        Promise.all(
+          routersAtDepth.map((router, i) =>
+            router.route2(toPath[depth], resolvedData[i])
+          )
+        )
+      )
+    )
     .then(
       status.check(() =>
         switchRoutersFromDepth(fromPath, toPath, ++depth, status, oldParams)

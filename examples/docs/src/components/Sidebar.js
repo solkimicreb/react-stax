@@ -1,5 +1,5 @@
 import React from 'react';
-import { store, view, path, Switch } from 'react-easy-stack';
+import { store, view, path, Router } from 'react-easy-stack';
 import styled from 'styled-components';
 import { colors, ease, layout } from './theme';
 import MenuIcon from 'react-icons/lib/fa/bars';
@@ -72,13 +72,15 @@ function preventTouch(ev) {
 }
 
 export const Toggle = view(() => (
-  <Switch page="docs">
-    {sidebarStore.docked && (
-      <span onClick={toggle} onTouchStart={preventTouch}>
-        <MenuIcon />
-      </span>
-    )}
-  </Switch>
+  <Router>
+    <div page="docs">
+      {sidebarStore.docked && (
+        <span onClick={toggle} onTouchStart={preventTouch}>
+          <MenuIcon />
+        </span>
+      )}
+    </div>
+  </Router>
 ));
 
 const StyledSidebar = styled.nav`
