@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { store, view, path } from 'react-easy-stack';
+import { store, view, path, Switch } from 'react-easy-stack';
 import styled from 'styled-components';
 import { colors, ease, layout } from './theme';
 import MenuIcon from 'react-icons/lib/fa/bars';
@@ -72,14 +71,15 @@ function preventTouch(ev) {
   ev.stopPropagation();
 }
 
-export const Toggle = view(
-  () =>
-    sidebarStore.docked || path[0] !== 'docs' ? null : (
+export const Toggle = view(() => (
+  <Switch page="docs">
+    {sidebarStore.docked && (
       <span onClick={toggle} onTouchStart={preventTouch}>
         <MenuIcon />
       </span>
-    )
-);
+    )}
+  </Switch>
+));
 
 const StyledSidebar = styled.nav`
   position: fixed;
@@ -98,11 +98,8 @@ const StyledSidebar = styled.nav`
     `translateX(${props.open ? layout.sidebarWidth : props.touchX}px)`};
 `;
 
-export default view(({ children }) =>
-  ReactDOM.createPortal(
-    <StyledSidebar open={sidebarStore.open} touchX={sidebarStore.touchX}>
-      {children}
-    </StyledSidebar>,
-    document.getElementById('sidebar')
-  )
-);
+export default view(({ children }) => (
+  <StyledSidebar open={sidebarStore.open} touchX={sidebarStore.touchX}>
+    {children}
+  </StyledSidebar>
+));

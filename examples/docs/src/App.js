@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { path, view } from 'react-easy-stack';
+import { path, view, Switch } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import App from './components/App';
@@ -22,30 +22,27 @@ const State = () => <Router defaultPage="intro" onRoute={resolveState} />;
 const Routing = () => <Router defaultPage="advanced" onRoute={resolveRoute} />;
 
 const DocsNav = () => (
-  <div>
-    <SideSectionLink to="/docs/state">State</SideSectionLink>
-    <div page="state">
-      <SideLink to="/docs/state/intro">Introduction</SideLink>
-      <SideLink to="/docs/state/stuff">Stuff</SideLink>
-    </div>
-    <SideSectionLink to="/docs/route">Route</SideSectionLink>
-    <div page="route">
-      <SideLink to="/docs/route/advanced">Advanced</SideLink>
-      <SideLink to="/docs/route/base">Base</SideLink>
-    </div>
-  </div>
+  <Switch page="docs">
+    <Sidebar>
+      <SideSectionLink to="state">State</SideSectionLink>
+      <Switch page="state">
+        <SideLink to="intro">Introduction</SideLink>
+        <SideLink to="stuff">Stuff</SideLink>
+      </Switch>
+      <SideSectionLink to="route">Route</SideSectionLink>
+      <Switch page="route">
+        <SideLink to="advanced">Advanced</SideLink>
+        <SideLink to="base">Base</SideLink>
+      </Switch>
+    </Sidebar>
+  </Switch>
 );
 
 const DocsContent = () => (
-  <Fragment>
-    <Sidebar>
-      <DocsNav />
-    </Sidebar>
-    <Router defaultPage="state">
-      <State page="state" />
-      <Routing page="route" />
-    </Router>
-  </Fragment>
+  <Router defaultPage="state">
+    <State page="state" />
+    <Routing page="route" />
+  </Router>
 );
 
 const Content = () => (
@@ -69,6 +66,7 @@ export default () => (
     <Topbar>
       <Nav />
     </Topbar>
+    <DocsNav />
     <App>
       <Content />
     </App>

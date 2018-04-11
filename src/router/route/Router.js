@@ -140,8 +140,6 @@ export default class Router extends PureComponent {
       }
     }
 
-    // on the very first render it displays a not found page!! -> bad!
-
     return React.createElement(
       div,
       addExtraProps({ ref: this.saveRef }, this.props, Router.propTypes),
