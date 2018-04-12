@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { store, view, path } from 'react-easy-stack';
 import styled from 'styled-components';
 import Switch from './Switch';
@@ -101,11 +100,8 @@ const StyledSidebar = styled.nav`
     `translateX(${props.open ? layout.sidebarWidth : props.touchX}px)`};
 `;
 
-export default view(({ children }) =>
-  ReactDOM.createPortal(
-    <StyledSidebar open={sidebarStore.open} touchX={sidebarStore.touchX}>
-      {children}
-    </StyledSidebar>,
-    document.getElementById('sidebar')
-  )
-);
+export default view(({ children }) => (
+  <StyledSidebar open={sidebarStore.open} touchX={sidebarStore.touchX}>
+    {children}
+  </StyledSidebar>
+));

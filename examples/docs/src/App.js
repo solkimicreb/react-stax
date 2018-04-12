@@ -6,10 +6,9 @@ import App from './components/App';
 import Page from './components/Page';
 import PageRouter from './components/PageRouter';
 import SidebarRouter from './components/SidebarRouter';
-import SectionRouter from './components/SectionRouter';
 import Notification, { notify } from './components/Notification';
 import Switch from './components/Switch';
-import { TopLink, SideLink } from './components/Link';
+import { TopLink, SideLink, SideSectionLink } from './components/Link';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./route/${toPage}.md`);
@@ -29,14 +28,16 @@ const Routing = () => (
 const DocsNav = () => (
   <Switch page="docs">
     <Sidebar>
-      <SectionRouter page="state" name="State">
+      <SideSectionLink to="state">State</SideSectionLink>
+      <Switch page="state" isDefault>
         <SideLink to="intro">Introduction</SideLink>
         <SideLink to="stuff">Stuff</SideLink>
-      </SectionRouter>
-      <SectionRouter page="route" name="Route">
+      </Switch>
+      <SideSectionLink to="route">Route</SideSectionLink>
+      <Switch page="route">
         <SideLink to="advanced">Advanced</SideLink>
         <SideLink to="base">Base</SideLink>
-      </SectionRouter>
+      </Switch>
     </Sidebar>
   </Switch>
 );

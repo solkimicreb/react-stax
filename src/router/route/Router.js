@@ -32,12 +32,12 @@ export default class Router extends PureComponent {
 
   state = {};
 
-  componentWillUnmount() {
-    releaseRouter(this, this.depth);
-  }
-
   componentDidMount() {
     registerRouter(this, this.depth);
+  }
+
+  componentWillUnmount() {
+    releaseRouter(this, this.depth);
   }
 
   route({ to, params, options } = {}) {
