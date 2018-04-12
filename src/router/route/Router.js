@@ -75,7 +75,9 @@ export default class Router extends PureComponent {
     // fill it with the default page if it is empty
     path[this.depth] = toPage;
 
-    return this.updateState(nextState).then(this.animate());
+    return new Promise(resolve => this.setState(nextState, resolve)).then(
+      this.animate()
+    );
   }
 
   selectChild(toPage) {
@@ -88,10 +90,6 @@ export default class Router extends PureComponent {
       return children.find(child => child.props.page === notFoundPage);
     }
     return toChild;
-  }
-
-  updateState(nextState) {
-    return new Promise(resolve => this.setState(nextState, resolve));
   }
 
   saveRef = container => (this.container = container);
