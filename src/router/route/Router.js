@@ -67,12 +67,13 @@ export default class Router extends PureComponent {
   }
 
   route2(toPage, resolvedData) {
-    toPage = toPage || this.props.defaultPage;
+    toPage = toPage || this.props.defaultPage || path[this.depth];
     const nextState = {
       resolvedData,
       toPage
     };
-    // fill it with the default page if it is empty
+    // I need an inbetween step to calc the page!!
+    // issue the order counts here, if the one with the defaultPage is routed last, I am screwed!!
     path[this.depth] = toPage;
 
     return new Promise(resolve => this.setState(nextState, resolve)).then(

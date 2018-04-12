@@ -31,7 +31,7 @@ const DocsNav = () => (
   <Switch page="docs">
     <Sidebar>
       <SideSectionLink to="state">State</SideSectionLink>
-      <Switch page="state" isDefault>
+      <Switch page="state">
         <SideLink to="intro">Introduction</SideLink>
         <SideLink to="stuff">Stuff</SideLink>
       </Switch>

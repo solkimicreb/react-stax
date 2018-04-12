@@ -8,11 +8,14 @@ const StyledPage = styled.div`
   margin-bottom: 50px;
 
   pre {
-    font-size: 15px;
-    line-height: 1.4;
     color: ${colors.text};
     margin-left: ${props => (props.isMobile ? -18 : 0)}px;
     margin-right: ${props => (props.isMobile ? -18 : 0)}px;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+      monospace !important;
   }
 `;
 
