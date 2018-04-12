@@ -132,6 +132,7 @@ function onRoutingEnd(options) {
 
   integrationScheduler.process();
   integrationScheduler.start();
+  routingStatus = undefined;
 }
 
 historyHandler(() =>

@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
-import { path, view, Router as OriginalRouter } from 'react-easy-stack';
+import { path, view, Router } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import App from './components/App';
 import Page from './components/Page';
-import Router from './components/Router';
+import PageRouter from './components/PageRouter';
+import SidebarRouter from './components/SidebarRouter';
+import SectionRouter from './components/SectionRouter';
 import Notification, { notify } from './components/Notification';
-import { TopLink, SideLink, SideSectionLink } from './components/Link';
+import Switch from './components/Switch';
+import { TopLink, SideLink } from './components/Link';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./route/${toPage}.md`);
@@ -18,45 +21,39 @@ async function resolveState({ toPage }) {
   return <Page page={toPage} html={html} />;
 }
 
-const State = () => <Router defaultPage="intro" onRoute={resolveState} />;
-const Routing = () => <Router defaultPage="advanced" onRoute={resolveRoute} />;
+const State = () => <PageRouter defaultPage="intro" onRoute={resolveState} />;
+const Routing = () => (
+  <PageRouter defaultPage="advanced" onRoute={resolveRoute} />
+);
 
 const DocsNav = () => (
-  <OriginalRouter>
-    <div page="docs">
-      <Sidebar>
-        <SideSectionLink to="state">State</SideSectionLink>
-        <OriginalRouter>
-          <div page="state">
-            <SideLink to="intro">Introduction</SideLink>
-            <SideLink to="stuff">Stuff</SideLink>
-          </div>
-        </OriginalRouter>
-        <SideSectionLink to="route">Route</SideSectionLink>
-        <OriginalRouter>
-          <div page="route">
-            <SideLink to="advanced">Advanced</SideLink>
-            <SideLink to="base">Base</SideLink>
-          </div>
-        </OriginalRouter>
-      </Sidebar>
-    </div>
-  </OriginalRouter>
+  <Switch page="docs">
+    <Sidebar>
+      <SectionRouter page="state" name="State">
+        <SideLink to="intro">Introduction</SideLink>
+        <SideLink to="stuff">Stuff</SideLink>
+      </SectionRouter>
+      <SectionRouter page="route" name="Route">
+        <SideLink to="advanced">Advanced</SideLink>
+        <SideLink to="base">Base</SideLink>
+      </SectionRouter>
+    </Sidebar>
+  </Switch>
 );
 
 const DocsContent = () => (
-  <Router defaultPage="state">
+  <PageRouter defaultPage="state">
     <State page="state" />
     <Routing page="route" />
-  </Router>
+  </PageRouter>
 );
 
 const Content = () => (
-  <Router defaultPage="home">
+  <PageRouter defaultPage="home">
     <Page page="home">HOME</Page>
     <Page page="examples">EXAMPLES</Page>
     <DocsContent page="docs" />
-  </Router>
+  </PageRouter>
 );
 
 const Nav = () => (

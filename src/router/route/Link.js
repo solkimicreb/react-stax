@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
 import { integrationScheduler as scheduler, location, anchor } from 'env';
-import { toPathArray, toQuery, addExtraProps } from '../utils';
+import { toPathArray, toPathString, toQuery, addExtraProps } from '../utils';
 import { params, path } from '../integrations';
 import { routeFromDepth } from './core';
 
@@ -20,16 +20,16 @@ export default class Link extends PureComponent {
     activeStyle: PropTypes.object
   };
 
-  static contextTypes = {
-    easyRouterDepth: PropTypes.number
-  };
-
   static defaultProps = {
     // rework this later! to be RN compatible
     element: anchor,
     activeClass: '',
     className: '',
     style: {}
+  };
+
+  static contextTypes = {
+    easyRouterDepth: PropTypes.number
   };
 
   state = {};
@@ -68,11 +68,8 @@ export default class Link extends PureComponent {
   isLinkParamsActive() {
     const linkParams = this.props.params;
     if (linkParams) {
-      for (let param in linkParams) {
-        if (linkParams[param] !== params[param]) {
-          return false;
-        }
-      }
+      const paramKeys = Object.keys(linkParams);
+      return paramKeys.every(key => linkParams[key] === params[key]);
     }
     return true;
   }
@@ -103,9 +100,8 @@ export default class Link extends PureComponent {
     if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle);
     }
-    // TODO: this has an issue -> it should be always the whole new path!
-    // calculate it from depth, to, location.pathname
-    const href = (to || location.pathname) + toQuery(params);
+
+    const href = getPath(to, this.depth) + toQuery(params);
 
     return React.createElement(
       element,
@@ -117,4 +113,18 @@ export default class Link extends PureComponent {
       children
     );
   }
+}
+
+function getPath(to, depth) {
+  if (!to) {
+    return toPathString(path);
+  } else if (to[0] !== '/') {
+    // improve this BS
+    let result = toPathString(path.slice(0, depth));
+    if (result.length !== 1) {
+      result += '/';
+    }
+    return result + to;
+  }
+  return toPathString(to);
 }

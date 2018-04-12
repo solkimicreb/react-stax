@@ -11,7 +11,12 @@ export default class Router extends PureComponent {
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
     enterAnimation: PropTypes.object,
-    leaveAnimation: PropTypes.object
+    leaveAnimation: PropTypes.object,
+    element: PropTypes.any
+  };
+
+  static defaultProps = {
+    element: div
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -42,6 +47,9 @@ export default class Router extends PureComponent {
   route1(fromPage, toPage, fromParams) {
     const { onRoute, leaveAnimation } = this.props;
 
+    if (this.fromDOM) {
+      this.fromDOM.remove();
+    }
     if (leaveAnimation) {
       const { firstElementChild } = this.container;
       this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
@@ -59,27 +67,15 @@ export default class Router extends PureComponent {
   }
 
   route2(toPage, resolvedData) {
+    toPage = toPage || this.props.defaultPage;
     const nextState = {
       resolvedData,
-      toPage: toPage || this.props.defaultPage
+      toPage
     };
-    this.updatePath(nextState);
+    // fill it with the default page if it is empty
+    path[this.depth] = toPage;
 
     return this.updateState(nextState).then(this.animate());
-  }
-
-  updatePath({ toPage, resolvedData }) {
-    const toChild = React.isValidElement(resolvedData)
-      ? resolvedData
-      : this.selectChild(toPage);
-
-    if (toChild) {
-      const { page } = toChild.props;
-      if (!page) {
-        throw new Error('Router children must have a page property.');
-      }
-      path[this.depth] = page;
-    }
   }
 
   selectChild(toPage) {
@@ -105,23 +101,20 @@ export default class Router extends PureComponent {
     const fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
-    // use the animate prop here to decide when to animate
-    if (fromDOM && toDOM) {
-      if (enterAnimation) {
-        animate(enterAnimation, toDOM);
-      }
-      if (leaveAnimation) {
-        this.container.appendChild(fromDOM);
-        animate(leaveAnimation, fromDOM).then(() => {
-          this.container.removeChild(fromDOM);
-          this.fromDOM = undefined;
-        });
-      }
+    if (enterAnimation && toDOM) {
+      animate(enterAnimation, toDOM);
+    }
+    if (leaveAnimation && fromDOM) {
+      this.container.appendChild(fromDOM);
+      animate(leaveAnimation, fromDOM).then(() => {
+        fromDOM.remove();
+        this.fromDOM = undefined;
+      });
     }
   }
 
   render() {
-    const { onRoute } = this.props;
+    const { onRoute, element } = this.props;
     const { toPage, resolvedData } = this.state;
 
     let toChild;
@@ -136,7 +129,7 @@ export default class Router extends PureComponent {
     }
 
     return React.createElement(
-      div,
+      element,
       addExtraProps({ ref: this.saveRef }, this.props, Router.propTypes),
       toChild
     );

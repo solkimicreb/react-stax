@@ -40,7 +40,7 @@ function getAnimations() {
   };
 }
 
-class CustomRouter extends Component {
+class PageRouter extends Component {
   onRoute = async ev => {
     sidebar.close();
     if (this.props.onRoute) {
@@ -69,4 +69,4 @@ class CustomRouter extends Component {
   }
 }
 
-export default view(CustomRouter);
+export default view(PageRouter);
