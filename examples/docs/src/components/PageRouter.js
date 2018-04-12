@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, view } from 'react-easy-stack';
 import styled from 'styled-components';
-import { ease } from './theme';
+import { ease, layout } from './theme';
 import * as sidebar from './Sidebar';
 import { notify } from './Notification';
 
@@ -20,21 +20,15 @@ function getAnimations() {
     enterAnimation: {
       keyframes: {
         opacity: [0, 1]
-        // transform: ['translateX(-400px)', 'none']
       },
-      delay: sidebar.isDocked() ? 0 : 140,
-      fill: 'both',
-      duration: 200,
+      duration: 150,
       ease: ease.in
     },
     leaveAnimation: {
       keyframes: {
         opacity: [1, 0]
-        // transform: ['none', 'translateX(400px)']
       },
-      delay: sidebar.isDocked() ? 0 : 140,
-      fill: 'both',
-      duration: 200,
+      duration: 150,
       ease: ease.out
     }
   };

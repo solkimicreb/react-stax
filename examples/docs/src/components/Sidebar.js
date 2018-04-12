@@ -1,107 +1,70 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import { store, view, path } from 'react-easy-stack';
 import styled from 'styled-components';
-import Switch from './Switch';
 import { colors, ease, layout } from './theme';
-import MenuIcon from 'react-icons/lib/fa/bars';
 
-const mql = window.matchMedia(
-  `(min-width: ${layout.appWidth + layout.sidebarWidth}px)`
-);
 export const sidebarStore = store({
-  docked: mql.matches,
-  open: mql.matches,
-  touchX: 0,
-  touchDiff: 0
+  open: !layout.isMobile,
+  hasSidebar: false
 });
 
-window.addEventListener('touchstart', ev => {
-  const touchX = ev.touches[0].pageX;
-  if (
-    !sidebarStore.docked &&
-    ((sidebarStore.open && touchX > layout.sidebarWidth - layout.touchZone) ||
-      touchX < layout.touchZone)
-  ) {
-    sidebarStore.open = false;
-    sidebarStore.touchX = Math.min(touchX, layout.sidebarWidth);
-    sidebarStore.touchDiff = 0;
-  }
-});
-
-window.addEventListener('touchend', ev => {
-  if (sidebarStore.touchX) {
-    sidebarStore.open = sidebarStore.touchDiff > 0;
-    sidebarStore.touchX = sidebarStore.touchDiff = 0;
-  }
-});
-
-window.addEventListener('touchcancel', ev => {
-  if (sidebarStore.touchX) {
-    sidebarStore.open = sidebarStore.touchDiff > 0;
-    sidebarStore.touchX = sidebarStore.touchDiff = 0;
-  }
-});
-
-window.addEventListener('touchmove', ev => {
-  const touchX = ev.touches[0].pageX;
-  if (sidebarStore.touchX && touchX <= layout.sidebarWidth) {
-    sidebarStore.touchDiff = touchX - sidebarStore.touchX;
-    sidebarStore.touchX = touchX;
-  }
-});
-
-mql.addListener(() => (sidebarStore.open = sidebarStore.docked = mql.matches));
-
-export function isDocked() {
-  return sidebarStore.docked;
+export function hasSidebar() {
+  return sidebarStore.hasSidebar;
 }
 
 export function close() {
-  if (!sidebarStore.docked) {
-    sidebarStore.open = false;
-  }
+  sidebarStore.open = false;
 }
 
-function toggle() {
-  if (!sidebarStore.docked) {
-    sidebarStore.open = !sidebarStore.open;
-  }
+export function toggle() {
+  sidebarStore.open = !sidebarStore.open;
 }
-
-function preventTouch(ev) {
-  ev.stopPropagation();
-}
-
-export const Toggle = view(
-  () =>
-    !sidebarStore.docked && (
-      <Switch page="docs">
-        <span onClick={toggle} onTouchStart={preventTouch}>
-          <MenuIcon />
-        </span>
-      </Switch>
-    )
-);
 
 const StyledSidebar = styled.nav`
   position: fixed;
   top: 0;
   bottom: 0;
-  left: -250px;
+  left: 0;
+  z-index: 40;
+  padding: 10px;
+  border-right: 1px solid #ddd;
   width: ${layout.sidebarWidth}px;
   margin-top: ${layout.topbarHeight}px;
-  overflow-y: scroll;
-  z-index: 40;
-  border-right: 1px solid #ddd;
-  padding: 10px;
   background-color: ${colors.backgroundLight};
-  transition: ${props => (props.touchX ? 'none' : `transform 0.1s`)};
+  transition: transform 0.15s ${props => (props.open ? ease.out : ease.in)};
   transform: ${props =>
-    `translateX(${props.open ? layout.sidebarWidth : props.touchX}px)`};
+    `translateX(${props.open ? 0 : -layout.sidebarWidth}px)`};
 `;
 
-export default view(({ children }) => (
-  <StyledSidebar open={sidebarStore.open} touchX={sidebarStore.touchX}>
-    {children}
-  </StyledSidebar>
-));
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, ${props => (props.open ? 0.8 : 0)});
+  pointer-events: ${props => (props.open ? 'unset' : 'none')};
+  transition: background-color 0.15s
+    ${props => (props.open ? ease.out : ease.in)};
+  z-index: 20;
+`;
+
+class Sidebar extends Component {
+  componentDidMount = () => (sidebarStore.hasSidebar = true);
+  componentWillUnmount = () => (sidebarStore.hasSidebar = false);
+
+  render() {
+    const { children } = this.props;
+
+    return (
+      <Fragment>
+        <StyledSidebar open={sidebarStore.open || !layout.isMobile}>
+          {children}
+        </StyledSidebar>
+        <Backdrop open={sidebarStore.open && layout.isMobile} onClick={close} />
+      </Fragment>
+    );
+  }
+}
+
+export default view(Sidebar);

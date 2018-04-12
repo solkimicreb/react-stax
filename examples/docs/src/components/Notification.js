@@ -1,7 +1,7 @@
 import React from 'react';
 import { store, view } from 'react-easy-stack';
 import styled from 'styled-components';
-import { colors, ease } from './theme';
+import { colors, ease, layout } from './theme';
 
 let timeout;
 const notificationStore = store({
@@ -10,22 +10,30 @@ const notificationStore = store({
   isOpen: false
 });
 
-const StyledNotification = styled.div`
+const Notification = styled.div`
   position: fixed;
-  bottom: 15px;
-  right: 80px;
-  width: 250px;
-  height: 40px;
-  padding: 9px;
+  left: 0;
+  right: 0;
+  bottom: ${props => (props.isMobile ? layout.actionbarHeight : 0)}px;
+  transform: translateY(
+    ${props => (props.open ? 0 : layout.actionbarHeight)}px
+  );
+  transition: all 0.1s ${props => (props.open ? ease.out : ease.in)};
+`;
+
+const NotificationBody = styled.div`
+  width: 700px;
+  max-width: 100%;
+  margin: auto;
+  height: ${layout.actionbarHeight}px;
+  line-height: ${layout.actionbarHeight}px;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 2px;
   cursor: pointer;
   color: ${colors.textLight};
   background-color: ${colors.background};
-  transform: ${props => (props.open ? 'none' : 'translateY(55px)')};
-  transition: all 0.1s ${props => (props.open ? ease.out : ease.in)};
-  z-index: 10;
   font-size: 16px;
+  z-index: 5;
 `;
 
 export function notify(message, action) {
@@ -46,8 +54,8 @@ export default view(() => {
   const { open, action, message } = notificationStore;
 
   return (
-    <StyledNotification open={open} onClick={action}>
-      {message}
-    </StyledNotification>
+    <Notification open={open} isMobile={layout.isMobile}>
+      <NotificationBody onClick={action}>{message}</NotificationBody>
+    </Notification>
   );
 });

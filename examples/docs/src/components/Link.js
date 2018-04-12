@@ -13,10 +13,9 @@ export const TopLink = styled(NavLink)`
   cursor: pointer;
   text-decoration: none !important;
   font-size: 18px;
-  margin: 0 15px;
+  padding: 0 15px;
   color: ${colors.textLight};
   transition: color 0.2s ${ease.both}, border-color 0.4s ${ease.both};
-  border-bottom: 5px solid rgba(0, 0, 0, 0);
   line-height: ${layout.topbarHeight}px;
 
   &:hover,

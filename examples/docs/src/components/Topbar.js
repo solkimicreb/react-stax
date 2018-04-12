@@ -1,50 +1,62 @@
 import React from 'react';
 import { view } from 'react-easy-stack';
 import styled from 'styled-components';
-import GithubIcon from 'react-icons/lib/fa/github';
 import { colors, layout, ease } from './theme';
-import { Toggle as SidebarToggle } from './Sidebar';
-import Icon from './Icon';
+import * as sidebar from './Sidebar';
+import ActionIcons from './ActionIcons';
 
-const StyledTopbar = styled.nav`
+const Topbar = styled.nav`
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
   height: ${layout.topbarHeight}px;
   background-color: ${colors.text};
-  color: ${colors.textLight};
   z-index: 100;
 `;
 
-const StyledNavbar = styled.div`
-  max-width: ${layout.appWidth}px;
+const Navbar = styled.div`
+  font-size: 26px;
   margin: auto;
-  padding-left: 45px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  max-width: ${layout.appWidth}px;
+  color: ${colors.textLight};
+  transform: ${props => (props.withSidebar ? 'translateX(125px)' : 'none')};
+
+  svg,
+  a {
+    cursor: pointer;
+    &:hover,
+    &:active {
+      color: ${colors.accentLight};
+    }
+  }
 `;
 
-const LeftIcon = Icon.extend`
-  float: left;
-  position: relative;
-  left: 15px;
-  top: 10px;
+const MenuItems = styled.div`
+  display: flex;
+  justify-content: ${props => (props.isMobile ? 'space-around' : 'flex-start')};
+  width: ${props => (props.isMobile ? '100%' : 'auto')};
 `;
 
-const RightIcon = Icon.extend`
-  float: right;
-  position: relative;
-  right: 15px;
-  top: 4px;
+const Actions = styled.div`
+  svg {
+    margin: 10px;
+  }
 `;
 
 export default view(({ children }) => (
-  <StyledTopbar>
-    <LeftIcon size={20}>
-      <SidebarToggle />
-    </LeftIcon>
-    <RightIcon>
-      <GithubIcon />
-    </RightIcon>
-    <StyledNavbar>{children}</StyledNavbar>
-  </StyledTopbar>
+  <Topbar>
+    <Navbar withSidebar={!layout.isMobile && sidebar.hasSidebar()}>
+      <MenuItems isMobile={layout.isMobile}>{children}</MenuItems>
+      {!layout.isMobile && (
+        <Actions>
+          <ActionIcons />
+        </Actions>
+      )}
+    </Navbar>
+  </Topbar>
 ));

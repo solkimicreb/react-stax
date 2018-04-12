@@ -9,6 +9,8 @@ import SidebarRouter from './components/SidebarRouter';
 import Notification, { notify } from './components/Notification';
 import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
+import Actionbar from './components/Actionbar';
+import { layout } from './components/theme';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./route/${toPage}.md`);
@@ -65,15 +67,16 @@ const Nav = () => (
   </Fragment>
 );
 
-export default () => (
+export default view(() => (
   <Fragment>
     <Topbar>
       <Nav />
     </Topbar>
-    <DocsNav />
     <App>
       <Content />
     </App>
+    <DocsNav />
+    {layout.isMobile && <Actionbar />}
     <Notification />
   </Fragment>
-);
+));
