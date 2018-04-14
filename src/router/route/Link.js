@@ -54,6 +54,14 @@ export default class Link extends PureComponent {
   }
 
   isLinkActive() {
+    let { isActive } = this.props;
+    // move this into a util
+    if (typeof isActive === 'function') {
+      isActive = isActive();
+    }
+    if (isActive !== undefined) {
+      return isActive;
+    }
     return this.isLinkPathActive() && this.isLinkParamsActive();
   }
 

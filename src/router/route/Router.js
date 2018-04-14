@@ -17,7 +17,8 @@ export default class Router extends PureComponent {
   };
 
   static defaultProps = {
-    element: div
+    element: div,
+    shouldAnimate: true
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -96,11 +97,15 @@ export default class Router extends PureComponent {
   saveRef = container => (this.container = container);
 
   animate() {
-    const { enterAnimation, leaveAnimation } = this.props;
+    let { enterAnimation, leaveAnimation, shouldAnimate } = this.props;
     let fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
-    if (enterAnimation && toDOM) {
+    if (typeof shouldAnimate === 'function') {
+      shouldAnimate = shouldAnimate();
+    }
+
+    if (enterAnimation && toDOM && shouldAnimate) {
       animate(enterAnimation, toDOM);
     }
     if (leaveAnimation && fromDOM) {
