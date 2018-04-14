@@ -17,7 +17,8 @@ export default class Link extends PureComponent {
     className: PropTypes.string,
     style: PropTypes.object,
     activeClass: PropTypes.string,
-    activeStyle: PropTypes.object
+    activeStyle: PropTypes.object,
+    isActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
   };
 
   static defaultProps = {

@@ -21,6 +21,7 @@ export const layout = store({
   actionbarHeight: 40,
   sidebarWidth: 250,
   appWidth: 800,
-  isMobile: mql.matches
+  isMobile: mql.matches,
+  touchZone: 40
 });
 mql.addListener(() => (layout.isMobile = mql.matches));

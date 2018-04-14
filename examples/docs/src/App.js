@@ -31,15 +31,11 @@ const DocsNav = () => (
   <Switch page="docs">
     <Sidebar>
       <SideSectionLink to="state">State</SideSectionLink>
-      <Switch page="state">
-        <SideLink to="intro">Introduction</SideLink>
-        <SideLink to="stuff">Stuff</SideLink>
-      </Switch>
+      <SideLink to="state/intro">Introduction</SideLink>
+      <SideLink to="state/stuff">Stuff</SideLink>
       <SideSectionLink to="route">Route</SideSectionLink>
-      <Switch page="route">
-        <SideLink to="advanced">Advanced</SideLink>
-        <SideLink to="base">Base</SideLink>
-      </Switch>
+      <SideLink to="route/advanced">Advanced</SideLink>
+      <SideLink to="route/base">Base</SideLink>
     </Sidebar>
   </Switch>
 );
@@ -53,7 +49,7 @@ const DocsContent = () => (
 
 const Content = () => (
   <PageRouter defaultPage="home">
-    <Page page="home">HOME</Page>
+    <State page="home" />
     <Page page="examples">EXAMPLES</Page>
     <DocsContent page="docs" />
   </PageRouter>

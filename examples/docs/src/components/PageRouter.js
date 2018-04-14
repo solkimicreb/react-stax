@@ -15,24 +15,25 @@ const StyledRouter = styled(Router)`
   }
 `;
 
-function getAnimations() {
-  return {
-    enterAnimation: {
-      keyframes: {
-        opacity: [0, 1]
-      },
-      duration: 150,
-      ease: ease.in
-    },
-    leaveAnimation: {
-      keyframes: {
-        opacity: [1, 0]
-      },
-      duration: 150,
-      ease: ease.out
-    }
-  };
-}
+const enterAnimation = () => ({
+  keyframes: {
+    opacity: [0, 1]
+  },
+  duration: layout.isMobile ? 350 : 150,
+  ease: ease.in
+});
+
+const leaveAnimation = () => ({
+  keyframes: {
+    opacity: [1, 0],
+    transform: [
+      `translateY(-${window.scrollY}px)`,
+      `translateY(-${window.scrollY}px)`
+    ]
+  },
+  duration: layout.isMobile ? 350 : 150,
+  ease: ease.out
+});
 
 class PageRouter extends Component {
   onRoute = async ev => {
@@ -46,7 +47,6 @@ class PageRouter extends Component {
 
   render() {
     const { children, ...props } = this.props;
-    const { enterAnimation, leaveAnimation } = getAnimations();
 
     return (
       <StyledRouter

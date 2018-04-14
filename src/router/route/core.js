@@ -130,7 +130,7 @@ function onRoutingEnd(options, status) {
   // improve this later, based on options.scroll!!
   // instead of scrolling the window I should maybe scroll the elements!!
   // leaving element should not reac to scroll!! -> to make animation better
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0 });
 
   integrationScheduler.process();
   integrationScheduler.start();

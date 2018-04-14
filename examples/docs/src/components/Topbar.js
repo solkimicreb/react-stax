@@ -25,6 +25,7 @@ const Navbar = styled.div`
   max-width: ${layout.appWidth}px;
   color: ${colors.textLight};
   transform: ${props => (props.withSidebar ? 'translateX(125px)' : 'none')};
+  transition: transform 0.15s ${ease.both};
 
   svg,
   a {

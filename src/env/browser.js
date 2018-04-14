@@ -20,6 +20,9 @@ export function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
   // options.fill = 'both';
   if (typeof container.animate === 'function') {
+    if (typeof options === 'function') {
+      options = options();
+    }
     const animation = container.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {

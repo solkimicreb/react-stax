@@ -10,8 +10,9 @@ export default class Router extends PureComponent {
     defaultPage: PropTypes.string,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
-    enterAnimation: PropTypes.object,
-    leaveAnimation: PropTypes.object,
+    enterAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+    leaveAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+    shouldAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     element: PropTypes.any
   };
 
@@ -51,8 +52,7 @@ export default class Router extends PureComponent {
       this.fromDOM.remove();
     }
     if (leaveAnimation) {
-      const { firstElementChild } = this.container;
-      this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
+      this.fromDOM = this.container.firstElementChild;
     }
 
     if (onRoute) {
@@ -97,14 +97,19 @@ export default class Router extends PureComponent {
 
   animate() {
     const { enterAnimation, leaveAnimation } = this.props;
-    const fromDOM = this.fromDOM;
+    let fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
     if (enterAnimation && toDOM) {
       animate(enterAnimation, toDOM);
     }
     if (leaveAnimation && fromDOM) {
+      // clone it if the current page did not change
+      if (fromDOM === toDOM) {
+        this.fromDOM = fromDOM = fromDOM.cloneNode(true);
+      }
       this.container.appendChild(fromDOM);
+      // I should translateY(-window.scrollY) here in case the options are scrolled
       animate(leaveAnimation, fromDOM).then(() => {
         fromDOM.remove();
         this.fromDOM = undefined;
