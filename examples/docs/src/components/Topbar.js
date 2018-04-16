@@ -8,8 +8,8 @@ import ActionIcons from './ActionIcons';
 const Topbar = styled.nav`
   position: fixed;
   top: 0;
-  right: 0;
   left: 0;
+  width: 100vw;
   height: ${layout.topbarHeight}px;
   background-color: ${colors.text};
   z-index: 100;

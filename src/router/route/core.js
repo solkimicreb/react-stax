@@ -1,6 +1,13 @@
 import { path, params } from '../integrations';
 import { integrationScheduler, location, history, historyHandler } from 'env';
-import { toPathArray, toPathString, toParams, rethrow, clear } from '../utils';
+import {
+  toPathArray,
+  toPathString,
+  toParams,
+  toHash,
+  rethrow,
+  clear
+} from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -19,7 +26,7 @@ export function registerRouter(router, depth) {
 
     const oldParams = Object.assign({}, params);
     Promise.resolve()
-      .then(() => router.route1(path[depth], path[depth], oldParams))
+      .then(() => router.route1(path[depth], oldParams))
       .then(
         resolvedData =>
           !status.cancelled && router.route2(path[depth], resolvedData)
@@ -67,22 +74,20 @@ export function routeFromDepth(
   Object.assign(params, newParams);
 
   const fromPath = path.slice();
-  toPath = path.slice(0, depth).concat(toPathArray(toPath));
-  path.splice(depth, Infinity);
+  path.splice(depth, Infinity, ...toPathArray(toPath));
 
-  return switchRoutersFromDepth(
-    fromPath,
-    toPath,
-    depth,
-    status,
-    oldParams
-  ).then(
+  // how should these behave with history and url?
+  // do this at the beginning of the routing to look nice with nested async routing
+  // issue! -> scroll.to element might not yet be visible!!
+  options.scroll = options.scroll || toParams(location.hash);
+
+  return switchRoutersFromDepth(fromPath, depth, status, oldParams).then(
     () => onRoutingEnd(options, status),
     rethrow(() => onRoutingEnd(options, status))
   );
 }
 
-function switchRoutersFromDepth(fromPath, toPath, depth, status, oldParams) {
+function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (!routersAtDepth.length || status.cancelled) {
@@ -95,7 +100,7 @@ function switchRoutersFromDepth(fromPath, toPath, depth, status, oldParams) {
         !status.cancelled &&
         Promise.all(
           routersAtDepth.map(router =>
-            router.route1(fromPath[depth], toPath[depth], oldParams)
+            router.route1(fromPath[depth], oldParams)
           )
         )
     )
@@ -104,13 +109,11 @@ function switchRoutersFromDepth(fromPath, toPath, depth, status, oldParams) {
         !status.cancelled &&
         Promise.all(
           routersAtDepth.map((router, i) =>
-            router.route2(toPath[depth], resolvedData[i])
+            router.route2(fromPath[depth], resolvedData[i])
           )
         )
     )
-    .then(() =>
-      switchRoutersFromDepth(fromPath, toPath, ++depth, status, oldParams)
-    );
+    .then(() => switchRoutersFromDepth(fromPath, ++depth, status, oldParams));
 }
 
 function onRoutingEnd(options, status) {
@@ -122,15 +125,23 @@ function onRoutingEnd(options, status) {
     options.history === true ||
     (options.history !== false && toPathString(path) !== location.pathname)
   ) {
-    history.pushState(options, '');
+    // do I want to push options as the state? I should add it to the hash instead probably
+    history.pushState(options, '', toHash(options.scroll));
   } else {
-    history.replaceState(options, '');
+    history.replaceState(options, '', toHash(options.scroll));
   }
 
-  // improve this later, based on options.scroll!!
-  // instead of scrolling the window I should maybe scroll the elements!!
-  // leaving element should not reac to scroll!! -> to make animation better
-  window.scrollTo({ top: 0 });
+  if (options.scroll && options.scroll.to) {
+    const scrollAnchor = document.getElementById(options.scroll.to);
+    if (scrollAnchor) {
+      scrollAnchor.scrollIntoView(options.scroll);
+    }
+  }
+  // issue if i put this to the beginning it is messed up
+  // but putting this at the end 'scrolls late', it scrolls after potential renders
+  if (options.scroll && !options.scroll.to) {
+    window.scrollTo(options.scroll);
+  }
 
   integrationScheduler.process();
   integrationScheduler.start();
@@ -141,6 +152,6 @@ historyHandler(() =>
   route({
     to: location.pathname,
     params: toParams(location.search),
-    options: { history: false }
+    options: { history: false, scroll: toParams(location.hash) }
   })
 );

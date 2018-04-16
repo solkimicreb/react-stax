@@ -16,22 +16,33 @@ const StyledRouter = styled(Router)`
 `;
 
 const enterAnimation = () => ({
-  keyframes: {
-    opacity: [0, 1]
-  },
-  duration: layout.isMobile ? 350 : 150,
+  keyframes: layout.isMobile
+    ? {
+        transform: ['translateX(110%)', 'none']
+      }
+    : {
+        opacity: [0, 1]
+      },
+  duration: 200,
   ease: ease.in
 });
 
 const leaveAnimation = () => ({
-  keyframes: {
-    opacity: [1, 0],
-    transform: [
-      `translateY(-${window.scrollY}px)`,
-      `translateY(-${window.scrollY}px)`
-    ]
-  },
-  duration: layout.isMobile ? 350 : 150,
+  keyframes: layout.isMobile
+    ? {
+        transform: [
+          `translateY(-${window.scrollY}px)`,
+          `translateY(-${window.scrollY}px) translateX(-110%)`
+        ]
+      }
+    : {
+        opacity: [1, 0],
+        transform: [
+          `translateY(-${window.scrollY}px)`,
+          `translateY(-${window.scrollY}px)`
+        ]
+      },
+  duration: 200,
   ease: ease.out
 });
 

@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import ActionIcons from './ActionIcons';
 import { colors, layout, ease } from './theme';
 
-const Actionbar = styled.div`
+const Actionbar = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 100vw;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -16,7 +16,7 @@ const Actionbar = styled.div`
   height: ${layout.actionbarHeight}px;
   color: ${colors.text};
   background-color: ${colors.backgroundLight};
-  z-index: 10;
+  z-index: 100;
 
   svg {
     cursor: pointer;

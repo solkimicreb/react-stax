@@ -7,17 +7,27 @@ export function toPathString(path) {
 }
 
 export function toQuery(params) {
-  const queryTokens = [];
+  const query = toObjectString(params);
+  return query ? `?${query}` : query;
+}
+
+export function toHash(params) {
+  const hash = toObjectString(params);
+  return hash ? `#${hash}` : hash;
+}
+
+function toObjectString(params) {
+  const tokens = [];
 
   for (let key in params) {
     let value = params[key];
     if (value !== undefined && value !== '') {
       key = encodeURIComponent(key);
       value = encodeURIComponent(JSON.stringify(value));
-      queryTokens.push(`${key}=${value}`);
+      tokens.push(`${key}=${value}`);
     }
   }
-  return queryTokens.length ? '?' + queryTokens.join('&') : '';
+  return tokens.length ? tokens.join('&') : '';
 }
 
 export function toParams(queryString) {

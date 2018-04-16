@@ -17,8 +17,7 @@ export default class Router extends PureComponent {
   };
 
   static defaultProps = {
-    element: div,
-    shouldAnimate: true
+    element: div
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -46,12 +45,18 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth);
   }
 
-  route1(fromPage, toPage, fromParams) {
+  route1(fromPage, fromParams) {
     const { onRoute, leaveAnimation } = this.props;
 
-    if (this.fromDOM) {
-      this.fromDOM.remove();
+    // fill the path with the default page
+    if (!path[this.depth]) {
+      path[this.depth] = this.props.defaultPage;
     }
+
+    // FIX THIS, check all ongoing animations and cancel them instead!!
+    /*if (this.fromDOM) {
+      this.fromDOM.remove();
+    }*/
     if (leaveAnimation) {
       this.fromDOM = this.container.firstElementChild;
     }
@@ -60,25 +65,21 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage: toPage || this.props.defaultPage,
+        toPage: path[this.depth],
         fromParams,
         toParams: params
       });
     }
   }
 
-  route2(toPage, resolvedData) {
-    toPage = toPage || this.props.defaultPage || path[this.depth];
+  route2(fromPage, resolvedData) {
     const nextState = {
       resolvedData,
-      toPage
+      toPage: path[this.depth]
     };
-    // I need an inbetween step to calc the page!!
-    // issue the order counts here, if the one with the defaultPage is routed last, I am screwed!!
-    path[this.depth] = toPage;
 
     return new Promise(resolve => this.setState(nextState, resolve)).then(
-      this.animate()
+      this.animate(fromPage)
     );
   }
 
@@ -96,7 +97,7 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate() {
+  animate(fromPage) {
     let { enterAnimation, leaveAnimation, shouldAnimate } = this.props;
     let fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
@@ -104,21 +105,28 @@ export default class Router extends PureComponent {
     if (typeof shouldAnimate === 'function') {
       shouldAnimate = shouldAnimate();
     }
-
-    if (enterAnimation && toDOM && shouldAnimate) {
-      animate(enterAnimation, toDOM);
+    if (shouldAnimate === undefined) {
+      shouldAnimate = fromPage !== path[this.depth];
     }
-    if (leaveAnimation && fromDOM) {
-      // clone it if the current page did not change
-      if (fromDOM === toDOM) {
-        this.fromDOM = fromDOM = fromDOM.cloneNode(true);
+
+    // ISSUE: it doesn't even work without the animations!!
+    // issue: every depth animates in case of nested routing
+    if (shouldAnimate) {
+      // only enter animate if this is not the router's first routing
+      if (enterAnimation && fromDOM && toDOM) {
+        animate(enterAnimation, toDOM);
       }
-      this.container.appendChild(fromDOM);
-      // I should translateY(-window.scrollY) here in case the options are scrolled
-      animate(leaveAnimation, fromDOM).then(() => {
-        fromDOM.remove();
-        this.fromDOM = undefined;
-      });
+      if (leaveAnimation && fromDOM) {
+        // clone it if the current page did not change
+        if (fromDOM === toDOM) {
+          this.fromDOM = fromDOM = fromDOM.cloneNode(true);
+        }
+        this.container.appendChild(fromDOM);
+        animate(leaveAnimation, fromDOM).then(() => {
+          fromDOM.remove();
+          this.fromDOM = undefined;
+        });
+      }
     }
   }
 

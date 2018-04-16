@@ -4,7 +4,17 @@ import { Link } from 'react-easy-stack';
 import { colors, ease, layout } from './theme';
 
 const NavLink = props => (
-  <Link activeClass="active" {...props}>
+  <Link
+    activeClass="active"
+    options={{
+      scroll: {
+        top: 0,
+        left: 0
+      },
+      ...props.options
+    }}
+    {...props}
+  >
     {props.children}
   </Link>
 );

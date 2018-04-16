@@ -5,57 +5,80 @@ import { colors, ease, layout } from './theme';
 
 export const sidebarStore = store({
   open: !layout.isMobile,
-  hasSidebar: false,
+  sidebar: undefined,
+  backdrop: undefined,
+  isTouching: false,
   touchX: 0,
   touchDiff: 0
 });
 
 window.addEventListener('touchstart', ev => {
   const touchX = ev.touches[0].pageX;
-  // improve this!
   if (
+    sidebarStore.sidebar &&
+    sidebarStore.backdrop &&
     layout.isMobile &&
     ((sidebarStore.open && touchX > layout.sidebarWidth - layout.touchZone) ||
       touchX < layout.touchZone)
   ) {
-    sidebarStore.open = false;
-    sidebarStore.touchX = Math.min(touchX, layout.sidebarWidth);
-    sidebarStore.touchDiff = 0;
-  }
-});
-
-window.addEventListener('touchend', ev => {
-  if (sidebarStore.touchX) {
-    sidebarStore.open = sidebarStore.touchDiff > 0;
-    sidebarStore.touchX = sidebarStore.touchDiff = 0;
-  }
-});
-
-window.addEventListener('touchcancel', ev => {
-  if (sidebarStore.touchX) {
-    sidebarStore.open = sidebarStore.touchDiff > 0;
-    sidebarStore.touchX = sidebarStore.touchDiff = 0;
+    sidebarStore.isTouching = true;
   }
 });
 
 window.addEventListener('touchmove', ev => {
+  const { isTouching, sidebar, backdrop } = sidebarStore;
   const touchX = ev.touches[0].pageX;
-  if (sidebarStore.touchX && touchX <= layout.sidebarWidth) {
+  if (isTouching && touchX <= layout.sidebarWidth) {
     sidebarStore.touchDiff = touchX - sidebarStore.touchX;
     sidebarStore.touchX = touchX;
+    sidebar.style.transform = `translateX(${touchX}px)`;
+    backdrop.style.backgroundColor = `rgba(0, 0, 0, ${touchX /
+      layout.sidebarWidth *
+      0.8})`;
   }
 });
 
+const onTouchEnd = ev => {
+  const { isTouching, sidebar, backdrop, touchDiff } = sidebarStore;
+
+  if (isTouching) {
+    if (touchDiff < 0) {
+      close();
+    } else {
+      open();
+    }
+    sidebar.style.transform = null;
+    backdrop.style.backgroundColor = null;
+    sidebarStore.isTouching = false;
+    sidebarStore.touchX = 0;
+    sidebarStore.touchDiff = 0;
+  }
+};
+window.addEventListener('touchend', onTouchEnd);
+window.addEventListener('touchcancel', onTouchEnd);
+
 export function hasSidebar() {
-  return sidebarStore.hasSidebar;
+  return Boolean(sidebarStore.sidebar);
+}
+
+export function open() {
+  sidebarStore.open = true;
+  if (layout.isMobile) {
+    document.body.style.overflow = 'hidden';
+  }
 }
 
 export function close() {
   sidebarStore.open = false;
+  document.body.style.overflow = 'auto';
 }
 
 export function toggle() {
-  sidebarStore.open = !sidebarStore.open;
+  if (!sidebarStore.open) {
+    open();
+  } else {
+    close();
+  }
 }
 
 const StyledSidebar = styled.nav`
@@ -71,9 +94,7 @@ const StyledSidebar = styled.nav`
   background-color: ${colors.backgroundLight};
   transition: ${props => (props.isTouching ? 'none' : 'transform 0.15s')};
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
-  transform: translateX(
-    ${props => (props.open ? layout.sidebarWidth : props.touchX)}px
-  );
+  transform: translateX(${props => (props.open ? layout.sidebarWidth : 0)}px);
 `;
 
 const Backdrop = styled.div`
@@ -82,12 +103,7 @@ const Backdrop = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    ${props => (props.open ? 0.8 : props.touchX / layout.sidebarWidth * 0.8)}
-  );
+  background-color: rgba(0, 0, 0, ${props => (props.open ? 0.8 : 0)});
   pointer-events: ${props => (props.open ? 'unset' : 'none')};
   transition: ${props =>
     props.isTouching ? 'none' : 'background-color 0.15s'};
@@ -95,26 +111,26 @@ const Backdrop = styled.div`
   z-index: 20;
 `;
 
-class Sidebar extends Component {
-  componentDidMount = () => (sidebarStore.hasSidebar = true);
-  componentWillUnmount = () => (sidebarStore.hasSidebar = false);
+const sidebarRef = sidebar => (sidebarStore.sidebar = sidebar);
+const backdropRef = backdrop => (sidebarStore.backdrop = backdrop);
 
+class Sidebar extends Component {
   render() {
     const { children } = this.props;
     return (
       <Fragment>
         <StyledSidebar
           open={sidebarStore.open || !layout.isMobile}
-          touchX={sidebarStore.touchX}
-          isTouching={sidebarStore.touchDiff}
+          isTouching={sidebarStore.isTouching}
+          innerRef={sidebarRef}
         >
           {children}
         </StyledSidebar>
         <Backdrop
           open={sidebarStore.open && layout.isMobile}
+          isTouching={sidebarStore.isTouching}
           onClick={close}
-          touchX={sidebarStore.touchX}
-          isTouching={sidebarStore.touchDiff}
+          innerRef={backdropRef}
         />
       </Fragment>
     );
