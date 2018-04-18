@@ -1,13 +1,25 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import ActionIcons from './ActionIcons';
 import { colors, layout, ease } from './theme';
+
+const scale = keyframes`
+  from {
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: none;
+  }
+`;
 
 const Actionbar = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  right: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -16,9 +28,11 @@ const Actionbar = styled.nav`
   height: ${layout.actionbarHeight}px;
   color: ${colors.text};
   background-color: ${colors.backgroundLight};
-  z-index: 100;
+  z-index: 50;
+  transition: color 0.2s;
 
-  svg {
+  > * {
+    animation: ${scale} 0.2s;
     cursor: pointer;
     &:hover,
     &:active {

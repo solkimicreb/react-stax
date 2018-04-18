@@ -27,10 +27,7 @@ export function registerRouter(router, depth) {
     const oldParams = Object.assign({}, params);
     Promise.resolve()
       .then(() => router.route1(path[depth], oldParams))
-      .then(
-        resolvedData =>
-          !status.cancelled && router.route2(path[depth], resolvedData)
-      )
+      .then(args => !status.cancelled && router.route2(args))
       .then(() => initStatuses.delete(status));
   }
 }
@@ -105,13 +102,9 @@ function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
         )
     )
     .then(
-      resolvedData =>
+      args =>
         !status.cancelled &&
-        Promise.all(
-          routersAtDepth.map((router, i) =>
-            router.route2(fromPath[depth], resolvedData[i])
-          )
-        )
+        Promise.all(routersAtDepth.map((router, i) => router.route2(args[i])))
     )
     .then(() => switchRoutersFromDepth(fromPath, ++depth, status, oldParams));
 }
@@ -140,7 +133,10 @@ function onRoutingEnd(options, status) {
   // issue if i put this to the beginning it is messed up
   // but putting this at the end 'scrolls late', it scrolls after potential renders
   if (options.scroll && !options.scroll.to) {
-    window.scrollTo(options.scroll);
+    const container = options.scroll.container
+      ? document.querySelector(options.scroll.container)
+      : window;
+    container.scrollTo(options.scroll);
   }
 
   integrationScheduler.process();

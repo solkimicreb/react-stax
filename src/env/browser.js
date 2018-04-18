@@ -27,5 +27,6 @@ export function animate(options, container) {
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
     console.warn('You should polyfill the webanimation API.');
+    return Promise.resolve();
   }
 }

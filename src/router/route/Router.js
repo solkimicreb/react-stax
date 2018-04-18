@@ -46,40 +46,57 @@ export default class Router extends PureComponent {
   }
 
   route1(fromPage, fromParams) {
-    const { onRoute, leaveAnimation } = this.props;
+    let { onRoute, leaveAnimation, shouldAnimate } = this.props;
+    const toPage = path[this.depth] || this.props.defaultPage;
 
-    // fill the path with the default page
-    if (!path[this.depth]) {
-      path[this.depth] = this.props.defaultPage;
+    // fill the path with the default page, if the current token is empty
+    path[this.depth] = toPage;
+
+    if (typeof shouldAnimate === 'function') {
+      shouldAnimate = shouldAnimate();
+    }
+    if (shouldAnimate === undefined) {
+      shouldAnimate = fromPage !== path[this.depth];
     }
 
-    // FIX THIS, check all ongoing animations and cancel them instead!!
-    /*if (this.fromDOM) {
+    if (this.fromDOM) {
       this.fromDOM.remove();
-    }*/
-    if (leaveAnimation) {
-      this.fromDOM = this.container.firstElementChild;
+      this.fromDOM = undefined;
     }
+    if (shouldAnimate && leaveAnimation) {
+      const { firstElementChild } = this.container;
+      this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
+    }
+
+    let result = Promise.resolve();
 
     if (onRoute) {
-      return onRoute({
-        target: this,
-        fromPage,
-        toPage: path[this.depth],
-        fromParams,
-        toParams: params
-      });
+      result = result.then(() =>
+        onRoute({
+          target: this,
+          fromPage,
+          toPage: path[this.depth],
+          fromParams,
+          toParams: params
+        })
+      );
     }
+
+    return result.then(resolvedData => ({
+      resolvedData,
+      toPage,
+      shouldAnimate
+    }));
   }
 
-  route2(fromPage, resolvedData) {
+  route2({ resolvedData, toPage, shouldAnimate }) {
     const nextState = {
       resolvedData,
-      toPage: path[this.depth]
+      toPage
     };
 
     return new Promise(resolve => this.setState(nextState, resolve)).then(
-      this.animate(fromPage)
+      shouldAnimate && this.animate()
     );
   }
 
@@ -97,41 +114,26 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  animate(fromPage) {
-    let { enterAnimation, leaveAnimation, shouldAnimate } = this.props;
-    let fromDOM = this.fromDOM;
+  animate() {
+    let { enterAnimation, leaveAnimation } = this.props;
+    const fromDOM = this.fromDOM;
     const toDOM = this.container.firstElementChild;
 
-    if (typeof shouldAnimate === 'function') {
-      shouldAnimate = shouldAnimate();
+    // only enter animate if this is not the router's first routing
+    if (enterAnimation && fromDOM && toDOM) {
+      animate(enterAnimation, toDOM);
     }
-    if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== path[this.depth];
-    }
-
-    // ISSUE: it doesn't even work without the animations!!
-    // issue: every depth animates in case of nested routing
-    if (shouldAnimate) {
-      // only enter animate if this is not the router's first routing
-      if (enterAnimation && fromDOM && toDOM) {
-        animate(enterAnimation, toDOM);
-      }
-      if (leaveAnimation && fromDOM) {
-        // clone it if the current page did not change
-        if (fromDOM === toDOM) {
-          this.fromDOM = fromDOM = fromDOM.cloneNode(true);
-        }
-        this.container.appendChild(fromDOM);
-        animate(leaveAnimation, fromDOM).then(() => {
-          fromDOM.remove();
-          this.fromDOM = undefined;
-        });
-      }
+    if (leaveAnimation && fromDOM) {
+      this.container.appendChild(fromDOM);
+      animate(leaveAnimation, fromDOM).then(() => {
+        fromDOM.remove();
+        this.fromDOM = undefined;
+      });
     }
   }
 
   render() {
-    const { onRoute, element } = this.props;
+    const { element } = this.props;
     const { toPage, resolvedData } = this.state;
 
     let toChild;

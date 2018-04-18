@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { unstable_AsyncMode as AsyncMode } from 'react';
 import ReactDOM from 'react-dom';
 import 'github-markdown-css';
 import 'prismjs/themes/prism.css';
+import 'web-animations-js';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 import App from './App';

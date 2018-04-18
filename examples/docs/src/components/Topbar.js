@@ -9,10 +9,10 @@ const Topbar = styled.nav`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  right: 0;
   height: ${layout.topbarHeight}px;
   background-color: ${colors.text};
-  z-index: 100;
+  z-index: 50;
 `;
 
 const Navbar = styled.div`

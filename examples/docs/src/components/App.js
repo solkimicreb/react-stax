@@ -10,7 +10,6 @@ const StyledApp = styled.main`
   max-width: ${layout.appWidth}px;
   margin: ${layout.topbarHeight + 15}px auto;
   padding-left: ${props => (props.withSidebar ? 250 : 0)}px;
-  height: 100vh;
 `;
 
 export default view(({ children }) => (

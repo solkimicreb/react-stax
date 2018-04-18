@@ -6,13 +6,15 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  padding: 0;
+  margin: 0;
 }
 
-.gitter-chat-embed {
-  top: 50px;
-  box-shadow: none;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-left: solid 1px lightgray;
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
 }
 
 a {

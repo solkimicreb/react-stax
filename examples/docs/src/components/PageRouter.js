@@ -7,44 +7,52 @@ import { notify } from './Notification';
 
 const StyledRouter = styled(Router)`
   position: relative;
+
   > * {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
+    will-change: auto;
+    contain: style layout;
   }
 `;
 
 const enterAnimation = () => ({
   keyframes: layout.isMobile
     ? {
+        opacity: [0.5, 1],
         transform: ['translateX(110%)', 'none']
       }
     : {
         opacity: [0, 1]
       },
   duration: 200,
-  ease: ease.in
+  ease: ease.in,
+  fill: 'both'
 });
 
-const leaveAnimation = () => ({
-  keyframes: layout.isMobile
-    ? {
-        transform: [
-          `translateY(-${window.scrollY}px)`,
-          `translateY(-${window.scrollY}px) translateX(-110%)`
-        ]
-      }
-    : {
-        opacity: [1, 0],
-        transform: [
-          `translateY(-${window.scrollY}px)`,
-          `translateY(-${window.scrollY}px)`
-        ]
-      },
-  duration: 200,
-  ease: ease.out
-});
+const leaveAnimation = () => {
+  const scrollY = document.getElementById('root').scrollTop;
+
+  return {
+    keyframes: layout.isMobile
+      ? {
+          opacity: [1, 0.5],
+          transform: [
+            `translateY(-${scrollY}px)`,
+            `translate3d(-110%, -${scrollY}px, 0)`
+          ]
+        }
+      : {
+          opacity: [1, 0],
+          transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`]
+        },
+    duration: 200,
+    ease: ease.out,
+    fill: 'both'
+  };
+};
 
 class PageRouter extends Component {
   onRoute = async ev => {

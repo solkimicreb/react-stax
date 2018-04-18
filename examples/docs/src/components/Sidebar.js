@@ -12,7 +12,7 @@ export const sidebarStore = store({
   touchDiff: 0
 });
 
-window.addEventListener('touchstart', ev => {
+const onTouchStart = ev => {
   const touchX = ev.touches[0].pageX;
   if (
     sidebarStore.sidebar &&
@@ -23,20 +23,18 @@ window.addEventListener('touchstart', ev => {
   ) {
     sidebarStore.isTouching = true;
   }
-});
+};
 
-window.addEventListener('touchmove', ev => {
+const onTouchMove = ev => {
   const { isTouching, sidebar, backdrop } = sidebarStore;
   const touchX = ev.touches[0].pageX;
   if (isTouching && touchX <= layout.sidebarWidth) {
     sidebarStore.touchDiff = touchX - sidebarStore.touchX;
     sidebarStore.touchX = touchX;
     sidebar.style.transform = `translateX(${touchX}px)`;
-    backdrop.style.backgroundColor = `rgba(0, 0, 0, ${touchX /
-      layout.sidebarWidth *
-      0.8})`;
+    backdrop.style.opacity = touchX / layout.sidebarWidth * 0.7;
   }
-});
+};
 
 const onTouchEnd = ev => {
   const { isTouching, sidebar, backdrop, touchDiff } = sidebarStore;
@@ -48,14 +46,18 @@ const onTouchEnd = ev => {
       open();
     }
     sidebar.style.transform = null;
-    backdrop.style.backgroundColor = null;
+    backdrop.style.opacity = null;
     sidebarStore.isTouching = false;
+    sidebarStore.touchDrift = Math.abs(sidebarStore.touchDiff);
     sidebarStore.touchX = 0;
     sidebarStore.touchDiff = 0;
   }
 };
-window.addEventListener('touchend', onTouchEnd);
-window.addEventListener('touchcancel', onTouchEnd);
+
+window.addEventListener('touchstart', onTouchStart, { passive: true });
+window.addEventListener('touchmove', onTouchMove, { passive: true });
+window.addEventListener('touchend', onTouchEnd, { passive: true });
+window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
 export function hasSidebar() {
   return Boolean(sidebarStore.sidebar);
@@ -63,14 +65,12 @@ export function hasSidebar() {
 
 export function open() {
   sidebarStore.open = true;
-  if (layout.isMobile) {
-    document.body.style.overflow = 'hidden';
-  }
+  document.body.style.overflow = 'hidden';
 }
 
 export function close() {
   sidebarStore.open = false;
-  document.body.style.overflow = 'auto';
+  document.body.style.overflow = null;
 }
 
 export function toggle() {
@@ -86,15 +86,18 @@ const StyledSidebar = styled.nav`
   top: 0;
   bottom: 0;
   left: ${-layout.sidebarWidth}px;
-  z-index: 40;
+  z-index: ${props => (props.isMobile ? 70 : 10)};
   padding: 10px;
   border-right: 1px solid #ddd;
   width: ${layout.sidebarWidth}px;
-  margin-top: ${layout.topbarHeight}px;
+  padding-top: ${props => (props.isMobile ? 0 : layout.topbarHeight) + 10}px;
   background-color: ${colors.backgroundLight};
-  transition: ${props => (props.isTouching ? 'none' : 'transform 0.15s')};
+  transition: ${props => (props.isTouching ? 'none' : 'transform')};
+  transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(${props => (props.open ? layout.sidebarWidth : 0)}px);
+  will-change: transform;
+  contain: strict;
 `;
 
 const Backdrop = styled.div`
@@ -103,38 +106,37 @@ const Backdrop = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, ${props => (props.open ? 0.8 : 0)});
+  background-color: ${colors.text};
+  opacity: ${props => (props.open ? 0.7 : 0)};
   pointer-events: ${props => (props.open ? 'unset' : 'none')};
-  transition: ${props =>
-    props.isTouching ? 'none' : 'background-color 0.15s'};
+  transition: ${props => (props.isTouching ? 'none' : 'opacity')};
+  transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
-  z-index: 20;
+  z-index: 60;
+  will-change: opacity;
+  contain: strict;
 `;
 
 const sidebarRef = sidebar => (sidebarStore.sidebar = sidebar);
 const backdropRef = backdrop => (sidebarStore.backdrop = backdrop);
 
-class Sidebar extends Component {
-  render() {
-    const { children } = this.props;
-    return (
-      <Fragment>
-        <StyledSidebar
-          open={sidebarStore.open || !layout.isMobile}
-          isTouching={sidebarStore.isTouching}
-          innerRef={sidebarRef}
-        >
-          {children}
-        </StyledSidebar>
-        <Backdrop
-          open={sidebarStore.open && layout.isMobile}
-          isTouching={sidebarStore.isTouching}
-          onClick={close}
-          innerRef={backdropRef}
-        />
-      </Fragment>
-    );
-  }
-}
-
-export default view(Sidebar);
+export default view(({ children }) => {
+  return (
+    <Fragment>
+      <StyledSidebar
+        open={sidebarStore.open || !layout.isMobile}
+        isMobile={layout.isMobile}
+        isTouching={sidebarStore.isTouching}
+        innerRef={sidebarRef}
+      >
+        {children}
+      </StyledSidebar>
+      <Backdrop
+        open={sidebarStore.open && layout.isMobile}
+        isTouching={sidebarStore.isTouching}
+        onClick={close}
+        innerRef={backdropRef}
+      />
+    </Fragment>
+  );
+});

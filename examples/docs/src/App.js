@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import styled from 'styled-components';
 import { path, view, Router } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
@@ -22,9 +23,11 @@ async function resolveState({ toPage }) {
   return <Page page={toPage} html={html} />;
 }
 
-const State = () => <PageRouter defaultPage="intro" onRoute={resolveState} />;
+const State = () => (
+  <PageRouter defaultPage="intro" onRoute={resolveState} debug="state" />
+);
 const Routing = () => (
-  <PageRouter defaultPage="advanced" onRoute={resolveRoute} />
+  <PageRouter defaultPage="advanced" onRoute={resolveRoute} debug="routing" />
 );
 
 const DocsNav = () => (
@@ -41,14 +44,14 @@ const DocsNav = () => (
 );
 
 const DocsContent = () => (
-  <PageRouter defaultPage="state">
+  <PageRouter defaultPage="state" debug="docs">
     <State page="state" />
     <Routing page="route" />
   </PageRouter>
 );
 
 const Content = () => (
-  <PageRouter defaultPage="home">
+  <PageRouter defaultPage="home" debug="main">
     <State page="home" />
     <Page page="examples">EXAMPLES</Page>
     <DocsContent page="docs" />
@@ -63,6 +66,17 @@ const Nav = () => (
   </Fragment>
 );
 
+const Chat = styled.div`
+  width: 100%;
+  max-width: 500px;
+  z-index: ${props => (props.isMobile ? 70 : 10)};
+  box-shadow: none;
+  transition: transform 0.15s;
+  border-left: solid 1px lightgray;
+  will-change: transform;
+  contain: strict;
+`;
+
 export default view(() => (
   <Fragment>
     <Topbar>
@@ -72,6 +86,11 @@ export default view(() => (
       <Content />
     </App>
     <DocsNav />
+    <Chat
+      id="chat"
+      className="gitter-chat-embed is-collapsed"
+      isMobile={layout.isMobile}
+    />
     {layout.isMobile && <Actionbar />}
     <Notification />
   </Fragment>
