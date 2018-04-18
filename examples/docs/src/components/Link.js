@@ -8,8 +8,6 @@ const NavLink = props => (
     activeClass="active"
     options={{
       scroll: {
-        top: 0,
-        left: 0,
         container: '#root'
       },
       ...props.options

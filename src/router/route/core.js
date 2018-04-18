@@ -73,10 +73,14 @@ export function routeFromDepth(
   const fromPath = path.slice();
   path.splice(depth, Infinity, ...toPathArray(toPath));
 
-  // how should these behave with history and url?
-  // do this at the beginning of the routing to look nice with nested async routing
-  // issue! -> scroll.to element might not yet be visible!!
-  options.scroll = options.scroll || toParams(location.hash);
+  const scroll = (options.scroll = options.scroll || toParams(location.hash));
+
+  if (scroll && !scroll.to) {
+    const container = scroll.container
+      ? document.querySelector(scroll.container)
+      : window;
+    container.scrollTo({ left: scroll.x || 0, top: scroll.y || 0 });
+  }
 
   return switchRoutersFromDepth(fromPath, depth, status, oldParams).then(
     () => onRoutingEnd(options, status),
@@ -109,34 +113,26 @@ function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
     .then(() => switchRoutersFromDepth(fromPath, ++depth, status, oldParams));
 }
 
-function onRoutingEnd(options, status) {
+function onRoutingEnd({ history, scroll }, status) {
   if (status.cancelled) {
     return;
   }
   // by default a history item is pushed if the pathname changes!
   if (
-    options.history === true ||
-    (options.history !== false && toPathString(path) !== location.pathname)
+    history === true ||
+    (history !== false && toPathString(path) !== location.pathname)
   ) {
     // do I want to push options as the state? I should add it to the hash instead probably
-    history.pushState(options, '', toHash(options.scroll));
+    window.history.pushState(undefined, '', toHash(scroll));
   } else {
-    history.replaceState(options, '', toHash(options.scroll));
+    window.history.replaceState(undefined, '', toHash(scroll));
   }
 
-  if (options.scroll && options.scroll.to) {
-    const scrollAnchor = document.getElementById(options.scroll.to);
+  if (scroll && scroll.to) {
+    const scrollAnchor = document.getElementById(scroll.to);
     if (scrollAnchor) {
-      scrollAnchor.scrollIntoView(options.scroll);
+      scrollAnchor.scrollIntoView(scroll);
     }
-  }
-  // issue if i put this to the beginning it is messed up
-  // but putting this at the end 'scrolls late', it scrolls after potential renders
-  if (options.scroll && !options.scroll.to) {
-    const container = options.scroll.container
-      ? document.querySelector(options.scroll.container)
-      : window;
-    container.scrollTo(options.scroll);
   }
 
   integrationScheduler.process();

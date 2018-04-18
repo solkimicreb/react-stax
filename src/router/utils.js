@@ -11,8 +11,9 @@ export function toQuery(params) {
   return query ? `?${query}` : query;
 }
 
-export function toHash(params) {
-  const hash = toObjectString(params);
+export function toHash(scroll) {
+  const { to, x, y } = scroll;
+  const hash = toObjectString({ to, x, y });
   return hash ? `#${hash}` : hash;
 }
 
