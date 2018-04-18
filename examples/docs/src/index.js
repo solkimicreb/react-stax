@@ -1,4 +1,4 @@
-import React, { unstable_AsyncMode as AsyncMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import 'github-markdown-css';
 import 'prismjs/themes/prism.css';

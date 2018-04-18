@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { unstable_AsyncMode as AsyncMode } from 'react';
 import { view } from 'react-easy-stack';
 import styled from 'styled-components';
 import { colors, layout } from './theme';

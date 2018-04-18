@@ -96,7 +96,7 @@ export default class Router extends PureComponent {
     };
 
     return new Promise(resolve => this.setState(nextState, resolve)).then(
-      shouldAnimate && this.animate()
+      () => shouldAnimate && this.animate()
     );
   }
 
