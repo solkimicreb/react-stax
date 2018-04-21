@@ -27,7 +27,7 @@ const enterAnimation = () => ({
     : {
         opacity: [0, 1]
       },
-  duration: 200,
+  duration: 2000,
   ease: ease.in,
   fill: 'both'
 });
@@ -48,7 +48,7 @@ const leaveAnimation = () => {
           opacity: [1, 0],
           transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`]
         },
-    duration: 200,
+    duration: 2000,
     ease: ease.out,
     fill: 'both'
   };

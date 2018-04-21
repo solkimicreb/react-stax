@@ -161,9 +161,9 @@ export default class Router extends PureComponent {
 
 function preventRemoval(container, child) {
   const originalRemoveChild = container.removeChild;
-  container.removeChild = function removeChild(node) {
+  container.removeChild = node => {
     if (node !== child) {
-      this.removeChild(node);
+      originalRemoveChild.call(container, node);
     }
   };
   return () => (container.removeChild = originalRemoveChild);
