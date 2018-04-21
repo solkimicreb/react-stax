@@ -69,14 +69,6 @@ export function routeFromDepth(
   }
   Object.assign(params, newParams);
 
-  const scroll = (options.scroll = options.scroll || toParams(location.hash));
-  if (scroll && !scroll.to) {
-    const container = scroll.container
-      ? document.querySelector(scroll.container)
-      : window;
-    container.scrollTo({ left: scroll.x || 0, top: scroll.y || 0 });
-  }
-
   return switchRoutersFromDepth(depth, status).then(
     () => onRoutingEnd(options, status),
     rethrow(() => onRoutingEnd(options, status))
@@ -111,6 +103,16 @@ function onRoutingEnd({ history, scroll }, status) {
     return;
   }
   // by default a history item is pushed if the pathname changes!
+  handleHistory(history);
+  // byt default the page is scrolled to the top left
+  handleScroll(scroll);
+
+  scheduler.process();
+  scheduler.start();
+  routingStatus = undefined;
+}
+
+function handleHistory(history) {
   if (
     history === true ||
     (history !== false && toPathString(path) !== location.pathname)
@@ -120,17 +122,20 @@ function onRoutingEnd({ history, scroll }, status) {
   } else {
     window.history.replaceState(undefined, '', toHash(scroll));
   }
+}
 
-  if (scroll && scroll.to) {
+function handleScroll(scroll = toParams(location.hash)) {
+  if (scroll.to) {
     const scrollAnchor = document.getElementById(scroll.to);
     if (scrollAnchor) {
       scrollAnchor.scrollIntoView(scroll);
     }
+  } else {
+    const container = scroll.container
+      ? document.querySelector(scroll.container)
+      : window;
+    container.scrollTo({ left: scroll.x || 0, top: scroll.y || 0 });
   }
-
-  scheduler.process();
-  scheduler.start();
-  routingStatus = undefined;
 }
 
 historyHandler(() =>
