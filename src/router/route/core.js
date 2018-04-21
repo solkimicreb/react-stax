@@ -27,7 +27,10 @@ export function registerRouter(router, depth) {
     const oldParams = Object.assign({}, params);
     Promise.resolve()
       .then(() => router.route1(path[depth], oldParams))
-      .then(args => !status.cancelled && router.route2(args))
+      .then(
+        resolvedData =>
+          !status.cancelled && router.route2(resolvedData, path[depth])
+      )
       .then(() => initStatuses.delete(status));
   }
 }
@@ -106,9 +109,13 @@ function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
         )
     )
     .then(
-      args =>
+      resolvedData =>
         !status.cancelled &&
-        Promise.all(routersAtDepth.map((router, i) => router.route2(args[i])))
+        Promise.all(
+          routersAtDepth.map((router, i) =>
+            router.route2(fromPath[depth], resolvedData[i])
+          )
+        )
     )
     .then(() => switchRoutersFromDepth(fromPath, ++depth, status, oldParams));
 }

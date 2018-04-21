@@ -2,7 +2,7 @@ import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
 import { div, animate } from 'env';
 import { path, params } from '../integrations';
-import { log, addExtraProps } from '../utils';
+import { log, addExtraProps, noop } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {
@@ -31,7 +31,7 @@ export default class Router extends PureComponent {
     return { easyRouterDepth: this.depth + 1 };
   }
 
-  state = {};
+  state = { key: 0 };
 
   componentDidMount() {
     registerRouter(this, this.depth);
@@ -52,79 +52,74 @@ export default class Router extends PureComponent {
     // fill the path with the default page, if the current token is empty
     path[this.depth] = toPage;
 
+    if (onRoute) {
+      return onRoute({
+        target: this,
+        fromPage,
+        toPage,
+        fromParams,
+        toParams: params
+      });
+    }
+  }
+
+  route2(fromPage, resolvedData) {
+    let { shouldAnimate, leaveAnimation } = this.props;
+    const toPage = path[this.depth];
+
     if (typeof shouldAnimate === 'function') {
       shouldAnimate = shouldAnimate();
     }
     if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== path[this.depth];
+      shouldAnimate = fromPage !== toPage;
     }
 
     if (this.fromDOM) {
       this.fromDOM.remove();
       this.fromDOM = undefined;
     }
+
+    // issue parent router is keyed
+    let key;
+    const originalRemoveChild = this.container.removeChild;
     if (shouldAnimate && leaveAnimation) {
-      const { firstElementChild } = this.container;
-      this.fromDOM = firstElementChild && firstElementChild.cloneNode(true);
+      key = this.state.key + 1;
+      this.container.removeChild = noop;
+      this.fromDOM = this.container.firstElementChild;
+    } else {
+      // this is also bad ): it should not be keyed!
+      // it will change even when it should not
+      // or should it really have a key?
+      // fixed key if it should not animate
+      // I route to the same page in default mode
+      // I route to a different page with no animation
+      // it will be keyed to be the same as the previous
+      key = this.state.key;
     }
+    // increment the key if I go to a different page or if I have shouldAnimate true and leaveAnimation
 
-    let result = Promise.resolve();
-
-    if (onRoute) {
-      result = result.then(() =>
-        onRoute({
-          target: this,
-          fromPage,
-          toPage: path[this.depth],
-          fromParams,
-          toParams: params
-        })
-      );
-    }
-
-    return result.then(resolvedData => ({
-      resolvedData,
-      toPage,
-      shouldAnimate
-    }));
-  }
-
-  route2({ resolvedData, toPage, shouldAnimate }) {
     const nextState = {
       resolvedData,
-      toPage
+      toPage,
+      key
     };
 
-    return new Promise(resolve => this.setState(nextState, resolve)).then(
-      () => shouldAnimate && this.animate()
-    );
+    return new Promise(resolve => this.setState(nextState, resolve))
+      .then(() => (this.container.removeChild = originalRemoveChild))
+      .then(() => shouldAnimate && this.animate());
   }
-
-  selectChild(toPage) {
-    const { notFoundPage } = this.props;
-    const children = Children.toArray(this.props.children);
-
-    const toChild = children.find(child => child.props.page === toPage);
-    // mounted and has no child
-    if (!toChild && this.container) {
-      return children.find(child => child.props.page === notFoundPage);
-    }
-    return toChild;
-  }
-
-  saveRef = container => (this.container = container);
 
   animate() {
-    let { enterAnimation, leaveAnimation } = this.props;
+    const { enterAnimation, leaveAnimation } = this.props;
     const fromDOM = this.fromDOM;
-    const toDOM = this.container.firstElementChild;
+    const toDOM = fromDOM && fromDOM.nextElementSibling;
 
     // only enter animate if this is not the router's first routing
-    if (enterAnimation && fromDOM && toDOM) {
+    // (there is a from an to DOM too)
+    if (enterAnimation && toDOM) {
       animate(enterAnimation, toDOM);
     }
     if (leaveAnimation && fromDOM) {
-      this.container.appendChild(fromDOM);
       animate(leaveAnimation, fromDOM).then(() => {
         fromDOM.remove();
         this.fromDOM = undefined;
@@ -134,7 +129,7 @@ export default class Router extends PureComponent {
 
   render() {
     const { element } = this.props;
-    const { toPage, resolvedData } = this.state;
+    const { toPage, resolvedData, key } = this.state;
 
     let toChild;
     if (React.isValidElement(resolvedData)) {
@@ -146,11 +141,28 @@ export default class Router extends PureComponent {
         toChild = React.cloneElement(toChild, resolvedData);
       }
     }
+    if (toChild) {
+      toChild = React.cloneElement(toChild, { key });
+    }
 
     return React.createElement(
       element,
       addExtraProps({ ref: this.saveRef }, this.props, Router.propTypes),
       toChild
     );
+  }
+
+  saveRef = container => (this.container = container);
+
+  selectChild(toPage) {
+    const { notFoundPage } = this.props;
+    const children = Children.toArray(this.props.children);
+
+    const toChild = children.find(child => child.props.page === toPage);
+    // mounted and has no child
+    if (!toChild && this.container) {
+      return children.find(child => child.props.page === notFoundPage);
+    }
+    return toChild;
   }
 }
