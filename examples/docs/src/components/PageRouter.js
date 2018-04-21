@@ -21,7 +21,6 @@ const StyledRouter = styled(Router)`
 const enterAnimation = () => ({
   keyframes: layout.isMobile
     ? {
-        opacity: [0.5, 1],
         transform: ['translateX(110%)', 'none']
       }
     : {
@@ -38,7 +37,6 @@ const leaveAnimation = () => {
   return {
     keyframes: layout.isMobile
       ? {
-          opacity: [1, 0.5],
           transform: [
             `translateY(-${scrollY}px)`,
             `translate3d(-110%, -${scrollY}px, 0)`

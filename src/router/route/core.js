@@ -82,12 +82,7 @@ function switchRoutersFromDepth(depth, status) {
     return Promise.resolve();
   }
 
-  return Promise.resolve()
-    .then(
-      () =>
-        !status.cancelled &&
-        Promise.all(routersAtDepth.map(router => router.route1()))
-    )
+  return Promise.all(routersAtDepth.map(router => router.route1()))
     .then(
       resolvedData =>
         !status.cancelled &&
