@@ -1,5 +1,5 @@
 import { path, params } from '../integrations';
-import { integrationScheduler, location, history, historyHandler } from 'env';
+import { scheduler, location, history, historyHandler } from 'env';
 import {
   toPathArray,
   toPathString,
@@ -24,13 +24,9 @@ export function registerRouter(router, depth) {
     const status = { depth, cancelled: false };
     initStatuses.add(status);
 
-    const oldParams = Object.assign({}, params);
     Promise.resolve()
-      .then(() => router.route1(path[depth], oldParams))
-      .then(
-        resolvedData =>
-          !status.cancelled && router.route2(resolvedData, path[depth])
-      )
+      .then(() => router.route1())
+      .then(resolvedData => !status.cancelled && router.route2(resolvedData))
       .then(() => initStatuses.delete(status));
   }
 }
@@ -61,23 +57,19 @@ export function routeFromDepth(
     routingStatus.cancelled = true;
   } else {
     // only process if we are not yet routing to prevent mid routing flash!
-    integrationScheduler.process();
+    scheduler.process();
   }
   const status = (routingStatus = { depth, cancelled: false });
-  integrationScheduler.stop();
+  scheduler.stop();
 
+  path.splice(depth, Infinity, ...toPathArray(toPath));
   // replace or extend params with nextParams by mutation (do not change the observable ref)
-  const oldParams = Object.assign({}, params);
   if (!options.inherit) {
     clear(params);
   }
   Object.assign(params, newParams);
 
-  const fromPath = path.slice();
-  path.splice(depth, Infinity, ...toPathArray(toPath));
-
   const scroll = (options.scroll = options.scroll || toParams(location.hash));
-
   if (scroll && !scroll.to) {
     const container = scroll.container
       ? document.querySelector(scroll.container)
@@ -85,13 +77,13 @@ export function routeFromDepth(
     container.scrollTo({ left: scroll.x || 0, top: scroll.y || 0 });
   }
 
-  return switchRoutersFromDepth(fromPath, depth, status, oldParams).then(
+  return switchRoutersFromDepth(depth, status).then(
     () => onRoutingEnd(options, status),
     rethrow(() => onRoutingEnd(options, status))
   );
 }
 
-function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
+function switchRoutersFromDepth(depth, status) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (!routersAtDepth.length || status.cancelled) {
@@ -102,22 +94,16 @@ function switchRoutersFromDepth(fromPath, depth, status, oldParams) {
     .then(
       () =>
         !status.cancelled &&
-        Promise.all(
-          routersAtDepth.map(router =>
-            router.route1(fromPath[depth], oldParams)
-          )
-        )
+        Promise.all(routersAtDepth.map(router => router.route1()))
     )
     .then(
       resolvedData =>
         !status.cancelled &&
         Promise.all(
-          routersAtDepth.map((router, i) =>
-            router.route2(fromPath[depth], resolvedData[i])
-          )
+          routersAtDepth.map((router, i) => router.route2(resolvedData[i]))
         )
     )
-    .then(() => switchRoutersFromDepth(fromPath, ++depth, status, oldParams));
+    .then(() => switchRoutersFromDepth(++depth, status));
 }
 
 function onRoutingEnd({ history, scroll }, status) {
@@ -142,8 +128,8 @@ function onRoutingEnd({ history, scroll }, status) {
     }
   }
 
-  integrationScheduler.process();
-  integrationScheduler.start();
+  scheduler.process();
+  scheduler.start();
   routingStatus = undefined;
 }
 

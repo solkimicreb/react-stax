@@ -1,5 +1,5 @@
 import { observable, observe } from '@nx-js/observer-util';
-import { integrationScheduler as scheduler, location, history } from 'env';
+import { scheduler as scheduler, location, history } from 'env';
 import { toQuery, toParams, toPathArray, toPathString } from '../utils';
 
 export const params = observable(toParams(location.search));

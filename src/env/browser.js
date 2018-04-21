@@ -2,9 +2,7 @@ import React from 'react';
 import { Queue, priorities } from '@nx-js/queue-util';
 import isNode, * as node from './node';
 
-export const integrationScheduler = isNode
-  ? node.integrationScheduler
-  : new Queue(priorities.LOW);
+export const scheduler = isNode ? node.scheduler : new Queue(priorities.LOW);
 
 export const localStorage = isNode ? node.localStorage : window.localStorage;
 export const history = isNode ? node.history : window.history;

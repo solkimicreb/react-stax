@@ -31,7 +31,9 @@ export default class Router extends PureComponent {
     return { easyRouterDepth: this.depth + 1 };
   }
 
-  state = { key: 0 };
+  state = {
+    key: 0
+  };
 
   componentDidMount() {
     registerRouter(this, this.depth);
@@ -45,8 +47,9 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth);
   }
 
-  route1(fromPage, fromParams) {
-    let { onRoute, leaveAnimation, shouldAnimate } = this.props;
+  route1() {
+    const { onRoute, leaveAnimation } = this.props;
+    const { fromPage } = this.state;
     const toPage = path[this.depth] || this.props.defaultPage;
 
     // fill the path with the default page, if the current token is empty
@@ -56,74 +59,63 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage,
-        fromParams,
-        toParams: params
+        toPage
       });
     }
   }
 
-  route2(fromPage, resolvedData) {
+  route2(resolvedData) {
     let { shouldAnimate, leaveAnimation } = this.props;
+    let { key, toPage: fromPage } = this.state;
     const toPage = path[this.depth];
+    const pagesMatch = fromPage === toPage;
+
+    if (!pagesMatch) {
+      key++;
+    }
 
     if (typeof shouldAnimate === 'function') {
       shouldAnimate = shouldAnimate();
     }
     if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== toPage;
+      shouldAnimate = !pagesMatch;
     }
 
-    if (this.fromDOM) {
-      this.fromDOM.remove();
-      this.fromDOM = undefined;
-    }
-
-    // issue parent router is keyed
-    let key;
-    const originalRemoveChild = this.container.removeChild;
+    let fromDOM, restoreRemoval;
     if (shouldAnimate && leaveAnimation) {
-      key = this.state.key + 1;
-      this.container.removeChild = noop;
-      this.fromDOM = this.container.firstElementChild;
-    } else {
-      // this is also bad ): it should not be keyed!
-      // it will change even when it should not
-      // or should it really have a key?
-      // fixed key if it should not animate
-      // I route to the same page in default mode
-      // I route to a different page with no animation
-      // it will be keyed to be the same as the previous
-      key = this.state.key;
+      fromDOM = this.container.firstElementChild;
+      restoreRemoval = preventRemoval(this.container, fromDOM);
     }
-    // increment the key if I go to a different page or if I have shouldAnimate true and leaveAnimation
 
     const nextState = {
       resolvedData,
+      fromPage,
       toPage,
       key
     };
 
-    return new Promise(resolve => this.setState(nextState, resolve))
-      .then(() => (this.container.removeChild = originalRemoveChild))
-      .then(() => shouldAnimate && this.animate());
+    return new Promise(resolve =>
+      this.setState(nextState, () => {
+        restoreRemoval && restoreRemoval();
+        if (shouldAnimate) {
+          this.animate(fromDOM);
+        }
+        resolve();
+      })
+    );
   }
 
-  animate() {
+  animate(fromDOM) {
     const { enterAnimation, leaveAnimation } = this.props;
-    const fromDOM = this.fromDOM;
+    // only do an enter animation if there is both a from and to DOM
+    // so this is not the initial appearance of the page
     const toDOM = fromDOM && fromDOM.nextElementSibling;
 
-    // only enter animate if this is not the router's first routing
-    // (there is a from an to DOM too)
+    if (leaveAnimation && fromDOM) {
+      animate(leaveAnimation, fromDOM).then(() => fromDOM.remove());
+    }
     if (enterAnimation && toDOM) {
       animate(enterAnimation, toDOM);
-    }
-    if (leaveAnimation && fromDOM) {
-      animate(leaveAnimation, fromDOM).then(() => {
-        fromDOM.remove();
-        this.fromDOM = undefined;
-      });
     }
   }
 
@@ -165,4 +157,14 @@ export default class Router extends PureComponent {
     }
     return toChild;
   }
+}
+
+function preventRemoval(container, child) {
+  const originalRemoveChild = container.removeChild;
+  container.removeChild = function removeChild(node) {
+    if (node !== child) {
+      this.removeChild(node);
+    }
+  };
+  return () => (container.removeChild = originalRemoveChild);
 }
