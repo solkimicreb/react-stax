@@ -47,7 +47,7 @@ export default class Router extends PureComponent {
     routeFromDepth(to, params, options, this.depth);
   }
 
-  route1() {
+  startRouting() {
     const { onRoute, leaveAnimation } = this.props;
     const { fromPage } = this.state;
     const toPage = path[this.depth] || this.props.defaultPage;
@@ -64,7 +64,7 @@ export default class Router extends PureComponent {
     }
   }
 
-  route2(resolvedData) {
+  finishRouting(resolvedData) {
     let { shouldAnimate, leaveAnimation } = this.props;
     let { key, toPage: fromPage } = this.state;
     const toPage = path[this.depth];

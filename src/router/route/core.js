@@ -25,8 +25,10 @@ export function registerRouter(router, depth) {
     initStatuses.add(status);
 
     Promise.resolve()
-      .then(() => router.route1())
-      .then(resolvedData => !status.cancelled && router.route2(resolvedData))
+      .then(() => router.startRouting())
+      .then(
+        resolvedData => !status.cancelled && router.finishRouting(resolvedData)
+      )
       .then(() => initStatuses.delete(status));
   }
 }
@@ -69,42 +71,43 @@ export function routeFromDepth(
   }
   Object.assign(params, newParams);
 
-  return switchRoutersFromDepth(depth, status).then(
-    () => onRoutingEnd(options, status),
-    rethrow(() => onRoutingEnd(options, status))
-  );
+  return Promise.resolve()
+    .then(() => switchRoutersFromDepth(depth, status))
+    .then(
+      () => onRoutingEnd(options, status),
+      rethrow(() => onRoutingEnd(options, status))
+    );
 }
 
 function switchRoutersFromDepth(depth, status) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
-  if (!routersAtDepth.length || status.cancelled) {
-    return Promise.resolve();
+  if (!status.cancelled && routersAtDepth.length) {
+    return Promise.all(routersAtDepth.map(router => router.startRouting()))
+      .then(
+        resolvedData =>
+          !status.cancelled &&
+          Promise.all(
+            routersAtDepth.map((router, i) =>
+              router.finishRouting(resolvedData[i])
+            )
+          )
+      )
+      .then(() => switchRoutersFromDepth(++depth, status));
   }
-
-  return Promise.all(routersAtDepth.map(router => router.route1()))
-    .then(
-      resolvedData =>
-        !status.cancelled &&
-        Promise.all(
-          routersAtDepth.map((router, i) => router.route2(resolvedData[i]))
-        )
-    )
-    .then(() => switchRoutersFromDepth(++depth, status));
 }
 
 function onRoutingEnd({ history, scroll }, status) {
-  if (status.cancelled) {
-    return;
-  }
-  // by default a history item is pushed if the pathname changes!
-  handleHistory(history);
-  // byt default the page is scrolled to the top left
-  handleScroll(scroll);
+  if (!status.cancelled) {
+    // by default a history item is pushed if the pathname changes!
+    handleHistory(history);
+    // byt default the page is scrolled to the top left
+    handleScroll(scroll);
 
-  scheduler.process();
-  scheduler.start();
-  routingStatus = undefined;
+    scheduler.process();
+    scheduler.start();
+    routingStatus = undefined;
+  }
 }
 
 function handleHistory(history) {
