@@ -2,7 +2,7 @@ import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
 import { div, animate } from 'env';
 import { path, params } from '../integrations';
-import { log, addExtraProps, noop } from '../utils';
+import { addExtraProps } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {

@@ -51,34 +51,6 @@ export function notEmpty(token) {
   return token !== '';
 }
 
-export function rethrow(fn) {
-  return error => {
-    fn();
-    throw error;
-  };
-}
-
-export function log(fn) {
-  return error => {
-    console.error(error);
-    fn();
-  };
-}
-
-export function clear(obj) {
-  for (let key of Object.keys(obj)) {
-    delete obj[key];
-  }
-}
-
-export function defaults(obj, defaultProps) {
-  for (let key in defaultProps) {
-    if (obj[key] === undefined) {
-      obj[key] = defaultProps[key];
-    }
-  }
-}
-
 export function addExtraProps(props, extraProps, defaultProps) {
   for (let key in extraProps) {
     if (!(key in defaultProps)) {
@@ -87,5 +59,3 @@ export function addExtraProps(props, extraProps, defaultProps) {
   }
   return props;
 }
-
-export function noop() {}

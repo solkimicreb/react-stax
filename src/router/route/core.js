@@ -1,6 +1,6 @@
 import { path, params } from '../integrations';
 import { scheduler, location, history, historyHandler } from 'env';
-import { toPathArray, toPathString, toParams, toHash, clear } from '../utils';
+import { toPathArray, toPathString, toParams, toHash } from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -51,7 +51,7 @@ export function routeFromDepth(
   path.splice(depth, Infinity, ...toPathArray(toPath));
   // replace or extend params with nextParams by mutation (do not change the observable ref)
   if (!options.inherit) {
-    clear(params);
+    Object.keys(params).forEach(key => delete params[key]);
   }
   Object.assign(params, toParams);
 
