@@ -1,13 +1,6 @@
 import { path, params } from '../integrations';
 import { scheduler, location, history, historyHandler } from 'env';
-import {
-  toPathArray,
-  toPathString,
-  toParams,
-  toHash,
-  rethrow,
-  clear
-} from '../utils';
+import { toPathArray, toPathString, toParams, toHash, clear } from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -21,16 +14,22 @@ export function registerRouter(router, depth) {
   // route the router if we are not routing currently
   // or the routing is already past the current depth
   if (!routingStatus || depth <= routingStatus.depth) {
-    const status = { depth, cancelled: false };
-    initStatuses.add(status);
-
-    Promise.resolve()
-      .then(() => router.startRouting())
-      .then(
-        resolvedData => !status.cancelled && router.finishRouting(resolvedData)
-      )
-      .then(() => initStatuses.delete(status));
+    initRouter(router, depth);
   }
+}
+
+function initRouter(router, depth) {
+  const status = { depth, cancelled: false };
+  initStatuses.add(status);
+
+  Promise.resolve()
+    .then(() => router.startRouting())
+    .then(resolvedData => {
+      initStatuses.delete(status);
+      if (!status.cancelled) {
+        return router.finishRouting(resolvedData);
+      }
+    });
 }
 
 export function releaseRouter(router, depth) {
@@ -43,11 +42,25 @@ export function route({ to, params, options }) {
 
 export function routeFromDepth(
   toPath = location.pathname,
-  newParams = {},
+  toParams = {},
   options = {},
   depth = 0
 ) {
-  // cancel inits
+  const status = (routingStatus = initStatus(depth));
+
+  path.splice(depth, Infinity, ...toPathArray(toPath));
+  // replace or extend params with nextParams by mutation (do not change the observable ref)
+  if (!options.inherit) {
+    clear(params);
+  }
+  Object.assign(params, toParams);
+
+  return Promise.resolve()
+    .then(() => switchRoutersFromDepth(depth, status))
+    .then(() => finishRouting(options, status));
+}
+
+function initStatus(depth) {
   if (initStatuses.length) {
     initStatuses.forEach(status => {
       if (depth <= status.depth) {
@@ -61,22 +74,8 @@ export function routeFromDepth(
     // only process if we are not yet routing to prevent mid routing flash!
     scheduler.process();
   }
-  const status = (routingStatus = { depth, cancelled: false });
   scheduler.stop();
-
-  path.splice(depth, Infinity, ...toPathArray(toPath));
-  // replace or extend params with nextParams by mutation (do not change the observable ref)
-  if (!options.inherit) {
-    clear(params);
-  }
-  Object.assign(params, newParams);
-
-  return Promise.resolve()
-    .then(() => switchRoutersFromDepth(depth, status))
-    .then(
-      () => onRoutingEnd(options, status),
-      rethrow(() => onRoutingEnd(options, status))
-    );
+  return { depth, cancelled: false };
 }
 
 function switchRoutersFromDepth(depth, status) {
@@ -84,20 +83,20 @@ function switchRoutersFromDepth(depth, status) {
 
   if (!status.cancelled && routersAtDepth.length) {
     return Promise.all(routersAtDepth.map(router => router.startRouting()))
-      .then(
-        resolvedData =>
-          !status.cancelled &&
-          Promise.all(
+      .then(resolvedData => {
+        if (!status.cancelled) {
+          return Promise.all(
             routersAtDepth.map((router, i) =>
               router.finishRouting(resolvedData[i])
             )
-          )
-      )
+          );
+        }
+      })
       .then(() => switchRoutersFromDepth(++depth, status));
   }
 }
 
-function onRoutingEnd({ history, scroll }, status) {
+function finishRouting({ history, scroll }, status) {
   if (!status.cancelled) {
     // by default a history item is pushed if the pathname changes!
     handleHistory(history);
