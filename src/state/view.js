@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { observe, unobserve } from '@nx-js/observer-util';
+import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util';
 
+const COMPONENT = Symbol('owner component');
 const DUMMY_STATE = {};
 
 export default function view(Comp, { devtool: rawDevtool } = {}) {
@@ -13,22 +14,18 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
 
   // return a HOC which overwrites render, shouldComponentUpdate and componentWillUnmount
   // it decides when to run the new reactive methods and when to proxy to the original methods
-  return class ReactiveHOC extends BaseComp {
-    static displayName = Comp.displayName || Comp.name;
-    static contextTypes = Comp.contextTypes;
-    static childContextTypes = Comp.childContextTypes;
-    static propTypes = Comp.propTypes;
-    static defaultProps = Comp.defaultProps;
-
+  class ReactiveHOC extends BaseComp {
     constructor(props, context) {
       super(props, context);
 
+      this.state = this.state || {};
+      this.state[COMPONENT] = this;
       // create a reactive render for the component
       // run a dummy setState to schedule a new reactive render, avoid forceUpdate
       this.render = observe(this.render, {
         scheduler: () => this.setState(DUMMY_STATE),
-        lazy: true,
-        debugger: devtool
+        debugger: devtool,
+        lazy: true
       });
     }
 
@@ -74,6 +71,20 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       return false;
     }
 
+    // add a custom deriveStoresFromProps lifecyle method
+    static getDerivedStateFromProps(props, state) {
+      if (super.deriveStoresFromProps) {
+        // inject all local stores and let the user mutate them directly
+        const stores = mapStateToStores(state);
+        super.deriveStoresFromProps(props, ...stores);
+      }
+      // respect user defined getDerivedStateFromProps
+      if (super.getDerivedStateFromProps) {
+        return super.getDerivedStateFromProps(props, state);
+      }
+      return null;
+    }
+
     componentWillUnmount() {
       // call user defined componentWillUnmount
       if (super.componentWillUnmount) {
@@ -82,5 +93,27 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       // clean up memory used by Easy State
       unobserve(this.render);
     }
-  };
+  }
+
+  ReactiveHOC.displayName = Comp.displayName || Comp.name;
+  // static props are inherited by class components,
+  // but have to be copied for function components
+  if (isStatelessComp) {
+    for (let key of Object.keys(Comp)) {
+      ReactiveHOC[key] = Comp[key];
+    }
+  }
+
+  return ReactiveHOC;
+}
+
+function mapStateToStores(state) {
+  // find store properties and map them to their none observable raw value
+  // to do not trigger none static this.setState calls
+  // from the static getDerivedStateFromProps lifecycle method
+  const component = state[COMPONENT];
+  return Object.keys(component)
+    .map(key => component[key])
+    .filter(isObservable)
+    .map(raw);
 }

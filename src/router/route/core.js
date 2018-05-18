@@ -1,5 +1,4 @@
-import { path, params } from '../integrations';
-import { scheduler, location, history, historyHandler } from 'env';
+import { path, params, scheduler } from '../integrations';
 import { toPathArray, toPathString, toParams, toHash } from '../utils';
 
 const routers = [];
@@ -135,7 +134,7 @@ function handleScroll(scroll = toParams(location.hash)) {
   }
 }
 
-historyHandler(() =>
+window.addEventListener('popstate', () =>
   route({
     to: location.pathname,
     params: toParams(location.search),

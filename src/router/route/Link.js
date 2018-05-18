@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
-import { scheduler as scheduler, location, anchor } from 'env';
 import { toPathArray, toPathString, toQuery, addExtraProps } from '../utils';
-import { params, path } from '../integrations';
+import { params, path, scheduler } from '../integrations';
 import { routeFromDepth } from './core';
 
 export default class Link extends PureComponent {
@@ -23,7 +22,7 @@ export default class Link extends PureComponent {
 
   static defaultProps = {
     // rework this later! to be RN compatible
-    element: anchor,
+    element: 'a',
     activeClass: '',
     className: '',
     style: {}
