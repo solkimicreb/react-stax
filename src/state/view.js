@@ -1,7 +1,7 @@
-import { Component } from 'react';
-import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util';
+import { Component } from "react";
+import { observe, unobserve, raw, isObservable } from "@nx-js/observer-util";
 
-const COMPONENT = Symbol('owner component');
+const COMPONENT = Symbol("owner component");
 const DUMMY_STATE = {};
 
 export default function view(Comp, { devtool: rawDevtool } = {}) {
@@ -42,13 +42,13 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
         super.shouldComponentUpdate &&
         !super.shouldComponentUpdate(nextProps, nextState)
       ) {
-        devtool && devtool({ type: 'render', renderType: 'blocked' });
+        devtool && devtool({ type: "render", renderType: "blocked" });
         return false;
       }
 
       // return true if it is a reactive render or state changes
       if (state !== nextState) {
-        devtool && devtool({ type: 'render', renderType: 'reactive' });
+        devtool && devtool({ type: "render", renderType: "reactive" });
         return true;
       }
 
@@ -61,8 +61,8 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       ) {
         devtool &&
           devtool({
-            type: 'render',
-            renderType: 'normal',
+            type: "render",
+            renderType: "normal",
             props: nextProps,
             oldProps: props
           });

@@ -1,8 +1,8 @@
-import React, { PureComponent, Children } from 'react';
-import PropTypes from 'prop-types';
-import { path, params } from '../integrations';
-import { addExtraProps } from '../utils';
-import { registerRouter, releaseRouter, routeFromDepth } from './core';
+import React, { PureComponent, Children } from "react";
+import PropTypes from "prop-types";
+import { path, params } from "../integrations";
+import { addExtraProps } from "../utils";
+import { registerRouter, releaseRouter, routeFromDepth } from "./core";
 
 export default class Router extends PureComponent {
   static propTypes = {
@@ -16,7 +16,7 @@ export default class Router extends PureComponent {
   };
 
   static defaultProps = {
-    element: 'div'
+    element: "div"
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -73,7 +73,7 @@ export default class Router extends PureComponent {
       key++;
     }
 
-    if (typeof shouldAnimate === 'function') {
+    if (typeof shouldAnimate === "function") {
       shouldAnimate = shouldAnimate();
     }
     if (shouldAnimate === undefined) {
@@ -171,14 +171,14 @@ function preventRemoval(container, child) {
 function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
   // options.fill = 'both';
-  if (typeof container.animate === 'function') {
-    if (typeof options === 'function') {
+  if (typeof container.animate === "function") {
+    if (typeof options === "function") {
       options = options();
     }
     const animation = container.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
-    console.warn('You should polyfill the webanimation API.');
+    console.warn("You should polyfill the webanimation API.");
     return Promise.resolve();
   }
 }

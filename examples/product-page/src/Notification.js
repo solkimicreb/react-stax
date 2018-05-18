@@ -1,9 +1,9 @@
-import React from 'react';
-import { store, view } from 'react-easy-stack';
-import Snackbar from 'material-ui/Snackbar';
+import React from "react";
+import { store, view } from "react-easy-stack";
+import Snackbar from "material-ui/Snackbar";
 
 const notificationStore = store({
-  message: '',
+  message: "",
   action: undefined,
   isOpen: false
 });
@@ -15,7 +15,7 @@ export function notify(message, action) {
 }
 
 function closeNotification() {
-  notificationStore.message = '';
+  notificationStore.message = "";
   notificationStore.action = undefined;
   notificationStore.isOpen = false;
 }

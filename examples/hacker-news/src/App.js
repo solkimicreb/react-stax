@@ -1,18 +1,18 @@
-import React from 'react';
-import { view, Link, Router, params } from 'react-easy-stack';
-import classNames from 'classnames';
-import { StoriesPage, resolveStories } from './StoriesPage';
-import { StoryPage, resolveStory } from './StoryPage';
-import { UserPage, resolveUser } from './UserPage';
-import appStore from './appStore';
-import { STORY_TYPES } from './config';
+import React from "react";
+import { view, Link, Router, params } from "react-easy-stack";
+import classNames from "classnames";
+import { StoriesPage, resolveStories } from "./StoriesPage";
+import { StoryPage, resolveStory } from "./StoryPage";
+import { UserPage, resolveUser } from "./UserPage";
+import appStore from "./appStore";
+import { STORY_TYPES } from "./config";
 
 const enterAnimation = {
   keyframes: {
     opacity: [0.2, 1],
-    transform: ['translateX(-15px)', 'none']
+    transform: ["translateX(-15px)", "none"]
   },
-  fill: 'both',
+  fill: "both",
   delay: 50,
   duration: 200
 };
@@ -23,20 +23,20 @@ const leaveAnimation = {
 };
 
 function onRoute({ toPage }) {
-  if (toPage === 'story') {
+  if (toPage === "story") {
     return resolveStory();
-  } else if (toPage === 'user') {
+  } else if (toPage === "user") {
     return resolveUser();
   } else {
-    params.type = params.type || 'top';
+    params.type = params.type || "top";
     return resolveStories();
   }
 }
 
 function App() {
   const { loading, dark, toggleTheme } = appStore;
-  const appClass = classNames('app', { dark });
-  const themeClass = classNames('theme-toggle', { loading });
+  const appClass = classNames("app", { dark });
+  const themeClass = classNames("theme-toggle", { loading });
 
   return (
     <div className={appClass}>

@@ -13,9 +13,10 @@
     "test-watch": "jest --watch",
     "test-builds": "node ./scripts/testBuilds.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint": "standard",
+    "lint":
+      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --list-different",
     "lint-fix":
-      "prettier --ignore-path '.gitignore' --write '**/*.{js,jsx}' '!**/build/**' && standard --fix",
+      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --write",
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
     "deploy-examples":
@@ -71,17 +72,11 @@
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "standard": "^10.0.3"
+    "rollup-plugin-node-resolve": "^3.0.0"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "jest": {},
-  "standard": {
-    "parser": "babel-eslint",
-    "env": ["jest"],
-    "ignore": ["**/build/**", "**/node_modules/**"]
-  },
   "pre-push": ["lint", "test-coverage"]
 }

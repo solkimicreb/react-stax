@@ -1,9 +1,9 @@
-import React from 'react';
-import { view } from 'react-easy-stack';
-import styled from 'styled-components';
-import { colors, layout, ease } from './theme';
-import * as sidebar from './Sidebar';
-import ActionIcons from './ActionIcons';
+import React from "react";
+import { view } from "react-easy-stack";
+import styled from "styled-components";
+import { colors, layout, ease } from "./theme";
+import * as sidebar from "./Sidebar";
+import ActionIcons from "./ActionIcons";
 
 const Topbar = styled.nav`
   position: fixed;
@@ -24,7 +24,7 @@ const Navbar = styled.div`
   align-content: center;
   max-width: ${layout.appWidth}px;
   color: ${colors.textLight};
-  transform: ${props => (props.withSidebar ? 'translateX(125px)' : 'none')};
+  transform: ${props => (props.withSidebar ? "translateX(125px)" : "none")};
   transition: transform 0.15s ${ease.both};
 
   svg,
@@ -39,8 +39,8 @@ const Navbar = styled.div`
 
 const MenuItems = styled.div`
   display: flex;
-  justify-content: ${props => (props.isMobile ? 'space-around' : 'flex-start')};
-  width: ${props => (props.isMobile ? '100%' : 'auto')};
+  justify-content: ${props => (props.isMobile ? "space-around" : "flex-start")};
+  width: ${props => (props.isMobile ? "100%" : "auto")};
 `;
 
 const Actions = styled.div`

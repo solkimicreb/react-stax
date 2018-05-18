@@ -1,11 +1,11 @@
-import React from 'react';
-import { store, view } from 'react-easy-stack';
-import styled from 'styled-components';
-import { colors, ease, layout } from './theme';
+import React from "react";
+import { store, view } from "react-easy-stack";
+import styled from "styled-components";
+import { colors, ease, layout } from "./theme";
 
 let timeout;
 const notificationStore = store({
-  message: '',
+  message: "",
   action: undefined,
   isOpen: false
 });
@@ -45,7 +45,7 @@ export function notify(message, action) {
 }
 
 function closeNotification() {
-  notificationStore.message = '';
+  notificationStore.message = "";
   notificationStore.action = undefined;
   notificationStore.open = false;
 }

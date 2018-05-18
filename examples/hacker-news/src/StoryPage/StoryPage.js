@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { view } from 'react-easy-stack'
-import StoryItem from '../StoryItem'
-import Comment from '../Comment'
+import React, { Component } from "react";
+import { view } from "react-easy-stack";
+import StoryItem from "../StoryItem";
+import Comment from "../Comment";
 
-function StoryPage ({ story }) {
-  const { text, comments } = story
+function StoryPage({ story }) {
+  const { text, comments } = story;
   return (
     <div>
       <StoryItem story={story} />
@@ -12,7 +12,7 @@ function StoryPage ({ story }) {
       {comments &&
         comments.map(comment => <Comment key={comment.id} comment={comment} />)}
     </div>
-  )
+  );
 }
 
-export default view(StoryPage)
+export default view(StoryPage);

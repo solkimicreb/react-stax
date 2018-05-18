@@ -1,4 +1,4 @@
-import UserPage from './UserPage'
-import resolveUser from './resolveUser'
+import UserPage from "./UserPage";
+import resolveUser from "./resolveUser";
 
-export { UserPage, resolveUser }
+export { UserPage, resolveUser };

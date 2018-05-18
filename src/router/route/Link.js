@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { observe, unobserve } from '@nx-js/observer-util';
-import { toPathArray, toPathString, toQuery, addExtraProps } from '../utils';
-import { params, path, scheduler } from '../integrations';
-import { routeFromDepth } from './core';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { observe, unobserve } from "@nx-js/observer-util";
+import { toPathArray, toPathString, toQuery, addExtraProps } from "../utils";
+import { params, path, scheduler } from "../integrations";
+import { routeFromDepth } from "./core";
 
 export default class Link extends PureComponent {
   static propTypes = {
@@ -22,9 +22,9 @@ export default class Link extends PureComponent {
 
   static defaultProps = {
     // rework this later! to be RN compatible
-    element: 'a',
-    activeClass: '',
-    className: '',
+    element: "a",
+    activeClass: "",
+    className: "",
     style: {}
   };
 
@@ -37,7 +37,7 @@ export default class Link extends PureComponent {
   get depth() {
     const { to } = this.props;
     const depth = this.context.easyRouterDepth || 0;
-    const isRelative = !to || to[0] !== '/';
+    const isRelative = !to || to[0] !== "/";
     return isRelative ? depth : 0;
   }
 
@@ -55,7 +55,7 @@ export default class Link extends PureComponent {
   isLinkActive() {
     let { isActive } = this.props;
     // move this into a util
-    if (typeof isActive === 'function') {
+    if (typeof isActive === "function") {
       isActive = isActive();
     }
     if (isActive !== undefined) {
@@ -126,11 +126,11 @@ export default class Link extends PureComponent {
 function getPath(to, depth) {
   if (!to) {
     return toPathString(path);
-  } else if (to[0] !== '/') {
+  } else if (to[0] !== "/") {
     // improve this BS
     let result = toPathString(path.slice(0, depth));
     if (result.length !== 1) {
-      result += '/';
+      result += "/";
     }
     return result + to;
   }

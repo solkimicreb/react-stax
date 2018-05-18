@@ -1,4 +1,4 @@
-import StoryPage from './StoryPage'
-import resolveStory from './resolveStory'
+import StoryPage from "./StoryPage";
+import resolveStory from "./resolveStory";
 
-export { StoryPage, resolveStory }
+export { StoryPage, resolveStory };

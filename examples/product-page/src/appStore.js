@@ -1,5 +1,5 @@
-import { store, params } from 'react-easy-stack';
-import * as api from './api';
+import { store, params } from "react-easy-stack";
+import * as api from "./api";
 
 const appStore = store({
   isLoggedIn: api.isLoggedIn()

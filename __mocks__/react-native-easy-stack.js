@@ -1,8 +1,8 @@
-const path = require('path')
+const path = require("path");
 
-const bundleName = process.env.BUNDLE
+const bundleName = process.env.BUNDLE;
 const bundlePath = path.resolve(
-  bundleName ? `dist/${bundleName}` : 'src/index.js'
-)
+  bundleName ? `dist/${bundleName}` : "src/index.js"
+);
 
-module.exports = require(bundlePath)
+module.exports = require(bundlePath);

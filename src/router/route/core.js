@@ -1,5 +1,5 @@
-import { path, params, scheduler } from '../integrations';
-import { toPathArray, toPathString, toParams, toHash } from '../utils';
+import { path, params, scheduler } from "../integrations";
+import { toPathArray, toPathString, toParams, toHash } from "../utils";
 
 const routers = [];
 let routingStatus;
@@ -114,9 +114,9 @@ function handleHistory(history) {
     (history !== false && toPathString(path) !== location.pathname)
   ) {
     // do I want to push options as the state? I should add it to the hash instead probably
-    window.history.pushState(undefined, '', toHash(scroll));
+    window.history.pushState(undefined, "", toHash(scroll));
   } else {
-    window.history.replaceState(undefined, '', toHash(scroll));
+    window.history.replaceState(undefined, "", toHash(scroll));
   }
 }
 
@@ -134,7 +134,7 @@ function handleScroll(scroll = toParams(location.hash)) {
   }
 }
 
-window.addEventListener('popstate', () =>
+window.addEventListener("popstate", () =>
   route({
     to: location.pathname,
     params: toParams(location.search),

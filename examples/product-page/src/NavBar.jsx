@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import { view, params, pages, route, Link } from 'react-easy-stack';
-import SearchBar from './SearchBar';
-import Loader from './Loader';
-import appStore, * as app from './appStore';
+import React, { Component } from "react";
+import AppBar from "material-ui/AppBar";
+import Toolbar from "material-ui/Toolbar";
+import Button from "material-ui/Button";
+import { view, params, pages, route, Link } from "react-easy-stack";
+import SearchBar from "./SearchBar";
+import Loader from "./Loader";
+import appStore, * as app from "./appStore";
 
 const toolbarStyle = {
-  width: '100%',
+  width: "100%",
   maxWidth: 840,
-  margin: '0px auto',
-  padding: '5px 15px',
-  display: 'flex',
-  justifyContent: 'space-between'
+  margin: "0px auto",
+  padding: "5px 15px",
+  display: "flex",
+  justifyContent: "space-between"
 };
 
 class NavBar extends Component {
   onSearch = search => {
     if (params.search !== search) {
       route({
-        to: 'products',
+        to: "products",
         params: { search },
         options: { history: true, animate: true }
       });

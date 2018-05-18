@@ -1,7 +1,7 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import ActionIcons from './ActionIcons';
-import { colors, layout, ease } from './theme';
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import ActionIcons from "./ActionIcons";
+import { colors, layout, ease } from "./theme";
 
 const scale = keyframes`
   from {

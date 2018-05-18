@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import { view, store, params, route } from 'react-easy-stack';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
-import appStore, * as app from './appStore';
+import React, { Component } from "react";
+import { view, store, params, route } from "react-easy-stack";
+import { FormGroup, FormControlLabel } from "material-ui/Form";
+import Button from "material-ui/Button";
+import TextField from "material-ui/TextField";
+import Checkbox from "material-ui/Checkbox";
+import appStore, * as app from "./appStore";
 
 const pageStyle = {
-  position: 'absolute',
+  position: "absolute",
   left: 0,
   right: 0,
   top: 0,
-  padding: 'inherit'
+  padding: "inherit"
 };
 
 const productShell = {
-  name: '',
-  description: '',
+  name: "",
+  description: "",
   price: 0,
-  currency: 'EUR',
+  currency: "EUR",
   available: false
 };
 
@@ -41,7 +41,7 @@ class ProductEditor extends Component {
     } else {
       await app.saveProduct(this.store.changes);
     }
-    route({ to: '/' });
+    route({ to: "/" });
   };
 
   render() {
@@ -52,7 +52,7 @@ class ProductEditor extends Component {
       product,
       changes
     );
-    const label = params.id ? 'Edit Product' : 'Add Product';
+    const label = params.id ? "Edit Product" : "Add Product";
 
     return (
       <form style={pageStyle}>

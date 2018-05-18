@@ -1,19 +1,19 @@
-import axios from 'axios';
-import { startLoading, stopLoading } from './Loader';
-import { notify } from './Notification';
-import { pick, defaults } from 'lodash';
-import { storage } from 'react-easy-stack';
+import axios from "axios";
+import { startLoading, stopLoading } from "./Loader";
+import { notify } from "./Notification";
+import { pick, defaults } from "lodash";
+import { storage } from "react-easy-stack";
 
 defaults(storage, {
   cache: {}
 });
 
 const api = axios.create({
-  baseURL: 'https://freebie-server.sloppy.zone/api/',
+  baseURL: "https://freebie-server.sloppy.zone/api/",
   timeout: 5000,
   headers: {
     token: storage.token,
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json"
   }
 });
 
@@ -36,7 +36,7 @@ api.interceptors.response.use(
 );
 
 export async function search(filter) {
-  const { data } = await api.get('/products', {
+  const { data } = await api.get("/products", {
     params: { search: filter }
   });
   storage.cache[filter] = data.products;
@@ -49,7 +49,7 @@ export async function fetchProduct(id) {
 }
 
 export async function saveProduct(product) {
-  const { data } = await api.post('/products', product);
+  const { data } = await api.post("/products", product);
   return data;
 }
 
@@ -64,8 +64,8 @@ export async function deleteProduct(id) {
 }
 
 export async function login(loginData) {
-  loginData = pick(loginData, ['email', 'pass']);
-  const { data } = await api.post('/users/login', loginData);
+  loginData = pick(loginData, ["email", "pass"]);
+  const { data } = await api.post("/users/login", loginData);
   api.defaults.headers.token = data.token;
   storage.token = data.token;
   return data.user;
@@ -81,6 +81,6 @@ export function logout() {
 }
 
 export async function register(registerData) {
-  await api.post('/users/register', registerData);
+  await api.post("/users/register", registerData);
   return login(registerData);
 }

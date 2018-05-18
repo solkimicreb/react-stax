@@ -1,7 +1,7 @@
-import React, { unstable_AsyncMode as AsyncMode } from 'react';
-import { view } from 'react-easy-stack';
-import styled from 'styled-components';
-import { colors, layout } from './theme';
+import React, { unstable_AsyncMode as AsyncMode } from "react";
+import { view } from "react-easy-stack";
+import styled from "styled-components";
+import { colors, layout } from "./theme";
 
 const StyledPage = styled.div`
   margin: 15px;

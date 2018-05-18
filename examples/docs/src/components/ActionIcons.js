@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
-import { view } from 'react-easy-stack';
-import styled from 'styled-components';
-import GithubIcon from 'react-icons/lib/fa/github';
-import ChatIcon from 'react-icons/lib/fa/comments-o';
-import MenuIcon from 'react-icons/lib/fa/bars';
-import EditIcon from 'react-icons/lib/fa/edit';
-import { colors, layout, ease } from './theme';
-import * as sidebar from './Sidebar';
+import React, { Fragment } from "react";
+import { view } from "react-easy-stack";
+import styled from "styled-components";
+import GithubIcon from "react-icons/lib/fa/github";
+import ChatIcon from "react-icons/lib/fa/comments-o";
+import MenuIcon from "react-icons/lib/fa/bars";
+import EditIcon from "react-icons/lib/fa/edit";
+import { colors, layout, ease } from "./theme";
+import * as sidebar from "./Sidebar";
 
 const CorrectedEditIcon = styled(EditIcon)`
   position: relative;

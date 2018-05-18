@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { view, store } from 'react-easy-stack';
+import React, { Component } from "react";
+import { view, store } from "react-easy-stack";
 
 const searchStyle = {
-  width: '50%',
+  width: "50%",
   minWidth: 180,
-  font: 'inherit',
-  border: 'none',
+  font: "inherit",
+  border: "none",
   borderRadius: 2,
-  padding: '12px 15px',
-  outline: 'none'
+  padding: "12px 15px",
+  outline: "none"
 };
 
 class SearchBar extends Component {
@@ -16,7 +16,7 @@ class SearchBar extends Component {
 
   constructor({ value }) {
     super();
-    this.store = store({ value: value || '' });
+    this.store = store({ value: value || "" });
   }
 
   onKeyPress = ev => {
@@ -29,7 +29,7 @@ class SearchBar extends Component {
   onChange = ev => (this.store.value = ev.target.value);
 
   componentWillReceiveProps({ value }) {
-    this.store.value = value || '';
+    this.store.value = value || "";
   }
 
   render() {

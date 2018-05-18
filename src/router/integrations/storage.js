@@ -1,8 +1,8 @@
-import { observable, observe } from '@nx-js/observer-util';
-import scheduler from './scheduler';
+import { observable, observe } from "@nx-js/observer-util";
+import scheduler from "./scheduler";
 
 export let storage;
-const STORAGE_NAME = 'REACT_EASY_STORAGE';
+const STORAGE_NAME = "REACT_EASY_STORAGE";
 const item = localStorage.getItem(STORAGE_NAME);
 
 if (item instanceof Promise) {

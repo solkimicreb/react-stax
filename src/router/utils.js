@@ -1,9 +1,9 @@
 export function toPathArray(path) {
-  return path.split('/').filter(notEmpty);
+  return path.split("/").filter(notEmpty);
 }
 
 export function toPathString(path) {
-  return '/' + path.filter(notEmpty).join('/');
+  return "/" + path.filter(notEmpty).join("/");
 }
 
 export function toQuery(params) {
@@ -22,24 +22,24 @@ function toObjectString(params) {
 
   for (let key in params) {
     let value = params[key];
-    if (value !== undefined && value !== '') {
+    if (value !== undefined && value !== "") {
       key = encodeURIComponent(key);
       value = encodeURIComponent(JSON.stringify(value));
       tokens.push(`${key}=${value}`);
     }
   }
-  return tokens.length ? tokens.join('&') : '';
+  return tokens.length ? tokens.join("&") : "";
 }
 
 export function toParams(queryString) {
   const queryTokens = queryString
     .slice(1)
-    .split('&')
+    .split("&")
     .filter(notEmpty);
 
   const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split('=');
+    const keyValue = token.split("=");
     const key = decodeURIComponent(keyValue[0]);
     const value = JSON.parse(decodeURIComponent(keyValue[1]));
     params[key] = value;
@@ -48,7 +48,7 @@ export function toParams(queryString) {
 }
 
 export function notEmpty(token) {
-  return token !== '';
+  return token !== "";
 }
 
 export function addExtraProps(props, extraProps, defaultProps) {

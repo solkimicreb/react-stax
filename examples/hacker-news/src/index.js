@@ -1,10 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import 'web-animations-js'
-import App from './App'
-import registerServiceWorker from './registerServiceWorker'
-import './reset.css'
-import './style.css'
+import React from "react";
+import ReactDOM from "react-dom";
+import "web-animations-js";
+import App from "./App";
+import registerServiceWorker from "./registerServiceWorker";
+import "./reset.css";
+import "./style.css";
 
-ReactDOM.render(<App />, document.getElementById('root'))
-registerServiceWorker()
+ReactDOM.render(<App />, document.getElementById("root"));
+registerServiceWorker();

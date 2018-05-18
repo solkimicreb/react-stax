@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import { view, Link } from 'react-easy-stack';
-import Card, { CardContent, CardHeader, CardMedia } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
-import IconButton from 'material-ui/IconButton';
-import EditIcon from 'material-ui-icons/Edit';
-import DeleteIcon from 'material-ui-icons/Delete';
-import appStore from './appStore';
+import React, { Component } from "react";
+import { view, Link } from "react-easy-stack";
+import Card, { CardContent, CardHeader, CardMedia } from "material-ui/Card";
+import Avatar from "material-ui/Avatar";
+import IconButton from "material-ui/IconButton";
+import EditIcon from "material-ui-icons/Edit";
+import DeleteIcon from "material-ui-icons/Delete";
+import appStore from "./appStore";
 
 const productStyle = {
   width: 400,
-  maxWidth: '90%',
+  maxWidth: "90%",
   margin: 15
 };
 
 const productMediaStyle = {
   height: 200,
-  backgroundColor: 'lightgray'
+  backgroundColor: "lightgray"
 };
 
 function Product({ product }) {

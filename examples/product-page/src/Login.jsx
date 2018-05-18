@@ -1,16 +1,16 @@
-import React, { Component, Fragment } from 'react';
-import { view, store, route } from 'react-easy-stack';
-import { FormGroup } from 'material-ui/Form';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import * as app from './appStore';
+import React, { Component, Fragment } from "react";
+import { view, store, route } from "react-easy-stack";
+import { FormGroup } from "material-ui/Form";
+import Button from "material-ui/Button";
+import TextField from "material-ui/TextField";
+import * as app from "./appStore";
 
 const pageStyle = {
-  position: 'absolute',
+  position: "absolute",
   left: 0,
   right: 0,
   top: 0,
-  padding: 'inherit'
+  padding: "inherit"
 };
 
 const buttonStyle = {
@@ -26,12 +26,12 @@ class Login extends Component {
 
   onLogin = async () => {
     await app.login(this.store);
-    route({ to: '/products' });
+    route({ to: "/products" });
   };
 
   onRegister = async () => {
     await app.register(this.store);
-    route({ to: '/products' });
+    route({ to: "/products" });
   };
 
   render() {
