@@ -1,30 +1,27 @@
 {
   "name": "react-easy-stack",
   "version": "0.1.0-alpha.10",
-  "description":
-    "React state management with a minimal API. Made with ES6 Proxies.",
-  "main": "dist/cjs.es5.js",
-  "module": "dist/es.es5.js",
+  "description": "React state management with a minimal API. Made with ES6 Proxies.",
+  "main": "dist/cjs.es6.js",
+  "module": "dist/es.es6.js",
   "types": "types/index.d.ts",
-  "files": ["dist", "types"],
+  "files": [
+    "dist",
+    "types"
+  ],
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",
     "test-watch": "jest --watch",
     "test-builds": "node ./scripts/testBuilds.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint":
-      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --list-different",
-    "lint-fix":
-      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --write",
+    "lint": "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --list-different",
+    "lint-fix": "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --write",
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
-    "deploy-examples":
-      "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
-    "link-examples":
-      "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
-    "unlink-examples":
-      "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
+    "deploy-examples": "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
+    "link-examples": "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
+    "unlink-examples": "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
     "build": "node ./scripts/build.js",
     "build-toc": "node ./scripts/buildToc.js"
   },
@@ -41,7 +38,9 @@
   },
   "homepage": "https://github.com/solkimicreb/react-easy-stack#readme",
   "license": "MIT",
-  "keywords": ["TODO"],
+  "keywords": [
+    "TODO"
+  ],
   "dependencies": {
     "@nx-js/observer-util": "^4.1.1",
     "@nx-js/queue-util": "^1.1.1",
@@ -64,19 +63,36 @@
     "buble": "^0.19.3",
     "coveralls": "^3.0.0",
     "del": "^3.0.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.3.0",
     "markdown-toc": "^1.1.0",
     "pre-push": "0.1.1",
     "prettier": "^1.6.1",
+    "react": "^16.3.0",
+    "react-addons-test-utils": "^15.6.2",
+    "react-dom": "^16.3.0",
     "rollup": "^0.56.0",
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-auto-external": "^1.0.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.{js,jsx}",
+      "<rootDir>/examples/**/src/**/*.{js,jsx}",
+      "!<rootDir>/examples/**/{index,api}.js",
+      "!<rootDir>/examples/hacker-news/**",
+      "!<rootDir>/examples/product-page/**",
+      "!<rootDir>/examples/docs/**"
+    ]
+  },
   "engines": {
     "node": ">=6.0.0"
   },
-  "jest": {},
-  "pre-push": ["lint", "test-coverage"]
+  "pre-push": [
+    "lint",
+    "test-coverage"
+  ]
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { store, view } from "react-easy-stack";
-import { LinearProgress } from "material-ui/Progress";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const loaderStore = store({
   isLoading: false

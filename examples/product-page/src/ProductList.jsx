@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
 import { view, storage, params, path, Link } from "react-easy-stack";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
-import Zoom from "material-ui/transitions/Zoom";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import Zoom from "@material-ui/core/Zoom";
 import appStore from "./appStore";
 import Product from "./Product";
 

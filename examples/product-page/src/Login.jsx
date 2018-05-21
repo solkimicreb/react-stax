@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { view, store, route } from "react-easy-stack";
-import { FormGroup } from "material-ui/Form";
-import Button from "material-ui/Button";
-import TextField from "material-ui/TextField";
+import FormGroup from "@material-ui/core/FormGroup";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 import * as app from "./appStore";
 
 const pageStyle = {

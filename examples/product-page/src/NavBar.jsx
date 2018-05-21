@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import Button from "material-ui/Button";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
 import { view, params, pages, route, Link } from "react-easy-stack";
 import SearchBar from "./SearchBar";
 import Loader from "./Loader";

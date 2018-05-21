@@ -9,7 +9,7 @@
 // This link also includes instructions on opting out of this behavior.
 
 import React from "react";
-import Button from "material-ui/Button";
+import Button from "@material-ui/core/Button";
 import { notify } from "./Notification";
 
 const isLocalhost = Boolean(

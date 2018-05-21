@@ -1,0 +1,1540 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TodoMVC App should add todos: 01. Initial state 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+</div>
+`;
+
+exports[`TodoMVC App should add todos: 02. Add Test Todo 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      1
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should add todos: 03. Add Other Todo 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should add todos: 04. Add Final Todo 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      3
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should clear completed: 11. Clear completed 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should delete todo: 14. Delete Test Todo 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      1
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should filter todos: 08. Filter completed 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should filter todos: 09. Filter active 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should filter todos: 10. Filter all 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should toggle all todo state at once: 12. Toggle all to completed 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={true}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      0
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should toggle all todo state at once: 13. Toggle all to active 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should toggle todo status: 05. Toggle Test Todo to completed 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should toggle todo status: 06. Toggle Other Todo to completed 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      1
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;
+
+exports[`TodoMVC App should toggle todo status: 07. Toggle Test Todo to active 1`] = `
+<div
+  className="todoapp"
+>
+  <header
+    className="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      autoFocus={true}
+      className="new-todo"
+      onKeyUp={[Function]}
+      placeholder="What needs to be done?"
+    />
+  </header>
+  <section
+    className="main"
+  >
+    <input
+      checked={false}
+      className="toggle-all"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <label
+      htmlFor="toggle-all"
+    >
+      Mark all as complete
+    </label>
+    <ul
+      className="todo-list"
+    >
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Test Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view completed"
+      >
+        <input
+          checked={true}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Other Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+      <li
+        className="view"
+      >
+        <input
+          checked={false}
+          className="toggle"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <label>
+          Final Todo
+        </label>
+        <button
+          className="destroy"
+          onClick={[Function]}
+        />
+      </li>
+    </ul>
+  </section>
+  <footer
+    className="footer"
+  >
+    <span
+      className="todo-count"
+    >
+      2
+       items left
+    </span>
+    <div
+      className="filters"
+    >
+      <a
+        className=" selected"
+        href="/blank?filter=%22all%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        All
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22active%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Active
+      </a>
+      <a
+        className=""
+        href="/blank?filter=%22completed%22"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Completed
+      </a>
+    </div>
+    <button
+      className="clear-completed"
+      onClick={[Function]}
+    >
+      Clear completed
+    </button>
+  </footer>
+</div>
+`;

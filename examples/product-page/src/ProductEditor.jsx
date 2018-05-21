@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { view, store, params, route } from "react-easy-stack";
-import { FormGroup, FormControlLabel } from "material-ui/Form";
-import Button from "material-ui/Button";
-import TextField from "material-ui/TextField";
-import Checkbox from "material-ui/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
 import appStore, * as app from "./appStore";
 
 const pageStyle = {

@@ -54,10 +54,10 @@ class App extends Component {
         <Router
           defaultPage="products"
           onRoute={this.onRoute}
-          timeout={800}
+          style={appStyle}
           enterAnimation={enterAnimation}
           leaveAnimation={leaveAnimation}
-          style={appStyle}
+          shouldAnimate={true}
         >
           <ProductList page="products" />
           <ProductEditor page="product" />

@@ -1,5 +1,6 @@
 import { path, params, scheduler } from "../integrations";
 import { toPathArray, toPathString, toParams, toHash } from "../utils";
+import { history } from "../env";
 
 const routers = [];
 let routingStatus;
@@ -108,18 +109,18 @@ function finishRouting({ history, scroll }, status) {
   }
 }
 
-function handleHistory(history) {
+function handleHistory(shouldPush) {
   if (
-    history === true ||
-    (history !== false && toPathString(path) !== location.pathname)
+    shouldPush === true ||
+    (shouldPush !== false && toPathString(path) !== location.pathname)
   ) {
-    // do I want to push options as the state? I should add it to the hash instead probably
-    window.history.pushState(undefined, "", toHash(scroll));
+    history.pushState(undefined, "", toHash(scroll));
   } else {
-    window.history.replaceState(undefined, "", toHash(scroll));
+    history.replaceState(undefined, "", toHash(scroll));
   }
 }
 
+// TODO: maybe do not scroll if the pathname didn't change
 function handleScroll(scroll = toParams(location.hash)) {
   if (scroll.to) {
     const scrollAnchor = document.getElementById(scroll.to);

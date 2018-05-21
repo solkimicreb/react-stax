@@ -29,15 +29,7 @@
     "now-start": "serve build --single",
     "deploy": "now && now alias"
   },
-  "jest": {
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer",
-      "jest-html"
-    ]
-  },
   "now": {
-    "alias": [
-      "easy-beer-finder"
-    ]
+    "alias": ["easy-beer-finder"]
   }
 }

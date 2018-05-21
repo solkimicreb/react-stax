@@ -1,6 +1,6 @@
 import React from "react";
 import { store, view } from "react-easy-stack";
-import Snackbar from "material-ui/Snackbar";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const notificationStore = store({
   message: "",

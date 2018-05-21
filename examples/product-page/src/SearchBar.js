@@ -14,9 +14,8 @@ const searchStyle = {
 class SearchBar extends Component {
   store = store();
 
-  constructor({ value }) {
-    super();
-    this.store = store({ value: value || "" });
+  static deriveStoresFromProps(props, store) {
+    store.value = props.value || "";
   }
 
   onKeyPress = ev => {
@@ -27,10 +26,6 @@ class SearchBar extends Component {
   };
 
   onChange = ev => (this.store.value = ev.target.value);
-
-  componentWillReceiveProps({ value }) {
-    this.store.value = value || "";
-  }
 
   render() {
     return (

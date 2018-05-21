@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { view, Link } from "react-easy-stack";
-import Card, { CardContent, CardHeader, CardMedia } from "material-ui/Card";
-import Avatar from "material-ui/Avatar";
-import IconButton from "material-ui/IconButton";
-import EditIcon from "material-ui-icons/Edit";
-import DeleteIcon from "material-ui-icons/Delete";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import appStore from "./appStore";
 
 const productStyle = {

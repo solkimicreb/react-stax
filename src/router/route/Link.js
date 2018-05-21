@@ -12,7 +12,7 @@ export default class Link extends PureComponent {
     element: PropTypes.any,
     params: PropTypes.object,
     options: PropTypes.object,
-    onClick: PropTypes.function,
+    onClick: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.object,
     activeClass: PropTypes.string,
@@ -134,5 +134,5 @@ function getPath(to, depth) {
     }
     return result + to;
   }
-  return toPathString(to);
+  return to;
 }
