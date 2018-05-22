@@ -12,7 +12,7 @@ export default class Router extends PureComponent {
     enterAnimation: PropTypes.object,
     leaveAnimation: PropTypes.object,
     shouldAnimate: PropTypes.func,
-    element: PropTypes.any
+    element: PropTypes.element
   };
 
   static defaultProps = {

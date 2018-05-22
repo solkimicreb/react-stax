@@ -1,15 +1,14 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { observe, unobserve } from "@nx-js/observer-util";
-import { toPathArray, toPathString, toQuery, addExtraProps } from "../utils";
-import { params, path, scheduler } from "../integrations";
-import { routeFromDepth } from "./core";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { observe, unobserve } from '@nx-js/observer-util';
+import { routeFromDepth } from './core';
+import { toPathArray, toPathString, toQuery, addExtraProps } from '../utils';
+import { params, path, scheduler } from '../integrations';
 
 export default class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
-    // TODO refine this later (string or element)
-    element: PropTypes.any,
+    element: PropTypes.element,
     params: PropTypes.object,
     options: PropTypes.object,
     onClick: PropTypes.func,
@@ -17,15 +16,15 @@ export default class Link extends PureComponent {
     style: PropTypes.object,
     activeClass: PropTypes.string,
     activeStyle: PropTypes.object,
-    isActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
+    isActive: PropTypes.func
   };
 
   static defaultProps = {
-    // rework this later! to be RN compatible
-    element: "a",
-    activeClass: "",
-    className: "",
-    style: {}
+    element: 'a',
+    className: '',
+    activeClass: '',
+    style: {},
+    activeStyle: {}
   };
 
   static contextTypes = {
@@ -37,8 +36,12 @@ export default class Link extends PureComponent {
   get depth() {
     const { to } = this.props;
     const depth = this.context.easyRouterDepth || 0;
-    const isRelative = !to || to[0] !== "/";
+    const isRelative = !to || to[0] !== '/';
     return isRelative ? depth : 0;
+  }
+
+  get absolutePath() {
+    return path.slice(0, this.depth).concat(toPathArray(this.props.to));
   }
 
   componentDidMount() {
@@ -53,13 +56,9 @@ export default class Link extends PureComponent {
   }
 
   isLinkActive() {
-    let { isActive } = this.props;
-    // move this into a util
-    if (typeof isActive === "function") {
-      isActive = isActive();
-    }
-    if (isActive !== undefined) {
-      return isActive;
+    const { isActive, params: linkParams } = this.props;
+    if (isActive) {
+      return isActive({ linkPath: this.absolutePath, linkParams });
     }
     return this.isLinkPathActive() && this.isLinkParamsActive();
   }
@@ -83,9 +82,13 @@ export default class Link extends PureComponent {
   }
 
   onClick = ev => {
-    const { params, options, to } = this.props;
+    const { params, options, to, onClick } = this.props;
+    // this.depth is relative sensitive
     routeFromDepth(to, params, options, this.depth);
     ev.preventDefault();
+    if (onClick) {
+      onClick(ev);
+    }
   };
 
   render() {
@@ -102,14 +105,11 @@ export default class Link extends PureComponent {
     const { isActive } = this.state;
     const { onClick } = this;
 
-    if (activeClass && isActive) {
+    const href = toPathString(this.absolutePath) + toQuery(params);
+    if (isActive) {
       className = `${className} ${activeClass}`;
-    }
-    if (activeStyle && isActive) {
       style = Object.assign({}, style, activeStyle);
     }
-
-    const href = getPath(to, this.depth) + toQuery(params);
 
     return React.createElement(
       element,
@@ -121,18 +121,4 @@ export default class Link extends PureComponent {
       children
     );
   }
-}
-
-function getPath(to, depth) {
-  if (!to) {
-    return toPathString(path);
-  } else if (to[0] !== "/") {
-    // improve this BS
-    let result = toPathString(path.slice(0, depth));
-    if (result.length !== 1) {
-      result += "/";
-    }
-    return result + to;
-  }
-  return to;
 }
