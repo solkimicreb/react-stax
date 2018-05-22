@@ -4,6 +4,8 @@ import { path, params } from '../integrations';
 import { addExtraProps } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
+// Router selects a single child to render based on its children's page props
+// and the URL pathname token at the Router's depth (they can be nested)
 export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string,
