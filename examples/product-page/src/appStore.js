@@ -1,20 +1,18 @@
-import { store, params } from "react-easy-stack";
-import * as api from "./api";
+import { store, params } from 'react-easy-stack';
+import * as api from './api';
 
 const appStore = store({
-  isLoggedIn: api.isLoggedIn()
+  isLoggedIn: api.isLoggedIn(),
+  products: [],
+  product: {}
 });
 
 export async function search() {
   appStore.products = await api.search(params.search);
-  // return { products: await api.search(params.search) };
 }
 
 export async function resolveProduct() {
-  if (!params.id) {
-    return { product: {} };
-  }
-  return { product: await api.fetchProduct(params.id) };
+  appStore.product = params.id ? await api.fetchProduct(params.id) : {};
 }
 
 export async function saveProduct(product) {

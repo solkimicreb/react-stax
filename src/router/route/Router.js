@@ -1,8 +1,8 @@
-import React, { PureComponent, Children } from "react";
-import PropTypes from "prop-types";
-import { path, params } from "../integrations";
-import { addExtraProps } from "../utils";
-import { registerRouter, releaseRouter, routeFromDepth } from "./core";
+import React, { PureComponent, Children } from 'react';
+import PropTypes from 'prop-types';
+import { path, params } from '../integrations';
+import { addExtraProps } from '../utils';
+import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {
   static propTypes = {
@@ -16,7 +16,7 @@ export default class Router extends PureComponent {
   };
 
   static defaultProps = {
-    element: "div"
+    element: 'div'
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -30,9 +30,7 @@ export default class Router extends PureComponent {
     return { easyRouterDepth: this.depth + 1 };
   }
 
-  state = {
-    key: 0
-  };
+  state = {};
 
   componentDidMount() {
     registerRouter(this, this.depth);
@@ -47,12 +45,30 @@ export default class Router extends PureComponent {
   }
 
   startRouting() {
-    const { onRoute, leaveAnimation } = this.props;
-    const { fromPage } = this.state;
+    let { onRoute, leaveAnimation, shouldAnimate } = this.props;
+    const { page: fromPage } = this.state;
     const toPage = path[this.depth] || this.props.defaultPage;
 
     // fill the path with the default page, if the current token is empty
     path[this.depth] = toPage;
+    this.cleanupFromDOM();
+
+    // do I need a shouldAnimate func?
+    if (typeof shouldAnimate === 'function') {
+      shouldAnimate = shouldAnimate();
+    }
+    if (shouldAnimate === undefined) {
+      shouldAnimate = fromPage !== toPage;
+    }
+    if (shouldAnimate && leaveAnimation) {
+      this.fromDOM = this.container.firstElementChild;
+      // consider key-ing -> this has to come before the resolve part!!
+      // the view is updated in resolve
+      if (this.fromDOM) {
+        console.log('vlon!!!');
+        this.fromDOM = this.fromDOM.cloneNode(true);
+      }
+    }
 
     if (onRoute) {
       return onRoute({
@@ -65,75 +81,67 @@ export default class Router extends PureComponent {
 
   finishRouting(resolvedData) {
     let { shouldAnimate, leaveAnimation } = this.props;
-    let { key, toPage: fromPage } = this.state;
+    let { page: fromPage } = this.state;
     const toPage = path[this.depth];
-    const pagesMatch = fromPage === toPage;
 
-    if (!pagesMatch) {
-      key++;
-    }
-
-    if (typeof shouldAnimate === "function") {
+    // do I need a shouldAnimate func?
+    if (typeof shouldAnimate === 'function') {
       shouldAnimate = shouldAnimate();
     }
     if (shouldAnimate === undefined) {
-      shouldAnimate = !pagesMatch;
-    }
-
-    let fromDOM, restoreRemoval;
-    if (shouldAnimate && leaveAnimation) {
-      fromDOM = this.container.firstElementChild;
-      restoreRemoval = preventRemoval(this.container, fromDOM);
+      shouldAnimate = fromPage !== toPage;
     }
 
     const nextState = {
       resolvedData,
-      fromPage,
-      toPage,
-      key
+      page: toPage
     };
-
     return new Promise(resolve =>
       this.setState(nextState, () => {
-        restoreRemoval && restoreRemoval();
         if (shouldAnimate) {
-          this.animate(fromDOM);
+          this.animate();
         }
         resolve();
       })
     );
   }
 
-  animate(fromDOM) {
+  animate() {
     const { enterAnimation, leaveAnimation } = this.props;
-    // only do an enter animation if there is both a from and to DOM
-    // so this is not the initial appearance of the page
-    const toDOM = fromDOM && fromDOM.nextElementSibling;
+    const fromDOM = this.fromDOM;
+    const toDOM = this.container.firstElementChild;
 
     if (leaveAnimation && fromDOM) {
-      animate(leaveAnimation, fromDOM).then(() => fromDOM.remove());
+      this.container.insertBefore(fromDOM, toDOM);
+      animate(leaveAnimation, fromDOM).then(() => this.cleanupFromDOM());
     }
-    if (enterAnimation && toDOM) {
+    // only do an enter animation if there is both a from and to DOM
+    // so this is not the initial appearance of the page
+    if (enterAnimation && fromDOM && toDOM) {
       animate(enterAnimation, toDOM);
+    }
+  }
+
+  cleanupFromDOM() {
+    if (this.fromDOM) {
+      this.fromDOM.remove();
+      this.fromDOM = undefined;
     }
   }
 
   render() {
     const { element } = this.props;
-    const { toPage, resolvedData, key } = this.state;
+    const { page, resolvedData } = this.state;
 
     let toChild;
     if (React.isValidElement(resolvedData)) {
       toChild = resolvedData;
     } else {
       /// I should probably still clone here to make a fresh child on each render!
-      toChild = this.selectChild(toPage);
+      toChild = this.selectChild(page);
       if (toChild && resolvedData) {
         toChild = React.cloneElement(toChild, resolvedData);
       }
-    }
-    if (toChild) {
-      toChild = React.cloneElement(toChild, { key });
     }
 
     return React.createElement(
@@ -145,11 +153,11 @@ export default class Router extends PureComponent {
 
   saveRef = container => (this.container = container);
 
-  selectChild(toPage) {
+  selectChild(page) {
     const { notFoundPage } = this.props;
     const children = Children.toArray(this.props.children);
 
-    const toChild = children.find(child => child.props.page === toPage);
+    const toChild = children.find(child => child.props.page === page);
     // mounted and has no child
     if (!toChild && this.container) {
       return children.find(child => child.props.page === notFoundPage);
@@ -158,27 +166,17 @@ export default class Router extends PureComponent {
   }
 }
 
-function preventRemoval(container, child) {
-  const originalRemoveChild = container.removeChild;
-  container.removeChild = node => {
-    if (node !== child) {
-      originalRemoveChild.call(container, node);
-    }
-  };
-  return () => (container.removeChild = originalRemoveChild);
-}
-
 function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
   // options.fill = 'both';
-  if (typeof container.animate === "function") {
-    if (typeof options === "function") {
+  if (typeof container.animate === 'function') {
+    if (typeof options === 'function') {
       options = options();
     }
     const animation = container.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
-    console.warn("You should polyfill the webanimation API.");
+    console.warn('You should polyfill the webanimation API.');
     return Promise.resolve();
   }
 }
