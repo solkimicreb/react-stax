@@ -10,7 +10,6 @@ import { params, path, scheduler } from '../integrations';
 export default class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
-    element: PropTypes.element,
     params: PropTypes.object,
     options: PropTypes.object,
     onClick: PropTypes.func,
@@ -18,7 +17,8 @@ export default class Link extends PureComponent {
     style: PropTypes.object,
     activeClass: PropTypes.string,
     activeStyle: PropTypes.object,
-    isActive: PropTypes.func
+    isActive: PropTypes.func,
+    element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   };
 
   static defaultProps = {

@@ -1,6 +1,5 @@
-import { path, params, scheduler } from "../integrations";
-import { toPathArray, toPathString, toParams, toHash } from "../utils";
-import { history } from "../env";
+import { path, params, scheduler } from '../integrations';
+import { toPathArray, toPathString, toParams, toHash, isNode } from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -98,10 +97,12 @@ function switchRoutersFromDepth(depth, status) {
 
 function finishRouting({ history, scroll }, status) {
   if (!status.cancelled) {
-    // by default a history item is pushed if the pathname changes!
-    handleHistory(history);
-    // byt default the page is scrolled to the top left
-    handleScroll(scroll);
+    if (!isNode) {
+      // by default a history item is pushed if the pathname changes!
+      handleHistory(history);
+      // by default the page is scrolled to the top left
+      handleScroll(scroll);
+    }
 
     scheduler.process();
     scheduler.start();
@@ -109,18 +110,20 @@ function finishRouting({ history, scroll }, status) {
   }
 }
 
+// DONT DO THIS IN NODE
 function handleHistory(shouldPush) {
   if (
     shouldPush === true ||
     (shouldPush !== false && toPathString(path) !== location.pathname)
   ) {
-    history.pushState(undefined, "", toHash(scroll));
+    history.pushState(undefined, '', toHash(scroll));
   } else {
-    history.replaceState(undefined, "", toHash(scroll));
+    history.replaceState(undefined, '', toHash(scroll));
   }
 }
 
 // TODO: maybe do not scroll if the pathname didn't change
+// DONT DO THIS IN NODE
 function handleScroll(scroll = toParams(location.hash)) {
   if (scroll.to) {
     const scrollAnchor = document.getElementById(scroll.to);
@@ -135,7 +138,7 @@ function handleScroll(scroll = toParams(location.hash)) {
   }
 }
 
-window.addEventListener("popstate", () =>
+window.addEventListener('popstate', () =>
   route({
     to: location.pathname,
     params: toParams(location.search),
