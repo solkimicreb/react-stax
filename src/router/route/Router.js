@@ -1,22 +1,22 @@
-import React, { PureComponent, Children } from "react";
-import PropTypes from "prop-types";
-import { path, params } from "../integrations";
-import { addExtraProps } from "../utils";
-import { registerRouter, releaseRouter, routeFromDepth } from "./core";
+import React, { PureComponent, Children } from 'react';
+import PropTypes from 'prop-types';
+import { path, params } from '../integrations';
+import { addExtraProps } from '../utils';
+import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 export default class Router extends PureComponent {
   static propTypes = {
     defaultPage: PropTypes.string,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
-    enterAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-    leaveAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-    shouldAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    enterAnimation: PropTypes.object,
+    leaveAnimation: PropTypes.object,
+    shouldAnimate: PropTypes.func,
     element: PropTypes.any
   };
 
   static defaultProps = {
-    element: "div"
+    element: 'div'
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -154,14 +154,11 @@ export default class Router extends PureComponent {
 function animate(options, container) {
   // this is required for Safari and Firefox, but messes up Chrome in some cases
   // options.fill = 'both';
-  if (typeof container.animate === "function") {
-    if (typeof options === "function") {
-      options = options();
-    }
+  if (typeof container.animate === 'function') {
     const animation = container.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
-    console.warn("You should polyfill the webanimation API.");
+    console.warn('You should polyfill the webanimation API.');
     return Promise.resolve();
   }
 }

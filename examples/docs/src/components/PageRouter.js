@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { Router, view } from "react-easy-stack";
-import styled from "styled-components";
-import { ease, layout } from "./theme";
-import * as sidebar from "./Sidebar";
-import { notify } from "./Notification";
+import React, { Component } from 'react';
+import { Router, view } from 'react-easy-stack';
+import styled from 'styled-components';
+import { ease, layout } from './theme';
+import * as sidebar from './Sidebar';
+import { notify } from './Notification';
 
 const StyledRouter = styled(Router)`
   position: relative;
@@ -18,21 +18,21 @@ const StyledRouter = styled(Router)`
   }
 `;
 
-const enterAnimation = () => ({
+const getEnterAnimation = () => ({
   keyframes: layout.isMobile
     ? {
-        transform: ["translateX(110%)", "none"]
+        transform: ['translateX(110%)', 'none']
       }
     : {
         opacity: [0, 1]
       },
   duration: 200,
   ease: ease.in,
-  fill: "both"
+  fill: 'both'
 });
 
-const leaveAnimation = () => {
-  const scrollY = document.getElementById("root").scrollTop;
+const getLeaveAnimation = () => {
+  const scrollY = document.getElementById('root').scrollTop;
 
   return {
     keyframes: layout.isMobile
@@ -48,7 +48,7 @@ const leaveAnimation = () => {
         },
     duration: 200,
     ease: ease.out,
-    fill: "both"
+    fill: 'both'
   };
 };
 
@@ -64,6 +64,8 @@ class PageRouter extends Component {
 
   render() {
     const { children, ...props } = this.props;
+    const enterAnimation = getEnterAnimation();
+    const leaveAnimation = getLeaveAnimation();
 
     return (
       <StyledRouter
