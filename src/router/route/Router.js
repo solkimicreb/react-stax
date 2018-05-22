@@ -45,30 +45,15 @@ export default class Router extends PureComponent {
   }
 
   startRouting() {
-    let { onRoute, leaveAnimation, shouldAnimate } = this.props;
-    const { page: fromPage } = this.state;
+    const { onRoute } = this.props;
+    const fromPage = this.state.page;
     const toPage = path[this.depth] || this.props.defaultPage;
 
     // fill the path with the default page, if the current token is empty
     path[this.depth] = toPage;
-    this.cleanupFromDOM();
-
-    // do I need a shouldAnimate func?
-    if (typeof shouldAnimate === 'function') {
-      shouldAnimate = shouldAnimate();
-    }
-    if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== toPage;
-    }
-    if (shouldAnimate && leaveAnimation) {
-      this.fromDOM = this.container.firstElementChild;
-      // consider key-ing -> this has to come before the resolve part!!
-      // the view is updated in resolve
-      if (this.fromDOM) {
-        console.log('vlon!!!');
-        this.fromDOM = this.fromDOM.cloneNode(true);
-      }
-    }
+    // cleanup ongoing animations and setup new ones for later
+    this.cleanupAnimation();
+    this.setupAnimation();
 
     if (onRoute) {
       return onRoute({
@@ -80,49 +65,50 @@ export default class Router extends PureComponent {
   }
 
   finishRouting(resolvedData) {
-    let { shouldAnimate, leaveAnimation } = this.props;
-    let { page: fromPage } = this.state;
-    const toPage = path[this.depth];
-
-    // do I need a shouldAnimate func?
-    if (typeof shouldAnimate === 'function') {
-      shouldAnimate = shouldAnimate();
-    }
-    if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== toPage;
-    }
-
     const nextState = {
       resolvedData,
-      page: toPage
+      page: path[this.depth]
     };
-    return new Promise(resolve =>
-      this.setState(nextState, () => {
-        if (shouldAnimate) {
-          this.animate();
-        }
-        resolve();
-      })
+    return new Promise(resolve => this.setState(nextState, resolve)).then(() =>
+      this.animate()
     );
   }
 
-  animate() {
-    const { enterAnimation, leaveAnimation } = this.props;
-    const fromDOM = this.fromDOM;
-    const toDOM = this.container.firstElementChild;
+  setupAnimation() {
+    const { leaveAnimation, shouldAnimate } = this.props;
+    const fromPage = this.state.page;
+    const toPage = path[this.depth];
 
-    if (leaveAnimation && fromDOM) {
-      this.container.insertBefore(fromDOM, toDOM);
-      animate(leaveAnimation, fromDOM).then(() => this.cleanupFromDOM());
-    }
-    // only do an enter animation if there is both a from and to DOM
-    // so this is not the initial appearance of the page
-    if (enterAnimation && fromDOM && toDOM) {
-      animate(enterAnimation, toDOM);
+    this.shouldAnimate =
+      shouldAnimate === undefined ? fromPage !== toPage : shouldAnimate;
+
+    if (this.shouldAnimate && leaveAnimation) {
+      this.fromDOM = this.container.firstElementChild;
+      if (this.fromDOM) {
+        this.fromDOM = this.fromDOM.cloneNode(true);
+      }
     }
   }
 
-  cleanupFromDOM() {
+  animate() {
+    if (this.shouldAnimate) {
+      const { enterAnimation, leaveAnimation } = this.props;
+      const fromDOM = this.fromDOM;
+      const toDOM = this.container.firstElementChild;
+
+      if (leaveAnimation && fromDOM) {
+        this.container.insertBefore(fromDOM, toDOM);
+        animate(leaveAnimation, fromDOM).then(() => this.cleanupAnimation());
+      }
+      // only do an enter animation if there is both a from and to DOM
+      // so this is not the initial appearance of the page
+      if (enterAnimation && fromDOM && toDOM) {
+        animate(enterAnimation, toDOM);
+      }
+    }
+  }
+
+  cleanupAnimation() {
     if (this.fromDOM) {
       this.fromDOM.remove();
       this.fromDOM = undefined;
@@ -154,15 +140,14 @@ export default class Router extends PureComponent {
   saveRef = container => (this.container = container);
 
   selectChild(page) {
-    const { notFoundPage } = this.props;
     const children = Children.toArray(this.props.children);
-
-    const toChild = children.find(child => child.props.page === page);
-    // mounted and has no child
-    if (!toChild && this.container) {
+    const selectedChild = children.find(child => child.props.page === page);
+    // mounted and has no valid child
+    if (!selectedChild && this.container) {
+      const { notFoundPage } = this.props;
       return children.find(child => child.props.page === notFoundPage);
     }
-    return toChild;
+    return selectedChild;
   }
 }
 
