@@ -18,7 +18,7 @@ const StyledRouter = styled(Router)`
   }
 `;
 
-const getEnterAnimation = () => ({
+const enterAnimation = () => ({
   keyframes: layout.isMobile
     ? {
         transform: ['translateX(110%)', 'none']
@@ -31,7 +31,7 @@ const getEnterAnimation = () => ({
   fill: 'both'
 });
 
-const getLeaveAnimation = () => {
+const leaveAnimation = () => {
   const scrollY = document.getElementById('root').scrollTop;
 
   return {
@@ -57,15 +57,13 @@ class PageRouter extends Component {
     sidebar.close();
     if (this.props.onRoute) {
       try {
-        return await this.props.onRoute(ev);
+        return this.props.onRoute(ev);
       } catch (err) {}
     }
   };
 
   render() {
     const { children, ...props } = this.props;
-    const enterAnimation = getEnterAnimation();
-    const leaveAnimation = getLeaveAnimation();
 
     return (
       <StyledRouter

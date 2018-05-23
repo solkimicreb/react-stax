@@ -1,12 +1,12 @@
-import React from "react";
-import { Router } from "react-easy-stack";
-import { ease } from "./theme";
+import React from 'react';
+import { Router } from 'react-easy-stack';
+import { ease } from './theme';
 
 const enterAnimation = {
   keyframes: {
     opacity: [0, 1]
   },
-  duration: 150,
+  duration: 3000,
   ease: ease.in
 };
 
@@ -14,7 +14,7 @@ const leaveAnimation = {
   keyframes: {
     opacity: [1, 0]
   },
-  duration: 150,
+  duration: 300,
   ease: ease.out
 };
 

@@ -11,9 +11,9 @@ export default class Router extends PureComponent {
     defaultPage: PropTypes.string,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
-    enterAnimation: PropTypes.object,
-    leaveAnimation: PropTypes.object,
-    shouldAnimate: PropTypes.func,
+    enterAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+    leaveAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+    shouldAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   };
 
@@ -114,8 +114,12 @@ export default class Router extends PureComponent {
     // only animate when a new page is rendered by default,
     // but make it configurable with the shouldAnimate prop
     // the user may also want to animate when a query param changes for example
-    this.shouldAnimate =
-      shouldAnimate === undefined ? fromPage !== toPage : shouldAnimate;
+    if (typeof shouldAnimate === 'function') {
+      this.shouldAnimate = shouldAnimate({ fromPage, toPage });
+    } else {
+      this.shouldAnimate =
+        shouldAnimate === undefined ? fromPage !== toPage : shouldAnimate;
+    }
 
     // if there will be a leaveAnimation during the current routing
     // save the current raw view (DOM), so it can be used later for a fade out
@@ -220,6 +224,9 @@ function animateElement(element, options) {
   // use the native webanimations API when available
   // it is the user's responsibility to polyfill it otherwise
   if (typeof element.animate === 'function') {
+    if (typeof options === 'function') {
+      options = options();
+    }
     const animation = element.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
