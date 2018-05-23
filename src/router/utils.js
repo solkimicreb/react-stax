@@ -19,9 +19,7 @@ export function toQuery(params = {}) {
 
 // convert scroll options objects to URL hash
 export function toHash(scroll = {}) {
-  // do not include none primitive options, like the scroll container
-  const { to, left, top } = scroll;
-  const hash = toObjectString({ to, left, top });
+  const hash = toObjectString(scroll);
   return hash ? `#${hash}` : '';
 }
 

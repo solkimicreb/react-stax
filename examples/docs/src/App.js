@@ -1,17 +1,16 @@
-import React, { Fragment } from "react";
-import styled from "styled-components";
-import { path, view, Router } from "react-easy-stack";
-import Topbar from "./components/Topbar";
-import Sidebar from "./components/Sidebar";
-import App from "./components/App";
-import Page from "./components/Page";
-import PageRouter from "./components/PageRouter";
-import SidebarRouter from "./components/SidebarRouter";
-import Notification, { notify } from "./components/Notification";
-import Switch from "./components/Switch";
-import { TopLink, SideLink, SideSectionLink } from "./components/Link";
-import Actionbar from "./components/Actionbar";
-import { layout } from "./components/theme";
+import React, { Fragment } from 'react';
+import styled from 'styled-components';
+import { path, view, Router } from 'react-easy-stack';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import App from './components/App';
+import Page from './components/Page';
+import PageRouter from './components/PageRouter';
+import Notification, { notify } from './components/Notification';
+import Switch from './components/Switch';
+import { TopLink, SideLink, SideSectionLink } from './components/Link';
+import Actionbar from './components/Actionbar';
+import { layout } from './components/theme';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./route/${toPage}.md`);

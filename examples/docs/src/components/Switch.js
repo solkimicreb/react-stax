@@ -1,22 +1,22 @@
 import React from 'react';
 import { Router } from 'react-easy-stack';
-import { ease } from './theme';
+import { ease, layout } from './theme';
 
 const enterAnimation = {
   keyframes: {
     opacity: [0, 1]
-    // transform: ['translateX(-100%)', 'none']
+    // transform: [`translateX(${-layout.sidebarWidth}px)`, 'none']
   },
-  duration: 1500,
+  duration: 150,
   ease: ease.in
 };
 
 const leaveAnimation = {
   keyframes: {
     opacity: [1, 0]
-    // transform: ['none', 'translateX(-100%)']
+    // transform: ['none', `translateX(${-layout.sidebarWidth}px)`]
   },
-  duration: 1500,
+  duration: 150,
   ease: ease.out
 };
 

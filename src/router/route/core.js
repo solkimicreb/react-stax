@@ -171,7 +171,7 @@ function handleHistory(shouldPush, pathChanged) {
 function handleScroll(scroll = toParams(location.hash), pathChanged) {
   // scroll to a given anchor if the options or URL hash indicate it
   if (scroll.to) {
-    const scrollAnchor = document.getElementById(scroll.to);
+    const scrollAnchor = document.querySelector(scroll.to);
     if (scrollAnchor) {
       scrollAnchor.scrollIntoView(scroll);
     }

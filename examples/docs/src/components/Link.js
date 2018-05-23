@@ -1,14 +1,14 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-easy-stack";
-import { colors, ease, layout } from "./theme";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-easy-stack';
+import { colors, ease, layout } from './theme';
 
 const NavLink = props => (
   <Link
     activeClass="active"
     options={{
       scroll: {
-        container: "#root"
+        container: '#root'
       },
       ...props.options
     }}
