@@ -98,6 +98,8 @@ export default class Router extends PureComponent {
         if (!isNode && this.shouldAnimate) {
           this.animate();
         }
+        // the router has done at least one full routing
+        this.inited = true;
       }
     );
   }
@@ -156,11 +158,10 @@ export default class Router extends PureComponent {
         this.cleanupAnimation()
       );
     }
-    // only do an enter animation if this is not the initial render of the page
-    // (there is both a fromDOM and toDOM)
+    // only do an enter animation if this is not the initial routing of the router
     // this prevents cascading over-animation, in case of nested routers
     // only the outmost one will animate, the rest will appear normally
-    if (enterAnimation && fromDOM && toDOM) {
+    if (enterAnimation && toDOM && this.inited) {
       animateElement(toDOM, enterAnimation);
     }
   }

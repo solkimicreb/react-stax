@@ -5,16 +5,18 @@ import { ease } from './theme';
 const enterAnimation = {
   keyframes: {
     opacity: [0, 1]
+    // transform: ['translateX(-100%)', 'none']
   },
-  duration: 3000,
+  duration: 1500,
   ease: ease.in
 };
 
 const leaveAnimation = {
   keyframes: {
     opacity: [1, 0]
+    // transform: ['none', 'translateX(-100%)']
   },
-  duration: 300,
+  duration: 1500,
   ease: ease.out
 };
 
