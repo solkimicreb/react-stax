@@ -1,7 +1,8 @@
-import React, { unstable_AsyncMode as AsyncMode } from "react";
-import { view } from "react-easy-stack";
-import styled from "styled-components";
-import { colors, layout } from "./theme";
+import React, { Component, Fragment, Children } from 'react';
+import { createPortal } from 'react-dom';
+import { store, view } from 'react-easy-stack';
+import styled from 'styled-components';
+import { colors, layout } from './theme';
 
 const StyledPage = styled.div`
   margin: 15px;
@@ -19,11 +20,34 @@ const StyledPage = styled.div`
   }
 `;
 
-export default view(({ html, editURL, children, ...props }) => (
-  <StyledPage
-    isMobile={layout.isMobile}
-    dangerouslySetInnerHTML={{ __html: html }}
-    className="markdown-body"
-    {...props}
-  />
-));
+class Page extends Component {
+  store = store({
+    didMount: false
+  });
+
+  componentDidMount() {
+    this.store.didMount = true;
+  }
+
+  render() {
+    const { html, editURL, children, ...rest } = this.props;
+    const { didMount } = this.store;
+
+    return (
+      <Fragment>
+        <StyledPage
+          isMobile={layout.isMobile}
+          dangerouslySetInnerHTML={{ __html: html }}
+          className="markdown-body"
+          {...rest}
+        />
+        {didMount &&
+          Children.map(children, child =>
+            createPortal(child, document.getElementById(child.props.portal))
+          )}
+      </Fragment>
+    );
+  }
+}
+
+export default view(Page);

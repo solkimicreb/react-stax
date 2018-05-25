@@ -32,7 +32,7 @@ import { Router, Link } from 'react-easy-stack';
 export default () => (
   <div>
     <Link to="home">Home Link</Link>
-    <Link to="setting">Settings Link</Link>
+    <Link to="settings">Settings Link</Link>
     <Router defaultPage="home">
       <div page="home">Home Page</div>
       <div page="settings">Settings Page</div>
@@ -40,6 +40,8 @@ export default () => (
   </div>
 );
 ```
+
+<div id="routing-demo"></div>
 
 The routing API has three components:
 
@@ -49,7 +51,7 @@ The routing API has three components:
 
 These three provide features like nested and parallel routing, relative and absolute routes, async data resolution, lazy loading, active link styling, scroll management and animated page transitions.
 
-You can take a deeper dive in the [routing docs]().
+You can take a deeper dive in the <span id="routing-link"></span>.
 
 ## State Management
 
@@ -66,6 +68,8 @@ setInterval(() => (clock.time = new Date()), 1000);
 export default view(() => <div>{clock.time}</div>);
 ```
 
+<div id="state-demo"></div>
+
 The state management API has two functions:
 
 * `store` creates reactive stores, which store your data.
@@ -73,7 +77,7 @@ The state management API has two functions:
 
 You can store any kind of data in your stores and mutate them in any way, the necessary components will always re-render to reflect the new data. You could store a mix of deeply nested objects, arrays and Maps, you could add dynamic properties or `delete` them, or maybe use computed getters or inheritance.
 
-The possibilities are endless, learn more about typical state management patterns in the [state management docs]().
+The possibilities are endless, learn more about typical state management patterns in the <span id="state-link"></span>.
 
 ## Browser integration
 
@@ -87,10 +91,14 @@ const setFilter = ev => (params.value = ev.target.value);
 export default view(() => <input value={params.filter} onChange={setFilter} />);
 ```
 
+<div id="integrations-demo"></div>
+
 The integrations API has 3 objects:
 
 * `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
 * `path` is an array which is in sync with the current URL pathname.
 * `storage` is an object, which is in sync with the localStorage. It is perfect for storing session data or offline caching.
 
-You can learn more about common use cases for these objects in the [integrations docs]().
+You can learn more about common use cases for these objects in the <span id="integrations-link"></span>.
+
+<div id="demo"></div>

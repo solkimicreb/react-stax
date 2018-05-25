@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { path, view, Router } from 'react-easy-stack';
+import { path, view, params, store, Router, Link } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import App from './components/App';
@@ -12,6 +13,8 @@ import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 
+import Demo from './Demo';
+
 async function resolveRoute({ toPage }) {
   const html = await import(`./pages/route/${toPage}.md`);
   return <Page page={toPage} html={html} />;
@@ -22,10 +25,46 @@ async function resolveState({ toPage }) {
   return <Page page={toPage} html={html} />;
 }
 
+const RoutingDemo = () => (
+  <div>
+    <Link to="home">Home Link</Link>
+    <Link to="settings">Settings Link</Link>
+    <Router defaultPage="home">
+      <div page="home">Home Page</div>
+      <div page="settings">Settings Page</div>
+    </Router>
+  </div>
+);
+
+const clock = store({ time: new Date() });
+setInterval(() => (clock.time = new Date()), 1000);
+const StateDemo = view(() => <div>{clock.time.toString()}</div>);
+
+const setFilter = ev => (params.value = ev.target.value);
+const IntegrationsDemo = view(() => (
+  <input value={params.filter} onChange={setFilter} />
+));
+
 async function resolveHome({ toPage }) {
   if (toPage === 'home') {
     const html = await import('./pages/home.md');
-    return <Page page={toPage} html={html} />;
+    return (
+      <Page page={toPage} html={html}>
+        <Link to="/docs/routing" portal="routing-link">
+          routing docs
+        </Link>
+        <Link to="/docs/state" portal="state-link">
+          state management docs
+        </Link>
+        <Link to="/docs/integrations" portal="integrations-link">
+          integrations docs
+        </Link>
+        <RoutingDemo portal="routing-demo" />
+        <StateDemo portal="state-demo" />
+        <IntegrationsDemo portal="integrations-demo" />
+        <Demo portal="demo" />
+      </Page>
+    );
   }
 }
 
