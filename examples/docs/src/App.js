@@ -13,12 +13,24 @@ import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 
 async function resolveRoute({ toPage }) {
-  const html = await import(`./route/${toPage}.md`);
+  const html = await import(`./pages/route/${toPage}.md`);
   return <Page page={toPage} html={html} />;
 }
 
 async function resolveState({ toPage }) {
-  const html = await import(`./state/${toPage}.md`);
+  const html = await import(`./pages/state/${toPage}.md`);
+  return <Page page={toPage} html={html} />;
+}
+
+async function resolveHome({ toPage }) {
+  if (toPage === 'home') {
+    const html = await import('./pages/home.md');
+    return <Page page={toPage} html={html} />;
+  }
+}
+
+async function resolveExample({ toPage }) {
+  const html = await import(`./pages/examples/${toPage}.md`);
   return <Page page={toPage} html={html} />;
 }
 
@@ -42,6 +54,15 @@ const DocsNav = () => (
   </Switch>
 );
 
+const ExamplesNav = () => (
+  <Switch page="examples">
+    <Sidebar>
+      <SideLink to="clock-local">Local Clock</SideLink>
+      <SideLink to="clock-global">Glocal Clock</SideLink>
+    </Sidebar>
+  </Switch>
+);
+
 const DocsContent = () => (
   <PageRouter defaultPage="state" debug="docs">
     <State page="state" />
@@ -50,10 +71,13 @@ const DocsContent = () => (
 );
 
 const Content = () => (
-  <PageRouter defaultPage="home" debug="main">
-    <State page="home" />
-    <Page page="examples">EXAMPLES</Page>
+  <PageRouter defaultPage="home" onRoute={resolveHome} debug="main">
     <DocsContent page="docs" />
+    <PageRouter
+      page="examples"
+      defaultPage="clock-local"
+      onRoute={resolveExample}
+    />
   </PageRouter>
 );
 
@@ -85,6 +109,7 @@ export default view(() => (
       <Content />
     </App>
     <DocsNav />
+    <ExamplesNav />
     <Chat
       id="chat"
       className="gitter-chat-embed is-collapsed"

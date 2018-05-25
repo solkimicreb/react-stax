@@ -1,4 +1,4 @@
-# React Easy State
+# State Management
 
 Simple React state management. Made with :heart: and ES6 Proxies.
 
