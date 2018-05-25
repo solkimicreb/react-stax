@@ -41,7 +41,7 @@ export function releaseRouter(router, depth) {
 }
 
 // this is part of the public API, it triggers root level routings
-export function route({ to, params, options }) {
+export function route({ to, params, options } = {}) {
   routeFromDepth(to, params, options, 0);
 }
 
