@@ -1,20 +1,19 @@
-import { path } from './integrations';
-
 const emptyTokens = new Set([undefined, '', '.']);
 const notEmpty = token => !emptyTokens.has(token);
 
-export function normalizePath(path = [], depth) {
+export function normalizePath(path = '', depth) {
   const normalizedPath = [];
-  for (let token of path) {
+  for (let token of toPathArray(path)) {
     if (token === '..') {
       depth--;
     } else if (notEmpty(token)) {
       normalizedPath.push(token);
     }
   }
+
   return {
     normalizedPath,
-    depth
+    depth: path[0] === '/' ? 0 : depth
   };
 }
 

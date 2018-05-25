@@ -1,5 +1,12 @@
 import { path, params, scheduler } from '../integrations';
-import { toPathArray, toPathString, toParams, toHash, isNode } from '../utils';
+import {
+  toPathArray,
+  toPathString,
+  normalizePath,
+  toParams,
+  toHash,
+  isNode
+} from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -52,6 +59,12 @@ export function routeFromDepth(
   options = {},
   depth = 0
 ) {
+  const { depth: normalizedDepth, normalizedPath } = normalizePath(
+    toPath,
+    depth
+  );
+  depth = normalizedDepth;
+
   // there may be routers which route outside of the standard routing process
   // for example a router was added by lazy loading and does its initial routing
   // cancel routings for these routers
@@ -74,7 +87,7 @@ export function routeFromDepth(
   routingStatus = { depth, cancelled: false };
 
   // update the path array with the desired new path
-  path.splice(depth, Infinity, ...toPathArray(toPath));
+  path.splice(depth, Infinity, ...normalizedPath);
   // replace or extend the query params with the new params
   // only mutate the params object, never replace it (because it is an observable)
   if (!options.inherit) {

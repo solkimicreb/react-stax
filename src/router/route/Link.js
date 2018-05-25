@@ -52,10 +52,7 @@ export default class Link extends PureComponent {
 
   // gets the full path for relative and absolute links too
   get absolutePath() {
-    const { depth, normalizedPath } = normalizePath(
-      toPathArray(this.props.to),
-      this.depth
-    );
+    const { depth, normalizedPath } = normalizePath(this.props.to, this.depth);
     return path.slice(0, depth).concat(normalizedPath);
   }
 
@@ -114,11 +111,7 @@ export default class Link extends PureComponent {
     const { params, options, to, onClick } = this.props;
     // route all Routers from below the links depth
     // absolute links have a depth of 0
-    const { depth, normalizedPath } = normalizePath(
-      toPathArray(this.props.to),
-      this.depth
-    );
-    routeFromDepth(toPathString(normalizedPath), params, options, depth);
+    routeFromDepth(to, params, options, this.depth);
     // prevent the default behavior of anchor clicks (page reload)
     ev.preventDefault();
     // respect user defined onClick handlers on the Link
