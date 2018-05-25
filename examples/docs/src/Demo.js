@@ -17,7 +17,7 @@ const List = view(() => (
     <input value={params.filter} onChange={updateFilter} />
     <button onClick={fetchRepos}>Search</button>
     {repos.list.map(repo => (
-      <Link to="details" key={repo.id}>
+      <Link to="../details" key={repo.id}>
         {repo.name}
       </Link>
     ))}

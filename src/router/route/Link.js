@@ -2,7 +2,13 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
 import { routeFromDepth } from './core';
-import { toPathArray, toPathString, toQuery, addExtraProps } from '../utils';
+import {
+  toPathArray,
+  toPathString,
+  toQuery,
+  addExtraProps,
+  normalizePath
+} from '../utils';
 import { params, path, scheduler } from '../integrations';
 
 // Link is used to navigate between pages
@@ -46,7 +52,11 @@ export default class Link extends PureComponent {
 
   // gets the full path for relative and absolute links too
   get absolutePath() {
-    return path.slice(0, this.depth).concat(toPathArray(this.props.to));
+    const { depth, normalizedPath } = normalizePath(
+      toPathArray(this.props.to),
+      this.depth
+    );
+    return path.slice(0, depth).concat(normalizedPath);
   }
 
   // automatically update the link activity on pathname and params changes
@@ -104,7 +114,11 @@ export default class Link extends PureComponent {
     const { params, options, to, onClick } = this.props;
     // route all Routers from below the links depth
     // absolute links have a depth of 0
-    routeFromDepth(to, params, options, this.depth);
+    const { depth, normalizedPath } = normalizePath(
+      toPathArray(this.props.to),
+      this.depth
+    );
+    routeFromDepth(toPathString(normalizedPath), params, options, depth);
     // prevent the default behavior of anchor clicks (page reload)
     ev.preventDefault();
     // respect user defined onClick handlers on the Link
