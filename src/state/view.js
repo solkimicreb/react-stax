@@ -101,9 +101,7 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
   // static props are inherited by class components,
   // but have to be copied for function components
   if (isStatelessComp) {
-    for (let key of Object.keys(Comp)) {
-      ReactiveHOC[key] = Comp[key];
-    }
+    Object.assign(ReactiveHOC, Comp);
   }
 
   return ReactiveHOC;

@@ -80,6 +80,7 @@
     "rollup-plugin-node-resolve": "^3.0.0"
   },
   "jest": {
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.jsx?$",
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.{js,jsx}",
       "<rootDir>/examples/**/src/**/*.{js,jsx}",
