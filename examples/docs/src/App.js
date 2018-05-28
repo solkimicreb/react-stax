@@ -36,9 +36,11 @@ const RoutingDemo = () => (
   </div>
 );
 
-const clock = store({ time: new Date() });
-setInterval(() => (clock.time = new Date()), 1000);
-const StateDemo = view(() => <div>{clock.time.toString()}</div>);
+const fetchBeer = () =>
+  fetch('https://api.punkapi.com/v2/beers/random').then(res => res.json());
+const beers = store({ beer: {} });
+setInterval(async () => (beers.beer = await fetchBeer()), 1000);
+const StateDemo = view(() => <div>{JSON.stringify(beers.beer)}</div>);
 
 const setFilter = ev => (params.value = ev.target.value);
 const IntegrationsDemo = view(() => (
@@ -47,7 +49,7 @@ const IntegrationsDemo = view(() => (
 
 async function resolveHome({ toPage }) {
   if (toPage === 'home') {
-    const html = await import('./pages/home.md');
+    const html = await import('./pages/home/index.md');
     return (
       <Page page={toPage} html={html}>
         <Link to="/docs/routing" portal="routing-link">
