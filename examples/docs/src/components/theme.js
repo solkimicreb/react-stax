@@ -1,6 +1,7 @@
 import { store } from 'react-easy-stack';
 
 export const colors = {
+  code: '#f6f8fa',
   text: '#24292e',
   accent: '#0366d6',
   textLight: 'lightgray',

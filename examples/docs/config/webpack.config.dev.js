@@ -123,6 +123,14 @@ module.exports = {
         include: paths.appSrc
       },
       {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'raw-loader'
+          }
+        ]
+      },
+      {
         test: /\.md$/,
         use: [
           {

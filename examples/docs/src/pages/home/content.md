@@ -41,8 +41,6 @@ export default () => (
 );
 ```
 
-<div id="routing-demo"></div>
-
 The routing API has three components:
 
 * `Router` is like a folder, think of its child components as files and child routers as subfolders.
@@ -59,16 +57,23 @@ State management focuses on freedom and flexibility. It automatically updates th
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { view, store } from 'react-easy-stack';
 
-const clock = store({ time: new Date() });
-setInterval(() => (clock.time = new Date()), 1000);
+const beers = store([]);
 
-// the time is shared between all component instances
-export default view(() => <div>{clock.time}</div>);
+function getRandomBeer() {
+  return fetch('https://api.punkapi.com/v2/beers/random')
+    .then(res => res.json())
+    .then(json => beers.push(json[0]));
+}
+
+export default view(() => (
+  <div>
+    <button onClick={getRandomBeer}>Get a random beer</button>
+    <ul>{beers.map(beer => <li>{beer.name}</li>)}</ul>
+  </div>
+));
 ```
-
-<div id="state-demo"></div>
 
 The state management API has two functions:
 
@@ -91,8 +96,6 @@ const setFilter = ev => (params.value = ev.target.value);
 export default view(() => <input value={params.filter} onChange={setFilter} />);
 ```
 
-<div id="integrations-demo"></div>
-
 The integrations API has 3 objects:
 
 * `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
@@ -101,4 +104,65 @@ The integrations API has 3 objects:
 
 You can learn more about common use cases for these objects in the <span id="integrations-link"></span>.
 
-<div id="demo"></div>
+## Final Stuff
+
+```jsx
+import React from 'react';
+import { view, store, params, Router, Link } from 'react-easy-stack';
+
+const beers = store({
+  list: [],
+  selected: {}
+});
+
+function fetchBeers() {
+  return fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
+    .then(res => res.json())
+    .then(list => (beers.list = list || []));
+}
+
+function fetchBeer() {
+  return fetch(`https://api.punkapi.com/v2/beers/${params.id}`)
+    .then(res => res.json())
+    .then(list => (beers.selected = list[0] || {}));
+}
+
+async function onRoute({ toPage }) {
+  if (toPage === 'list') {
+    await fetchBeers();
+  } else if (toPage === 'details') {
+    await fetchBeer();
+  }
+}
+
+const updateFilter = ev => (params.filter = ev.target.value);
+
+const List = view(() => (
+  <div>
+    <input value={params.filter} onChange={updateFilter} />
+    <button onClick={fetchBeers}>Search beers</button>
+    {beers.list.map(beer => (
+      <Link to="../details" params={{ id: beer.id }} key={beer.id}>
+        {beer.name}
+      </Link>
+    ))}
+  </div>
+));
+
+const Details = view(() => (
+  <div>
+    <Link to="../list">To beers list</Link>
+    <p>Name: {beers.selected.name}</p>
+    <p>Description: {beers.selected.description}</p>
+  </div>
+));
+
+export default () => (
+  <Router defaultPage="list" onRoute={onRoute}>
+    <List page="list" />
+    <Details page="details" />
+  </Router>
+);
+```
+
+<div id="routing-demo"></div>

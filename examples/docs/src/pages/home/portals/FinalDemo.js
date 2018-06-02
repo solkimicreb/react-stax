@@ -9,13 +9,13 @@ const beers = store({
 function fetchBeers() {
   return fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
     .then(res => res.json())
-    .then(list => (beers.list = list));
+    .then(list => (beers.list = list || []));
 }
 
 function fetchBeer() {
   return fetch(`https://api.punkapi.com/v2/beers/${params.id}`)
     .then(res => res.json())
-    .then(list => (beers.selected = list[0]));
+    .then(list => (beers.selected = list[0] || {}));
 }
 
 async function onRoute({ toPage }) {
@@ -43,12 +43,8 @@ const List = view(() => (
 const Details = view(() => (
   <div>
     <Link to="../list">To beers list</Link>
-    <p>
-      <b>Name:</b> {beers.selected.name}
-    </p>
-    <p>
-      <b>Description:</b> {beers.selected.description}
-    </p>
+    <p>Name: {beers.selected.name}</p>
+    <p>Description: {beers.selected.description}</p>
   </div>
 ));
 

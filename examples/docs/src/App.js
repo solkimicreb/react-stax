@@ -12,8 +12,7 @@ import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
-
-import Demo from './Demo';
+import Browser from './components/Browser';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./pages/route/${toPage}.md`);
@@ -25,48 +24,10 @@ async function resolveState({ toPage }) {
   return <Page page={toPage} html={html} />;
 }
 
-const RoutingDemo = () => (
-  <div>
-    <Link to="home">Home Link</Link>
-    <Link to="settings">Settings Link</Link>
-    <Router defaultPage="home">
-      <div page="home">Home Page</div>
-      <div page="settings">Settings Page</div>
-    </Router>
-  </div>
-);
-
-const fetchBeer = () =>
-  fetch('https://api.punkapi.com/v2/beers/random').then(res => res.json());
-const beers = store({ beer: {} });
-setInterval(async () => (beers.beer = await fetchBeer()), 1000);
-const StateDemo = view(() => <div>{JSON.stringify(beers.beer)}</div>);
-
-const setFilter = ev => (params.value = ev.target.value);
-const IntegrationsDemo = view(() => (
-  <input value={params.filter} onChange={setFilter} />
-));
-
 async function resolveHome({ toPage }) {
   if (toPage === 'home') {
-    const html = await import('./pages/home/index.md');
-    return (
-      <Page page={toPage} html={html}>
-        <Link to="/docs/routing" portal="routing-link">
-          routing docs
-        </Link>
-        <Link to="/docs/state" portal="state-link">
-          state management docs
-        </Link>
-        <Link to="/docs/integrations" portal="integrations-link">
-          integrations docs
-        </Link>
-        <RoutingDemo portal="routing-demo" />
-        <StateDemo portal="state-demo" />
-        <IntegrationsDemo portal="integrations-demo" />
-        <Demo portal="demo" />
-      </Page>
-    );
+    const { default: HomePage } = await import('./pages/home');
+    return <HomePage page={toPage} />;
   }
 }
 

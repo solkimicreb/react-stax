@@ -9,14 +9,29 @@ const StyledPage = styled.div`
   margin-bottom: 50px;
 
   pre {
+    background-color: ${colors.code};
     color: ${colors.text};
-    margin-left: ${props => (props.isMobile ? -20 : 0)}px;
-    margin-right: ${props => (props.isMobile ? -20 : 0)}px;
+    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    margin-left: ${props => (props.isMobile ? -15 : 0)}px;
+    margin-right: ${props => (props.isMobile ? -15 : 0)}px;
+    border-radius: ${props => (props.isMobile ? 0 : 3)}px;
   }
 
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
       monospace !important;
+  }
+
+  .demo {
+    display: block;
+    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    height: 400px;
+    margin-left: ${props => (props.isMobile ? -15 : 0)}px;
+    margin-right: ${props => (props.isMobile ? -15 : 0)}px;
+    border: 1px solid ${colors.background};
+    border-radius: ${props => (props.isMobile ? 0 : 3)}px;
+    overflow: hidden;
+    margin-bottom: 16px;
   }
 `;
 

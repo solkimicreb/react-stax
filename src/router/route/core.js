@@ -54,7 +54,7 @@ export function route({ to, params, options } = {}) {
 
 // this cancels ongoing routings and recursively routes all routers
 export function routeFromDepth(
-  toPath = location.pathname,
+  toPath = toPathString(path),
   toParams = {},
   options = {},
   depth = 0
@@ -144,13 +144,13 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ history, scroll }, status) {
+function finishRouting({ history, state, scroll }, status) {
   if (!status.cancelled) {
     // this part uses APIs, which are irrelevant in NodeJS
     if (!isNode) {
       const pathChanged = toPathString(path) !== location.pathname;
       // push a new history item or replace the current one
-      handleHistory(history, pathChanged);
+      handleHistory(history, state, pathChanged);
       // handle the scroll after the whole routing is over
       // this makes sure that the necessary elements are already rendered
       // in case of a scrollToAnchor behavior
@@ -169,14 +169,14 @@ function finishRouting({ history, scroll }, status) {
 }
 
 // handle the browser history
-function handleHistory(shouldPush, pathChanged) {
+function handleHistory(shouldPush, state, pathChanged) {
   // push a new history item if the URL pathname changed
   // but let the user overwrite this with an option (options.history)
   if (shouldPush === true || (shouldPush !== false && pathChanged)) {
-    history.pushState(undefined, '', toHash(scroll));
+    history.pushState(state, '', toHash(scroll));
   } else {
     // replace the current historyItem otherwise
-    history.replaceState(undefined, '', toHash(scroll));
+    history.replaceState(state, '', toHash(scroll));
   }
 }
 
