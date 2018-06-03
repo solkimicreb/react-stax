@@ -1,11 +1,6 @@
-import {
-  path,
-  params,
-  scheduler,
-  handleHistory,
-  handleScroll
-} from '../integrations';
-import { toPathString, normalizePath } from '../utils';
+import { path, params } from './integrations';
+import { scheduler, handleHistory, handleScroll } from './platform';
+import { toPathString, normalizePath } from './utils';
 
 const routers = [];
 let routingStatus;

@@ -1,5 +1,5 @@
-import { path } from './url';
-import { route } from '../route/core';
+import { path } from '../integrations';
+import { route } from '../core';
 import { toParams, toPathString } from '../utils';
 
 // handle the browser history
@@ -17,6 +17,7 @@ window.addEventListener('popstate', () =>
   route({
     to: location.pathname,
     params: toParams(location.search),
-    options: { history: false, scroll: toParams(location.hash) }
+    push: false,
+    scroll: false
   })
 );

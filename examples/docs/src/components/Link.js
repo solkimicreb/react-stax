@@ -6,11 +6,10 @@ import { colors, ease, layout } from './theme';
 const NavLink = props => (
   <Link
     activeClass="active"
-    options={{
-      scroll: {
-        container: '#root'
-      },
-      ...props.options
+    scroll={{
+      container: '#root',
+      top: 0,
+      left: 0
     }}
     {...props}
   >

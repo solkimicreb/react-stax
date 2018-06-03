@@ -1,8 +1,10 @@
-import { path } from './url';
+import { path } from '../integrations';
 import { toPathString, toParams, toHash } from '../utils';
 
+handleScroll(toParams(location.hash));
+
 // handle scrolling
-export function handleScroll(scroll = toParams(location.hash)) {
+export function handleScroll(scroll) {
   if (typeof scroll === 'object') {
     // add the scroll information to the url hash
     history.replaceState(history.state, '', toHash(scroll));
@@ -24,6 +26,6 @@ export function handleScroll(scroll = toParams(location.hash)) {
   } else if (scroll !== false && toPathString(path) !== location.pathname) {
     // route to the top left corner by default, if the URL path changed
     // and the scroll option is not false
-    container.scrollTo({ left: 0, top: 0 });
+    window.scrollTo({ left: 0, top: 0 });
   }
 }

@@ -1,9 +1,9 @@
 import { observable, observe } from '@nx-js/observer-util';
 import { scheduler } from './scheduler';
+import { storage } from '../integrations';
 
 const STORAGE_NAME = 'REACT_EASY_STORAGE';
-const item = localStorage.getItem(STORAGE_NAME);
-export const storage = observable(JSON.parse(item) || {});
+Object.assign(storage, JSON.parse(localStorage.getItem(STORAGE_NAME)));
 
 // auto sync the storage object with localStorage
 function syncStorage() {

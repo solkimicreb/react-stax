@@ -8,8 +8,9 @@ import {
   toQuery,
   addExtraProps,
   normalizePath
-} from '../utils';
-import { params, path, scheduler, anchor } from '../integrations';
+} from './utils';
+import { params, path } from './integrations';
+import { scheduler, anchor } from './platform';
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
