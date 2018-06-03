@@ -45,8 +45,8 @@ export default class Router extends PureComponent {
 
   // this is part of the public API
   // it routes every router from this depth (including this one)
-  route({ to, params, options } = {}) {
-    routeFromDepth(to, params, options, this.depth);
+  route(routingOptions) {
+    routeFromDepth(routingOptions, this.depth);
   }
 
   // routing is split in 2 phases

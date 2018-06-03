@@ -47,21 +47,22 @@ export function releaseRouter(router, depth) {
 }
 
 // this is part of the public API, it triggers root level routings
-export function route({ to, params, options } = {}) {
-  routeFromDepth(to, params, options, 0);
+export function route(args) {
+  routeFromDepth(args, 0);
 }
 
 // this cancels ongoing routings and recursively routes all routers
 export function routeFromDepth(
-  toPath = toPathString(path),
-  toParams = {},
-  options = {},
+  {
+    to = toPathString(path),
+    params: toParams = {},
+    scroll,
+    push,
+    inherit
+  } = {},
   depth = 0
 ) {
-  const { depth: normalizedDepth, normalizedPath } = normalizePath(
-    toPath,
-    depth
-  );
+  const { depth: normalizedDepth, normalizedPath } = normalizePath(to, depth);
   depth = normalizedDepth;
 
   // there may be routers which route outside of the standard routing process
@@ -89,7 +90,7 @@ export function routeFromDepth(
   path.splice(depth, Infinity, ...normalizedPath);
   // replace or extend the query params with the new params
   // only mutate the params object, never replace it (because it is an observable)
-  if (!options.inherit) {
+  if (!inherit) {
     Object.keys(params).forEach(key => delete params[key]);
   }
   Object.assign(params, toParams);
@@ -97,7 +98,7 @@ export function routeFromDepth(
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() => switchRoutersFromDepth(depth, routingStatus))
-    .then(() => finishRouting(options, routingStatus));
+    .then(() => finishRouting({ push, scroll }, routingStatus));
 }
 
 // this recursively routes all parallel routers form a given depth
@@ -143,10 +144,10 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ history, scroll }, status) {
+function finishRouting({ push, scroll }, status) {
   if (!status.cancelled) {
     // push a new history item or replace the current one
-    handleHistory(history);
+    handleHistory(push);
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
