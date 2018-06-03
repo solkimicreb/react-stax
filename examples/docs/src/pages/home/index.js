@@ -7,9 +7,6 @@ import StateDemo from './portals/StateDemo';
 import IntegrationsDemo from './portals/IntegrationsDemo';
 import FinalDemo from './portals/FinalDemo';
 import content from './content.md';
-import Frame from 'react-frame-component';
-import iframeContent from './iframe.html';
-import Browser from '../../components/Browser';
 
 export default () => (
   <Page html={content} {...this.props}>
@@ -22,6 +19,5 @@ export default () => (
     <Link to="/docs/integrations" portal="integrations-link">
       integrations docs
     </Link>
-    <Browser portal="routing-demo" render={RoutingDemo} />
   </Page>
 );

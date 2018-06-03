@@ -1,12 +1,11 @@
-import { path, params, scheduler } from '../integrations';
 import {
-  toPathArray,
-  toPathString,
-  normalizePath,
-  toParams,
-  toHash,
-  isNode
-} from '../utils';
+  path,
+  params,
+  scheduler,
+  handleHistory,
+  handleScroll
+} from '../integrations';
+import { toPathString, normalizePath } from '../utils';
 
 const routers = [];
 let routingStatus;
@@ -144,18 +143,14 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ history, state, scroll }, status) {
+function finishRouting({ history, scroll }, status) {
   if (!status.cancelled) {
-    // this part uses APIs, which are irrelevant in NodeJS
-    if (!isNode) {
-      const pathChanged = toPathString(path) !== location.pathname;
-      // push a new history item or replace the current one
-      handleHistory(history, state, pathChanged);
-      // handle the scroll after the whole routing is over
-      // this makes sure that the necessary elements are already rendered
-      // in case of a scrollToAnchor behavior
-      handleScroll(scroll, pathChanged);
-    }
+    // push a new history item or replace the current one
+    handleHistory(history);
+    // handle the scroll after the whole routing is over
+    // this makes sure that the necessary elements are already rendered
+    // in case of a scrollToAnchor behavior
+    handleScroll(scroll);
 
     // flush the URL updates in one batch and restart the automatic processing
     // it is important to call this after handleHistory()
@@ -166,51 +161,4 @@ function finishRouting({ history, state, scroll }, status) {
     // the routing is over and the is no currently ongoing routing process
     routingStatus = undefined;
   }
-}
-
-// handle the browser history
-function handleHistory(shouldPush, state, pathChanged) {
-  // push a new history item if the URL pathname changed
-  // but let the user overwrite this with an option (options.history)
-  if (shouldPush === true || (shouldPush !== false && pathChanged)) {
-    history.pushState(state, '', toHash(scroll));
-  } else {
-    // replace the current historyItem otherwise
-    history.replaceState(state, '', toHash(scroll));
-  }
-}
-
-// handle scrolling
-function handleScroll(scroll = toParams(location.hash), pathChanged) {
-  // scroll to a given anchor if the options or URL hash indicate it
-  if (scroll.to) {
-    const scrollAnchor = document.querySelector(scroll.to);
-    if (scrollAnchor) {
-      scrollAnchor.scrollIntoView(scroll);
-    }
-  } else {
-    // scroll a given container (the window by default)
-    const container = scroll.container
-      ? document.querySelector(scroll.container)
-      : window;
-
-    // route to the top left corner by default, if the URL path changed
-    if (pathChanged) {
-      scroll = Object.assign({}, scroll, { left: 0, top: 0 });
-    }
-    // scroll to the user defined position otherwise
-    container.scrollTo(scroll);
-  }
-}
-
-// this API is irrelevant in NodeJS
-if (!isNode) {
-  // trigger the necessary routing on browser history events
-  window.addEventListener('popstate', () =>
-    route({
-      to: location.pathname,
-      params: toParams(location.search),
-      options: { history: false, scroll: toParams(location.hash) }
-    })
-  );
 }

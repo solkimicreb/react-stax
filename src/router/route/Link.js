@@ -9,7 +9,7 @@ import {
   addExtraProps,
   normalizePath
 } from '../utils';
-import { params, path, scheduler } from '../integrations';
+import { params, path, scheduler, anchor } from '../integrations';
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
@@ -28,7 +28,7 @@ export default class Link extends PureComponent {
   };
 
   static defaultProps = {
-    element: 'a',
+    element: anchor,
     className: '',
     activeClass: '',
     style: {},

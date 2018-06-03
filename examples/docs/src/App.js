@@ -12,7 +12,6 @@ import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
-import Browser from './components/Browser';
 
 async function resolveRoute({ toPage }) {
   const html = await import(`./pages/route/${toPage}.md`);

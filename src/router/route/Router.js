@@ -1,6 +1,6 @@
 import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
-import { path, params } from '../integrations';
+import { path, params, div } from '../integrations';
 import { addExtraProps, isNode } from '../utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
@@ -18,7 +18,7 @@ export default class Router extends PureComponent {
   };
 
   static defaultProps = {
-    element: 'div'
+    element: div
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
