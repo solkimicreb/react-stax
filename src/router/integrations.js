@@ -1,16 +1,26 @@
 import { observable, observe } from '@nx-js/observer-util';
 import { Queue, priorities } from '@nx-js/queue-util';
+import { noop } from './utils';
 
 // commit reactions with a low priority
 // URL and storage updates are not something the user is eagerly waiting for
 export const scheduler = new Queue(priorities.LOW);
+export const elements = {
+  anchor: 'a',
+  div: 'div'
+};
+
+export const scroller = {
+  scrollToAnchor: noop,
+  scrollToLocation: noop
+};
 
 export const storage = observable({});
 export const params = observable({});
 export const path = observable([]);
 
 export const history = {
-  items: [],
+  items: [{}],
   idx: 0,
   go(idx) {
     this.idx = idx;
@@ -24,14 +34,16 @@ export const history = {
   }
 };
 
-function cloneItem({ path, params }) {
+function cloneItem({ path, params, scroll }) {
   return {
     path: Array.from(path),
-    params: Object.assign({}, params)
+    params: Object.assign({}, params),
+    scroll: Object.assign({}, scroll)
   };
 }
 
 function syncHistory() {
-  history.replace({ path, params });
+  const { scroll } = history.items[history.idx];
+  history.replace({ path, params, scroll });
 }
 observe(syncHistory, { scheduler });

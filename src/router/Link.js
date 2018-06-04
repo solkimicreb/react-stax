@@ -2,15 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
 import { routeFromDepth } from './core';
-import {
-  toPathArray,
-  toPathString,
-  toQuery,
-  addExtraProps,
-  normalizePath
-} from './utils';
-import { params, path, scheduler } from './integrations';
-import { anchor } from './platform';
+import { toUrl, normalizePath, addExtraProps } from './utils';
+import { params, path, scheduler, elements } from './integrations';
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
@@ -31,7 +24,7 @@ export default class Link extends PureComponent {
   };
 
   static defaultProps = {
-    element: anchor,
+    element: elements.anchor,
     className: '',
     activeClass: '',
     style: {},
@@ -87,16 +80,11 @@ export default class Link extends PureComponent {
   }
 
   isLinkPathActive() {
-    const { to } = this.props;
-    if (to) {
-      // URL pathname tokens before this.depth always match with the link
-      // otherwise the link and its containing Router would not be rendered
-      // URL pathname tokens after the link does not affect the check
-      // for example '/profile' link matches with '/profile/settings' URL
-      const linkPath = toPathArray(to);
-      return linkPath.every((page, i) => page === path[i + this.depth]);
-    }
-    return true;
+    // URL pathname tokens before this.depth always match with the link
+    // otherwise the link and its containing Router would not be rendered
+    // URL pathname tokens after the link does not affect the check
+    // for example '/profile' link matches with '/profile/settings' URL
+    return this.absolutePath.every((page, i) => page === path[i]);
   }
 
   isLinkParamsActive() {
@@ -127,6 +115,7 @@ export default class Link extends PureComponent {
     let {
       to,
       params,
+      scroll,
       element,
       children,
       activeClass,
@@ -138,7 +127,12 @@ export default class Link extends PureComponent {
     const { onClick } = this;
 
     // calculate a full link href for correct 'Open link in new tab' behavior
-    const href = toPathString(this.absolutePath) + toQuery(params);
+    const href = toUrl({
+      path: this.absolutePath,
+      params,
+      scroll
+    });
+
     if (isActive) {
       // both are empty strings by default
       className = `${className} ${activeClass}`;

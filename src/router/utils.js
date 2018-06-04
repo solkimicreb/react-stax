@@ -30,18 +30,6 @@ export function toPathString(path = []) {
 
 // convert params objects to query strings
 export function toQuery(params = {}) {
-  const query = toObjectString(params);
-  return query ? `?${query}` : '';
-}
-
-// convert scroll options objects to URL hash
-export function toHash(scroll = {}) {
-  const hash = toObjectString(scroll);
-  return hash ? `#${hash}` : '';
-}
-
-// converts objects to &key=value strings
-function toObjectString(params) {
   const tokens = [];
 
   for (let key in params) {
@@ -53,7 +41,7 @@ function toObjectString(params) {
       tokens.push(`${key}=${value}`);
     }
   }
-  return tokens.length ? tokens.join('&') : '';
+  return tokens.length ? `?${tokens.join('&')}` : '';
 }
 
 // converts &key=value strings to objects
@@ -75,6 +63,20 @@ export function toParams(queryString = '') {
   return params;
 }
 
+// convert scroll anchor to URL hash
+export function toHash(scroll = {}) {
+  return scroll && scroll.anchor ? `#${scroll.anchor}` : '';
+}
+
+// convert url hash to scroll anchor
+export function toScroll(hash) {
+  return hash ? { anchor: hash.slice(1) } : {};
+}
+
+export function toUrl({ path, params, scroll }) {
+  return toPathString(path) + toQuery(params) + toHash(scroll);
+}
+
 // augments the props with extraProps, which are not in excludeProps
 // nice for proxying irrelevant props to the underlying DOM element
 export function addExtraProps(props, extraProps, excludeProps) {
@@ -86,8 +88,4 @@ export function addExtraProps(props, extraProps, excludeProps) {
   return props;
 }
 
-// detects if the current env is NodeJS
-export const isNode =
-  typeof global === 'object' &&
-  global.process &&
-  Object.prototype.toString.call(global.process) === '[object process]';
+export function noop() {}

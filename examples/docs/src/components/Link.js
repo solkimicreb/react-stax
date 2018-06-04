@@ -7,7 +7,7 @@ const NavLink = props => (
   <Link
     activeClass="active"
     scroll={{
-      container: '#root',
+      container: 'root',
       top: 0,
       left: 0
     }}

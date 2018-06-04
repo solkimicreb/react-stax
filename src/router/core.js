@@ -1,5 +1,4 @@
-import { path, params, history, scheduler } from './integrations';
-import { handleScroll } from './platform';
+import { path, params, history, scroller, scheduler } from './integrations';
 import { toPathString, normalizePath } from './utils';
 
 const routers = [];
@@ -146,12 +145,20 @@ function finishRouting({ push, scroll }, status) {
     // push a new history item or replace the current one
     // maybe also add scroll
     if (push === true || (push !== false && pathChanged)) {
-      history.push({ path, params });
+      history.push({ path, params, scroll });
     }
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
-    handleScroll(scroll);
+    if (typeof scroll === 'object') {
+      if (scroll.anchor) {
+        scroller.scrollToAnchor(scroll);
+      } else {
+        scroller.scrollToLocation(scroll);
+      }
+    } else if (scroll !== false && pathChanged) {
+      scroller.scrollToLocation({ top: 0, left: 0 });
+    }
 
     // flush the URL updates in one batch and restart the automatic processing
     // it is important to call this after handleHistory()
