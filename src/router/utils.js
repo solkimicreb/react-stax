@@ -87,5 +87,3 @@ export function addExtraProps(props, extraProps, excludeProps) {
   }
   return props;
 }
-
-export function noop() {}

@@ -1,19 +1,25 @@
 import { observable, observe } from '@nx-js/observer-util';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { noop } from './utils';
 
-// commit reactions with a low priority
-// URL and storage updates are not something the user is eagerly waiting for
-export const scheduler = new Queue(priorities.LOW);
 export const elements = {
   anchor: 'a',
   div: 'div'
 };
 
 export const scroller = {
-  scrollToAnchor: noop,
-  scrollToLocation: noop
+  scrollToAnchor() {},
+  scrollToLocation() {}
 };
+
+export const animation = {
+  setup() {},
+  enter() {},
+  leave() {}
+};
+
+// commit reactions with a low priority
+// URL and storage updates are not something the user is eagerly waiting for
+export const scheduler = new Queue(priorities.LOW);
 
 export const storage = observable({});
 export const params = observable({});

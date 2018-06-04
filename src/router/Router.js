@@ -1,7 +1,6 @@
 import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
-import { path, params, elements } from './integrations';
-import { Animation } from './platform';
+import { path, params, elements, animation } from './integrations';
 import { addExtraProps } from './utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
@@ -38,7 +37,6 @@ export default class Router extends PureComponent {
 
   componentDidMount() {
     registerRouter(this, this.depth);
-    this.animation = new Animation(this.container);
   }
 
   componentWillUnmount() {
@@ -121,7 +119,7 @@ export default class Router extends PureComponent {
     // save the current raw view (DOM), so it can be used later for a fade out
     // or cross fade effect after the new view is rendered
     if (this.shouldAnimate && leaveAnimation) {
-      this.animation.setup();
+      animation.setup(this.container);
     }
   }
 
@@ -133,7 +131,7 @@ export default class Router extends PureComponent {
       // this prevents cascading over-animation, in case of nested routers
       // only the outmost one will animate, the rest will appear normally
       if (enterAnimation && this.inited) {
-        this.animation.enter(enterAnimation);
+        animation.enter(this.container, enterAnimation);
       }
       // DO NOT return the promise from animateElement()
       // there is no need to wait for the animation,
@@ -141,7 +139,7 @@ export default class Router extends PureComponent {
       // it is safe to go on with routing the next level of routers
       // LEAVE MUST COME AFTER ENTER!
       if (leaveAnimation) {
-        this.animation.leave(leaveAnimation);
+        animation.leave(this.container, leaveAnimation);
       }
     }
   }
