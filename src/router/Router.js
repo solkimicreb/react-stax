@@ -66,9 +66,6 @@ export default class Router extends PureComponent {
     // this is important for relative links and automatic active link highlight
     path[this.depth] = toPage;
 
-    // do not deal with animations when running in NodeJS
-    // cleanup ongoing animations (from previous routings) and setup new ones
-    this.cleanupAnimation();
     // this saves the current raw view (DOM) to be used for the leave animation
     // it is important to call this here, before anything could mutate the view
     // the first thing which may mutate views is the props.onRoute call below
@@ -132,26 +129,21 @@ export default class Router extends PureComponent {
     const { enterAnimation, leaveAnimation } = this.props;
 
     if (this.shouldAnimate) {
-      if (leaveAnimation) {
-        // DO NOT return the promise from animateElement()
-        // there is no need to wait for the animation,
-        // the views may be hidden by the animation, but the DOM routing is already over
-        // it is safe to go on with routing the next level of routers
-        this.animation.leave(leaveAnimation);
-      }
       // only do an enter animation if this is not the initial routing of the router
       // this prevents cascading over-animation, in case of nested routers
       // only the outmost one will animate, the rest will appear normally
       if (enterAnimation && this.inited) {
         this.animation.enter(enterAnimation);
       }
+      // DO NOT return the promise from animateElement()
+      // there is no need to wait for the animation,
+      // the views may be hidden by the animation, but the DOM routing is already over
+      // it is safe to go on with routing the next level of routers
+      // LEAVE MUST COME AFTER ENTER!
+      if (leaveAnimation) {
+        this.animation.leave(leaveAnimation);
+      }
     }
-  }
-
-  // remove old views after the leaveAnimation finishes
-  // or when a new routing and animation intercepts the current one
-  cleanupAnimation() {
-    this.animation.cleanup();
   }
 
   render() {

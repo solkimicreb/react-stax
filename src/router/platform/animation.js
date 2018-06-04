@@ -4,6 +4,7 @@ export class Animation {
   }
 
   setup() {
+    this.cleanup();
     const fromDOM = this.container.firstElementChild;
     // cloning is necessary to allow cross fade effects for transitions
     // between the same page (when only the params change)
