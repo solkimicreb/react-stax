@@ -61,102 +61,17 @@ const IFrame = styled.iframe`
   border: none;
 `;
 
-// this block all extra popstate listeners from dynamically imported
-// easy-stack instances and only lets the first one activate
-// this avoids double routings in history button pushes
-window.addEventListener('popstate', ev => {
-  // handle cases for popstate triggered by example buttons here
-  // maybe example buttons shouldnt even trigger history
-  ev.stopImmediatePropagation();
-});
-
-const examples = store(new Map());
-
-const historyProto = Reflect.getPrototypeOf(window.history);
-const pushState = historyProto.pushState;
-const replaceState = historyProto.replaceState;
-
-Object.assign(historyProto, {
-  pushState(state, title, path) {
-    // maybe just parse it from the path and later change the path a bit
-    // allow passing state in route (+Link options)
-    const exampleId = state.exampleId;
-    if (exampleId) {
-      // currentIdx is usually the idx of the last element
-      // it is handled by the sandbox browser's history buttons
-      // push a new state and remove future states
-      examples.get(exampleId).splice(currentIdx + 1, Infinity, path);
-    } else {
-      Reflect.apply(pushState, window.history, [state, title, path]);
-    }
-  },
-  replaceState(state, title, path) {
-    // every link must have and exampleId
-    const exampleId = state.exampleId; // get example id from path, or state maybe
-    // routing changes the state object
-    // it will be the same for all params changes
-    // another example is routed -> changes state
-    // the first example is params modified -> it wrongly modifies the second example
-    // because the state points to the second example
-    // only a single example can be on focus at a time!!
-    // this single example is used for all
-    // this could work nicely I guess
-    // maybe not the best idea
-    // issue -> I have to somehow route stuff
-    // the only real thing I have is the path, everything else could be a remnant from an old routing
-    // even this is not true ):
-    // the path can also be a remnant
-    // I route on one example
-    // I change the params on the other example
-    // in the end I should still load stuff in Iframes!!
-    if (exampleId) {
-      const exampleHistory = examples.get(exampleId);
-      // replace the current state, do not remove future states
-      exampleHistory[currentIdx] = path;
-    } else {
-      Reflect.apply(replaceState, window.history, [state, title, path]);
-    }
-  }
-});
-
-let exampleIdCounter = 0;
-
+// it should load a private easy-stack/node version and inject it to children
 class Browser extends Component {
-  store = store();
-
-  componentDidMount() {
-    const { render } = this.props;
-    this.exampleId = exampleIdCounter++;
-    examples.set(this.exampleId, { items: [], idx: 0 });
-  }
-
-  componentWillUnmount() {
-    examples.delete(this.exampleId);
-  }
-
-  onHistoryBack = () => {
-    const history = examples.get(exampleId);
-    history.idx = Math.min(history.idx - 1, 0);
-  };
-
-  onHistoryForward = () => {
-    const history = examples.get(exampleId);
-    history.idx = Math.max(history.idx + 1, history.items.length - 1);
-  };
-
   render() {
     const { children } = this.props;
-    const history = examples.get(exampleId);
-    // store idx in the examples store too!!
-    const url = history[this.store.historyIdx];
-
     return (
       <BrowserFrame isMobile={layout.isMobile}>
         <BrowserBar>
           <BackIcon onClick={this.onHistoryBack} />
           <ForwardIcon onClick={this.onHistoryForward} />
           <RefreshIcon />
-          <AddressBar value={url} />
+          <AddressBar value="example.com" />
         </BrowserBar>
         <div>{children}</div>
       </BrowserFrame>

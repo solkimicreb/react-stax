@@ -1,5 +1,5 @@
 import React, { Component, Fragment, Children } from 'react';
-import { createPortal } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { store, view } from 'react-easy-stack';
 import styled from 'styled-components';
 import { colors, layout } from './theme';
@@ -41,6 +41,12 @@ class Page extends Component {
   });
 
   componentDidMount() {
+    const { children } = this.props;
+    Children.forEach(children, child => {
+      if (child.props.mount) {
+        ReactDOM.render(child, document.getElementById(child.props.mount));
+      }
+    });
     this.store.didMount = true;
   }
 
@@ -57,8 +63,15 @@ class Page extends Component {
           {...rest}
         />
         {didMount &&
-          Children.map(children, child =>
-            createPortal(child, document.getElementById(child.props.portal))
+          Children.map(
+            children,
+            child =>
+              child.props.portal
+                ? ReactDOM.createPortal(
+                    child,
+                    document.getElementById(child.props.portal)
+                  )
+                : null
           )}
       </Fragment>
     );

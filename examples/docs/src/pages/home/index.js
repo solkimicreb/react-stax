@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-easy-stack';
 import Page from '../../components/Page';
+import Browser from '../../components/Browser';
 import RoutingDemo from './portals/RoutingDemo';
 import StateDemo from './portals/StateDemo';
 import IntegrationsDemo from './portals/IntegrationsDemo';
@@ -19,5 +20,8 @@ export default () => (
     <Link to="/docs/integrations" portal="integrations-link">
       integrations docs
     </Link>
+    <Browser mount="routing-demo">
+      <RoutingDemo />
+    </Browser>
   </Page>
 );
