@@ -21,12 +21,7 @@ const leaveAnimation = {
 };
 
 export default ({ page, children, isDefault, ...props }) => (
-  <Router
-    {...props}
-    defaultPage={isDefault ? page : undefined}
-    enterAnimation={enterAnimation}
-    leaveAnimation={leaveAnimation}
-  >
+  <Router {...props}>
     <div page={page}>{children}</div>
   </Router>
 );

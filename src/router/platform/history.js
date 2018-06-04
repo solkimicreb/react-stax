@@ -1,23 +1,33 @@
-import { path } from '../integrations';
+import { history } from '../integrations';
 import { route } from '../core';
-import { toParams, toPathString } from '../utils';
+import { toPathString, toQuery } from '../utils';
 
-// handle the browser history
-export function handleHistory(shouldPush) {
-  const pathChanged = toPathString(path) !== location.pathname;
-  // push a new history item if the URL pathname changed
-  // but let the user overwrite this with an option (options.history)
-  if (shouldPush === true || (shouldPush !== false && pathChanged)) {
-    history.pushState(history.state, '');
+const originalPush = history.push;
+const originalReplace = history.replace;
+Object.assign(history, {
+  push(item) {
+    Reflect.apply(originalPush, history, [item]);
+    console.log('push', history.idx, item);
+    const url = toPathString(item.path) + toQuery(item.params) + location.hash;
+    window.history.pushState({ idx: history.idx }, '', url);
+  },
+  replace(item) {
+    Reflect.apply(originalReplace, history, [item]);
+    const url = toPathString(item.path) + toQuery(item.params) + location.hash;
+    console.log('replace', window.history.state, history.idx);
+    window.history.replaceState(window.history.state, '', url);
   }
-}
+});
 
-// trigger the necessary routing on browser history events
-window.addEventListener('popstate', () =>
-  route({
-    to: location.pathname,
-    params: toParams(location.search),
+window.addEventListener('popstate', ev => {
+  const idx = ev.state ? ev.state.idx : 0;
+  console.log('go', idx);
+  const { params, path } = history.go(idx);
+
+  return route({
+    to: toPathString(path),
+    params,
     push: false,
     scroll: false
-  })
-);
+  });
+});

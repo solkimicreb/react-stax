@@ -1,5 +1,5 @@
-import { path, params } from './integrations';
-import { scheduler, handleHistory, handleScroll } from './platform';
+import { path, params, history, scheduler } from './integrations';
+import { handleScroll } from './platform';
 import { toPathString, normalizePath } from './utils';
 
 const routers = [];
@@ -27,7 +27,7 @@ function initRouter(router, depth) {
   const status = { depth, cancelled: false };
   initStatuses.add(status);
 
-  Promise.resolve()
+  return Promise.resolve()
     .then(() => router.startRouting())
     .then(
       // cancel the routing if a new routing started in the meantime
@@ -141,8 +141,13 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 // if it was not cancelled in the meantime
 function finishRouting({ push, scroll }, status) {
   if (!status.cancelled) {
+    const prevPath = history.items[history.idx].path;
+    const pathChanged = toPathString(prevPath) !== toPathString(path);
     // push a new history item or replace the current one
-    handleHistory(push);
+    // maybe also add scroll
+    if (push === true || (push !== false && pathChanged)) {
+      history.push({ path, params });
+    }
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
@@ -151,7 +156,7 @@ function finishRouting({ push, scroll }, status) {
     // flush the URL updates in one batch and restart the automatic processing
     // it is important to call this after handleHistory()
     // in case of a newly pushed history item, the flushed URL changes
-    //  should replace the new item instead of the old one
+    // should replace the new item instead of the old one
     scheduler.process();
     scheduler.start();
     // the routing is over and the is no currently ongoing routing process

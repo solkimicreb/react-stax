@@ -9,8 +9,8 @@ import {
   addExtraProps,
   normalizePath
 } from './utils';
-import { params, path } from './integrations';
-import { scheduler, anchor } from './platform';
+import { params, path, scheduler } from './integrations';
+import { anchor } from './platform';
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
