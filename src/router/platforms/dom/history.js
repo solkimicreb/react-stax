@@ -1,6 +1,6 @@
-import { history } from '../integrations';
-import { route } from '../core';
-import { toPathString, toUrl } from '../utils';
+import { history } from '../../integrations';
+import { route } from '../../core';
+import { toPathString, toUrl } from '../../utils';
 
 const originalPush = history.push;
 const originalReplace = history.replace;

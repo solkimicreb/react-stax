@@ -1,5 +1,5 @@
-import { scroller } from '../integrations';
-import { toScroll } from '../utils';
+import { scroller } from '../../integrations';
+import { toScroll } from '../../utils';
 
 Object.assign(scroller, {
   scrollToAnchor(options) {

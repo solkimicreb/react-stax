@@ -1,4 +1,4 @@
-import { animation } from '../integrations';
+import { animation } from '../../integrations';
 
 const FROM_DOM = Symbol('from DOM');
 

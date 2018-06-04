@@ -1,5 +1,5 @@
 import { observe } from '@nx-js/observer-util';
-import { storage, scheduler } from '../integrations';
+import { storage, scheduler } from '../../integrations';
 
 const STORAGE_NAME = 'REACT_EASY_STORAGE';
 Object.assign(storage, JSON.parse(localStorage.getItem(STORAGE_NAME)));
