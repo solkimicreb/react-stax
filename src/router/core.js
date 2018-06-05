@@ -1,5 +1,5 @@
 import { path, params, history, scroller, scheduler } from './integrations';
-import { toPathString, normalizePath } from './utils';
+import { toPathString, toUrl, normalizePath } from './utils';
 
 const routers = [];
 let routingStatus;
@@ -145,7 +145,8 @@ function finishRouting({ push, scroll }, status) {
     // push a new history item or replace the current one
     // maybe also add scroll
     if (push === true || (push !== false && pathChanged)) {
-      history.push({ path, params, scroll });
+      const url = toUrl({ path, params, scroll });
+      history.push({ path, params, scroll, url });
     }
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered

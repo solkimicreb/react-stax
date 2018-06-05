@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { view, store, path, params } from 'react-easy-stack';
+import { view, store, history } from 'react-easy-stack/dist/node.es.es5';
 import styled from 'styled-components';
 import Frame from 'react-frame-component';
 import GithubIcon from 'react-icons/lib/fa/github';
@@ -61,8 +61,30 @@ const IFrame = styled.iframe`
   border: none;
 `;
 
+const BASE_URL = 'example.com';
+const browserStore = store({
+  url: BASE_URL
+});
+
+const originalPush = history.push;
+const originalReplace = history.replace;
+Object.assign(history, {
+  push(item) {
+    Reflect.apply(originalPush, history, [item]);
+    browserStore.url = item.url;
+  },
+  replace(item) {
+    Reflect.apply(originalReplace, history, [item]);
+    browserStore.url = BASE_URL + item.url;
+  }
+});
+
+// OVERWRITE PUSH AND REPLACE TO UPDATE THE URL
 // it should load a private easy-stack/node version and inject it to children
 class Browser extends Component {
+  onHistoryBack = () => history.back();
+  onHistoryForward = () => history.forward();
+
   render() {
     const { children } = this.props;
     return (
@@ -71,7 +93,7 @@ class Browser extends Component {
           <BackIcon onClick={this.onHistoryBack} />
           <ForwardIcon onClick={this.onHistoryForward} />
           <RefreshIcon />
-          <AddressBar value="example.com" />
+          <AddressBar value={browserStore.url} />
         </BrowserBar>
         <div>{children}</div>
       </BrowserFrame>
