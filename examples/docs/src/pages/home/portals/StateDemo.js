@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function render({ view, store }) {
+export default function render({ view, store, fetch }) {
   const beers = store([]);
 
   function getRandomBeer() {
