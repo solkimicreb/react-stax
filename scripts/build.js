@@ -9,28 +9,42 @@ const resolvePlugin = require('rollup-plugin-node-resolve');
 const babelPlugin = require('rollup-plugin-babel');
 const externalsPlugin = require('rollup-plugin-auto-external');
 
-const platforms = ['dom', 'node'];
+const platforms = ['dom', 'node', 'sandbox'];
+const formats = ['es', 'cjs'];
+
+const wrapPlugin = {
+  name: 'wrap',
+  transformBundle(code, { format }) {
+    const header =
+      format === 'cjs'
+        ? '\nmodule.exports = function easyStackFactory() {\n'
+        : '\nexport default function easyStackFactory() {\n';
+    const importText = format === 'cjs' ? 'require(' : 'import ';
+    const footer = '\nreturn easyStack;\n}';
+
+    const importIdx = code.lastIndexOf(importText);
+    const firstLineIdx = code.indexOf('\n', importIdx) + 1;
+    return (
+      code.slice(0, firstLineIdx) + header + code.slice(firstLineIdx) + footer
+    );
+  }
+};
 
 function getBundles(platform) {
-  const input = {
-    input: path.resolve('src', `index.${platform}.js`),
-    plugins: [
-      babelPlugin({ exclude: 'node_modules/**' }),
-      resolvePlugin(),
-      externalsPlugin({ dependencies: true, peerDependecies: true })
-    ]
-  };
-
-  return [
-    {
-      input,
-      output: { format: 'es' }
-    },
-    {
-      input,
-      output: { format: 'cjs' }
-    }
+  const input = path.resolve('src', `index.${platform}.js`);
+  const plugins = [
+    babelPlugin({ exclude: 'node_modules/**' }),
+    resolvePlugin(),
+    externalsPlugin({ dependencies: true, peerDependecies: true })
   ];
+
+  return formats.map(format => ({
+    input: {
+      input,
+      plugins: platform === 'sandbox' ? plugins.concat(wrapPlugin) : plugins
+    },
+    output: { format }
+  }));
 }
 
 async function build() {

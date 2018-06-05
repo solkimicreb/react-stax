@@ -41,6 +41,8 @@ export default () => (
 );
 ```
 
+<div id="routing-demo"></div>
+
 The routing API has three components:
 
 * `Router` is like a folder, think of its child components as files and child routers as subfolders.
@@ -74,6 +76,8 @@ export default view(() => (
   </div>
 ));
 ```
+
+<div id="state-demo"></div>
 
 The state management API has two functions:
 
@@ -114,18 +118,19 @@ const beers = store({
   list: [],
   selected: {}
 });
+params.filter = params.filter || 'apple';
 
-function fetchBeers() {
-  return fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
+const fetchBeers = () =>
+  fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
     .then(res => res.json())
     .then(list => (beers.list = list || []));
-}
 
-function fetchBeer() {
-  return fetch(`https://api.punkapi.com/v2/beers/${params.id}`)
+const fetchBeer = () =>
+  fetch(`https://api.punkapi.com/v2/beers/${params.id}`)
     .then(res => res.json())
     .then(list => (beers.selected = list[0] || {}));
-}
+
+const updateFilter = ev => (params.filter = ev.target.value);
 
 async function onRoute({ toPage }) {
   if (toPage === 'list') {
@@ -134,8 +139,6 @@ async function onRoute({ toPage }) {
     await fetchBeer();
   }
 }
-
-const updateFilter = ev => (params.filter = ev.target.value);
 
 const List = view(() => (
   <div>
@@ -151,7 +154,7 @@ const List = view(() => (
 
 const Details = view(() => (
   <div>
-    <Link to="../list">To beers list</Link>
+    <Link to="../list">Beers list</Link>
     <p>Name: {beers.selected.name}</p>
     <p>Description: {beers.selected.description}</p>
   </div>
@@ -165,4 +168,4 @@ export default () => (
 );
 ```
 
-<div id="routing-demo"></div>
+<div id="final-demo"></div>

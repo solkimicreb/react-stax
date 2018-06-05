@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { view, store, history } from 'react-easy-stack/dist/node.es.es5';
+import { view, store, history } from 'react-easy-stack';
+import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6';
 import styled from 'styled-components';
 import Frame from 'react-frame-component';
 import GithubIcon from 'react-icons/lib/fa/github';
@@ -62,40 +63,50 @@ const IFrame = styled.iframe`
 `;
 
 const BASE_URL = 'example.com';
-const browserStore = store({
-  url: BASE_URL
-});
 
-const originalPush = history.push;
-const originalReplace = history.replace;
-Object.assign(history, {
-  push(item) {
-    item = Reflect.apply(originalPush, history, [item]);
-    browserStore.url = BASE_URL + item.url;
-  },
-  replace(item) {
-    item = Reflect.apply(originalReplace, history, [item]);
-    browserStore.url = BASE_URL + item.url;
-  }
-});
-
-// OVERWRITE PUSH AND REPLACE TO UPDATE THE URL
-// it should load a private easy-stack/node version and inject it to children
 class Browser extends Component {
-  onHistoryBack = () => history.back();
-  onHistoryForward = () => history.forward();
+  store = store({ url: BASE_URL, Content: () => null });
+
+  async componentDidMount() {
+    this.easyStack = easyStackFactory();
+    const { history } = this.easyStack;
+
+    const originalPush = history.push;
+    const originalReplace = history.replace;
+    Object.assign(history, {
+      push: item => {
+        item = Reflect.apply(originalPush, history, [item]);
+        this.store.url = BASE_URL + item.url;
+      },
+      replace: item => {
+        item = Reflect.apply(originalReplace, history, [item]);
+        this.store.url = BASE_URL + item.url;
+      }
+    });
+
+    this.store.Content = this.props.children(this.easyStack);
+    this.forceUpdate();
+  }
+
+  onHistoryBack = () => this.easyStack.history.back();
+  onHistoryForward = () => this.easyStack.history.forward();
+  onRefresh = () => {
+    this.store.Content = this.props.children(this.easyStack);
+    this.forceUpdate();
+  };
 
   render() {
-    const { children } = this.props;
+    const { Content, url } = this.store;
+
     return (
       <BrowserFrame isMobile={layout.isMobile}>
         <BrowserBar>
           <BackIcon onClick={this.onHistoryBack} />
           <ForwardIcon onClick={this.onHistoryForward} />
-          <RefreshIcon />
-          <AddressBar value={browserStore.url} />
+          <RefreshIcon onClick={this.onRefresh} />
+          <AddressBar value={url} />
         </BrowserBar>
-        <div>{children}</div>
+        <Content />
       </BrowserFrame>
     );
   }

@@ -1,11 +1,12 @@
 {
   "env": {
     "development": {
-      "presets": ["react", "es2016", "es2017", "stage-0"]
+      "presets": ["react", "es2016", "es2017", "stage-0"],
+      "plugins": ["syntax-dynamic-import"]
     },
     "test": {
       "presets": ["react", "es2016", "es2017", "stage-0"],
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": ["transform-es2015-modules-commonjs", "syntax-dynamic-import"]
     }
   }
 }

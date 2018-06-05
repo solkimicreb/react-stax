@@ -20,8 +20,8 @@ export default () => (
     <Link to="/docs/integrations" portal="integrations-link">
       integrations docs
     </Link>
-    <Browser mount="routing-demo">
-      <RoutingDemo />
-    </Browser>
+    <Browser mount="state-demo">{StateDemo}</Browser>
+    <Browser mount="routing-demo">{RoutingDemo}</Browser>
+    <Browser mount="final-demo">{FinalDemo}</Browser>
   </Page>
 );
