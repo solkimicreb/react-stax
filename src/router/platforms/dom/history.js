@@ -5,11 +5,11 @@ const originalPush = history.push;
 const originalReplace = history.replace;
 Object.assign(history, {
   push(item) {
-    Reflect.apply(originalPush, history, [item]);
+    item = Reflect.apply(originalPush, history, [item]);
     window.history.pushState({ idx: history.idx }, '', item.url);
   },
   replace(item) {
-    Reflect.apply(originalReplace, history, [item]);
+    item = Reflect.apply(originalReplace, history, [item]);
     window.history.replaceState(window.history.state, '', item.url);
   }
 });

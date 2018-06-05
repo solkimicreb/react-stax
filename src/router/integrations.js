@@ -31,10 +31,14 @@ export const history = {
   items: [{}],
   idx: 0,
   push(item) {
-    this.items.splice(++this.idx, Infinity, cloneItem(item));
+    item = createHistoryItem(item);
+    this.items.splice(++this.idx, Infinity, item);
+    return item;
   },
   replace(item) {
-    this.items[this.idx] = cloneItem(item);
+    item = createHistoryItem(item);
+    this.items[this.idx] = item;
+    return item;
   },
   go(idx) {
     this.idx = Math.min(this.items.length - 1, Math.max(0, idx));
@@ -54,18 +58,17 @@ export const history = {
   }
 };
 
-function cloneItem({ path, params, scroll, url }) {
+function createHistoryItem({ path, params, scroll }) {
   return {
     path: Array.from(path),
     params: Object.assign({}, params),
     scroll: Object.assign({}, scroll),
-    url
+    url: toUrl({ path, params, scroll })
   };
 }
 
 function syncHistory() {
   const { scroll } = history.items[history.idx];
-  const url = toUrl({ path, params, scroll });
-  history.replace({ path, params, scroll, url });
+  history.replace({ path, params, scroll });
 }
 observe(syncHistory, { scheduler });

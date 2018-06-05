@@ -70,11 +70,11 @@ const originalPush = history.push;
 const originalReplace = history.replace;
 Object.assign(history, {
   push(item) {
-    Reflect.apply(originalPush, history, [item]);
-    browserStore.url = item.url;
+    item = Reflect.apply(originalPush, history, [item]);
+    browserStore.url = BASE_URL + item.url;
   },
   replace(item) {
-    Reflect.apply(originalReplace, history, [item]);
+    item = Reflect.apply(originalReplace, history, [item]);
     browserStore.url = BASE_URL + item.url;
   }
 });
