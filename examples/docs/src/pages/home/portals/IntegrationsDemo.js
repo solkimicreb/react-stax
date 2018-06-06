@@ -1,8 +1,7 @@
 import React from 'react';
-import { view, params } from 'react-easy-stack';
 
-const updateFilter = ev => (params.filter = ev.target.value);
-
-export default view(() => (
-  <input value={params.filter || ''} onChange={updateFilter} />
-));
+export default function render({ view, params }) {
+  params.filter = params.filter || 'potato';
+  const updateFilter = ev => (params.filter = ev.target.value);
+  return view(() => <input value={params.filter} onChange={updateFilter} />);
+}

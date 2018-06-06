@@ -13,16 +13,18 @@ import { colors, ease, layout } from './theme';
 const BrowserFrame = styled.div`
   position: relative;
   width: ${props => (props.isMobile ? '100vw' : '100%')};
-  height: 300px;
-  margin-left: ${props => (props.isMobile ? -15 : 0)}px;
-  margin-right: ${props => (props.isMobile ? -15 : 0)}px;
+  min-height: 150px;
+  max-height: 300px;
+  margin: 15px ${props => (props.isMobile ? -15 : 0)}px;
   border-radius: ${props => (props.isMobile ? 0 : 3)}px;
   box-shadow: 1px 1px 4px 1px ${colors.textLight};
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 const BrowserBar = styled.nav`
+  position: absolute;
   top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   width: 100%;
@@ -31,18 +33,25 @@ const BrowserBar = styled.nav`
   background-color: ${colors.code};
   color: ${colors.text};
   border-bottom: 1px solid ${colors.textLight};
+`;
+
+const IconButton = styled.button`
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border: none;
+  background-color: inherit;
+  border-radius: 3px;
+  outline: none;
+  transition: background-color 0.2s;
 
   svg {
-    width: 30px;
-    height: 30px;
-    padding: 3px;
-    margin: 3px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    &:hover {
-      background-color: ${colors.textLight};
-    }
+    width: 100%;
+    height: 100%;
+  }
+  &:hover {
+    background-color: ${props =>
+      props.disabled ? 'inherit' : colors.textLight};
   }
 `;
 
@@ -52,17 +61,41 @@ const AddressBar = styled.input`
   margin-left: 15px !important;
   padding: 10px;
   max-width: calc(100vw - 120px);
-  width: 400px;
+  width: 500px;
   border: 1px solid ${colors.textLight};
   border-radius: 3px;
 `;
 
 const Body = styled.div`
-  width: 100%;
-  height: calc(100% - 40px);
+  max-height: 260px;
+  margin-top: 40px;
   padding: 10px;
-  overflow-y: scroll;
-  border: none;
+  overflow: scroll;
+
+  * {
+    font: inherit;
+    background-color: inherit;
+    color: inherit;
+  }
+  a,
+  button,
+  input {
+    margin-right: 10px;
+  }
+  button,
+  input {
+    padding: 0 8px;
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid ${colors.textLight};
+    outline: none;
+  }
+  button {
+    cursor: pointer;
+  }
+  ul {
+    margin-top: 10px;
+  }
 `;
 
 const slide = keyframes`
@@ -83,8 +116,8 @@ const Loader = styled.div`
   background: linear-gradient(
     to right,
     rgba(0, 0, 0, 0),
-    ${colors.accent},
-    ${colors.accent},
+    ${colors.text},
+    ${colors.text},
     rgba(0, 0, 0, 0)
   );
   animation: ${slide} 0.8s linear infinite;
@@ -93,26 +126,32 @@ const Loader = styled.div`
 const BASE_URL = 'example.com';
 
 class Browser extends Component {
-  store = store({
-    url: BASE_URL,
-    Content: () => null,
-    isLoading: false
-  });
+  constructor(props) {
+    super(props);
 
-  async componentDidMount() {
     this.easyStack = easyStackFactory();
     this.instrumentFetch();
     this.instrumentHistory();
-    this.refresh();
+    this.store = store({
+      url: BASE_URL,
+      Content: props.children(this.easyStack),
+      isLoading: false
+    });
   }
 
   instrumentFetch = () => {
     this.easyStack.fetch = url => {
       this.store.isLoading = true;
-      return window.fetch(url).then(resp => {
-        this.store.isLoading = false;
-        return resp;
-      });
+      return window
+        .fetch(url)
+        .then(resp => {
+          this.store.isLoading = false;
+          return resp;
+        })
+        .catch(err => {
+          this.store.isLoading = false;
+          throw err;
+        });
     };
   };
 
@@ -124,32 +163,41 @@ class Browser extends Component {
     Object.assign(history, {
       push: item => {
         item = Reflect.apply(originalPush, history, [item]);
-        this.store.url = BASE_URL + item.url;
+        this.store.url = decodeURI(BASE_URL + item.url);
       },
       replace: item => {
         item = Reflect.apply(originalReplace, history, [item]);
-        this.store.url = BASE_URL + item.url;
+        this.store.url = decodeURI(BASE_URL + item.url);
       }
     });
   };
 
-  refresh = () => {
+  onHistoryBack = () => this.easyStack.history.back();
+  onHistoryForward = () => this.easyStack.history.forward();
+  onRefresh = () => {
     this.store.Content = this.props.children(this.easyStack);
     this.forceUpdate();
   };
 
-  onHistoryBack = () => this.easyStack.history.back();
-  onHistoryForward = () => this.easyStack.history.forward();
-
   render() {
     const { Content, url, isLoading } = this.store;
+    const { history } = this.easyStack;
+
+    const canGoBack = 0 < history.idx;
+    const canGoForward = history.idx < history.items.length - 1;
 
     return (
       <BrowserFrame isMobile={layout.isMobile}>
         <BrowserBar>
-          <BackIcon onClick={this.onHistoryBack} />
-          <ForwardIcon onClick={this.onHistoryForward} />
-          <RefreshIcon onClick={this.refresh} />
+          <IconButton disabled={!canGoBack} onClick={this.onHistoryBack}>
+            <BackIcon />
+          </IconButton>
+          <IconButton disabled={!canGoForward} onClick={this.onHistoryForward}>
+            <ForwardIcon />
+          </IconButton>
+          <IconButton>
+            <RefreshIcon onClick={this.onRefresh} />
+          </IconButton>
           <AddressBar value={url} />
         </BrowserBar>
         {isLoading && <Loader />}

@@ -34,7 +34,7 @@ export default function render({ view, store, params, Router, Link, fetch }) {
       <ul>
         {beers.list.map(beer => (
           <li key={beer.id}>
-            <Link to="../details" params={{ id: beer.id }}>
+            <Link to="/details" params={{ id: beer.id }}>
               {beer.name}
             </Link>
           </li>

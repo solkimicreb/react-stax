@@ -3,7 +3,20 @@ import styled from 'styled-components';
 import { Link } from 'react-easy-stack';
 import { colors, ease, layout } from './theme';
 
-const NavLink = props => (
+export const BasicLink = props => (
+  <Link
+    scroll={{
+      container: 'root',
+      top: 0,
+      left: 0
+    }}
+    {...props}
+  >
+    {props.children}
+  </Link>
+);
+
+export const NavLink = props => (
   <Link
     activeClass="active"
     scroll={{

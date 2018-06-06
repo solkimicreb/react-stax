@@ -63,16 +63,15 @@ import { view, store } from 'react-easy-stack';
 
 const beers = store([]);
 
-function getRandomBeer() {
-  return fetch('https://api.punkapi.com/v2/beers/random')
+const getRandomBeer = () =>
+  fetch('https://api.punkapi.com/v2/beers/random')
     .then(res => res.json())
     .then(json => beers.push(json[0]));
-}
 
 export default view(() => (
   <div>
     <button onClick={getRandomBeer}>Get a random beer</button>
-    <ul>{beers.map(beer => <li>{beer.name}</li>)}</ul>
+    <ul>{beers.map(beer => <li key={beer.id}>{beer.name}</li>)}</ul>
   </div>
 ));
 ```
@@ -100,6 +99,8 @@ const setFilter = ev => (params.value = ev.target.value);
 export default view(() => <input value={params.filter} onChange={setFilter} />);
 ```
 
+<div id="integrations-demo"></div>
+
 The integrations API has 3 objects:
 
 * `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
@@ -118,7 +119,6 @@ const beers = store({
   list: [],
   selected: {}
 });
-params.filter = params.filter || 'apple';
 
 const fetchBeers = () =>
   fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
@@ -134,6 +134,7 @@ const updateFilter = ev => (params.filter = ev.target.value);
 
 async function onRoute({ toPage }) {
   if (toPage === 'list') {
+    params.filter = params.filter || 'apple';
     await fetchBeers();
   } else if (toPage === 'details') {
     await fetchBeer();
@@ -144,23 +145,26 @@ const List = view(() => (
   <div>
     <input value={params.filter} onChange={updateFilter} />
     <button onClick={fetchBeers}>Search beers</button>
-    {beers.list.map(beer => (
-      <Link to="../details" params={{ id: beer.id }} key={beer.id}>
-        {beer.name}
-      </Link>
-    ))}
+    <ul>
+      {beers.list.map(beer => (
+        <li key={beer.id}>
+          <Link to="/details" params={{ id: beer.id }}>
+            {beer.name}
+          </Link>
+        </li>
+      ))}
+    </ul>
   </div>
 ));
 
 const Details = view(() => (
   <div>
-    <Link to="../list">Beers list</Link>
-    <p>Name: {beers.selected.name}</p>
-    <p>Description: {beers.selected.description}</p>
+    <h4>{beers.selected.name}</h4>
+    <p>{beers.selected.description}</p>
   </div>
 ));
 
-export default () => (
+return () => (
   <Router defaultPage="list" onRoute={onRoute}>
     <List page="list" />
     <Details page="details" />
