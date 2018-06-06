@@ -13,7 +13,7 @@ import { colors, ease, layout } from './theme';
 const BrowserFrame = styled.div`
   position: relative;
   width: ${props => (props.isMobile ? '100vw' : '100%')};
-  min-height: 150px;
+  min-height: ${props => Math.min(300, Math.max(props.height, 150))}px;
   max-height: 300px;
   margin: 15px ${props => (props.isMobile ? -15 : 0)}px;
   border-radius: ${props => (props.isMobile ? 0 : 3)}px;
@@ -46,8 +46,8 @@ const IconButton = styled.button`
   transition: background-color 0.2s;
 
   svg {
-    width: 100%;
-    height: 100%;
+    width: ${props => (props.small ? 75 : 100)}%;
+    height: ${props => (props.small ? 75 : 100)}%;
   }
   &:hover {
     background-color: ${props =>
@@ -60,7 +60,7 @@ const AddressBar = styled.input`
   font-size: 16px;
   margin-left: 15px !important;
   padding: 10px;
-  max-width: calc(100vw - 120px);
+  max-width: calc(100vw - 130px);
   width: 500px;
   border: 1px solid ${colors.textLight};
   border-radius: 3px;
@@ -129,6 +129,8 @@ class Browser extends Component {
   constructor(props) {
     super(props);
 
+    this.height = 0;
+    this.browser = React.createRef();
     this.easyStack = easyStackFactory();
     this.instrumentFetch();
     this.instrumentHistory();
@@ -176,7 +178,10 @@ class Browser extends Component {
 
   onHistoryBack = () => this.easyStack.history.back();
   onHistoryForward = () => this.easyStack.history.forward();
-  onRefresh = () => (this.store.Content = this.props.children(this.easyStack));
+  onRefresh = () => {
+    this.height = this.browser.current.offsetHeight;
+    this.store.Content = this.props.children(this.easyStack);
+  };
   onUrlChange = ev => {
     let url = ev.target.value;
     const baseUrlIndex = url.indexOf(BASE_URL);
@@ -202,7 +207,11 @@ class Browser extends Component {
     const fullUrl = layout.isMobile ? url : BASE_URL + url;
 
     return (
-      <BrowserFrame isMobile={layout.isMobile}>
+      <BrowserFrame
+        isMobile={layout.isMobile}
+        innerRef={this.browser}
+        height={this.height}
+      >
         <BrowserBar>
           <IconButton disabled={!canGoBack} onClick={this.onHistoryBack}>
             <BackIcon />
@@ -210,7 +219,7 @@ class Browser extends Component {
           <IconButton disabled={!canGoForward} onClick={this.onHistoryForward}>
             <ForwardIcon />
           </IconButton>
-          <IconButton>
+          <IconButton small>
             <RefreshIcon onClick={this.onRefresh} />
           </IconButton>
           <AddressBar
