@@ -133,7 +133,7 @@ class Browser extends Component {
     this.instrumentFetch();
     this.instrumentHistory();
     this.store = store({
-      url: BASE_URL,
+      url: '',
       Content: props.children(this.easyStack),
       isLoading: false
     });
@@ -163,20 +163,34 @@ class Browser extends Component {
     Object.assign(history, {
       push: item => {
         item = Reflect.apply(originalPush, history, [item]);
-        this.store.url = decodeURI(BASE_URL + item.url);
+        this.store.url = decodeURI(item.url);
+        return item;
       },
       replace: item => {
         item = Reflect.apply(originalReplace, history, [item]);
-        this.store.url = decodeURI(BASE_URL + item.url);
+        this.store.url = decodeURI(item.url);
+        return item;
       }
     });
   };
 
   onHistoryBack = () => this.easyStack.history.back();
   onHistoryForward = () => this.easyStack.history.forward();
-  onRefresh = () => {
-    this.store.Content = this.props.children(this.easyStack);
-    this.forceUpdate();
+  onRefresh = () => (this.store.Content = this.props.children(this.easyStack));
+  onUrlChange = ev => {
+    let url = ev.target.value;
+    const baseUrlIndex = url.indexOf(BASE_URL);
+    if (baseUrlIndex === 0) {
+      url = url.slice(BASE_URL.length);
+    }
+    this.store.url = url;
+  };
+  onUrlReload = ev => {
+    if (ev.key === 'Enter') {
+      // push a new state and refresh (reload page)
+      this.easyStack.history.push(this.store.url);
+      this.onRefresh();
+    }
   };
 
   render() {
@@ -185,6 +199,7 @@ class Browser extends Component {
 
     const canGoBack = 0 < history.idx;
     const canGoForward = history.idx < history.items.length - 1;
+    const fullUrl = layout.isMobile ? url : BASE_URL + url;
 
     return (
       <BrowserFrame isMobile={layout.isMobile}>
@@ -198,7 +213,12 @@ class Browser extends Component {
           <IconButton>
             <RefreshIcon onClick={this.onRefresh} />
           </IconButton>
-          <AddressBar value={url} />
+          <AddressBar
+            value={fullUrl}
+            placeholder={BASE_URL}
+            onChange={this.onUrlChange}
+            onKeyPress={this.onUrlReload}
+          />
         </BrowserBar>
         {isLoading && <Loader />}
         <Body>

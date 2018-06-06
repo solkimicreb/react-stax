@@ -73,8 +73,23 @@ export function toScroll(hash) {
   return hash ? { anchor: hash.slice(1) } : {};
 }
 
+// convert object to url
 export function toUrl({ path, params, scroll }) {
   return toPathString(path) + toQuery(params) + toHash(scroll);
+}
+
+// convert url to object
+export function toObject(url) {
+  let queryIndex = url.indexOf('?');
+  queryIndex = queryIndex === -1 ? Infinity : queryIndex;
+  let hashIndex = url.indexOf('#');
+  hashIndex = hashIndex === -1 ? Infinity : hashIndex;
+
+  return {
+    path: toPathArray(url.slice(0, queryIndex)),
+    params: toParams(url.slice(queryIndex, hashIndex)),
+    scroll: toScroll(url.slice(hashIndex))
+  };
 }
 
 // augments the props with extraProps, which are not in excludeProps

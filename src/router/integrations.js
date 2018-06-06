@@ -1,6 +1,6 @@
 import { observable, observe } from '@nx-js/observer-util';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { toPathString, toUrl } from './utils';
+import { toPathString, toUrl, toObject } from './utils';
 import { route } from './core';
 
 export const elements = {
@@ -58,16 +58,24 @@ export const history = {
   }
 };
 
-function createHistoryItem({ path, params, scroll }) {
-  return {
-    path: Array.from(path),
-    params: Object.assign({}, params),
-    scroll: Object.assign({}, scroll),
-    url: toUrl({ path, params, scroll })
+function createHistoryItem(item = {}) {
+  if (typeof item === 'string') {
+    item = toObject(item);
+  }
+  item = {
+    path: Array.from(item.path),
+    params: Object.assign({}, item.params),
+    scroll: Object.assign({}, item.scroll),
+    url: toUrl(item)
   };
+  // update the params and path to reflect the new history item
+  Object.assign(params, item.params);
+  path.splice(0, Infinity, ...item.path);
+  return item;
 }
 
 function syncHistory() {
+  console.log('SYNC');
   const { scroll } = history.items[history.idx];
   history.replace({ path, params, scroll });
 }
