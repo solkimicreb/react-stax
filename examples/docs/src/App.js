@@ -13,14 +13,14 @@ import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 
-async function resolveRoute({ toPage }) {
-  const html = await import(`./pages/route/${toPage}.md`);
-  return <Page page={toPage} html={html} />;
+async function resolveRouting({ toPage }) {
+  const { default: RoutingPage } = await import(`./pages/routing/${toPage}`);
+  return <RoutingPage page={toPage} />;
 }
 
 async function resolveState({ toPage }) {
-  const html = await import(`./pages/state/${toPage}.md`);
-  return <Page page={toPage} html={html} />;
+  const { default: StatePage } = await import(`./pages/state/${toPage}`);
+  return <StatePage page={toPage} />;
 }
 
 async function resolveHome({ toPage }) {
@@ -39,18 +39,20 @@ const State = () => (
   <PageRouter defaultPage="intro" onRoute={resolveState} debug="state" />
 );
 const Routing = () => (
-  <PageRouter defaultPage="advanced" onRoute={resolveRoute} debug="routing" />
+  <PageRouter defaultPage="advanced" onRoute={resolveRouting} debug="routing" />
 );
 
 const DocsNav = () => (
   <Switch page="docs">
     <Sidebar>
-      <SideSectionLink to="state">State</SideSectionLink>
+      <SideSectionLink to="state">State Management</SideSectionLink>
       <SideLink to="state/intro">Introduction</SideLink>
-      <SideLink to="state/stuff">Stuff</SideLink>
-      <SideSectionLink to="route">Route</SideSectionLink>
-      <SideLink to="route/advanced">Advanced</SideLink>
-      <SideLink to="route/base">Base</SideLink>
+      <SideLink to="state/mutations">Mutating the Stores</SideLink>
+      <SideLink to="state/computed">Computed Data</SideLink>
+      <SideLink to="state/batching">Batching Updates</SideLink>
+      <SideLink to="state/api">API Summary</SideLink>
+      <SideSectionLink to="routing">Routing</SideSectionLink>
+      <SideLink to="routing/intro">Introduction</SideLink>
     </Sidebar>
   </Switch>
 );
@@ -67,7 +69,7 @@ const ExamplesNav = () => (
 const DocsContent = () => (
   <PageRouter defaultPage="state" debug="docs">
     <State page="state" />
-    <Routing page="route" />
+    <Routing page="routing" />
   </PageRouter>
 );
 

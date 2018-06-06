@@ -20,6 +20,12 @@ export default () => (
     <Link to="/docs/integrations" portal="integrations-link">
       integrations docs
     </Link>
+    <Link to="/docs" portal="docs-link">
+      docs
+    </Link>
+    <Link to="/examples" portal="examples-link">
+      examples page
+    </Link>
     <Browser mount="routing-demo">{RoutingDemo}</Browser>
     <Browser mount="state-demo">{StateDemo}</Browser>
     <Browser mount="integrations-demo">{IntegrationsDemo}</Browser>

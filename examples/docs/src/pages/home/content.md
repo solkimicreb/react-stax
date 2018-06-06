@@ -23,7 +23,7 @@ npm start
 
 ## Routing
 
-Routing is inspired by file systems and the old school. At its simplest form it looks like this.
+Routing is inspired by file systems and the old school web. In its simplest form it looks like this:
 
 ```jsx
 import React from 'react';
@@ -31,11 +31,11 @@ import { Router, Link } from 'react-easy-stack';
 
 export default () => (
   <div>
-    <Link to="home">Home Link</Link>
-    <Link to="settings">Settings Link</Link>
-    <Router defaultPage="home">
-      <div page="home">Home Page</div>
-      <div page="settings">Settings Page</div>
+    <Link to="list">List Link</Link>
+    <Link to="details">Details Link</Link>
+    <Router defaultPage="list">
+      <div page="list">List Page</div>
+      <div page="details">Details Page</div>
     </Router>
   </div>
 );
@@ -55,7 +55,7 @@ You can take a deeper dive in the <span id="routing-link"></span>.
 
 ## State Management
 
-State management focuses on freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation. You can share global state between components with a single object.
+State management focuses on freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation. You can share global state between components with a simple object.
 
 ```jsx
 import React from 'react';
@@ -80,10 +80,10 @@ export default view(() => (
 
 The state management API has two functions:
 
-* `store` creates reactive stores, which store your data.
+* `store` creates reactive stores for your data.
 * `view` creates reactive views, which re-render when the data mutates.
 
-You can store any kind of data in your stores and mutate them in any way, the necessary components will always re-render to reflect the new data. You could store a mix of deeply nested objects, arrays and Maps, you could add dynamic properties or `delete` them, or maybe use computed getters or inheritance.
+You can put anything in your stores and mutate them in arbitrary way, the necessary components will always re-render to reflect the new state. You could store a mix of deeply nested objects with arrays and maps. You could add or delete properties dynamically or even use computed getters or inheritance.
 
 The possibilities are endless, learn more about typical state management patterns in the <span id="state-link"></span>.
 
@@ -101,15 +101,17 @@ export default view(() => <input value={params.filter} onChange={setFilter} />);
 
 <div id="integrations-demo"></div>
 
-The integrations API has 3 objects:
+The integrations API has three objects:
 
 * `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
 * `path` is an array which is in sync with the current URL pathname.
-* `storage` is an object, which is in sync with the localStorage. It is perfect for storing session data or offline caching.
+* `storage` is an object, which is in sync with the localStorage. It is perfect for offline caching or storing session data.
 
-You can learn more about common use cases for these objects in the <span id="integrations-link"></span>.
+You can learn more about common use cases in the <span id="integrations-link"></span>.
 
-## Final Stuff
+## Making an app
+
+The above examples fit together to create a simple beer fetching app. Just type in your favorite food and find out which beers pair well with it.
 
 ```jsx
 import React from 'react';
@@ -145,15 +147,11 @@ const List = view(() => (
   <div>
     <input value={params.filter} onChange={updateFilter} />
     <button onClick={fetchBeers}>Search beers</button>
-    <ul>
-      {beers.list.map(beer => (
-        <li key={beer.id}>
-          <Link to="/details" params={{ id: beer.id }}>
-            {beer.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
+    {beers.list.map(beer => (
+      <Link to="/details" params={{ id: beer.id }} key={beer.id}>
+        {beer.name}
+      </Link>
+    ))}
   </div>
 ));
 
@@ -173,3 +171,7 @@ return () => (
 ```
 
 <div id="final-demo"></div>
+
+> Press all the buttons in the demo app. Try out how it behaves on history events, page reload or manual url manipulation.
+
+You can continue with the <span id="docs-link"></span> or the <span id="examples-link"></span>, if you prefer to learn by code.

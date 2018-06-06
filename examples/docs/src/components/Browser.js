@@ -130,10 +130,12 @@ class Browser extends Component {
     super(props);
 
     this.height = 0;
+    this.timers = [];
     this.browser = React.createRef();
     this.easyStack = easyStackFactory();
     this.instrumentFetch();
     this.instrumentHistory();
+    this.instrumentTimers();
     this.store = store({
       url: '',
       Content: props.children(this.easyStack),
@@ -176,12 +178,21 @@ class Browser extends Component {
     });
   };
 
+  instrumentTimers = () => {
+    this.easyStack.setTimeout = (...args) => {
+      const timerId = window.setTimeout(...args);
+      this.timers.push(timerId);
+      return timerId;
+    };
+    this.easyStack.setInterval = (...args) => {
+      const timerId = window.setInterval(...args);
+      this.timers.push(timerId);
+      return timerId;
+    };
+  };
+
   onHistoryBack = () => this.easyStack.history.back();
   onHistoryForward = () => this.easyStack.history.forward();
-  onRefresh = () => {
-    this.height = this.browser.current.offsetHeight;
-    this.store.Content = this.props.children(this.easyStack);
-  };
   onUrlChange = ev => {
     let url = ev.target.value;
     const baseUrlIndex = url.indexOf(BASE_URL);
@@ -197,6 +208,14 @@ class Browser extends Component {
       this.onRefresh();
     }
   };
+  onRefresh = () => {
+    this.timers.forEach(window.clearTimeout);
+    this.height = this.browser.current.offsetHeight;
+    this.store.Content = this.props.children(this.easyStack);
+  };
+  componentWillUnmount() {
+    this.timers.forEach(window.clearTimeout);
+  }
 
   render() {
     const { Content, url, isLoading } = this.store;
