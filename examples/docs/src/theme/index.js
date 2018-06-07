@@ -1,7 +1,7 @@
-import { store } from 'react-easy-state';
-import * as commonTheme from './common';
-import * as mainTheme from './main';
-import * as mobileTheme from './mobile';
+import { store } from "react-easy-state";
+import * as commonTheme from "./common";
+import * as mainTheme from "./main";
+import * as mobileTheme from "./mobile";
 
 const theme = store(commonTheme);
 const mql = window.matchMedia(

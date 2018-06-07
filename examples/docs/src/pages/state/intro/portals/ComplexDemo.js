@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 export default function render({ view, store }) {
   const user = store({
-    name: 'Dev Dan'
+    name: "Dev Dan"
   });
   const repos = store([]);
 

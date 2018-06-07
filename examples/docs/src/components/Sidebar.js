@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import { store, view, path } from 'react-easy-stack';
-import styled from 'styled-components';
-import { colors, ease, layout } from './theme';
+import React, { Component, Fragment } from "react";
+import { store, view, path } from "react-easy-stack";
+import styled from "styled-components";
+import { colors, ease, layout } from "./theme";
 
 export const sidebarStore = store({
   open: !layout.isMobile,
@@ -32,7 +32,7 @@ const onTouchMove = ev => {
     sidebarStore.touchDiff = touchX - sidebarStore.touchX;
     sidebarStore.touchX = touchX;
     sidebar.style.transform = `translateX(${touchX}px)`;
-    backdrop.style.opacity = touchX / layout.sidebarWidth * 0.7;
+    backdrop.style.opacity = (touchX / layout.sidebarWidth) * 0.7;
   }
 };
 
@@ -54,10 +54,10 @@ const onTouchEnd = ev => {
   }
 };
 
-window.addEventListener('touchstart', onTouchStart, { passive: true });
-window.addEventListener('touchmove', onTouchMove, { passive: true });
-window.addEventListener('touchend', onTouchEnd, { passive: true });
-window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+window.addEventListener("touchstart", onTouchStart, { passive: true });
+window.addEventListener("touchmove", onTouchMove, { passive: true });
+window.addEventListener("touchend", onTouchEnd, { passive: true });
+window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
 export function hasSidebar() {
   return Boolean(sidebarStore.sidebar);
@@ -65,7 +65,7 @@ export function hasSidebar() {
 
 export function open() {
   sidebarStore.open = true;
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow = "hidden";
 }
 
 export function close() {
@@ -92,11 +92,11 @@ const StyledSidebar = styled.nav`
   width: ${layout.sidebarWidth}px;
   padding-top: ${props => (props.isMobile ? 0 : layout.topbarHeight) + 10}px;
   background-color: ${colors.backgroundLight};
-  transition: ${props => (props.isTouching ? 'none' : 'transform')};
+  transition: ${props => (props.isTouching ? "none" : "transform")};
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
-    ${props => (props.open ? 'none' : -layout.sidebarWidth)}px
+    ${props => (props.open ? "none" : -layout.sidebarWidth)}px
   );
   will-change: transform;
   contain: strict;
@@ -110,8 +110,8 @@ const Backdrop = styled.div`
   right: 0;
   background-color: ${colors.text};
   opacity: ${props => (props.open ? 0.7 : 0)};
-  pointer-events: ${props => (props.open ? 'unset' : 'none')};
-  transition: ${props => (props.isTouching ? 'none' : 'opacity')};
+  pointer-events: ${props => (props.open ? "unset" : "none")};
+  transition: ${props => (props.isTouching ? "none" : "opacity")};
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   z-index: 60;

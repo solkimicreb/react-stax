@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function render({ view, store, setInterval }) {
   const counter = store({ num: 0 });

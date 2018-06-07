@@ -1,8 +1,8 @@
-import React, { PureComponent, Children } from 'react';
-import PropTypes from 'prop-types';
-import { path, params, elements, animation } from './integrations';
-import { addExtraProps } from './utils';
-import { registerRouter, releaseRouter, routeFromDepth } from './core';
+import React, { PureComponent, Children } from "react";
+import PropTypes from "prop-types";
+import { path, params, elements, animation } from "./integrations";
+import { addExtraProps } from "./utils";
+import { registerRouter, releaseRouter, routeFromDepth } from "./core";
 
 // Router selects a single child to render based on its children's page props
 // and the URL pathname token at the Router's depth (they can be nested)
@@ -108,7 +108,7 @@ export default class Router extends PureComponent {
     // only animate when a new page is rendered by default,
     // but make it configurable with the shouldAnimate prop
     // the user may also want to animate when a query param changes for example
-    if (typeof shouldAnimate === 'function') {
+    if (typeof shouldAnimate === "function") {
       this.shouldAnimate = shouldAnimate({ fromPage, toPage });
     } else {
       this.shouldAnimate =

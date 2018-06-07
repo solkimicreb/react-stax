@@ -1,6 +1,6 @@
-import { animation } from '../../integrations';
+import { animation } from "../../integrations";
 
-const FROM_DOM = Symbol('from DOM');
+const FROM_DOM = Symbol("from DOM");
 
 Object.assign(animation, {
   setup(container) {
@@ -53,14 +53,14 @@ function cleanup(container) {
 function animateElement(element, options) {
   // use the native webanimations API when available
   // it is the user's responsibility to polyfill it otherwise
-  if (typeof element.animate === 'function') {
-    if (typeof options === 'function') {
+  if (typeof element.animate === "function") {
+    if (typeof options === "function") {
       options = options();
     }
     const animation = element.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
-    console.warn('You should polyfill the webanimation API.');
+    console.warn("You should polyfill the webanimation API.");
     return Promise.resolve();
   }
 }

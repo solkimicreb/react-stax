@@ -1,5 +1,5 @@
-import { path, params, history, scroller, scheduler } from './integrations';
-import { toPathString, normalizePath } from './utils';
+import { path, params, history, scroller, scheduler } from "./integrations";
+import { toPathString, normalizePath } from "./utils";
 
 const routers = [];
 let routingStatus;
@@ -150,7 +150,7 @@ function finishRouting({ push, scroll }, status) {
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
-    if (typeof scroll === 'object') {
+    if (typeof scroll === "object") {
       if (scroll.anchor) {
         scroller.scrollToAnchor(scroll);
       } else {

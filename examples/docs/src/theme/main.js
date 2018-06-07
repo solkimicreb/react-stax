@@ -13,4 +13,4 @@ export const elevation = {
   sidebar: 40
 };
 
-export * from './common';
+export * from "./common";

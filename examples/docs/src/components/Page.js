@@ -1,8 +1,8 @@
-import React, { Component, Fragment, Children } from 'react';
-import ReactDOM from 'react-dom';
-import { store, view } from 'react-easy-stack';
-import styled from 'styled-components';
-import { colors, layout } from './theme';
+import React, { Component, Fragment, Children } from "react";
+import ReactDOM from "react-dom";
+import { store, view } from "react-easy-stack";
+import styled from "styled-components";
+import { colors, layout } from "./theme";
 
 const StyledPage = styled.div`
   margin: 15px;
@@ -11,7 +11,7 @@ const StyledPage = styled.div`
   pre {
     background-color: ${colors.code};
     color: ${colors.text};
-    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    width: ${props => (props.isMobile ? "100vw" : "100%")};
     margin-left: ${props => (props.isMobile ? -15 : 0)}px;
     margin-right: ${props => (props.isMobile ? -15 : 0)}px;
     border-radius: ${props => (props.isMobile ? 0 : 3)}px;
@@ -24,7 +24,7 @@ const StyledPage = styled.div`
 
   .demo {
     display: block;
-    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    width: ${props => (props.isMobile ? "100vw" : "100%")};
     height: 400px;
     margin-left: ${props => (props.isMobile ? -15 : 0)}px;
     margin-right: ${props => (props.isMobile ? -15 : 0)}px;

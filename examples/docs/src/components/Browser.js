@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { view, store, history } from 'react-easy-stack';
-import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6';
-import styled, { keyframes } from 'styled-components';
-import Frame from 'react-frame-component';
-import GithubIcon from 'react-icons/lib/fa/github';
-import LinkIcon from 'react-icons/lib/fa/external-link';
-import BackIcon from 'react-icons/lib/fa/angle-left';
-import ForwardIcon from 'react-icons/lib/fa/angle-right';
-import RefreshIcon from 'react-icons/lib/fa/refresh';
-import { colors, ease, layout } from './theme';
+import React, { Component } from "react";
+import { view, store, history } from "react-easy-stack";
+import easyStackFactory from "react-easy-stack/dist/sandbox.es.es6";
+import styled, { keyframes } from "styled-components";
+import Frame from "react-frame-component";
+import GithubIcon from "react-icons/lib/fa/github";
+import LinkIcon from "react-icons/lib/fa/external-link";
+import BackIcon from "react-icons/lib/fa/angle-left";
+import ForwardIcon from "react-icons/lib/fa/angle-right";
+import RefreshIcon from "react-icons/lib/fa/refresh";
+import { colors, ease, layout } from "./theme";
 
 const BrowserFrame = styled.div`
   position: relative;
-  width: ${props => (props.isMobile ? '100vw' : '100%')};
+  width: ${props => (props.isMobile ? "100vw" : "100%")};
   min-height: ${props => Math.min(300, Math.max(props.height, 150))}px;
   max-height: 300px;
   margin: 15px ${props => (props.isMobile ? -15 : 0)}px;
@@ -51,7 +51,7 @@ const IconButton = styled.button`
   }
   &:hover {
     background-color: ${props =>
-      props.disabled ? 'inherit' : colors.textLight};
+      props.disabled ? "inherit" : colors.textLight};
   }
 `;
 
@@ -123,7 +123,7 @@ const Loader = styled.div`
   animation: ${slide} 0.8s linear infinite;
 `;
 
-const BASE_URL = 'example.com';
+const BASE_URL = "example.com";
 
 class Browser extends Component {
   constructor(props) {
@@ -137,7 +137,7 @@ class Browser extends Component {
     this.instrumentHistory();
     this.instrumentTimers();
     this.store = store({
-      url: '',
+      url: "",
       Content: props.children(this.easyStack),
       isLoading: false
     });
@@ -202,7 +202,7 @@ class Browser extends Component {
     this.store.url = url;
   };
   onUrlReload = ev => {
-    if (ev.key === 'Enter') {
+    if (ev.key === "Enter") {
       // push a new state and refresh (reload page)
       this.easyStack.history.push(this.store.url);
       this.onRefresh();
@@ -255,7 +255,7 @@ class Browser extends Component {
         </BrowserBar>
         {isLoading && <Loader />}
         <Body>
-          {error ? 'An unexpected error occured, please reload!' : <Content />}
+          {error ? "An unexpected error occured, please reload!" : <Content />}
         </Body>
       </BrowserFrame>
     );

@@ -1677,7 +1677,9 @@ object-assign
         var expProto = exports[PROTOTYPE];
         var target = IS_GLOBAL
           ? global
-          : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
+          : IS_STATIC
+            ? global[name]
+            : (global[name] || {})[PROTOTYPE];
         var key, own, out;
         if (IS_GLOBAL) source = name;
         for (key in source) {
@@ -4407,7 +4409,9 @@ object-assign
                     ":" +
                     source.lineNumber +
                     ")"
-                  : ownerName ? " (created by " + ownerName + ")" : "")
+                  : ownerName
+                    ? " (created by " + ownerName + ")"
+                    : "")
               );
             };
 
@@ -5559,7 +5563,9 @@ object-assign
           a.hasOwnProperty(e) &&
             ((b = a[e])
               ? (this[e] = b(c))
-              : "target" === e ? (this.target = d) : (this[e] = c[e]));
+              : "target" === e
+                ? (this.target = d)
+                : (this[e] = c[e]));
         this.isDefaultPrevented = (null != c.defaultPrevented
         ? c.defaultPrevented
         : !1 === c.returnValue)
@@ -6054,7 +6060,9 @@ object-assign
         var b = this.nativeEvent;
         return b.getModifierState
           ? b.getModifierState(a)
-          : (a = cd[a]) ? !!b[a] : !1;
+          : (a = cd[a])
+            ? !!b[a]
+            : !1;
       }
       function ed() {
         return dd;
@@ -6133,7 +6141,9 @@ object-assign
         a = a.type;
         return "string" === typeof a
           ? a
-          : "function" === typeof a ? a.displayName || a.name : null;
+          : "function" === typeof a
+            ? a.displayName || a.name
+            : null;
       }
       function kd(a) {
         var b = a;
@@ -6516,7 +6526,9 @@ object-assign
           var e =
               d.window === d
                 ? d.document
-                : 9 === d.nodeType ? d : d.ownerDocument,
+                : 9 === d.nodeType
+                  ? d
+                  : d.ownerDocument,
             f;
           if (!(f = !e)) {
             a: {
@@ -6669,7 +6681,9 @@ object-assign
         which: function(a) {
           return "keypress" === a.type
             ? Wd(a)
-            : "keydown" === a.type || "keyup" === a.type ? a.keyCode : 0;
+            : "keydown" === a.type || "keyup" === a.type
+              ? a.keyCode
+              : 0;
         }
       });
       function $d(a, b, c, d) {
@@ -6704,14 +6718,18 @@ object-assign
         deltaX: function(a) {
           return "deltaX" in a
             ? a.deltaX
-            : "wheelDeltaX" in a ? -a.wheelDeltaX : 0;
+            : "wheelDeltaX" in a
+              ? -a.wheelDeltaX
+              : 0;
         },
         deltaY: function(a) {
           return "deltaY" in a
             ? a.deltaY
             : "wheelDeltaY" in a
               ? -a.wheelDeltaY
-              : "wheelDelta" in a ? -a.wheelDelta : 0;
+              : "wheelDelta" in a
+                ? -a.wheelDelta
+                : 0;
         },
         deltaZ: null,
         deltaMode: null
@@ -8004,7 +8022,9 @@ object-assign
             (w = function(a, b, c, e) {
               c !== e && d(b);
             }))
-          : q ? E("235") : E("236");
+          : q
+            ? E("235")
+            : E("236");
         return {
           completeWork: function(a, b, c) {
             var m = b.pendingProps;
@@ -8277,8 +8297,12 @@ object-assign
             for (var e = a; ; ) {
               if (5 === e.tag || 6 === e.tag)
                 c
-                  ? d ? L(b, e.stateNode, c) : I(b, e.stateNode, c)
-                  : d ? G(b, e.stateNode) : z(b, e.stateNode);
+                  ? d
+                    ? L(b, e.stateNode, c)
+                    : I(b, e.stateNode, c)
+                  : d
+                    ? G(b, e.stateNode)
+                    : z(b, e.stateNode);
               else if (4 !== e.tag && null !== e.child) {
                 e.child["return"] = e;
                 e = e.child;
@@ -8601,16 +8625,18 @@ object-assign
                 k & 36 && Dg(t.alternate, t);
                 k & 128 && Eg(t);
                 if (k & 64)
-                  switch (((e = t),
-                  (f = void 0),
-                  null !== R &&
-                    ((f = R.get(e)),
-                    R["delete"](e),
-                    null == f &&
-                      null !== e.alternate &&
-                      ((e = e.alternate), (f = R.get(e)), R["delete"](e))),
-                  null == f ? E("184") : void 0,
-                  e.tag)) {
+                  switch (
+                    ((e = t),
+                    (f = void 0),
+                    null !== R &&
+                      ((f = R.get(e)),
+                      R["delete"](e),
+                      null == f &&
+                        null !== e.alternate &&
+                        ((e = e.alternate), (f = R.get(e)), R["delete"](e))),
+                    null == f ? E("184") : void 0,
+                    e.tag)
+                  ) {
                     case 2:
                       e.stateNode.componentDidCatch(f.error, {
                         componentStack: f.componentStack
@@ -8820,7 +8846,9 @@ object-assign
                         ":" +
                         k.lineNumber +
                         ")"
-                      : n ? " (created by " + n + ")" : "");
+                      : n
+                        ? " (created by " + n + ")"
+                        : "");
                   break a;
                 default:
                   m = "";
@@ -8871,7 +8899,13 @@ object-assign
         function y(a) {
           return 0 !== ka
             ? ka
-            : ja ? (Qb ? 1 : H) : !Hg || a.internalContextTag & 1 ? v() : 1;
+            : ja
+              ? Qb
+                ? 1
+                : H
+              : !Hg || a.internalContextTag & 1
+                ? v()
+                : 1;
         }
         function u(a, b) {
           return z(a, b, !1);
@@ -8904,7 +8938,9 @@ object-assign
                 Fa ||
                   (la
                     ? Sb && ((ma = d), (na = 1), m(ma, na))
-                    : 1 === e ? w(1, null) : L(e));
+                    : 1 === e
+                      ? w(1, null)
+                      : L(e));
                 !ja && c === ra && b < H && ((F = ra = null), (H = 0));
               } else break;
             a = a["return"];
@@ -9840,7 +9876,9 @@ object-assign
                     "autoFocus" !== h &&
                     (Ra.hasOwnProperty(h)
                       ? null != k && lg(d, h)
-                      : e ? Kf(a, h, k) : null != k && If(a, h, k));
+                      : e
+                        ? Kf(a, h, k)
+                        : null != k && If(a, h, k));
           }
         switch (b) {
           case "input":
@@ -9958,8 +9996,12 @@ object-assign
               : "children" === g
                 ? cg(a, h)
                 : d
-                  ? null != h ? Kf(a, g, h) : a.removeAttribute(g)
-                  : null != h ? If(a, g, h) : Jf(a, g);
+                  ? null != h
+                    ? Kf(a, g, h)
+                    : a.removeAttribute(g)
+                  : null != h
+                    ? If(a, g, h)
+                    : Jf(a, g);
         }
         switch (c) {
           case "input":
@@ -11623,12 +11665,16 @@ object-assign
                 var listenersIsArr = Array.isArray(dispatchListeners);
                 var listenersLen = listenersIsArr
                   ? dispatchListeners.length
-                  : dispatchListeners ? 1 : 0;
+                  : dispatchListeners
+                    ? 1
+                    : 0;
 
                 var instancesIsArr = Array.isArray(dispatchInstances);
                 var instancesLen = instancesIsArr
                   ? dispatchInstances.length
-                  : dispatchInstances ? 1 : 0;
+                  : dispatchInstances
+                    ? 1
+                    : 0;
 
                 warning(
                   instancesIsArr === listenersIsArr &&
@@ -16142,14 +16188,18 @@ object-assign
               deltaX: function(event) {
                 return "deltaX" in event
                   ? event.deltaX // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
-                  : "wheelDeltaX" in event ? -event.wheelDeltaX : 0;
+                  : "wheelDeltaX" in event
+                    ? -event.wheelDeltaX
+                    : 0;
               },
               deltaY: function(event) {
                 return "deltaY" in event
                   ? event.deltaY // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
                   : "wheelDeltaY" in event
                     ? -event.wheelDeltaY // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
-                    : "wheelDelta" in event ? -event.wheelDelta : 0;
+                    : "wheelDelta" in event
+                      ? -event.wheelDelta
+                      : 0;
               },
               deltaZ: null,
 
@@ -16546,7 +16596,9 @@ object-assign
                     ":" +
                     source.lineNumber +
                     ")"
-                  : ownerName ? " (created by " + ownerName + ")" : "")
+                  : ownerName
+                    ? " (created by " + ownerName + ")"
+                    : "")
               );
             };
 
@@ -30577,7 +30629,9 @@ object-assign
                 obj.constructor === _symbol2.default &&
                 obj !== _symbol2.default.prototype
                 ? "symbol"
-                : typeof obj === "undefined" ? "undefined" : _typeof(obj);
+                : typeof obj === "undefined"
+                  ? "undefined"
+                  : _typeof(obj);
             };
 
       /***/
@@ -33521,7 +33575,9 @@ object-assign
           proto[ITERATOR] || proto[FF_ITERATOR] || (DEFAULT && proto[DEFAULT]);
         var $default = (!BUGGY && $native) || getMethod(DEFAULT);
         var $entries = DEFAULT
-          ? !DEF_VALUES ? $default : getMethod("entries")
+          ? !DEF_VALUES
+            ? $default
+            : getMethod("entries")
           : undefined;
         var $anyNative = NAME == "Array" ? proto.entries || $native : $native;
         var methods, key, IteratorPrototype;
@@ -35596,7 +35652,7 @@ object-assign
             return function(c) {
               if (c >= 1) return 1;
               var d = 1 / a;
-              return (c += b * d) - c % d;
+              return (c += b * d) - (c % d);
             };
           }
           function k(a) {
@@ -35630,7 +35686,9 @@ object-assign
             var d = c.delay + a + c.endDelay;
             return b < Math.min(c.delay, d)
               ? H
-              : b >= Math.min(c.delay + a, d) ? I : J;
+              : b >= Math.min(c.delay + a, d)
+                ? I
+                : J;
           }
           function p(a, b, c, d, e) {
             switch (d) {
@@ -35658,7 +35716,9 @@ object-assign
           function s(a, b, c, d) {
             return a === I && b === 1 / 0
               ? 1 / 0
-              : 1 === c ? Math.floor(d) - 1 : Math.floor(d);
+              : 1 === c
+                ? Math.floor(d) - 1
+                : Math.floor(d);
           }
           function t(a, b, c) {
             var d = a;
@@ -35851,7 +35911,7 @@ object-assign
                   var f = d[e].offset;
                   if (null != f) {
                     for (var g = 1; g < e - b; g++)
-                      d[b + g].offset = c + (f - c) * g / (e - b);
+                      d[b + g].offset = c + ((f - c) * g) / (e - b);
                     (b = e), (c = f);
                   }
                 }
@@ -36144,16 +36204,14 @@ object-assign
                   h = e(g);
                 return function(a, c) {
                   if (null != c)
-                    h
-                      .filter(function(a) {
-                        return c >= a.applyFrom && c < a.applyTo;
-                      })
-                      .forEach(function(d) {
-                        var e = c - d.startOffset,
-                          f = d.endOffset - d.startOffset,
-                          g = 0 == f ? 0 : d.easingFunction(e / f);
-                        b.apply(a, d.property, d.interpolation(g));
-                      });
+                    h.filter(function(a) {
+                      return c >= a.applyFrom && c < a.applyTo;
+                    }).forEach(function(d) {
+                      var e = c - d.startOffset,
+                        f = d.endOffset - d.startOffset,
+                        g = 0 == f ? 0 : d.easingFunction(e / f);
+                      b.apply(a, d.property, d.interpolation(g));
+                    });
                   else
                     for (var d in g)
                       "offset" != d &&
@@ -36521,7 +36579,7 @@ object-assign
                   else
                     for (
                       var h = Math.acos(f),
-                        i = 1 * Math.sin(e * h) / Math.sqrt(1 - f * f),
+                        i = (1 * Math.sin(e * h)) / Math.sqrt(1 - f * f),
                         j = 0;
                       j < 4;
                       j++
@@ -36741,7 +36799,9 @@ object-assign
                           ? "pending"
                           : this._paused
                             ? "paused"
-                            : this._isFinished ? "finished" : "running";
+                            : this._isFinished
+                              ? "finished"
+                              : "running";
                     },
                     _rewind: function() {
                       if (this._playbackRate >= 0) this._currentTime = 0;
@@ -37544,7 +37604,7 @@ object-assign
                 }
                 function f(a, b) {
                   for (var c = a, d = b; c && d; ) c > d ? (c %= d) : (d %= c);
-                  return (c = a * b / (c + d));
+                  return (c = (a * b) / (c + d));
                 }
                 function g(a) {
                   return function(b) {
@@ -39073,7 +39133,9 @@ object-assign
             i + 1 === l ||
             (b = s.charCodeAt(i + 1)) < 0xdc00 ||
             b > 0xdfff
-            ? TO_STRING ? s.charAt(i) : a
+            ? TO_STRING
+              ? s.charAt(i)
+              : a
             : TO_STRING
               ? s.slice(i, i + 2)
               : ((a - 0xd800) << 10) + (b - 0xdc00) + 0x10000;
@@ -42735,7 +42797,8 @@ object-assign
           ),
           shadowColor: _colors.fullBlack
         }
-      }; /**
+      };
+      /**
        * NB: If you update this file, please also update `docs/src/app/customization/Themes.js`
        */
 
@@ -43709,7 +43772,9 @@ object-assign
               name:
                 iosdevice == "iphone"
                   ? "iPhone"
-                  : iosdevice == "ipad" ? "iPad" : "iPod"
+                  : iosdevice == "ipad"
+                    ? "iPad"
+                    : "iPod"
             };
             // WTF: version is not part of user agent in web apps
             if (versionIdentifier) {
@@ -49203,7 +49268,9 @@ object-assign
           var isBinary = reIsBinary.test(value);
           return isBinary || reIsOctal.test(value)
             ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-            : reIsBadHex.test(value) ? NAN : +value;
+            : reIsBadHex.test(value)
+              ? NAN
+              : +value;
         }
 
         module.exports = throttle;
@@ -49982,7 +50049,9 @@ object-assign
                 rightIconButton ||
                 (nestedItems.length && autoGenerateNestedIndicator)
                   ? 56
-                  : rightToggle ? 72 : 16,
+                  : rightToggle
+                    ? 72
+                    : 16,
               paddingBottom: singleAvatar ? 20 : 16,
               paddingTop: singleNoAvatar || threeLine ? 16 : 20,
               position: "relative"
@@ -53020,8 +53089,10 @@ object-assign
               right: horizontalPosition === "left" ? 12 : null,
               left:
                 horizontalPosition === "center"
-                  ? (state.offsetWidth - 48) / 2 * -1
-                  : horizontalPosition === "right" ? 12 : null,
+                  ? ((state.offsetWidth - 48) / 2) * -1
+                  : horizontalPosition === "right"
+                    ? 12
+                    : null,
               transition:
                 _transitions2.default.easeOut("0ms", "top", "450ms") +
                 ", " +
@@ -53038,7 +53109,9 @@ object-assign
               left:
                 horizontalPosition === "center"
                   ? "50%"
-                  : horizontalPosition === "left" ? "100%" : "0%",
+                  : horizontalPosition === "left"
+                    ? "100%"
+                    : "0%",
               top: verticalPosition === "bottom" ? 0 : "100%",
               transform: "translate(-50%, -50%)",
               borderRadius: "50%",
@@ -53284,7 +53357,9 @@ object-assign
           var newChildren =
             typeof extendedChildren === "function"
               ? extendedChildren(child)
-              : extendedChildren ? extendedChildren : child.props.children;
+              : extendedChildren
+                ? extendedChildren
+                : child.props.children;
 
           return _react2.default.cloneElement(child, newProps, newChildren);
         });
@@ -53708,7 +53783,9 @@ object-assign
 
             var newFocusIndex = props.disableAutoFocus
               ? -1
-              : selectedIndex >= 0 ? selectedIndex : 0;
+              : selectedIndex >= 0
+                ? selectedIndex
+                : 0;
             if (newFocusIndex !== -1 && props.onMenuItemFocusChange) {
               props.onMenuItemFocusChange(null, newFocusIndex);
             }
@@ -53751,7 +53828,9 @@ object-assign
 
                 var newFocusIndex = nextProps.disableAutoFocus
                   ? -1
-                  : selectedIndex >= 0 ? selectedIndex : 0;
+                  : selectedIndex >= 0
+                    ? selectedIndex
+                    : 0;
                 if (
                   newFocusIndex !== this.state.focusIndex &&
                   this.props.onMenuItemFocusChange

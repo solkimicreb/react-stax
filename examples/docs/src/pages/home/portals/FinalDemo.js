@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function render({ view, store, params, Router, Link, fetch }) {
   const beers = store({
@@ -19,10 +19,10 @@ export default function render({ view, store, params, Router, Link, fetch }) {
   const updateFilter = ev => (params.filter = ev.target.value);
 
   async function onRoute({ toPage }) {
-    if (toPage === 'list') {
-      params.filter = params.filter || 'apple';
+    if (toPage === "list") {
+      params.filter = params.filter || "apple";
       await fetchBeers();
-    } else if (toPage === 'details') {
+    } else if (toPage === "details") {
       await fetchBeer();
     }
   }

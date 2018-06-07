@@ -13,4 +13,4 @@ export const elevation = {
   actionbar: 60
 };
 
-export * from './common';
+export * from "./common";

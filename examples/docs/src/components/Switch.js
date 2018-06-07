@@ -1,6 +1,6 @@
-import React from 'react';
-import { Router } from 'react-easy-stack';
-import { ease, layout } from './theme';
+import React from "react";
+import { Router } from "react-easy-stack";
+import { ease, layout } from "./theme";
 
 const enterAnimation = {
   keyframes: {

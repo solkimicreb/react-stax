@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 export default function render({ Link, Router, params }) {
-  const users = { '1': 'Ann', '12': 'Bob' };
+  const users = { "1": "Ann", "12": "Bob" };
 
   const UsersPage = () => (
     <div>

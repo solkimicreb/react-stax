@@ -1,11 +1,11 @@
-import { observable, observe } from '@nx-js/observer-util';
-import { Queue, priorities } from '@nx-js/queue-util';
-import { toPathString, toUrl, toObject } from './utils';
-import { route } from './core';
+import { observable, observe } from "@nx-js/observer-util";
+import { Queue, priorities } from "@nx-js/queue-util";
+import { toPathString, toUrl, toObject } from "./utils";
+import { route } from "./core";
 
 export const elements = {
-  anchor: 'a',
-  div: 'div'
+  anchor: "a",
+  div: "div"
 };
 
 export const scroller = {
@@ -59,7 +59,7 @@ export const history = {
 };
 
 function createHistoryItem(item = {}) {
-  if (typeof item === 'string') {
+  if (typeof item === "string") {
     item = toObject(item);
   }
   item = {
