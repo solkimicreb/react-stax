@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-easy-stack";
-import { colors, ease, layout } from "./theme";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-easy-stack';
+import { colors, ease, layout } from './theme';
 
 export const BasicLink = props => (
   <Link
     scroll={{
-      container: "root",
+      container: 'root',
       top: 0,
       left: 0
     }}
@@ -20,7 +20,7 @@ export const NavLink = props => (
   <Link
     activeClass="active"
     scroll={{
-      container: "root",
+      container: 'root',
       top: 0,
       left: 0
     }}
@@ -53,7 +53,7 @@ export const SideLink = styled(NavLink)`
   display: block;
   color: ${colors.text};
   transition: color 0.2s ${ease.both}, border-color 0.4s ${ease.both};
-  padding: 2px 10px;
+  padding: 2px 20px;
   margin: 10px 2px;
   border-left: 5px solid rgba(0, 0, 0, 0);
 

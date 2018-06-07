@@ -39,6 +39,7 @@ Absolute links trigger a routing from the root level, while relative links only 
 * `./settings/privacy` is also a relative link from the current depth.
 * `../settings/privacy` is a relative link, which routes from the parent level.
 * `../../settings/privacy` is a relative link, which routes from the grandparent level.
+* `..` is a relative link, which routes the default page of the parent router.
 
 The system is based on file systems and HTML links.
 

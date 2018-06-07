@@ -1,13 +1,11 @@
-import React from 'react';
+import React from "react";
 
-export default function render({ Link, Router, params, view, store }) {
-  const users = store({ '1': 'Ann', '12': 'Bob' });
-  const onChange = ev => (params.filter = ev.target.value);
+export default function render({ Link, Router, params }) {
+  const users = { "1": "Ann", "12": "Bob" };
 
-  const UsersPage = view(() => (
+  const UsersPage = () => (
     <div>
       <h2>User List</h2>
-      Filter: <input value={params.filter} onChange={onChange} />
       {Object.keys(users).map(id => (
         <div key={id}>
           <Link to="/details" params={{ id }}>
@@ -16,7 +14,7 @@ export default function render({ Link, Router, params, view, store }) {
         </div>
       ))}
     </div>
-  ));
+  );
   const DetailsPage = () => <p>User: {users[params.id]}</p>;
 
   return () => (

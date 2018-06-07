@@ -78,3 +78,13 @@ export default () => (
 ```
 
 The `route` function comes handy when you need to trigger routings not just on click events.
+
+## The `push` options
+
+Links and the `route` function have a `push` boolean option property, which toggles if the routing should push a new history item or replace the current one. By default it adds a new history item, except when the routing reloads the current page.
+
+```jsx
+<Link to="path" push={false} />;
+// OR ...
+route({ to: 'path', push: false });
+```

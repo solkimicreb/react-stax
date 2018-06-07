@@ -1,17 +1,17 @@
-import React, { Fragment } from "react";
-import ReactDOM from "react-dom";
-import styled from "styled-components";
-import { path, view, params, store, Router, Link } from "react-easy-stack";
-import Topbar from "./components/Topbar";
-import Sidebar from "./components/Sidebar";
-import App from "./components/App";
-import Page from "./components/Page";
-import PageRouter from "./components/PageRouter";
-import Notification, { notify } from "./components/Notification";
-import Switch from "./components/Switch";
-import { TopLink, SideLink, SideSectionLink } from "./components/Link";
-import Actionbar from "./components/Actionbar";
-import { layout } from "./components/theme";
+import React, { Fragment } from 'react';
+import ReactDOM from 'react-dom';
+import styled from 'styled-components';
+import { path, view, params, store, Router, Link } from 'react-easy-stack';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import App from './components/App';
+import Page from './components/Page';
+import PageRouter from './components/PageRouter';
+import Notification, { notify } from './components/Notification';
+import Switch from './components/Switch';
+import { TopLink, SideLink, SideSectionLink } from './components/Link';
+import Actionbar from './components/Actionbar';
+import { layout } from './components/theme';
 
 async function resolveRouting({ toPage }) {
   const { default: RoutingPage } = await import(`./pages/routing/${toPage}`);
@@ -24,8 +24,8 @@ async function resolveState({ toPage }) {
 }
 
 async function resolveHome({ toPage }) {
-  if (toPage === "home") {
-    const { default: HomePage } = await import("./pages/home");
+  if (toPage === 'home') {
+    const { default: HomePage } = await import('./pages/home');
     return <HomePage page={toPage} />;
   }
 }
@@ -55,6 +55,12 @@ const DocsNav = () => (
       <SideLink to="routing/intro">Introduction</SideLink>
       <SideLink to="routing/nested">Nested Routing</SideLink>
       <SideLink to="routing/params">Parameters</SideLink>
+      <SideLink to="routing/intercept">Interception</SideLink>
+      <SideLink to="routing/lazy">Lazy Loading</SideLink>
+      <SideLink to="routing/scroll">Scroll Handling</SideLink>
+      <SideLink to="routing/animations">Animations</SideLink>
+      <SideLink to="routing/advanced">Advanced Patterns</SideLink>
+      <SideLink to="routing/api">API Summary</SideLink>
     </Sidebar>
   </Switch>
 );
