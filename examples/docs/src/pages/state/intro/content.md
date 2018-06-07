@@ -1,6 +1,6 @@
 # State Management
 
-State management is based on transparent reactivity, which means you don't have to explicitly tell which component should render when. You can simply use the necessary parts of your state in your components and let Easy Stack re-render them for you.
+State management is based on transparent reactivity, which means you don't have to explicitly tell which component should render when. You can simply use the necessary parts of your state in your components and let easy-stack re-render them for you.
 
 ## Creating state stores
 

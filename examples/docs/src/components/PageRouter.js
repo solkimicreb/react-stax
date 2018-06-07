@@ -32,6 +32,7 @@ const enterAnimation = () => ({
 });
 
 const leaveAnimation = () => {
+  console.log('leave');
   const scrollY = document.getElementById('root').scrollTop;
 
   return {

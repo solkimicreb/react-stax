@@ -75,7 +75,6 @@ function createHistoryItem(item = {}) {
 }
 
 function syncHistory() {
-  console.log('SYNC');
   const { scroll } = history.items[history.idx];
   history.replace({ path, params, scroll });
 }

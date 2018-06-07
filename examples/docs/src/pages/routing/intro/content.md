@@ -1,128 +1,80 @@
-# State Management
+# Routing
 
-State management is based on transparent reactivity, which means you don't have to explicitly tell which component should render when. You can simply use the necessary parts of your state in your components and let Easy Stack re-render them for you.
+Easy-stack clearly separates navigation from dynamic routing parameters. The url pathname is used for navigation in the empty app shell and it can not store any parameters. It is similar to most file systems.
 
-## Creating state stores
+Dynamic parameters are stored in the query string and they ideally define the data shell for the current screen. The data shell is a minimal set of primitives, which defines the currently displayed data. It usually consists of user inputs.
 
-State can be stored in any object, but state stores must be wrapped with `store()` before they are used. `store()` wraps your object in a transparent reactive Proxy, which is invisible from the outside. The wrapped object behaves exactly like the original one.
+## The Router component
 
-```js
-import { store } from 'react-easy-stack';
-
-// wrap the object with `store` before you use it
-const user = store({
-  name: 'Developer Dan',
-  age: 30
-});
-
-// stores behave exactly like the underlying object
-user.name = 'Dev Dan';
-user.email = 'dan@dev.com';
-delete user.age;
-```
-
-## Creating reactive views
-
-Any React component can be made reactive, by wrapping it with `view()`. Reactive components re-render when the stored data - which is used by them - changes.
+The `Router` component checks the url pathname token at the appropriate depth and renders the child with the matching `page` attribute. There can never be more than one matching child.
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { Router, Link } from 'react-easy-stack';
+import { ProfilePage, SettingsPage } from './pages';
 
-const counter = store({ num: 0 });
-setInterval(() => counter.num++, 1000);
-
-export default view(() => <p>The num is {counter.num}.</p>);
+export default () => (
+  <Router defaultPage="profile">
+    <ProfilePage page="profile" />
+    <SettingsPage page="settings" />
+  </Router>
+);
 ```
 
-<div id="basic-demo"></div>
+* Every direct `Router` child must have a `page` attribute.
+* `page` attributes must be a unique token without the `/` character.
+* The `Router` must have a `defaultPage` prop, which matches with a child page. If the relevant pathname token is empty, the Router routes to the default page.
 
-Always wrap your reactive components with `view` before you export them or mount them in other components.
+## Links
 
-## Handling global state
-
-Global state can be shared by using the same store in multiple components.
+Links update the url and navigate between the router pages.
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { Router, Link } from 'react-easy-stack';
 
-const counter = store({ num: 0 });
-const increment = () => counter.num++;
+const ProfilePage = () => <h2>Profile Page</h2>;
+const SettingsPage = () => <h2>Settings Page</h2>;
 
-export default view(() => (
-  <button onClick={increment}>Clicked {counter.num} times!</button>
-));
-```
-
-<div id="global-demo"></div>
-
-The two counter instances share the same `counter.num` number and increment together, when the number changes.
-
-## Handling local state
-
-You can create stores as component properties to handle local state. These stores work exactly like the global ones, but they are encapsulated in the component instance.
-
-```jsx
-import React, { Component } from 'react';
-import { store, view } from 'react-easy-stack';
-
-class Counter extends Component {
-  store = store({ num: 0 });
-  increment = () => this.store.num++;
-
-  render() {
-    return (
-      <button onClick={this.increment}>Clicked {this.store.num} times!</button>
-    );
-  }
-}
-export default view(Counter);
-```
-
-<div id="local-demo"></div>
-
-The two buttons increment separately, since they both use their own encapsulated state store.
-
-> You can use React `state` instead of local stores if you prefer to, it works nicely together with global stores. Do not call your local store `state` however. Stores are directly mutated, while React `state` is expected to be immutable.
-
-## Building complex apps
-
-A component may use any combination of local and global state stores. In a typical React app you will likely have a handful of global stores: one for the user and one for the current page for example.
-
-_userStore.js_
-
-```js
-import { store } from 'react-easy-stack';
-
-export default store({
-  name: 'Dev Dan'
-});
-```
-
-_reposStore.js_
-
-```js
-import { store } from 'react-easy-stack';
-
-export default store({
-  list: [],
-  selected: null
-});
-```
-
-_ReposPage.jsx_
-
-```jsx
-import React from 'react';
-import { view } from 'react-easy-stack';
-import user from './userStore';
-import repos from './reposStore';
-
-export default view(() => (
+export default () => (
   <div>
-    <p>{user.name}'s repos:</p>
-    <ul>{repos.list.map(repo => <li key={repo.id}>{repo.name}</li>)}</ul>
+    <Link to="profile">Profile</Link>
+    <Link to="settings">Settings</Link>
+    <Router defaultPage="profile">
+      <ProfilePage page="profile" />
+      <SettingsPage page="settings" />
+    </Router>
   </div>
-));
 ```
+
+<div id="links-demo"></div>
+
+In the simplest case the url pathname is replaced with the Link's `to` prop on click and the Routers update to match with the new pathname.
+
+## Programmatic routing
+
+Routing can also be triggered by the `route()` function, which takes an options object with the same properties as the `Link` component.
+
+```jsx
+import React from 'react';
+import { Router, route } from 'react-easy-stack';
+
+const ProfilePage = () => <h2>Profile Page</h2>;
+const SettingsPage = () => <h2>Settings Page</h2>;
+
+const routeToProfile = () => route({ to: 'profile' });
+const routeToSettings = () => route({ to: 'profile' });
+
+export default () => (
+  <div>
+    <span onClick={routeToProfile}>Profile</span>
+    <span onClick={routeToSettings}>Settings</span>
+    <Router defaultPage="profile">
+      <ProfilePage page="profile" />
+      <SettingsPage page="settings" />
+    </Router>
+  </div>
+);
+```
+
+The `route` function comes handy when you need to trigger routings not just on click events.

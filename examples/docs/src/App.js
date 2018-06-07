@@ -39,7 +39,7 @@ const State = () => (
   <PageRouter defaultPage="intro" onRoute={resolveState} debug="state" />
 );
 const Routing = () => (
-  <PageRouter defaultPage="advanced" onRoute={resolveRouting} debug="routing" />
+  <PageRouter defaultPage="intro" onRoute={resolveRouting} debug="routing" />
 );
 
 const DocsNav = () => (
@@ -53,6 +53,8 @@ const DocsNav = () => (
       <SideLink to="state/api">API Summary</SideLink>
       <SideSectionLink to="routing">Routing</SideSectionLink>
       <SideLink to="routing/intro">Introduction</SideLink>
+      <SideLink to="routing/nested">Nested Routing</SideLink>
+      <SideLink to="routing/params">Parameters</SideLink>
     </Sidebar>
   </Switch>
 );

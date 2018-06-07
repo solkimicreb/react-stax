@@ -80,7 +80,7 @@ const Body = styled.div`
   a,
   button,
   input {
-    margin-right: 10px;
+    margin: 0 20px;
   }
   button,
   input {
@@ -209,6 +209,7 @@ class Browser extends Component {
     }
   };
   onRefresh = () => {
+    this.store.error = undefined;
     this.timers.forEach(window.clearTimeout);
     this.height = this.browser.current.offsetHeight;
     this.store.Content = this.props.children(this.easyStack);
@@ -217,8 +218,12 @@ class Browser extends Component {
     this.timers.forEach(window.clearTimeout);
   }
 
+  componentDidCatch(error, info) {
+    this.store.error = info;
+  }
+
   render() {
-    const { Content, url, isLoading } = this.store;
+    const { Content, url, isLoading, error } = this.store;
     const { history } = this.easyStack;
 
     const canGoBack = 0 < history.idx;
@@ -250,7 +255,7 @@ class Browser extends Component {
         </BrowserBar>
         {isLoading && <Loader />}
         <Body>
-          <Content />
+          {error ? 'An unexpected error occured, please reload!' : <Content />}
         </Body>
       </BrowserFrame>
     );
