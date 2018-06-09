@@ -1,13 +1,13 @@
-import React, { Component, Fragment } from "react";
-import ReactDOM from "react-dom";
-import { BasicLink as Link } from "../../components/Link";
-import Page from "../../components/Page";
-import Browser from "../../components/Browser";
-import RoutingDemo from "./portals/RoutingDemo";
-import StateDemo from "./portals/StateDemo";
-import IntegrationsDemo from "./portals/IntegrationsDemo";
-import FinalDemo from "./portals/FinalDemo";
-import content from "./content.md";
+import React, { Component, Fragment } from 'react';
+import ReactDOM from 'react-dom';
+import { BasicLink as Link } from '../../../components/Link';
+import Page from '../../../components/Page';
+import Browser from '../../../components/Browser';
+import RoutingDemo from './portals/RoutingDemo';
+import StateDemo from './portals/StateDemo';
+import IntegrationsDemo from './portals/IntegrationsDemo';
+import FinalDemo from './portals/FinalDemo';
+import content from './content.md';
 
 export default () => (
   <Page html={content} {...this.props}>

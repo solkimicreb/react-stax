@@ -24,10 +24,8 @@ async function resolveState({ toPage }) {
 }
 
 async function resolveHome({ toPage }) {
-  if (toPage === 'home') {
-    const { default: HomePage } = await import('./pages/home');
-    return <HomePage page={toPage} />;
-  }
+  const { default: HomePage } = await import(`./pages/home/${toPage}`);
+  return <HomePage page={toPage} />;
 }
 
 async function resolveExample({ toPage }) {
@@ -41,37 +39,42 @@ const State = () => (
 const Routing = () => (
   <PageRouter defaultPage="intro" onRoute={resolveRouting} debug="routing" />
 );
-
-const DocsNav = () => (
-  <Switch page="docs">
-    <Sidebar>
-      <SideSectionLink to="state">State Management</SideSectionLink>
-      <SideLink to="state/intro">Introduction</SideLink>
-      <SideLink to="state/mutations">Mutating the Stores</SideLink>
-      <SideLink to="state/computed">Computed Data</SideLink>
-      <SideLink to="state/batching">Batching Updates</SideLink>
-      <SideLink to="state/api">API Summary</SideLink>
-      <SideSectionLink to="routing">Routing</SideSectionLink>
-      <SideLink to="routing/intro">Introduction</SideLink>
-      <SideLink to="routing/nested">Nested Routing</SideLink>
-      <SideLink to="routing/params">Parameters</SideLink>
-      <SideLink to="routing/intercept">Interception</SideLink>
-      <SideLink to="routing/lazy">Lazy Loading</SideLink>
-      <SideLink to="routing/scroll">Scroll Handling</SideLink>
-      <SideLink to="routing/animations">Animations</SideLink>
-      <SideLink to="routing/advanced">Advanced Patterns</SideLink>
-      <SideLink to="routing/api">API Summary</SideLink>
-    </Sidebar>
-  </Switch>
+const Home = () => (
+  <PageRouter defaultPage="intro" onRoute={resolveHome} debug="home" />
 );
 
-const ExamplesNav = () => (
-  <Switch page="examples">
-    <Sidebar>
-      <SideLink to="clock-local">Local Clock</SideLink>
-      <SideLink to="clock-global">Glocal Clock</SideLink>
-    </Sidebar>
-  </Switch>
+const SideNav = () => (
+  <Sidebar>
+    <PageRouter defaultPage="home">
+      <div page="home">
+        <SideSectionLink to="intro">Introduction</SideSectionLink>
+        <SideSectionLink to="platforms">Platform Support</SideSectionLink>
+        <SideSectionLink to="performance">Performance</SideSectionLink>
+      </div>
+      <div page="docs">
+        <SideSectionLink to="state">State Management</SideSectionLink>
+        <SideLink to="state/intro">Introduction</SideLink>
+        <SideLink to="state/mutations">Mutating the Stores</SideLink>
+        <SideLink to="state/computed">Computed Data</SideLink>
+        <SideLink to="state/batching">Batching Updates</SideLink>
+        <SideLink to="state/api">API Summary</SideLink>
+        <SideSectionLink to="routing">Routing</SideSectionLink>
+        <SideLink to="routing/intro">Introduction</SideLink>
+        <SideLink to="routing/nested">Nested Routing</SideLink>
+        <SideLink to="routing/params">Parameters</SideLink>
+        <SideLink to="routing/intercept">Interception</SideLink>
+        <SideLink to="routing/lazy">Lazy Loading</SideLink>
+        <SideLink to="routing/scroll">Scroll Handling</SideLink>
+        <SideLink to="routing/animations">Animations</SideLink>
+        <SideLink to="routing/advanced">Advanced Patterns</SideLink>
+        <SideLink to="routing/api">API Summary</SideLink>
+      </div>
+      <div page="examples">
+        <SideSectionLink to="clock-local">Local Clock</SideSectionLink>
+        <SideSectionLink to="clock-global">Glocal Clock</SideSectionLink>
+      </div>
+    </PageRouter>
+  </Sidebar>
 );
 
 const DocsContent = () => (
@@ -82,7 +85,8 @@ const DocsContent = () => (
 );
 
 const Content = () => (
-  <PageRouter defaultPage="home" onRoute={resolveHome} debug="main">
+  <PageRouter defaultPage="home" debug="main">
+    <Home page="home" />
     <DocsContent page="docs" />
     <PageRouter
       page="examples"
@@ -119,8 +123,7 @@ export default view(() => (
     <App>
       <Content />
     </App>
-    <DocsNav />
-    <ExamplesNav />
+    <SideNav />
     <Chat
       id="chat"
       className="gitter-chat-embed is-collapsed"
