@@ -5,14 +5,11 @@ const TO_DOM = Symbol('to DOM');
 
 Object.assign(animation, {
   setup(container) {
-    cleanup(container);
+    this.cleanup(container);
     container[FROM_DOM] = container.firstElementChild;
   },
   enter(container, enterAnimation) {
     const toDOM = (container[TO_DOM] = container.firstElementChild);
-    // only do an enter animation if this is not the initial routing of the router
-    // this prevents cascading over-animation, in case of nested routers
-    // only the outmost one will animate, the rest will appear normally
     if (enterAnimation && toDOM) {
       animateElement(toDOM, enterAnimation);
     }
@@ -34,23 +31,18 @@ Object.assign(animation, {
       // there is no need to wait for the animation,
       // the views may be hidden by the animation, but the DOM routing is already over
       // it is safe to go on with routing the next level of routers
-      animateElement(fromDOM, leaveAnimation).then(() => cleanup(container));
+      animateElement(fromDOM, leaveAnimation).then(() =>
+        this.cleanup(container)
+      );
     }
+  },
+  cleanup(container) {
+    if (container[FROM_DOM] && container[FROM_DOM] !== container[TO_DOM]) {
+      container[FROM_DOM].remove();
+    }
+    container[FROM_DOM] = container[TO_DOM] = undefined;
   }
 });
-
-function cleanup(container) {
-  console.log(
-    'clean',
-    container[FROM_DOM],
-    container[TO_DOM],
-    container[FROM_DOM] === container[TO_DOM]
-  );
-  if (container[FROM_DOM] && container[FROM_DOM] !== container[TO_DOM]) {
-    container[FROM_DOM].remove();
-  }
-  container[FROM_DOM] = container[TO_DOM] = undefined;
-}
 
 function animateElement(element, options) {
   // use the native webanimations API when available

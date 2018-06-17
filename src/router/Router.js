@@ -78,73 +78,52 @@ export default class Router extends PureComponent {
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
   finishRouting(resolvedData) {
+    const fromPage = this.state.page;
+    const toPage = path[this.depth];
+    const { enterAnimation, leaveAnimation } = this.props;
+    let shouldAnimate = this.props.shouldAnimate;
+
+    if (typeof shouldAnimate === 'function') {
+      shouldAnimate({ fromPage, toPage });
+    }
+    if (shouldAnimate === undefined) {
+      shouldAnimate = fromPage !== toPage;
+    }
+    // this typically saves the current view to use later for cross fade effects
+    // the current view is soon replaced by setState, so this is necessary
+    if (shouldAnimate) {
+      animation.setup(this.container);
+    }
+
     const nextState = {
       resolvedData,
-      page: path[this.depth]
+      page: toPage
     };
-
-    // TODO: move should Animate logic here!!
-
-    // this saves the current raw view (DOM) to be used for the leave animation
-    // it is important to call this here, before anything could mutate the view
-    // the first thing which may mutate views is the props.onRoute call below
-    // mutations should only happen to the new view after the routing started
-    this.setupAnimation();
-
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
-        // do not deal with animations when running in NodeJS
-        // run the animations when the new page is fully rendered
-        this.animate();
+        // run the animations when the new page is fully rendered, but do not wait for them
+        // the views may be hidden by the animation, but the DOM routing is already over
+        // it is safe to go on with routing the next level of routers
+        if (shouldAnimate) {
+          // only do an enter animation if this is not the initial routing of the router
+          // this prevents cascading over-animation, in case of nested routers
+          // only the outmost one will animate, the rest will appear normally
+          if (enterAnimation && this.inited) {
+            animation.enter(this.container, enterAnimation);
+          }
+          // leave must come after render
+          // it is re-appending the old dom to the container
+          // doing this before enter will confuse the render about which DOM
+          // to animate and it will try to animate the old one twice instead of both once
+          if (leaveAnimation) {
+            animation.leave(this.container, leaveAnimation);
+          }
+        }
         // the router has done at least one full routing
         this.inited = true;
       }
     );
-  }
-
-  setupAnimation() {
-    const { leaveAnimation, shouldAnimate } = this.props;
-    const fromPage = this.state.page;
-    const toPage = path[this.depth];
-
-    // only animate when a new page is rendered by default,
-    // but make it configurable with the shouldAnimate prop
-    // the user may also want to animate when a query param changes for example
-    if (typeof shouldAnimate === 'function') {
-      this.shouldAnimate = shouldAnimate({ fromPage, toPage });
-    } else {
-      this.shouldAnimate =
-        shouldAnimate === undefined ? fromPage !== toPage : shouldAnimate;
-    }
-
-    // if there will be a leaveAnimation during the current routing
-    // save the current raw view (DOM), so it can be used later for a fade out
-    // or cross fade effect after the new view is rendered
-    if (this.shouldAnimate) {
-      animation.setup(this.container);
-    }
-  }
-
-  animate() {
-    const { enterAnimation, leaveAnimation } = this.props;
-
-    if (this.shouldAnimate) {
-      // only do an enter animation if this is not the initial routing of the router
-      // this prevents cascading over-animation, in case of nested routers
-      // only the outmost one will animate, the rest will appear normally
-      if (enterAnimation && this.inited) {
-        animation.enter(this.container, enterAnimation);
-      }
-      // DO NOT return the promise from animateElement()
-      // there is no need to wait for the animation,
-      // the views may be hidden by the animation, but the DOM routing is already over
-      // it is safe to go on with routing the next level of routers
-      // LEAVE MUST COME AFTER ENTER!
-      if (leaveAnimation) {
-        animation.leave(this.container, leaveAnimation);
-      }
-    }
   }
 
   render() {
