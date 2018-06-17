@@ -1,9 +1,10 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { observe, unobserve } from "@nx-js/observer-util";
-import { routeFromDepth } from "./core";
-import { toUrl, normalizePath, addExtraProps } from "./utils";
-import { params, path, scheduler, elements } from "./integrations";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { observe, unobserve } from '@nx-js/observer-util';
+import { routeFromDepth } from './core';
+import { toUrl, normalizePath, addExtraProps } from './utils';
+import { params, path, elements } from './integrations';
+import { state as scheduler } from '../schedulers';
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
@@ -25,8 +26,8 @@ export default class Link extends PureComponent {
 
   static defaultProps = {
     element: elements.anchor,
-    className: "",
-    activeClass: "",
+    className: '',
+    activeClass: '',
     style: {},
     activeStyle: {}
   };
@@ -42,7 +43,7 @@ export default class Link extends PureComponent {
   get depth() {
     const { to } = this.props;
     const depth = this.context.easyRouterDepth || 0;
-    const isRelative = !to || to[0] !== "/";
+    const isRelative = !to || to[0] !== '/';
     return isRelative ? depth : 0;
   }
 

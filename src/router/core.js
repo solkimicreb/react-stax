@@ -1,6 +1,6 @@
-import { path, params, history, scroller, scheduler } from './integrations';
+import { path, params, history, scroller } from './integrations';
 import { toPathString, normalizePath } from './utils';
-import stateScheduler from '../state/batching';
+import * as schedulers from '../schedulers';
 
 const routers = [];
 let routingStatus;
@@ -71,12 +71,13 @@ export function routeFromDepth(
     // flush the pending low priority URL changes to have a consistent state before starting a new routing
     // only flush it if there is no ongoing routing
     // otherwise the old and new routing should be treated in one batch to avoid flicker
-    scheduler.process();
+    schedulers.integrations.process();
   }
-  // stop the URL updating scheduler until the end of the routing
-  // and commit all URL updates in one batch to avoid flicker
-  scheduler.stop();
-  stateScheduler.stop();
+  // stop all schedulers until the end of the routing and commit them at once
+  // this includes state based view updates, URL updates and localStorag updats
+  // having view updates during the routing can cause flickers
+  // because of the random onRoute data resolve timings, it is nicer to commit everything at once
+  schedulers.stop();
 
   // create a new routing status
   // this may be cancelled by future routing processes
@@ -166,10 +167,9 @@ function finishRouting({ push, scroll }, status) {
     // it is important to call this after handleHistory()
     // in case of a newly pushed history item, the flushed URL changes
     // should replace the new item instead of the old one
-    scheduler.process();
-    scheduler.start();
-    stateScheduler.process();
-    stateScheduler.start();
+    // also flush the view updates
+    schedulers.process();
+    schedulers.start();
     // the routing is over and the is no currently ongoing routing process
     routingStatus = undefined;
   }

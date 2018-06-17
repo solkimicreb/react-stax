@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util';
-import scheduler from './batching';
+import { state as scheduler } from '../schedulers';
 
 // this is used to save the component on the state for static lifecycle methods
 const COMPONENT = Symbol('owner component');
@@ -24,9 +24,10 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       this.state = this.state || {};
       this.state[COMPONENT] = this;
 
-      const updater = () => this.setState(DUMMY_STATE);
       // create a reactive render for the component
       // run a dummy setState to schedule a new reactive render, avoid forceUpdate
+      const updater = () => this.setState(DUMMY_STATE);
+      // the used scheduler ca be stopped, restarted and flushed any time
       this.render = observe(this.render, {
         scheduler: {
           add: () => scheduler.add(updater),

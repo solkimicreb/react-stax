@@ -1,11 +1,11 @@
-import { observable, observe } from "@nx-js/observer-util";
-import { Queue, priorities } from "@nx-js/queue-util";
-import { toPathString, toUrl, toObject } from "./utils";
-import { route } from "./core";
+import { observable, observe } from '@nx-js/observer-util';
+import { toPathString, toUrl, toObject } from './utils';
+import { route } from './core';
+import { integrations as scheduler } from '../schedulers';
 
 export const elements = {
-  anchor: "a",
-  div: "div"
+  anchor: 'a',
+  div: 'div'
 };
 
 export const scroller = {
@@ -18,10 +18,6 @@ export const animation = {
   enter() {},
   leave() {}
 };
-
-// commit reactions with a low priority
-// URL and storage updates are not something the user is eagerly waiting for
-export const scheduler = new Queue(priorities.LOW);
 
 export const storage = observable({});
 export const params = observable({});
@@ -59,7 +55,7 @@ export const history = {
 };
 
 function createHistoryItem(item = {}) {
-  if (typeof item === "string") {
+  if (typeof item === 'string') {
     item = toObject(item);
   }
   item = {
