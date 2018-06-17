@@ -1,42 +1,41 @@
-import React from "react";
-import { view, Link, Router, params } from "react-easy-stack";
-import classNames from "classnames";
-import { StoriesPage, resolveStories } from "./StoriesPage";
-import { StoryPage, resolveStory } from "./StoryPage";
-import { UserPage, resolveUser } from "./UserPage";
-import appStore from "./appStore";
-import { STORY_TYPES } from "./config";
+import React from 'react';
+import { view, Link, Router, params } from 'react-easy-stack';
+import classNames from 'classnames';
+import { StoriesPage, resolveStories } from './StoriesPage';
+import { StoryPage, resolveStory } from './StoryPage';
+import { UserPage, resolveUser } from './UserPage';
+import appStore from './appStore';
+import { STORY_TYPES } from './config';
 
 const enterAnimation = {
   keyframes: {
-    opacity: [0.2, 1],
-    transform: ["translateX(-15px)", "none"]
+    opacity: [0, 1]
   },
-  fill: "both",
-  delay: 50,
-  duration: 200
+  duration: 150
 };
 
 const leaveAnimation = {
-  keyframes: { opacity: [1, 0.2] },
+  keyframes: {
+    opacity: [1, 0]
+  },
   duration: 150
 };
 
 function onRoute({ toPage }) {
-  if (toPage === "story") {
+  if (toPage === 'story') {
     return resolveStory();
-  } else if (toPage === "user") {
+  } else if (toPage === 'user') {
     return resolveUser();
   } else {
-    params.type = params.type || "top";
+    params.type = params.type || 'top';
     return resolveStories();
   }
 }
 
 function App() {
   const { loading, dark, toggleTheme } = appStore;
-  const appClass = classNames("app", { dark });
-  const themeClass = classNames("theme-toggle", { loading });
+  const appClass = classNames('app', { dark });
+  const themeClass = classNames('theme-toggle', { loading });
 
   return (
     <div className={appClass}>
@@ -66,6 +65,7 @@ function App() {
         onRoute={onRoute}
         enterAnimation={enterAnimation}
         leaveAnimation={leaveAnimation}
+        shouldAnimate={true}
       >
         <StoriesPage page="stories" />
         <StoryPage page="story" />

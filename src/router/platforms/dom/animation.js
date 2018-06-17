@@ -1,22 +1,15 @@
-import { animation } from "../../integrations";
+import { animation } from '../../integrations';
 
-const FROM_DOM = Symbol("from DOM");
+const FROM_DOM = Symbol('from DOM');
+const TO_DOM = Symbol('to DOM');
 
 Object.assign(animation, {
   setup(container) {
     cleanup(container);
-    const fromDOM = container.firstElementChild;
-    // cloning is necessary to allow cross fade effects for transitions
-    // between the same page (when only the params change)
-    // not cloning here would let react reuse the old view
-    // and the new and old view would link to the same piece of raw DOM,
-    // which obviously messes up the animation
-    if (fromDOM) {
-      container[FROM_DOM] = fromDOM.cloneNode(true);
-    }
+    container[FROM_DOM] = container.firstElementChild;
   },
   enter(container, enterAnimation) {
-    const toDOM = container.firstElementChild;
+    const toDOM = (container[TO_DOM] = container.firstElementChild);
     // only do an enter animation if this is not the initial routing of the router
     // this prevents cascading over-animation, in case of nested routers
     // only the outmost one will animate, the rest will appear normally
@@ -25,10 +18,13 @@ Object.assign(animation, {
     }
   },
   leave(container, leaveAnimation) {
-    const fromDOM = container[FROM_DOM];
-    const toDOM = container.firstElementChild;
+    let fromDOM = container[FROM_DOM];
+    const toDOM = (container[TO_DOM] = container.firstElementChild);
 
     if (leaveAnimation && fromDOM) {
+      if (fromDOM === toDOM) {
+        fromDOM = container[FROM_DOM] = fromDOM.cloneNode(true);
+      }
       // probably React removed the old view when it rendered the new one
       // otherwise the old view is cloned to do not collide with the new one (see setupAnimation)
       // reinsert the old view and run the leaveAnimation on it
@@ -44,23 +40,29 @@ Object.assign(animation, {
 });
 
 function cleanup(container) {
-  if (container[FROM_DOM]) {
+  console.log(
+    'clean',
+    container[FROM_DOM],
+    container[TO_DOM],
+    container[FROM_DOM] === container[TO_DOM]
+  );
+  if (container[FROM_DOM] && container[FROM_DOM] !== container[TO_DOM]) {
     container[FROM_DOM].remove();
-    container[FROM_DOM] = undefined;
   }
+  container[FROM_DOM] = container[TO_DOM] = undefined;
 }
 
 function animateElement(element, options) {
   // use the native webanimations API when available
   // it is the user's responsibility to polyfill it otherwise
-  if (typeof element.animate === "function") {
-    if (typeof options === "function") {
+  if (typeof element.animate === 'function') {
+    if (typeof options === 'function') {
       options = options();
     }
     const animation = element.animate(options.keyframes, options);
     return new Promise(resolve => (animation.onfinish = resolve));
   } else {
-    console.warn("You should polyfill the webanimation API.");
+    console.warn('You should polyfill the webanimation API.');
     return Promise.resolve();
   }
 }

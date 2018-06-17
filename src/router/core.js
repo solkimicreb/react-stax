@@ -1,5 +1,6 @@
-import { path, params, history, scroller, scheduler } from "./integrations";
-import { toPathString, normalizePath } from "./utils";
+import { path, params, history, scroller, scheduler } from './integrations';
+import { toPathString, normalizePath } from './utils';
+import stateScheduler from '../state/batching';
 
 const routers = [];
 let routingStatus;
@@ -75,10 +76,11 @@ export function routeFromDepth(
   // stop the URL updating scheduler until the end of the routing
   // and commit all URL updates in one batch to avoid flicker
   scheduler.stop();
+  stateScheduler.stop();
 
   // create a new routing status
   // this may be cancelled by future routing processes
-  const status = routingStatus = { depth, cancelled: false };
+  const status = (routingStatus = { depth, cancelled: false });
 
   // update the path array with the desired new path
   path.splice(depth, Infinity, ...normalizedPath);
@@ -150,7 +152,7 @@ function finishRouting({ push, scroll }, status) {
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
-    if (typeof scroll === "object") {
+    if (typeof scroll === 'object') {
       if (scroll.anchor) {
         scroller.scrollToAnchor(scroll);
       } else {
@@ -166,6 +168,8 @@ function finishRouting({ push, scroll }, status) {
     // should replace the new item instead of the old one
     scheduler.process();
     scheduler.start();
+    stateScheduler.process();
+    stateScheduler.start();
     // the routing is over and the is no currently ongoing routing process
     routingStatus = undefined;
   }

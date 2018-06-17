@@ -1,8 +1,9 @@
-import { Component } from "react";
-import { observe, unobserve, raw, isObservable } from "@nx-js/observer-util";
+import { Component } from 'react';
+import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util';
+import scheduler from './batching';
 
 // this is used to save the component on the state for static lifecycle methods
-const COMPONENT = Symbol("owner component");
+const COMPONENT = Symbol('owner component');
 // this used for empty setState calls to trigger component updates
 const DUMMY_STATE = {};
 
@@ -22,10 +23,15 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
 
       this.state = this.state || {};
       this.state[COMPONENT] = this;
+
+      const updater = () => this.setState(DUMMY_STATE);
       // create a reactive render for the component
       // run a dummy setState to schedule a new reactive render, avoid forceUpdate
       this.render = observe(this.render, {
-        scheduler: () => this.setState(DUMMY_STATE),
+        scheduler: {
+          add: () => scheduler.add(updater),
+          delete: () => scheduler.delete(updater)
+        },
         debugger: devtool,
         lazy: true
       });
@@ -44,13 +50,13 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
         super.shouldComponentUpdate &&
         !super.shouldComponentUpdate(nextProps, nextState)
       ) {
-        devtool && devtool({ type: "render", renderType: "blocked" });
+        devtool && devtool({ type: 'render', renderType: 'blocked' });
         return false;
       }
 
       // return true if it is a reactive render or state changes
       if (state !== nextState) {
-        devtool && devtool({ type: "render", renderType: "reactive" });
+        devtool && devtool({ type: 'render', renderType: 'reactive' });
         return true;
       }
 
@@ -63,8 +69,8 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       ) {
         devtool &&
           devtool({
-            type: "render",
-            renderType: "normal",
+            type: 'render',
+            renderType: 'normal',
             props: nextProps,
             oldProps: props
           });

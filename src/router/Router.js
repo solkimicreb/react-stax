@@ -1,8 +1,8 @@
-import React, { PureComponent, Children } from "react";
-import PropTypes from "prop-types";
-import { path, params, elements, animation } from "./integrations";
-import { addExtraProps } from "./utils";
-import { registerRouter, releaseRouter, routeFromDepth } from "./core";
+import React, { PureComponent, Children } from 'react';
+import PropTypes from 'prop-types';
+import { path, params, elements, animation } from './integrations';
+import { addExtraProps } from './utils';
+import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
 // Router selects a single child to render based on its children's page props
 // and the URL pathname token at the Router's depth (they can be nested)
@@ -64,12 +64,6 @@ export default class Router extends PureComponent {
     // this is important for relative links and automatic active link highlight
     path[this.depth] = toPage;
 
-    // this saves the current raw view (DOM) to be used for the leave animation
-    // it is important to call this here, before anything could mutate the view
-    // the first thing which may mutate views is the props.onRoute call below
-    // mutations should only happen to the new view after the routing started
-    this.setupAnimation();
-
     // onRoute is where do user can intercept the routing or resolve data
     if (onRoute) {
       return onRoute({
@@ -88,6 +82,15 @@ export default class Router extends PureComponent {
       resolvedData,
       page: path[this.depth]
     };
+
+    // TODO: move should Animate logic here!!
+
+    // this saves the current raw view (DOM) to be used for the leave animation
+    // it is important to call this here, before anything could mutate the view
+    // the first thing which may mutate views is the props.onRoute call below
+    // mutations should only happen to the new view after the routing started
+    this.setupAnimation();
+
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
@@ -108,7 +111,7 @@ export default class Router extends PureComponent {
     // only animate when a new page is rendered by default,
     // but make it configurable with the shouldAnimate prop
     // the user may also want to animate when a query param changes for example
-    if (typeof shouldAnimate === "function") {
+    if (typeof shouldAnimate === 'function') {
       this.shouldAnimate = shouldAnimate({ fromPage, toPage });
     } else {
       this.shouldAnimate =
@@ -118,7 +121,7 @@ export default class Router extends PureComponent {
     // if there will be a leaveAnimation during the current routing
     // save the current raw view (DOM), so it can be used later for a fade out
     // or cross fade effect after the new view is rendered
-    if (this.shouldAnimate && leaveAnimation) {
+    if (this.shouldAnimate) {
       animation.setup(this.container);
     }
   }
