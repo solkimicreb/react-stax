@@ -78,7 +78,7 @@ export function routeFromDepth(
 
   // create a new routing status
   // this may be cancelled by future routing processes
-  routingStatus = { depth, cancelled: false };
+  const status = routingStatus = { depth, cancelled: false };
 
   // update the path array with the desired new path
   path.splice(depth, Infinity, ...normalizedPath);
@@ -91,8 +91,8 @@ export function routeFromDepth(
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
-    .then(() => switchRoutersFromDepth(depth, routingStatus))
-    .then(() => finishRouting({ push, scroll }, routingStatus));
+    .then(() => switchRoutersFromDepth(depth, status))
+    .then(() => finishRouting({ push, scroll }, status));
 }
 
 // this recursively routes all parallel routers form a given depth
