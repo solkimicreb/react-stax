@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 export default function render({ view, store }) {
   const user = store({
-    firstName: "Developer",
-    lastName: "Dan",
+    firstName: 'Developer',
+    lastName: 'Dan',
     get fullName() {
-      return `${this.firstName} ${this.lastName}`;
+      return `${user.firstName} ${user.lastName}`;
     }
   });
 

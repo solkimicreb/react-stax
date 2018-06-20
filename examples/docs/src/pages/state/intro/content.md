@@ -1,10 +1,10 @@
 # State Management
 
-State management is based on transparent reactivity, which means you don't have to explicitly tell which component should render when. You can simply use the necessary parts of your state in your components and let easy-stack re-render them for you.
+State management is based on transparent reactivity, which means you don't have to explicitly control which component should render when. You can simply use the necessary parts of your state in your components and let easy-stack re-render them for you.
 
 ## Creating state stores
 
-State can be stored in any object, but state stores must be wrapped with `store()` before they are used. `store()` wraps your object in a transparent reactive Proxy, which is invisible from the outside. The wrapped object behaves exactly like the original one.
+State can be stored in any object, but state stores must be wrapped with `store()` before they are used. `store()` wraps your object with a transparent reactive Proxy, which is invisible from the outside. The wrapped object behaves exactly like the original one.
 
 ```js
 import { store } from 'react-easy-stack';
@@ -23,7 +23,7 @@ delete user.age;
 
 ## Creating reactive views
 
-Any React component can be made reactive, by wrapping it with `view()`. Reactive components re-render when the stored data - which is used by them - changes.
+Any React component can be made reactive, by wrapping it with `view()`. Reactive components re-render when the stored state - which is used during their render - changes.
 
 ```jsx
 import React from 'react';
@@ -37,7 +37,7 @@ export default view(() => <p>The num is {counter.num}.</p>);
 
 <div id="basic-demo"></div>
 
-Always wrap your reactive components with `view` before you export them or mount them in other components.
+Always wrap your reactive components with `view` before you export them or mount them in other components. This rule applies to both function and class components.
 
 ## Handling global state
 

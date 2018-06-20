@@ -1,8 +1,8 @@
 # Routing
 
-Easy-stack clearly separates navigation from dynamic routing parameters. The url pathname is used for navigation in the empty app shell and it can not store any parameters. It is similar to most file systems.
+Easy Stack clearly separates navigation from dynamic routing parameters. The url pathname is used for navigation in the [application shell](https://developers.google.com/web/fundamentals/architecture/app-shell) and it does not store any parameters.
 
-Dynamic parameters are stored in the query string and they ideally define the data shell for the current screen. The data shell is a minimal set of primitives, which defines the currently displayed data. It usually consists of user inputs.
+The query string stores the dynamic parameters, which ideally define the data shell. The data shell is a minimal set of primitives, which define the current application state. It usually consists of user inputs.
 
 ## The Router component
 
@@ -21,9 +21,9 @@ export default () => (
 );
 ```
 
-* Every direct `Router` child must have a `page` attribute.
-* `page` attributes must be a unique token without the `/` character.
-* The `Router` must have a `defaultPage` prop, which matches with a child page. If the relevant pathname token is empty, the Router routes to the default page.
+- Every direct `Router` child must have a `page` attribute.
+- `page` attributes must be a unique string tokens without the `/` character.
+- `Routers` must have a `defaultPage` prop, which matches with a child's `page`. If the relevant pathname token is empty, the Router routes to the default page.
 
 ## Links
 
@@ -45,11 +45,12 @@ export default () => (
       <SettingsPage page="settings" />
     </Router>
   </div>
+);
 ```
 
 <div id="links-demo"></div>
 
-In the simplest case the url pathname is replaced with the Link's `to` prop on click and the Routers update to match with the new pathname.
+In the simplest case the url pathname is replaced with the Link's `to` prop on click and the Router updates to match with the new pathname.
 
 ## Programmatic routing
 
@@ -77,11 +78,9 @@ export default () => (
 );
 ```
 
-The `route` function comes handy when you need to trigger routings not just on click events.
+## The `push` option
 
-## The `push` options
-
-Links and the `route` function have a `push` boolean option property, which toggles if the routing should push a new history item or replace the current one. By default it adds a new history item, except when the routing reloads the current page.
+Links and the `route` function have a `push` boolean option, which toggles if the routing should push a new history item or replace the current one. By default it adds a new history item when the routing results in a new page.
 
 ```jsx
 <Link to="path" push={false} />;

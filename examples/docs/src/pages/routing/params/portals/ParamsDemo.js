@@ -8,13 +8,19 @@ export default function render({ Link, Router, params, view, store }) {
     <div>
       <h2>User List</h2>
       Filter: <input value={params.filter} onChange={onChange} />
-      {Object.keys(users).map(id => (
-        <div key={id}>
-          <Link to="/details" params={{ id }}>
-            {users[id]}
-          </Link>
-        </div>
-      ))}
+      {Object.keys(users)
+        .filter(
+          id =>
+            !params.filter ||
+            users[id].toLowerCase().indexOf(params.filter.toLowerCase()) !== -1
+        )
+        .map(id => (
+          <div key={id}>
+            <Link to="/details" params={{ id }}>
+              {users[id]}
+            </Link>
+          </div>
+        ))}
     </div>
   ));
   const DetailsPage = () => <p>User: {users[params.id]}</p>;

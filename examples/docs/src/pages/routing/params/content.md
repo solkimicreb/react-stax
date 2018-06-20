@@ -1,6 +1,6 @@
 # Routing Parameters
 
-Dynamic parameters can be added with the `params` property of `Link` or the `route` function.
+Routing parameters can be added via the `params` property of the `Link` component or the `route()` function. The parameters must be primitives and they are always saved in the query string.
 
 ```jsx
 import React from 'react';
@@ -32,15 +32,13 @@ export default () => (
 
 <div id="starting-params-demo"></div>
 
-Parameters must be primitives, which are added to the query string and exposed on the `params` object. The type of each parameter is encoded in the query string and restored on page loads from links.
-
 ## The params object
 
-The `params` object stores the current parameters and it is two-way synchronized with query string. The Link's `params` property should be used to set the starting parameter pool for the page and the `params` object can be used to manipulate the parameters while the page is active.
+The `Link`'s `params` property sets the starting parameter pool for the page on navigation and the top-level `params` object can be used to manipulate the parameters while the page is active. It reflects the current parameter pool and it is two-way synchronized with query string.
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link, params } from 'react-easy-stack';
 
 const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 

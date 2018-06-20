@@ -55,7 +55,7 @@ You can take a deeper dive in the <span id="routing-link"></span>.
 
 ## State Management
 
-State management focuses on freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation. You can share global state between components with a simple object.
+State management focuses on freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation.
 
 ```jsx
 import React from 'react';
@@ -85,11 +85,11 @@ The state management API has two functions:
 
 You can put anything in your stores and mutate them in arbitrary way, the necessary components will always re-render to reflect the new state. You could store a mix of deeply nested objects with arrays and maps. You could add or delete properties dynamically or even use computed getters or inheritance.
 
-The possibilities are endless, learn more about typical state management patterns in the <span id="state-link"></span>.
+The possibilities are endless, learn more about common patterns in the <span id="state-link"></span>.
 
 ## Browser integration
 
-Good web pages use the platform. They are shareable by URL and integrate with the browser history. Easy Stack has a few plain objects, which automatically two-way synchronize with the URL and localStorage to offload some integration complexity from you.
+Good web pages use the platform, they are shareable by URL and integrate with the browser history. Easy Stack has a few plain objects, which automatically two-way synchronize with the URL and localStorage to offload some integration complexity from you.
 
 ```jsx
 import React from 'react';
@@ -103,7 +103,7 @@ export default view(() => <input value={params.filter} onChange={setFilter} />);
 
 The integrations API has three objects:
 
-- `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
+- `params` is an object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
 - `path` is an array which is in sync with the current URL pathname.
 - `storage` is an object, which is in sync with the localStorage. It is perfect for offline caching or storing session data.
 
@@ -111,7 +111,7 @@ You can learn more about common use cases in the <span id="integrations-link"></
 
 ## Making an app
 
-The above examples fit together to create a simple beer fetching app. Just type in your favorite food and find out which beers pair well with it.
+The above examples fit together to create a simple beer fetching app. Just type in your favorite food and find out which beers pairs well with it.
 
 ```jsx
 import React from 'react';

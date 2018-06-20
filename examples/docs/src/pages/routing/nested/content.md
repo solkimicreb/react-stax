@@ -32,16 +32,14 @@ export default () => (
 
 ## Relative and absolute links
 
-Absolute links trigger a routing from the root level, while relative links only route from the current depth. The following `to` property formats can be used for relative and absolute links.
+Absolute links trigger a routing from the root level, while relative links only route from the `Link`'s depth. The `to` property format is mirroring the behavior of [file systems](http://teaching.idallen.com/cst8207/12f/notes/160_pathnames.html) and [HTML links](https://www.w3schools.com/html/html_filepaths.asp) for absolute and relative paths.
 
-* `/settings/privacy` is an absolute link, which always routes from the root level.
-* `settings/privacy` is a relative link from the current depth.
-* `./settings/privacy` is also a relative link from the current depth.
-* `../settings/privacy` is a relative link, which routes from the parent level.
-* `../../settings/privacy` is a relative link, which routes from the grandparent level.
-* `..` is a relative link, which routes the default page of the parent router.
-
-The system is based on file systems and HTML links.
+- `/settings/privacy` is an absolute link, which always routes from the root level.
+- `settings/privacy` is a relative link from the current depth.
+- `./settings/privacy` is also a relative link from the current depth.
+- `../settings/privacy` is a relative link, which routes from the parent level.
+- `../../settings/privacy` is a relative link, which routes from the grandparent level.
+- `..` is a relative link, which routes to the default page of the parent router.
 
 ```jsx
 const ProfilePage = () => <h2>Profile Page</h2>;
@@ -75,3 +73,5 @@ export default () => (
 <div id="relative-demo"></div>
 
 Using relative links instead of absolute ones is usually a good practice. It makes refactoring easier when the project grows.
+
+> Relative paths don't make sense in case of the `route()` function, it always routes from the root level.

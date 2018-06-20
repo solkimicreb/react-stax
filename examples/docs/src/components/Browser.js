@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { view, store, history } from 'react-easy-stack';
-import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6';
+import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es5';
 import styled, { keyframes } from 'styled-components';
 import Frame from 'react-frame-component';
 import GithubIcon from 'react-icons/lib/fa/github';
@@ -17,7 +17,7 @@ const BrowserFrame = styled.div`
   max-height: 300px;
   margin: 15px ${props => (props.isMobile ? -15 : 0)}px;
   border-radius: ${props => (props.isMobile ? 0 : 3)}px;
-  box-shadow: 1px 1px 4px 1px ${colors.textLight};
+  box-shadow: 0.5px 0.5px 4px 0.5px ${colors.textLight};
   overflow: hidden;
 `;
 

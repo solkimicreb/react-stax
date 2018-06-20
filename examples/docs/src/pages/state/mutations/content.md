@@ -1,6 +1,6 @@
 # Mutating the Stores
 
-State stores can be mutated from anywhere in arbitrary way, but keeping state mutations in a central place is a good practice. In this section we will cover a few patterns for this.
+State stores can be mutated from anywhere in arbitrary ways, but keeping state mutations in a central place is a good practice. In this section we will cover a few state management patterns.
 
 ## Mutating from store methods
 
@@ -30,6 +30,17 @@ export default () => <button onClick={user.logout}>Logout</button>;
 ```
 
 A simple solution is to use the direct store reference instead of `this` inside store methods. The `logout()` method should be changed to set `user.isLoggedIn` instead of `this.isLoggedIn` and so on.
+
+```js
+const user = store({
+  // ...
+  logout() {
+    user.isLoggedIn = false;
+    user.profile = {};
+  }
+});
+export default user;
+```
 
 ## Keeping the store pure
 
@@ -65,7 +76,7 @@ In big applications a single mutator method typically mutates more than one stor
 
 ## Global components
 
-Some components - like notifications and loaders - are usually singleton inside applications. In these cases it makes sense to create a hidden store for the component and expose a global mutator API for the application.
+Some components - like notifications and loaders - are usually singleton inside applications. In these cases it makes sense to create a hidden store and expose a global mutator API for the component.
 
 _Loader.jsx_
 
@@ -102,4 +113,4 @@ export default () => (
 
 <div id="loader-demo"></div>
 
-Mounting a single loader somewhere visible and calling the `startLoading`/`stopLoading` pair from a global http hook produces a single central loading logic with good UX.
+Mounting a single loader somewhere visible and calling the `startLoading`/`stopLoading` pair from a global http hook produces a single central loading logic and UI.

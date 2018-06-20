@@ -2,14 +2,15 @@
 
 Store data can be dynamically derived with standard JavaScript getters.
 
-```js
+```jsx
+import React from 'react';
 import { store } from 'react-easy-stack';
 
 const user = store({
   firstName: 'Dan',
   lastName: 'Developer',
   get fullName() {
-    return `${this.firstName} ${this.lastName}`;
+    return `${user.firstName} ${user.lastName}`;
   }
 });
 
@@ -26,15 +27,15 @@ export default view(() => (
 
 <div id="getter-demo"></div>
 
-Using a mix of normal and getter properties with separate <span id="mutators-link"></span> is an elegant state management pattern.
+Using a mix of normal and getter properties in the stores with <span id="mutators-link"></span> is an elegant state management pattern.
 
-> Getters are always called with the correct `this`, you can safely use it inside them.
+> You can safely use `this` inside getters, if you prefer it over the direct store reference. Getters are always called with the correct `this`.
 
 ## deriveStoresFromProps
 
-Deriving local stores from props is possible with the `deriveStoresFromProps` static method, which is a mirror of React's `getDerivedStateFromProps`.
+Deriving local store properties from component `props` is possible with the `deriveStoresFromProps` static method, which is mirrored from React's `getDerivedStateFromProps`.
 
-It has the `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stores` are the local stores of the component. Unlike in `getDerivedStateFromProps`, you can directly mutate the stores inside the method and the return value is ignored.
+It has a `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stores` are the local stores of the component in definition order. You can directly mutate the stores inside the method and the return value is ignored - unlike in `getDerivedStateFromProps`.
 
 ```jsx
 import React from 'react';
@@ -70,4 +71,4 @@ class SearchField extends Component {
 export default view(SearchField);
 ```
 
-This search component has an encapsulated value, that can be overridden by props with the help of `deriveStoresFromProps`.
+This search component has an encapsulated store `value`, that can be overridden by props with the help of `deriveStoresFromProps`.
