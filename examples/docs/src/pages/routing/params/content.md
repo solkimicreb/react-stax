@@ -68,6 +68,8 @@ export default () => (
 
 <div id="params-demo"></div>
 
+> The parameters' type information is saved in the query string and types are respected during the two-way synchronization process.
+
 You can learn more about the params object in the <span id="integrations-link"></span>.
 
 ## The `inherit` option

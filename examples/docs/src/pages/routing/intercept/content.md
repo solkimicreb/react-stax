@@ -4,6 +4,7 @@ The routing process can be intercepted for each `Router` by the `onRoute` proper
 
 - `fromPage`: the page name the router is routing away from.
 - `toPage`: the page name the router is routing to.
+- `fromParams`: the parameter pool of the previous page.
 
 ```jsx
 import React from 'react';
@@ -106,5 +107,7 @@ export default () => (
 ```
 
 <div id="params-demo"></div>
+
+You can use the `fromParams` property of `onRoute`'s argument to read parameters from the previous page.
 
 ## Props injection

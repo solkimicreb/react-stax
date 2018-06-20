@@ -1,6 +1,6 @@
 import React, { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
-import { path, params, elements, animation } from './integrations';
+import { path, params, history, elements, animation } from './integrations';
 import { addExtraProps } from './utils';
 import { registerRouter, releaseRouter, routeFromDepth } from './core';
 
@@ -69,7 +69,8 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage
+        toPage,
+        fromParams: history.state.params
       });
     }
   }
