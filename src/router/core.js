@@ -143,8 +143,7 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 // if it was not cancelled in the meantime
 function finishRouting({ push, scroll }, status) {
   if (!status.cancelled) {
-    const prevPath = history.items[history.idx].path;
-    const pathChanged = toPathString(prevPath) !== toPathString(path);
+    const pathChanged = toPathString(path) !== toPathString(history.state.path);
     // push a new history item or replace the current one
     // maybe also add scroll
     if (push === true || (push !== false && pathChanged)) {

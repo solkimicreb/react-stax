@@ -1,19 +1,42 @@
-import { history } from "../../integrations";
-import { route } from "../../core";
+import { history } from '../../integrations';
+import { route } from '../../core';
+import { toPathString } from '../../utils';
 
-const originalPush = history.push;
-const originalReplace = history.replace;
-Object.assign(history, {
-  push(item) {
-    item = Reflect.apply(originalPush, history, [item]);
-    window.history.pushState({ idx: history.idx }, "", item.url);
+Object.defineProperties(history, {
+  state: {
+    get: () => window.history.state
   },
-  replace(item) {
-    item = Reflect.apply(originalReplace, history, [item]);
-    window.history.replaceState(window.history.state, "", item.url);
+  length: {
+    get: () => window.history.length
   }
 });
 
-window.addEventListener("popstate", ev =>
-  history.go(ev.state ? ev.state.idx : 0)
-);
+Object.assign(history, {
+  push(item) {
+    item = history.createItem(item);
+    window.history.pushState(item, '', item.url);
+  },
+  replace(item) {
+    item = history.createItem(item);
+    window.history.replaceState(item, '', item.url);
+  },
+  go(to) {
+    return window.history.go(to);
+  },
+  forward() {
+    return window.history.forward();
+  },
+  back() {
+    return window.history.back();
+  }
+});
+
+window.addEventListener('popstate', ev => {
+  const { path, params, scroll } = ev.state;
+  return route({
+    to: toPathString(path),
+    params,
+    scroll,
+    push: false
+  });
+});

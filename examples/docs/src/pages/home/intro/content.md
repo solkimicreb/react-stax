@@ -2,7 +2,7 @@
 
 > A complete routing and state management solution for practical developers.
 
-React Easy Stack was born from years of practical problem solving. It promotes rapid development and puts product quality before theoretical code beauty. Easy Stack apps should effortlessly meet subtle user expectations - like browser history and URL integration, animated page transitions and routing without a cascade of loaders.
+A React stack, which puts rapid development and product quality before theoretical code beauty. Easy Stack apps should effortlessly meet subtle user expectations - like browser history and URL integration, animated page transitions and routing without a cascade of loaders.
 
 ## Installation
 
@@ -45,9 +45,9 @@ export default () => (
 
 The routing API has three components:
 
-* `Router` is like a folder, think of its child components as files and child routers as subfolders.
-* `Link` navigates between the pages.
-* `route` is a function for programmatic navigation.
+- `Router` is like a folder, think of its child components as files and child routers as subfolders.
+- `Link` navigates in the Router tree.
+- `route` is a function for programmatic navigation.
 
 These three provide features like nested and parallel routing, relative and absolute routes, async data resolution, lazy loading, active link styling, scroll management and animated page transitions.
 
@@ -80,8 +80,8 @@ export default view(() => (
 
 The state management API has two functions:
 
-* `store` creates reactive stores for your data.
-* `view` creates reactive views, which re-render when the data mutates.
+- `store` creates reactive stores for your data.
+- `view` creates reactive views, which re-render when the data mutates.
 
 You can put anything in your stores and mutate them in arbitrary way, the necessary components will always re-render to reflect the new state. You could store a mix of deeply nested objects with arrays and maps. You could add or delete properties dynamically or even use computed getters or inheritance.
 
@@ -103,9 +103,9 @@ export default view(() => <input value={params.filter} onChange={setFilter} />);
 
 The integrations API has three objects:
 
-* `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
-* `path` is an array which is in sync with the current URL pathname.
-* `storage` is an object, which is in sync with the localStorage. It is perfect for offline caching or storing session data.
+- `params` is a reactive object, which is always in sync with the URL query parameters. Forget the times when you had to reload a page to change a single query parameter.
+- `path` is an array which is in sync with the current URL pathname.
+- `storage` is an object, which is in sync with the localStorage. It is perfect for offline caching or storing session data.
 
 You can learn more about common use cases in the <span id="integrations-link"></span>.
 
