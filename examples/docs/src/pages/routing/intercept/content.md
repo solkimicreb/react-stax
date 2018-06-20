@@ -1,73 +1,110 @@
-# Routing Parameters
+# Routing Interception
 
-Dynamic parameters can be added with the `params` property of `Link` or the `route` function.
+The routing process can be intercepted for each `Router` by the `onRoute` property. `onRoute()` is a function with a single object parameter, which has the following properties:
 
-```jsx
-import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
-
-const users = { '1': 'Ann', '12': 'Bob' };
-
-const UsersPage = () => (
-  <div>
-    <h2>User List</h2>
-    {Object.keys(users).map(id => (
-      <div key={id}>
-        <Link to="/details" params={{ id }}>
-          {users[id]}
-        </Link>
-      </div>
-    ))}
-  </div>
-);
-const DetailsPage = () => <p>User: {users[params.id]}</p>;
-
-export default () => (
-  <Router defaultPage="users">
-    <UsersPage page="users" />
-    <DetailsPage page="details" />
-  </Router>
-);
-```
-
-<div id="starting-params-demo"></div>
-
-Parameters must be primitives, which are added to the query string and exposed on the `params` object. The type of each parameter is encoded in the query string and restored on page loads from links.
-
-## The params object
-
-The `params` object stores the current parameters and it is two-way synchronized with query string. The Link's `params` property should be used to set the starting parameter pool for the page and the `params` object can be used to manipulate the parameters while the page is active.
+- `fromPage`: the page name the router is routing away from.
+- `toPage`: the page name the router is routing to.
 
 ```jsx
 import React from 'react';
 import { Router, Link } from 'react-easy-stack';
 
-const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
-
-const UsersPage = () => (
-  <div>
-    <h2>User List</h2>
-    {users.map(user => (
-      <div key={user.id}>
-        <Link to="/details" params={{ id: user.id }}>
-          {user.name}
-        </Link>
-      </div>
-    ))}
-  </div>
-);
-const DetailsPage = () => (
-  <p>User: {JSON.stringify(users.find(user => user.id === params.id))}</p>
-);
+function onRoute({ fromPage, toPage }) {
+  alert(`Routing from ${fromPage} to ${toPage}`);
+}
 
 export default () => (
-  <Router defaultPage="users">
-    <UsersPage page="users" />
-    <DetailsPage page="details" />
-  </Router>
+  <div>
+    <Link to="profile">Profile Page</Link>
+    <Link to="settings">Settings Page</Link>
+    <Router defaultPage="profile" onRoute={onRoute}>
+      <h2 page="profile">Profile Page</h2>
+      <h2 page="settings">Settings Page</h2>
+    </Router>
+  </div>
+);
+```
+
+<div id="interception-demo"></div>
+
+The `onRoute` function is the only interception point for routing processes, but it is extremely versatile. It can be used to:
+
+- <span id="redirect-link"></span> the routing.
+- <span id="params-link"></span> for the next page.
+- <span id="props-link"></span> into the next page.
+- <span id="fetch-link"></span> for the next page.
+- <span id="lazy-link"></span> for the next page.
+- <span id="virtual-link"></span> for complex routing logic.
+
+## Protected pages
+
+Starting a new routing process cancels any ongoing routings. You can call `route()` inside the `onRoute()` function to intercept and redirect the current routing.
+
+```jsx
+import React from 'react';
+import { Router, Link, route, store, view } from 'react-easy-stack';
+
+const user = store({});
+
+function toggleLogin() {
+  user.isLoggedIn = !user.isLoggedIn;
+  if (!user.isLoggedIn) {
+    route({ to: 'public' });
+  }
+}
+
+function onRoute({ fromPage, toPage }) {
+  if (toPage === 'protected' && !user.isLoggedIn) {
+    route({ to: fromPage });
+  }
+}
+
+export default view(() => (
+  <div>
+    <Link to="public">Public Page</Link>
+    <Link to="protected">Protected Page</Link>
+    <button onClick={toggleLogin}>Log {user.isLoggedIn ? 'out' : 'in'}</button>
+    <Router defaultPage="public" onRoute={onRoute}>
+      <h2 page="public">Public Page</h2>
+      <h2 page="protected">Protected Page</h2>
+    </Router>
+  </div>
+));
+```
+
+<div id="protected-demo"></div>
+
+The same pattern can be used to do pattern matching and redirects for applications with complex routing requirements.
+
+## Default parameters
+
+`onRoute` can be used to modify existing or set up default routing parameters for the next page. The `params` object is set to the new parameter pool at the very beginning of the routing process, so it always reflects the parameters of the next page inside `onRoute` functions.
+
+```jsx
+import React from 'react';
+import { Router, Link, params } from 'react-easy-stack';
+
+function onRoute({ toPage }) {
+  if (toPage === 'list') {
+    params.filter = params.filter || 'green';
+  }
+}
+
+export default () => (
+  <div>
+    <Link to="list">Colors List</Link>
+    <Link to="list" params={{ filter: 'red' }}>
+      Red List
+    </Link>
+    <Link to="details">Details</Link>
+    <Router defaultPage="list" onRoute={onRoute}>
+      <h2 page="list">Colors List</h2>
+      <h2 page="details">Color Details</h2>
+    </Router>
+  </div>
 );
 ```
 
 <div id="params-demo"></div>
 
-You can learn more about the params object in the <span id="integrations-link"></span>.
+## Props injection

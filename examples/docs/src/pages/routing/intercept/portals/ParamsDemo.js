@@ -1,28 +1,23 @@
 import React from 'react';
 
-export default function render({ Link, Router, params, view, store }) {
-  const users = store({ '1': 'Ann', '12': 'Bob' });
-  const onChange = ev => (params.filter = ev.target.value);
-
-  const UsersPage = view(() => (
-    <div>
-      <h2>User List</h2>
-      Filter: <input value={params.filter} onChange={onChange} />
-      {Object.keys(users).map(id => (
-        <div key={id}>
-          <Link to="/details" params={{ id }}>
-            {users[id]}
-          </Link>
-        </div>
-      ))}
-    </div>
-  ));
-  const DetailsPage = () => <p>User: {users[params.id]}</p>;
+export default function render({ Link, Router, params }) {
+  function onRoute({ toPage }) {
+    if (toPage === 'list') {
+      params.filter = params.filter || 'green';
+    }
+  }
 
   return () => (
-    <Router defaultPage="users">
-      <UsersPage page="users" />
-      <DetailsPage page="details" />
-    </Router>
+    <div>
+      <Link to="list">List</Link>
+      <Link to="list" params={{ filter: 'red' }}>
+        Red List
+      </Link>
+      <Link to="details">Details</Link>
+      <Router defaultPage="list" onRoute={onRoute}>
+        <h3 page="list">Colors List</h3>
+        <h3 page="details">Color Details</h3>
+      </Router>
+    </div>
   );
 }

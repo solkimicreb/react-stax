@@ -69,3 +69,13 @@ export default () => (
 <div id="params-demo"></div>
 
 You can learn more about the params object in the <span id="integrations-link"></span>.
+
+## The `inherit` option
+
+Links and the `route` function have an `inherit` boolean option, which toggles if the routing should inherit or overwrite to existing parameters. It defaults to `false`.
+
+```jsx
+<Link to="path" params={{ param: 'value' }} inherit={true} />;
+// OR ...
+route({ to: 'path', params: { param: 'value' }, inherit: true });
+```

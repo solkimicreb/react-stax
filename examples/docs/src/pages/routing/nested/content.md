@@ -40,6 +40,7 @@ Absolute links trigger a routing from the root level, while relative links only 
 - `../settings/privacy` is a relative link, which routes from the parent level.
 - `../../settings/privacy` is a relative link, which routes from the grandparent level.
 - `..` is a relative link, which routes to the default page of the parent router.
+- Having no `path` at all reloads the current page.
 
 ```jsx
 const ProfilePage = () => <h2>Profile Page</h2>;
@@ -62,6 +63,7 @@ export default () => (
     <Link to="/profile">Profile</Link>
     <Link to="/settings">Settings</Link>
     <Link to="/settings/privacy">Privacy Settings</Link>
+    <Link>Current Page</Link>
     <Router defaultPage="profile">
       <ProfilePage page="profile" />
       <SettingsPage page="settings" />

@@ -63,7 +63,7 @@ const SideNav = () => (
         <SideLink to="routing/nested">Nested Routing</SideLink>
         <SideLink to="routing/params">Parameters</SideLink>
         <SideLink to="routing/intercept">Interception</SideLink>
-        <SideLink to="routing/lazy">Lazy Loading</SideLink>
+        <SideLink to="routing/async">Async Interception</SideLink>
         <SideLink to="routing/scroll">Scroll Handling</SideLink>
         <SideLink to="routing/animations">Animations</SideLink>
         <SideLink to="routing/advanced">Advanced Patterns</SideLink>

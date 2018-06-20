@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function render({ Link, Router }) {
   const ProfilePage = () => <h2>Profile Page</h2>;
@@ -21,6 +21,7 @@ export default function render({ Link, Router }) {
       <Link to="/profile">Profile</Link>
       <Link to="/settings">Settings</Link>
       <Link to="/settings/privacy">Privacy Settings</Link>
+      <Link>Current Page</Link>
       <Router defaultPage="profile">
         <ProfilePage page="profile" />
         <SettingsPage page="settings" />
