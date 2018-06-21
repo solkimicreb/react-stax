@@ -61,13 +61,17 @@ class Page extends Component {
   });
 
   componentDidMount() {
-    const { children, title } = this.props;
+    const { children, data } = this.props;
     Children.forEach(children, child => {
       if (child.props.mount) {
         ReactDOM.render(child, document.getElementById(child.props.mount));
       }
     });
     this.store.didMount = true;
+    document.title =
+      data.title === 'React Easy Stack'
+        ? data.title
+        : `React Easy Stack | ${data.title}`;
   }
 
   render() {
