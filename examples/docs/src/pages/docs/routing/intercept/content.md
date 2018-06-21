@@ -3,6 +3,7 @@ The routing process can be intercepted for each `Router` by the `onRoute` proper
 - `fromPage`: the page name the router is routing away from.
 - `toPage`: the page name the router is routing to.
 - `fromParams`: the parameter pool of the previous page.
+- `target`: the Router instance, with a `target.route()` method. This method work exactly like the top-level `route()` function, but it can also handle relative paths.
 
 ```jsx
 import React from 'react';
@@ -26,7 +27,7 @@ export default () => (
 
 <div id="interception-demo"></div>
 
-The `onRoute` function is the only interception point for routing processes, but it is extremely versatile. It can be used to:
+The `onRoute()` function is the only interception point for routing processes, but it is extremely versatile. It can be used to:
 
 - <span id="redirect-link"></span> the routing.
 - <span id="params-link"></span> for the next page.
@@ -37,7 +38,7 @@ The `onRoute` function is the only interception point for routing processes, but
 
 ## Protected pages
 
-Starting a new routing process cancels any ongoing routings. You can call `route()` inside the `onRoute()` function to intercept and redirect the current routing.
+Starting a new routing process cancels any ongoing routings. You can call the top level `route()` function or the `target.route()` method inside the `onRoute()` function to intercept and redirect the current routing.
 
 ```jsx
 import React from 'react';
@@ -52,9 +53,9 @@ function toggleLogin() {
   }
 }
 
-function onRoute({ fromPage, toPage }) {
+function onRoute({ fromPage, toPage, target }) {
   if (toPage === 'protected' && !user.isLoggedIn) {
-    route({ to: fromPage });
+    target.route({ to: fromPage });
   }
 }
 
@@ -73,11 +74,13 @@ export default view(() => (
 
 <div id="protected-demo"></div>
 
+> Intercepting ongoing routings with new ones will not result in multiple history entries. New history items are never pushed before the end of the routing process.
+
 The same pattern can be used to do pattern matching and redirects for applications with complex routing requirements.
 
 ## Default parameters
 
-`onRoute` can be used to modify existing or set up default routing parameters for the next page. The `params` object is set to the new parameter pool at the very beginning of the routing process, so it always reflects the parameters of the next page inside `onRoute` functions.
+`onRoute()` can be used to modify existing or set up default routing parameters for the next page. The `params` object is set to the new parameter pool at the very beginning of the routing process, so it always reflects the parameters of the next page inside `onRoute()` functions.
 
 ```jsx
 import React from 'react';
@@ -106,7 +109,7 @@ export default () => (
 
 <div id="params-demo"></div>
 
-You can use the `fromParams` property of `onRoute`'s argument to read parameters from the previous page.
+You can use the `fromParams` property of `onRoute()`'s argument to read parameters from the previous page.
 
 ## Props injection
 
@@ -142,4 +145,4 @@ export default () => (
 
 <div id="props-demo"></div>
 
-You can use the `fromParams` property of `onRoute`'s argument to read parameters from the previous page.
+You can use the `fromParams` property of `onRoute()`'s argument to read parameters from the previous page.
