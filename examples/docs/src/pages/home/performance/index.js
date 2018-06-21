@@ -9,8 +9,8 @@ import IntegrationsDemo from './portals/IntegrationsDemo';
 import FinalDemo from './portals/FinalDemo';
 import content from './content.md';
 
-export default () => (
-  <Page html={content} {...this.props}>
+export default props => (
+  <Page html={content} {...props}>
     <Link to="/docs/routing" portal="routing-link">
       routing docs
     </Link>

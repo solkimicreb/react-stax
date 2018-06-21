@@ -8,7 +8,7 @@ import Button from './Button';
 const StyledApp = styled.main`
   box-sizing: content-box;
   max-width: ${layout.appWidth}px;
-  margin: ${layout.topbarHeight}px auto;
+  margin: ${layout.topbarHeight + 30}px auto;
   transform: ${props =>
     props.withSidebar ? `translateX(${layout.sidebarWidth / 2}px)` : 'none'};
   transition: transform 0.15s ${ease.both};

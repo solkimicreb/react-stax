@@ -7,93 +7,67 @@ import Sidebar from './components/Sidebar';
 import App from './components/App';
 import Page from './components/Page';
 import PageRouter from './components/PageRouter';
+import AnimatedRouter from './components/AnimatedRouter';
 import Notification, { notify } from './components/Notification';
 import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
-
-async function resolveRouting({ toPage }) {
-  const { default: RoutingPage } = await import(`./pages/routing/${toPage}`);
-  return <RoutingPage page={toPage} />;
-}
-
-async function resolveState({ toPage }) {
-  const { default: StatePage } = await import(`./pages/state/${toPage}`);
-  return <StatePage page={toPage} />;
-}
-
-async function resolveHome({ toPage }) {
-  const { default: HomePage } = await import(`./pages/home/${toPage}`);
-  return <HomePage page={toPage} />;
-}
-
-async function resolveExample({ toPage }) {
-  const html = await import(`./pages/examples/${toPage}.md`);
-  return <Page page={toPage} html={html} />;
-}
-
-const State = () => (
-  <PageRouter defaultPage="intro" onRoute={resolveState} debug="state" />
-);
-const Routing = () => (
-  <PageRouter defaultPage="intro" onRoute={resolveRouting} debug="routing" />
-);
-const Home = () => (
-  <PageRouter defaultPage="intro" onRoute={resolveHome} debug="home" />
-);
+import routes from './routes';
 
 const SideNav = () => (
   <Sidebar>
-    <PageRouter defaultPage="home">
+    <AnimatedRouter defaultPage="home">
       <div page="home">
-        <SideSectionLink to="intro">Introduction</SideSectionLink>
-        <SideSectionLink to="platforms">Platform Support</SideSectionLink>
-        <SideSectionLink to="performance">Performance</SideSectionLink>
+        {routes.home.map(page => (
+          <SideSectionLink to={page.path} key={page.name}>
+            {page.title}
+          </SideSectionLink>
+        ))}
       </div>
       <div page="docs">
         <SideSectionLink to="state">State Management</SideSectionLink>
-        <SideLink to="state/intro">Introduction</SideLink>
-        <SideLink to="state/mutations">Mutating the Stores</SideLink>
-        <SideLink to="state/computed">Computed Data</SideLink>
-        <SideLink to="state/batching">Batching Updates</SideLink>
-        <SideLink to="state/api">API Summary</SideLink>
+        {routes.docs.state.map(page => (
+          <SideLink to={page.path} key={page.name}>
+            {page.title}
+          </SideLink>
+        ))}
         <SideSectionLink to="routing">Routing</SideSectionLink>
-        <SideLink to="routing/intro">Introduction</SideLink>
-        <SideLink to="routing/nested">Nested Routing</SideLink>
-        <SideLink to="routing/params">Parameters</SideLink>
-        <SideLink to="routing/intercept">Interception</SideLink>
-        <SideLink to="routing/async">Async Interception</SideLink>
-        <SideLink to="routing/scroll">Scroll Handling</SideLink>
-        <SideLink to="routing/animations">Animations</SideLink>
-        <SideLink to="routing/advanced">Advanced Patterns</SideLink>
-        <SideLink to="routing/api">API Summary</SideLink>
+        {routes.docs.routing.map(page => (
+          <SideLink to={page.path} key={page.name}>
+            {page.title}
+          </SideLink>
+        ))}
       </div>
       <div page="examples">
-        <SideSectionLink to="clock-local">Local Clock</SideSectionLink>
-        <SideSectionLink to="clock-global">Glocal Clock</SideSectionLink>
+        {routes.examples.map(page => (
+          <SideLink to={page.path} key={page.name}>
+            {page.title}
+          </SideLink>
+        ))}
       </div>
-    </PageRouter>
+    </AnimatedRouter>
   </Sidebar>
 );
 
-const DocsContent = () => (
-  <PageRouter defaultPage="state" debug="docs">
-    <State page="state" />
-    <Routing page="routing" />
-  </PageRouter>
-);
-
 const Content = () => (
-  <PageRouter defaultPage="home" debug="main">
-    <Home page="home" />
-    <DocsContent page="docs" />
-    <PageRouter
-      page="examples"
-      defaultPage="clock-local"
-      onRoute={resolveExample}
-    />
-  </PageRouter>
+  <AnimatedRouter defaultPage="home" debug="main">
+    <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
+    <AnimatedRouter page="docs" defaultPage="state" debug="docs">
+      <PageRouter
+        page="state"
+        pages={routes.docs.state}
+        prevPages={routes.home}
+        nextPages={routes.docs.routing}
+      />
+      <PageRouter
+        page="routing"
+        pages={routes.docs.routing}
+        prevPages={routes.docs.state}
+      />
+    </AnimatedRouter>
+    <PageRouter page="examples" pages={routes.examples} />
+  </AnimatedRouter>
 );
 
 const Nav = () => (

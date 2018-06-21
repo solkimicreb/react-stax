@@ -1,5 +1,3 @@
-# Platform Support
-
 Easy Stack uses none polyfillable ES6 Proxies, that are not supported on older platforms.
 
 <img src="/assets/platform_support.png" alt="platform support" style="display: block; width: 100%; max-width: 550px; margin: 10px auto;"/>

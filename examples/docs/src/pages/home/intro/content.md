@@ -1,5 +1,3 @@
-# React Easy Stack
-
 > A complete routing and state management solution for practical developers.
 
 A React stack, which puts rapid development and product quality before theoretical code beauty. Easy Stack apps should effortlessly meet subtle user expectations - like browser history and URL integration, animated page transitions and routing without a cascade of loaders.

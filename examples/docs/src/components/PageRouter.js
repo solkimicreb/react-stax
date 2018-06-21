@@ -4,78 +4,41 @@ import styled from 'styled-components';
 import { ease, layout } from './theme';
 import * as sidebar from './Sidebar';
 import { notify } from './Notification';
-
-const StyledRouter = styled(Router)`
-  position: relative;
-
-  > * {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    will-change: auto;
-    contain: style layout;
-  }
-`;
-
-const enterAnimation = () => ({
-  keyframes: layout.isMobile
-    ? {
-        transform: ['translateX(110%)', 'none']
-      }
-    : {
-        opacity: [0, 1]
-      },
-  duration: 150,
-  ease: ease.in,
-  fill: 'both'
-});
-
-const leaveAnimation = () => {
-  const scrollY = document.getElementById('root').scrollTop;
-
-  return {
-    keyframes: layout.isMobile
-      ? {
-          transform: [
-            `translateY(-${scrollY}px)`,
-            `translate3d(-110%, -${scrollY}px, 0)`
-          ]
-        }
-      : {
-          opacity: [1, 0],
-          transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`]
-        },
-    duration: 150,
-    ease: ease.out,
-    fill: 'both'
-  };
-};
+import AnimatedRouter from './AnimatedRouter';
 
 class PageRouter extends Component {
-  onRoute = async ev => {
+  static defaultProps = {
+    nextPages: [],
+    prevPages: []
+  };
+
+  onRoute = async ({ toPage }) => {
+    const { pages, prevPages, nextPages } = this.props;
+    const idx = pages.findIndex(page => page.name === toPage);
+    const page = pages[idx];
+    const prevPage = pages[idx - 1] || prevPages[prevPages.length - 1];
+    const nextPage = pages[idx + 1] || nextPages[0];
+
+    const { default: NextPage } = await import(`../pages${page.path}`);
     sidebar.close();
-    if (this.props.onRoute) {
-      try {
-        return this.props.onRoute(ev);
-      } catch (err) {}
-    }
+
+    return (
+      <NextPage page={page.name} data={page} prev={prevPage} next={nextPage} />
+    );
   };
 
   render() {
-    const { children, ...props } = this.props;
+    const { pages, ...rest } = this.props;
 
     return (
-      <StyledRouter
-        {...props}
+      <AnimatedRouter
+        {...rest}
+        defaultPage={pages[0].name}
         notFoundPage="404"
         onRoute={this.onRoute}
-        enterAnimation={enterAnimation}
-        leaveAnimation={leaveAnimation}
       >
-        {children}
         <div page="404">Not Found Page!</div>
-      </StyledRouter>
+      </AnimatedRouter>
     );
   }
 }

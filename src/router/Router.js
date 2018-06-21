@@ -69,8 +69,9 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage,
-        fromParams: history.state.params
+        toPage
+        // TODO: readd this
+        // fromParams: history.state.params
       });
     }
   }

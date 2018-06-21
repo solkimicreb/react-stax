@@ -61,7 +61,7 @@ class Page extends Component {
   });
 
   componentDidMount() {
-    const { children } = this.props;
+    const { children, title } = this.props;
     Children.forEach(children, child => {
       if (child.props.mount) {
         ReactDOM.render(child, document.getElementById(child.props.mount));
@@ -71,7 +71,7 @@ class Page extends Component {
   }
 
   render() {
-    const { html, editURL, children, ...rest } = this.props;
+    const { html, data, prev, next, children, ...rest } = this.props;
     const { didMount } = this.store;
 
     return (
@@ -80,6 +80,7 @@ class Page extends Component {
         className="markdown-body"
         {...rest}
       >
+        {data.title && <h1>{data.title}</h1>}
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
           Children.map(
@@ -93,12 +94,20 @@ class Page extends Component {
                 : null
           )}
         <Stepper>
-          <Link to="..">
-            <BackIcon /> Prev page
-          </Link>
-          <Link to="..">
-            Next page <ForwardIcon />
-          </Link>
+          <div>
+            {prev && (
+              <Link to={prev.path}>
+                <BackIcon /> {prev.title}
+              </Link>
+            )}
+          </div>
+          <div>
+            {next && (
+              <Link to={next.path}>
+                {next.title} <ForwardIcon />
+              </Link>
+            )}
+          </div>
         </Stepper>
       </StyledPage>
     );

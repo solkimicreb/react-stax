@@ -3,4 +3,4 @@ import ReactDOM from 'react-dom';
 import Page from '../../../components/Page';
 import content from './content.md';
 
-export default () => <Page html={content} {...this.props} />;
+export default props => <Page html={content} {...props} />;
