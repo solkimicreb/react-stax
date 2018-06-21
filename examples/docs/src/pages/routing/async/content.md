@@ -1,42 +1,65 @@
-# Routing Parameters
+# Async Interception
 
-Dynamic parameters can be added with the `params` property of `Link` or the `route` function.
+`onRoute()` may return a Promise or be an async function, in which case the routing process will wait until it resolves.
+
+## Async data resolution
+
+You can fetch the necessary data for the next page inside `onRoute` and save it into your stores or inject them as props. The routing process will wait for all data to be fetched before it switches the router to the next page.
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { view, store, params, Router, Link } from 'react-easy-stack';
 
-const users = { '1': 'Ann', '12': 'Bob' };
+const beers = store({
+  list: [],
+  get selected() {
+    return beers.list.find(beer => beer.id === params.id);
+  }
+});
 
-const UsersPage = () => (
+const fetchBeers = () =>
+  fetch(`https://api.punkapi.com/v2/beers`)
+    .then(res => res.json())
+    .then(list => (beers.list = list || []));
+
+const List = view(() => (
   <div>
-    <h2>User List</h2>
-    {Object.keys(users).map(id => (
-      <div key={id}>
-        <Link to="/details" params={{ id }}>
-          {users[id]}
-        </Link>
-      </div>
+    {beers.list.map(beer => (
+      <Link to="/details" params={{ id: beer.id }} key={beer.id}>
+        {beer.name}
+      </Link>
     ))}
   </div>
-);
-const DetailsPage = () => <p>User: {users[params.id]}</p>;
+));
+
+const Details = view(() => (
+  <div>
+    <h4>{beers.selected.name}</h4>
+    <p>{beers.selected.description}</p>
+  </div>
+));
+
+async function onRoute({ toPage }) {
+  if (toPage === 'list') {
+    await fetchBeers();
+  }
+}
 
 export default () => (
-  <Router defaultPage="users">
-    <UsersPage page="users" />
-    <DetailsPage page="details" />
+  <Router defaultPage="list" onRoute={onRoute}>
+    <List page="list" />
+    <Details page="details" />
   </Router>
 );
 ```
 
 <div id="starting-params-demo"></div>
 
-Parameters must be primitives, which are added to the query string and exposed on the `params` object. The type of each parameter is encoded in the query string and restored on page loads from links.
+Mutating stores during a routing does not have an immediate effect. All view updates are batched and committed at once at the end of the routing.
 
-## The params object
+## Lazy loading
 
-The `params` object stores the current parameters and it is two-way synchronized with query string. The Link's `params` property should be used to set the starting parameter pool for the page and the `params` object can be used to manipulate the parameters while the page is active.
+`onRoute` may return a React element, in which case the element will be rendered as the next page of the router.
 
 ```jsx
 import React from 'react';
@@ -46,7 +69,7 @@ const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 
 const UsersPage = () => (
   <div>
-    <h2>User List</h2>
+    <h3>User List</h3>
     {users.map(user => (
       <div key={user.id}>
         <Link to="/details" params={{ id: user.id }}>
@@ -70,4 +93,8 @@ export default () => (
 
 <div id="params-demo"></div>
 
-You can learn more about the params object in the <span id="integrations-link"></span>.
+> All `Router` children must have a `page` props, including the ones returned from `onRoute`.
+
+## Virtual routing
+
+You can completely replace the component based declarative routing with the `onRoute` function for complex use cases.

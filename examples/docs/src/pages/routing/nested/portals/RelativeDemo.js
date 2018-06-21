@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default function render({ Link, Router }) {
-  const ProfilePage = () => <h2>Profile Page</h2>;
+  const ProfilePage = () => <h3>Profile Page</h3>;
   const SettingsPage = () => (
     <div>
-      <h2>Settings Page</h2>
+      <h3>Settings Page</h3>
       <Link to="account">Account</Link>
       <Link to="privacy">Privacy</Link>
       <Link to="/profile">Back to Profile (absolute)</Link>

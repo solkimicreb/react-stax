@@ -10,7 +10,7 @@ const users = { '1': 'Ann', '12': 'Bob' };
 
 const UsersPage = () => (
   <div>
-    <h2>User List</h2>
+    <h3>User List</h3>
     {Object.keys(users).map(id => (
       <div key={id}>
         <Link to="/details" params={{ id }}>
@@ -44,7 +44,7 @@ const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 
 const UsersPage = () => (
   <div>
-    <h2>User List</h2>
+    <h3>User List</h3>
     {users.map(user => (
       <div key={user.id}>
         <Link to="/details" params={{ id: user.id }}>

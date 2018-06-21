@@ -6,7 +6,7 @@ export default function render({ Link, Router, params, view, store }) {
 
   const UsersPage = view(() => (
     <div>
-      <h2>User List</h2>
+      <h3>User List</h3>
       Filter: <input value={params.filter} onChange={onChange} />
       {Object.keys(users)
         .filter(

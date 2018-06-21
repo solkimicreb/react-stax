@@ -5,7 +5,7 @@ export default function render({ Link, Router, params }) {
 
   const UsersPage = () => (
     <div>
-      <h2>User List</h2>
+      <h3>User List</h3>
       {Object.keys(users).map(id => (
         <div key={id}>
           <Link to="/details" params={{ id }}>

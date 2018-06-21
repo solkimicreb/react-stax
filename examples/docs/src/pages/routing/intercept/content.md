@@ -19,8 +19,8 @@ export default () => (
     <Link to="profile">Profile Page</Link>
     <Link to="settings">Settings Page</Link>
     <Router defaultPage="profile" onRoute={onRoute}>
-      <h2 page="profile">Profile Page</h2>
-      <h2 page="settings">Settings Page</h2>
+      <h3 page="profile">Profile Page</h3>
+      <h3 page="settings">Settings Page</h3>
     </Router>
   </div>
 );
@@ -66,8 +66,8 @@ export default view(() => (
     <Link to="protected">Protected Page</Link>
     <button onClick={toggleLogin}>Log {user.isLoggedIn ? 'out' : 'in'}</button>
     <Router defaultPage="public" onRoute={onRoute}>
-      <h2 page="public">Public Page</h2>
-      <h2 page="protected">Protected Page</h2>
+      <h3 page="public">Public Page</h3>
+      <h3 page="protected">Protected Page</h3>
     </Router>
   </div>
 ));
@@ -99,8 +99,8 @@ export default () => (
     </Link>
     <Link to="details">Details</Link>
     <Router defaultPage="list" onRoute={onRoute}>
-      <h2 page="list">Colors List</h2>
-      <h2 page="details">Color Details</h2>
+      <h3 page="list">Colors List</h3>
+      <h3 page="details">Color Details</h3>
     </Router>
   </div>
 );
@@ -111,3 +111,37 @@ export default () => (
 You can use the `fromParams` property of `onRoute`'s argument to read parameters from the previous page.
 
 ## Props injection
+
+`onRoute` may return an object, which will be injected into the next page component as props. The object is shallow merged with the existing props of the component.
+
+```jsx
+import React from 'react';
+import { Router, Link, params } from 'react-easy-stack';
+
+function onRoute({ toPage }) {
+  if (toPage === 'list') {
+    params.filter = params.filter || 'green';
+    return { color: params.filter };
+  }
+}
+
+const ColorsList = ({ color }) => <h3>{color} Colors</h3>;
+
+export default () => (
+  <div>
+    <Link to="list">Colors List</Link>
+    <Link to="list" params={{ filter: 'red' }}>
+      Red List
+    </Link>
+    <Link to="details">Details</Link>
+    <Router defaultPage="list" onRoute={onRoute}>
+      <ColorsList page="list" />
+      <h3 page="details">Color Details</h3>
+    </Router>
+  </div>
+);
+```
+
+<div id="props-demo"></div>
+
+You can use the `fromParams` property of `onRoute`'s argument to read parameters from the previous page.

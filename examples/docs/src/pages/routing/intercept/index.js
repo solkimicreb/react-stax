@@ -6,6 +6,7 @@ import Browser from '../../../components/Browser';
 import InterceptionDemo from './portals/InterceptionDemo';
 import ProtectedDemo from './portals/ProtectedDemo';
 import ParamsDemo from './portals/ParamsDemo';
+import PropsDemo from './portals/PropsDemo';
 import content from './content.md';
 
 export default () => (
@@ -25,5 +26,6 @@ export default () => (
     <Browser mount="interception-demo">{InterceptionDemo}</Browser>
     <Browser mount="protected-demo">{ProtectedDemo}</Browser>
     <Browser mount="params-demo">{ParamsDemo}</Browser>
+    <Browser mount="props-demo">{PropsDemo}</Browser>
   </Page>
 );

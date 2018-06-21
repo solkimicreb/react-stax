@@ -1,8 +1,8 @@
 import React from "react";
 
 export default function render({ Link, Router }) {
-  const ProfilePage = () => <h2>Profile Page</h2>;
-  const SettingsPage = () => <h2>Settings Page</h2>;
+  const ProfilePage = () => <h3>Profile Page</h3>;
+  const SettingsPage = () => <h3>Settings Page</h3>;
 
   return () => (
     <div>

@@ -33,8 +33,8 @@ Links update the url and navigate between the router pages.
 import React from 'react';
 import { Router, Link } from 'react-easy-stack';
 
-const ProfilePage = () => <h2>Profile Page</h2>;
-const SettingsPage = () => <h2>Settings Page</h2>;
+const ProfilePage = () => <h3>Profile Page</h3>;
+const SettingsPage = () => <h3>Settings Page</h3>;
 
 export default () => (
   <div>
@@ -60,8 +60,8 @@ Routing can also be triggered by the `route()` function, which takes an options 
 import React from 'react';
 import { Router, route } from 'react-easy-stack';
 
-const ProfilePage = () => <h2>Profile Page</h2>;
-const SettingsPage = () => <h2>Settings Page</h2>;
+const ProfilePage = () => <h3>Profile Page</h3>;
+const SettingsPage = () => <h3>Settings Page</h3>;
 
 const routeToProfile = () => route({ to: 'profile' });
 const routeToSettings = () => route({ to: 'profile' });

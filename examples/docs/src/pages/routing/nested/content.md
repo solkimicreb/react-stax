@@ -3,10 +3,10 @@
 Routers can be nested to arbitrary levels and each of them is assigned a depth based on the nesting. Every router uses the url pathname token at its depth for the routing process.
 
 ```jsx
-const ProfilePage = () => <h2>Profile Page</h2>;
+const ProfilePage = () => <h3>Profile Page</h3>;
 const SettingsPage = () => (
   <div>
-    <h2>Settings Page</h2>
+    <h3>Settings Page</h3>
     <Link to="account">Account</Link>
     <Link to="privacy">Privacy</Link>
     <Router defaultPage="account">
@@ -43,10 +43,10 @@ Absolute links trigger a routing from the root level, while relative links only 
 - Having no `path` at all reloads the current page.
 
 ```jsx
-const ProfilePage = () => <h2>Profile Page</h2>;
+const ProfilePage = () => <h3>Profile Page</h3>;
 const SettingsPage = () => (
   <div>
-    <h2>Settings Page</h2>
+    <h3>Settings Page</h3>
     <Link to="account">Account</Link>
     <Link to="privacy">Privacy</Link>
     <Link to="/profile">Back to Profile (absolute)</Link>
