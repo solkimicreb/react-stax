@@ -8,7 +8,7 @@ import { registerRouter, releaseRouter, routeFromDepth } from './core';
 // and the URL pathname token at the Router's depth (they can be nested)
 export default class Router extends PureComponent {
   static propTypes = {
-    defaultPage: PropTypes.string,
+    defaultPage: PropTypes.string.isRequired,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
     enterAnimation: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
@@ -69,9 +69,8 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage
-        // TODO: readd this
-        // fromParams: history.state.params
+        toPage,
+        fromParams: history.state.params
       });
     }
   }
@@ -137,6 +136,8 @@ export default class Router extends PureComponent {
     // if the resolvedData from onRoute is a React element use it as the view
     // this allows lazy loading components (and virtual routing)
     if (React.isValidElement(resolvedData)) {
+      // validate the resolved child to have a page prop
+      validateChild(resolvedData);
       toChild = resolvedData;
     } else {
       // select the next child based on the children's page prop
@@ -161,6 +162,8 @@ export default class Router extends PureComponent {
   // and the string token in the URL pathname at the routers depth
   selectChild(page) {
     const children = Children.toArray(this.props.children);
+    // validate if all children has a page prop
+    children.forEach(validateChild);
     const selectedChild = children.find(child => child.props.page === page);
     // if the router is mounted and it has no matching child view,
     // try to render a notFoundPage
@@ -171,5 +174,12 @@ export default class Router extends PureComponent {
       return children.find(child => child.props.page === notFoundPage);
     }
     return selectedChild;
+  }
+}
+
+// all Router children must have a page prop
+function validateChild(child) {
+  if (typeof child.props.page !== 'string') {
+    throw new Error('Every Router child must have a string valued page prop');
   }
 }

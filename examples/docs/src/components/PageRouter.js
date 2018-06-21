@@ -28,7 +28,7 @@ class PageRouter extends Component {
   };
 
   render() {
-    const { pages, ...rest } = this.props;
+    const { pages, prevPages, nextPages, ...rest } = this.props;
 
     return (
       <AnimatedRouter
