@@ -3,8 +3,8 @@ export default {
     {
       name: 'intro',
       title: 'React Easy Stack',
-      edit: 'github url',
-      path: '/home/intro'
+      path: '/home/intro',
+      edit: 'https://google.com'
     },
     {
       name: 'platforms',

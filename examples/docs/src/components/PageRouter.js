@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { Router, view } from 'react-easy-stack';
+import { Router, view, store } from 'react-easy-stack';
 import styled from 'styled-components';
 import { ease, layout } from './theme';
 import * as sidebar from './Sidebar';
 import { notify } from './Notification';
 import AnimatedRouter from './AnimatedRouter';
+
+export const pages = store({
+  current: {}
+});
 
 class PageRouter extends Component {
   static defaultProps = {
@@ -21,6 +25,7 @@ class PageRouter extends Component {
 
     const { default: NextPage } = await import(`../pages${page.path}`);
     sidebar.close();
+    pages.current = page;
 
     return (
       <NextPage page={page.name} data={page} prev={prevPage} next={nextPage} />

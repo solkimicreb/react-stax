@@ -1,12 +1,13 @@
-import React, { Fragment } from "react";
-import { view } from "react-easy-stack";
-import styled from "styled-components";
-import GithubIcon from "react-icons/lib/fa/github";
-import ChatIcon from "react-icons/lib/fa/comments-o";
-import MenuIcon from "react-icons/lib/fa/bars";
-import EditIcon from "react-icons/lib/fa/edit";
-import { colors, layout, ease } from "./theme";
-import * as sidebar from "./Sidebar";
+import React, { Fragment } from 'react';
+import { view } from 'react-easy-stack';
+import styled from 'styled-components';
+import GithubIcon from 'react-icons/lib/fa/github';
+import ChatIcon from 'react-icons/lib/fa/comments-o';
+import MenuIcon from 'react-icons/lib/fa/bars';
+import EditIcon from 'react-icons/lib/fa/edit';
+import { colors, layout, ease } from './theme';
+import * as sidebar from './Sidebar';
+import { pages } from './PageRouter';
 
 const CorrectedEditIcon = styled(EditIcon)`
   position: relative;
@@ -15,10 +16,10 @@ const CorrectedEditIcon = styled(EditIcon)`
 
 export default view(() => (
   <Fragment>
-    <a href="https://github.com/solkimicreb/react-easy-state/issues/14">
+    <a href="https://github.com/solkimicreb/react-easy-stack">
       <GithubIcon />
     </a>
-    <a href="https://github.com/solkimicreb/react-easy-state/issues/14">
+    <a href={pages.current.edit}>
       <CorrectedEditIcon />
     </a>
     <span id="chat-toggle">
