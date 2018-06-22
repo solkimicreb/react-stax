@@ -1,19 +1,7 @@
-import React from "react";
-import styled, { keyframes } from "styled-components";
-import ActionIcons from "./ActionIcons";
-import { colors, layout, ease } from "./theme";
-
-const scale = keyframes`
-  from {
-    transform: scale(0);
-  }
-  80% {
-    transform: scale(1.2);
-  }
-  to {
-    transform: none;
-  }
-`;
+import React from 'react';
+import styled, { keyframes } from 'styled-components';
+import ActionIcons from './ActionIcons';
+import { colors, layout, ease } from './theme';
 
 const Actionbar = styled.nav`
   position: fixed;
@@ -32,7 +20,6 @@ const Actionbar = styled.nav`
   transition: color 0.2s;
 
   > * {
-    animation: ${scale} 0.2s;
     cursor: pointer;
     &:hover,
     &:active {

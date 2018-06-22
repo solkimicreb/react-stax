@@ -7,7 +7,6 @@ import MenuIcon from 'react-icons/lib/fa/bars';
 import EditIcon from 'react-icons/lib/fa/edit';
 import { colors, layout, ease } from './theme';
 import * as sidebar from './Sidebar';
-import { pages } from './PageRouter';
 
 const CorrectedEditIcon = styled(EditIcon)`
   position: relative;
@@ -19,7 +18,7 @@ export default view(() => (
     <a href="https://github.com/solkimicreb/react-easy-stack">
       <GithubIcon />
     </a>
-    <a href={pages.current.edit}>
+    <a href={layout.currentPage.edit}>
       <CorrectedEditIcon />
     </a>
     <span id="chat-toggle">
