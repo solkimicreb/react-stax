@@ -30,7 +30,7 @@ const enterAnimation = () => ({
 });
 
 const leaveAnimation = () => {
-  const scrollY = document.getElementById('root').scrollTop;
+  const scrollY = window.scrollY;
 
   return {
     keyframes: layout.isMobile

@@ -32,11 +32,11 @@ Object.assign(history, {
 });
 
 window.addEventListener('popstate', ev => {
-  const { path, params, scroll } = ev.state;
+  const { path, params } = ev.state;
   return route({
     to: toPathString(path),
     params,
-    scroll,
+    scroll: false,
     push: false
   });
 });
