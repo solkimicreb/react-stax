@@ -16,7 +16,7 @@ export const ease = {
   both: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
 };
 
-const mql = window.matchMedia('(max-width: 800px)');
+const mql = window.matchMedia('(max-width: 1050px)');
 export const layout = store({
   topbarHeight: 50,
   actionbarHeight: 40,

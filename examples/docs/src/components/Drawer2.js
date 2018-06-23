@@ -18,6 +18,9 @@ const onTouchStart = ev => {
   touchStore.touchStart = Date.now();
 
   drawers.forEach(drawer => {
+    if (drawer.props.docked) {
+      return;
+    }
     const { width, right } = drawer.props;
     const touchX = right
       ? window.innerWidth - touchStore.touchX
@@ -89,18 +92,19 @@ const StyledDrawer = styled.div`
   right: ${props => (props.right ? `${-props.width}px` : 'unset')};
   bottom: 0;
   width: ${props => props.width}px;
-  z-index: ${props => (props.isMobile ? 70 : 10)};
+  z-index: ${props => (!props.docked ? 70 : 10)};
   overflow-y: scroll;
   padding: 10px;
   border-right: 1px solid #ddd;
   width: ${props => props.width}px;
-  padding-top: ${props => (props.isMobile ? 0 : layout.topbarHeight) + 10}px;
+  padding-top: ${props => (!props.docked ? 0 : layout.topbarHeight) + 10}px;
   background-color: ${colors.backgroundLight};
   transition: ${props => (props.isTouching ? 'none' : 'transform')};
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
-    ${props => (props.open ? (props.right ? '-100%' : '100%') : 'none')}
+    ${props =>
+      props.open || props.docked ? (props.right ? '-100%' : '100%') : 'none'}
   );
   will-change: transform;
   contain: strict;
@@ -113,7 +117,7 @@ const Backdrop = styled.div`
   left: 0;
   right: 0;
   background-color: ${colors.text};
-  opacity: ${props => (props.open ? 0.7 : 0)};
+  opacity: ${props => (props.open && !props.docked ? 0.7 : 0)};
   pointer-events: ${props => (props.open ? 'unset' : 'none')};
   transition: ${props => (props.isTouching ? 'none' : 'opacity')};
   transition-duration: ${props => 0.15}s;
@@ -150,7 +154,7 @@ class Drawer extends Component {
   close = () => (this.store.open = false);
 
   render() {
-    const { width, right, children } = this.props;
+    const { width, right, docked, children } = this.props;
     const { open, isTouching } = this.store;
 
     return (
@@ -159,7 +163,7 @@ class Drawer extends Component {
           open={open}
           width={width}
           right={right}
-          isMobile={layout.isMobile}
+          docked={docked}
           isTouching={isTouching}
           innerRef={this.ref}
         >
@@ -168,6 +172,7 @@ class Drawer extends Component {
         <Backdrop
           open={open}
           isTouching={isTouching}
+          docked={docked}
           onClick={this.close}
           innerRef={backdrop}
         />

@@ -28,7 +28,11 @@ const StyledDrawer = styled(Drawer)``;
 
 export default view(({ children }) => {
   return (
-    <StyledDrawer width={layout.sidebarWidth} open={sidebarStore.open} right>
+    <StyledDrawer
+      width={layout.sidebarWidth}
+      open={sidebarStore.open}
+      docked={!layout.isMobile}
+    >
       {children}
     </StyledDrawer>
   );
