@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { store, view, path } from 'react-easy-stack';
 import styled from 'styled-components';
-import Drawer from './Drawer2';
+import Drawer from './Drawer';
 import { colors, ease, layout } from './theme';
 
 export const sidebarStore = store({
@@ -24,16 +24,23 @@ export function toggle() {
   }
 }
 
-const StyledDrawer = styled(Drawer)``;
+const StyledSidebar = styled.nav`
+  height: 100%;
+  background-color: ${colors.backgroundLight};
+  overflow-y: scroll;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+`;
 
 export default view(({ children }) => {
   return (
-    <StyledDrawer
+    <Drawer
       width={layout.sidebarWidth}
-      open={sidebarStore.open}
       docked={!layout.isMobile}
+      open={sidebarStore.open}
+      onClose={close}
     >
-      {children}
-    </StyledDrawer>
+      <StyledSidebar>{children}</StyledSidebar>
+    </Drawer>
   );
 });

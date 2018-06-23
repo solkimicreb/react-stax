@@ -12,7 +12,6 @@ const StyledApp = styled.main`
   margin-bottom: 0;
   transform: ${props =>
     props.withSidebar ? `translateX(${layout.sidebarWidth / 2}px)` : 'none'};
-  transition: transform 0.15s ${ease.both};
 `;
 
 export default view(({ children }) => (
