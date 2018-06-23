@@ -16,6 +16,8 @@ const Topbar = styled.nav`
 `;
 
 const Navbar = styled.div`
+  position: relative;
+  left: ${props => props.correction / 2}px;
   font-size: 26px;
   margin: auto;
   display: flex;
@@ -24,9 +26,6 @@ const Navbar = styled.div`
   align-content: center;
   max-width: ${layout.appWidth}px;
   color: ${colors.textLight};
-  transform: ${props =>
-    props.withSidebar ? `translateX(${layout.sidebarWidth / 2}px)` : 'none'};
-  transition: transform 0.15s ${ease.both};
 
   svg,
   a {
@@ -52,7 +51,7 @@ const Actions = styled.div`
 
 export default view(({ children }) => (
   <Topbar>
-    <Navbar withSidebar={!layout.isMobile}>
+    <Navbar correction={layout.correction}>
       <MenuItems isMobile={layout.isMobile}>{children}</MenuItems>
       {!layout.isMobile && (
         <Actions>

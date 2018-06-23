@@ -7,6 +7,7 @@ import MenuIcon from 'react-icons/lib/fa/bars';
 import EditIcon from 'react-icons/lib/fa/edit';
 import { colors, layout, ease } from './theme';
 import * as sidebar from './Sidebar';
+import * as chat from './Chat';
 
 const CorrectedEditIcon = styled(EditIcon)`
   position: relative;
@@ -21,9 +22,11 @@ export default view(() => (
     <a href={layout.currentPage.edit}>
       <CorrectedEditIcon />
     </a>
-    <span id="chat-toggle">
-      <ChatIcon />
-    </span>
+    {!layout.isLarge && (
+      <span onClick={chat.toggle}>
+        <ChatIcon />
+      </span>
+    )}
     {layout.isMobile && (
       <span onClick={sidebar.toggle}>
         <MenuIcon />
