@@ -14,12 +14,15 @@ export const touchStore = store({
 });
 
 const onTouchStart = ev => {
-  const touchX = ev.touches[0].pageX;
-  touchStore.touchX = touchX;
+  touchStore.touchX = ev.touches[0].pageX;
   touchStore.touchStart = Date.now();
 
   drawers.forEach(drawer => {
-    const { width } = drawer.props;
+    const { width, right } = drawer.props;
+    const touchX = right
+      ? window.innerWidth - touchStore.touchX
+      : touchStore.touchX;
+
     if (
       (!drawer.store.open && touchX < TOUCH_ZONE) ||
       (drawer.store.open && Math.abs(touchX - width) < TOUCH_ZONE)
@@ -35,10 +38,14 @@ const onTouchMove = ev => {
   touchStore.touchX = touchX;
 
   drawers.forEach(drawer => {
-    const { width } = drawer.props;
+    const { width, right } = drawer.props;
+    const touchX = right
+      ? window.innerWidth - touchStore.touchX
+      : touchStore.touchX;
 
     if (drawer.store.isTouching && touchX <= width) {
-      drawer.ref.current.style.transform = `translateX(${touchX}px)`;
+      const transformX = right ? -touchX : touchX;
+      drawer.ref.current.style.transform = `translateX(${transformX}px)`;
       if (backdrop) {
         backdrop.current.style.opacity = (touchX / width) * 0.7;
       }
@@ -50,9 +57,14 @@ const onTouchEnd = ev => {
   const touchTime = Date.now() - touchStore.touchStart;
 
   drawers.forEach(drawer => {
+    let touchDiff = touchStore.touchDiff;
+    if (drawer.props.right) {
+      touchDiff = -touchDiff;
+    }
+
     if (drawer.store.isTouching) {
       drawer.store.isTouching = false;
-      drawer.store.open = 0 < touchStore.touchDiff;
+      drawer.store.open = 0 < touchDiff;
 
       drawer.ref.current.style.transform = null;
     }
@@ -73,7 +85,8 @@ window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 const StyledDrawer = styled.div`
   position: fixed;
   top: 0;
-  left: ${props => -props.width}px;
+  left: ${props => (props.right ? 'unset' : `${-props.width}px`)};
+  right: ${props => (props.right ? `${-props.width}px` : 'unset')};
   bottom: 0;
   width: ${props => props.width}px;
   z-index: ${props => (props.isMobile ? 70 : 10)};
@@ -86,7 +99,9 @@ const StyledDrawer = styled.div`
   transition: ${props => (props.isTouching ? 'none' : 'transform')};
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
-  transform: translateX(${props => (props.open ? '100%' : 'none')});
+  transform: translateX(
+    ${props => (props.open ? (props.right ? '-100%' : '100%') : 'none')}
+  );
   will-change: transform;
   contain: strict;
 `;
@@ -135,7 +150,7 @@ class Drawer extends Component {
   close = () => (this.store.open = false);
 
   render() {
-    const { width, children } = this.props;
+    const { width, right, children } = this.props;
     const { open, isTouching } = this.store;
 
     return (
@@ -143,6 +158,7 @@ class Drawer extends Component {
         <StyledDrawer
           open={open}
           width={width}
+          right={right}
           isMobile={layout.isMobile}
           isTouching={isTouching}
           innerRef={this.ref}
