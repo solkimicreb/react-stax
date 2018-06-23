@@ -43,6 +43,7 @@
     "react-debounce-input": "^3.2.0",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.3.2",
+    "react-drag-drawer": "^3.2.0",
     "react-easy-stack": "^0.1.0-alpha.11",
     "react-frame-component": "^3.0.0",
     "react-icons": "^2.2.7",

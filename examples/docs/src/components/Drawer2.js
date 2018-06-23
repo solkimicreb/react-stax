@@ -1,0 +1,163 @@
+import React, { Component, Fragment } from 'react';
+import { store, view, path } from 'react-easy-stack';
+import styled from 'styled-components';
+import { colors, ease, layout } from './theme';
+
+const TOUCH_ZONE = 20;
+const drawers = new Set();
+const backdrop = React.createRef();
+
+export const touchStore = store({
+  touchX: 0,
+  touchDiff: 0,
+  touchStart: 0
+});
+
+const onTouchStart = ev => {
+  const touchX = ev.touches[0].pageX;
+  touchStore.touchX = touchX;
+  touchStore.touchStart = Date.now();
+
+  drawers.forEach(drawer => {
+    const { width } = drawer.props;
+    if (
+      (!drawer.store.open && touchX < TOUCH_ZONE) ||
+      (drawer.store.open && Math.abs(touchX - width) < TOUCH_ZONE)
+    ) {
+      drawer.store.isTouching = true;
+    }
+  });
+};
+
+const onTouchMove = ev => {
+  const touchX = ev.touches[0].pageX;
+  touchStore.touchDiff = touchX - touchStore.touchX;
+  touchStore.touchX = touchX;
+
+  drawers.forEach(drawer => {
+    const { width } = drawer.props;
+
+    if (drawer.store.isTouching && touchX <= width) {
+      drawer.ref.current.style.transform = `translateX(${touchX}px)`;
+      if (backdrop) {
+        backdrop.current.style.opacity = (touchX / width) * 0.7;
+      }
+    }
+  });
+};
+
+const onTouchEnd = ev => {
+  const touchTime = Date.now() - touchStore.touchStart;
+
+  drawers.forEach(drawer => {
+    if (drawer.store.isTouching) {
+      drawer.store.isTouching = false;
+      drawer.store.open = 0 < touchStore.touchDiff;
+
+      drawer.ref.current.style.transform = null;
+    }
+  });
+  if (backdrop) {
+    backdrop.current.style.opacity = null;
+  }
+
+  touchStore.touchX = 0;
+  touchStore.touchDiff = 0;
+};
+
+window.addEventListener('touchstart', onTouchStart, { passive: true });
+window.addEventListener('touchmove', onTouchMove, { passive: true });
+window.addEventListener('touchend', onTouchEnd, { passive: true });
+window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+const StyledDrawer = styled.div`
+  position: fixed;
+  top: 0;
+  left: ${props => -props.width}px;
+  bottom: 0;
+  width: ${props => props.width}px;
+  z-index: ${props => (props.isMobile ? 70 : 10)};
+  overflow-y: scroll;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+  width: ${props => props.width}px;
+  padding-top: ${props => (props.isMobile ? 0 : layout.topbarHeight) + 10}px;
+  background-color: ${colors.backgroundLight};
+  transition: ${props => (props.isTouching ? 'none' : 'transform')};
+  transition-duration: ${props => 0.15}s;
+  transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
+  transform: translateX(${props => (props.open ? '100%' : 'none')});
+  will-change: transform;
+  contain: strict;
+`;
+
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: ${colors.text};
+  opacity: ${props => (props.open ? 0.7 : 0)};
+  pointer-events: ${props => (props.open ? 'unset' : 'none')};
+  transition: ${props => (props.isTouching ? 'none' : 'opacity')};
+  transition-duration: ${props => 0.15}s;
+  transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
+  z-index: 60;
+  will-change: opacity;
+  contain: strict;
+`;
+
+class Drawer extends Component {
+  ref = React.createRef();
+
+  constructor(props) {
+    super(props);
+
+    this.store = store({
+      open: props.open,
+      isTouching: false
+    });
+  }
+
+  static deriveStoresFromProps(props, store) {
+    store.open = props.open;
+  }
+
+  componentDidMount() {
+    drawers.add(this);
+  }
+
+  componentWillUnmount() {
+    drawers.delete(this);
+  }
+
+  close = () => (this.store.open = false);
+
+  render() {
+    const { width, children } = this.props;
+    const { open, isTouching } = this.store;
+
+    return (
+      <Fragment>
+        <StyledDrawer
+          open={open}
+          width={width}
+          isMobile={layout.isMobile}
+          isTouching={isTouching}
+          innerRef={this.ref}
+        >
+          {children}
+        </StyledDrawer>
+        <Backdrop
+          open={open}
+          isTouching={isTouching}
+          onClick={this.close}
+          innerRef={backdrop}
+        />
+      </Fragment>
+    );
+  }
+}
+
+export default view(Drawer);

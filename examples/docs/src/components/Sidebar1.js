@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
+/*import React, { Component, Fragment } from 'react';
 import { store, view, path } from 'react-easy-stack';
 import styled from 'styled-components';
-import Drawer from './Drawer2';
+import Drawer from './Drawer';
 import { colors, ease, layout } from './theme';
 
 export const sidebarStore = store({
@@ -28,8 +28,12 @@ const StyledDrawer = styled(Drawer)``;
 
 export default view(({ children }) => {
   return (
-    <StyledDrawer width={layout.sidebarWidth} open={sidebarStore.open}>
+    <StyledDrawer
+      left={true}
+      width={layout.sidebarWidth}
+      open={sidebarStore.open}
+    >
       {children}
     </StyledDrawer>
   );
-});
+});*/

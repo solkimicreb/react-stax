@@ -16,7 +16,5 @@ const StyledApp = styled.main`
 `;
 
 export default view(({ children }) => (
-  <StyledApp withSidebar={sidebar.hasSidebar() && !layout.isMobile}>
-    {children}
-  </StyledApp>
+  <StyledApp withSidebar={!layout.isMobile}>{children}</StyledApp>
 ));

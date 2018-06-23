@@ -5,18 +5,15 @@ import { ease, layout } from './theme';
 
 const StyledRouter = styled(Router)`
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 
   > * {
     will-change: auto;
     contain: style layout;
 
-    &:nth-child(2) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-    }
+    top: 0;
+    left: 0;
+    right: 0;
   }
 `;
 
@@ -28,7 +25,7 @@ const enterAnimation = () => ({
     : {
         opacity: [0, 1]
       },
-  duration: 150,
+  duration: 1500,
   ease: ease.in
 });
 
@@ -41,13 +38,15 @@ const leaveAnimation = () => {
           transform: [
             `translateY(-${scrollY}px)`,
             `translate3d(-100vw, -${scrollY}px, 0)`
-          ]
+          ],
+          position: ['absolute', 'absolute']
         }
       : {
           opacity: [1, 0],
-          transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`]
+          transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`],
+          position: ['absolute', 'absolute']
         },
-    duration: 150,
+    duration: 1500,
     ease: ease.out
   };
 };

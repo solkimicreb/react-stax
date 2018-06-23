@@ -24,11 +24,10 @@ export default view(() => (
     <span id="chat-toggle">
       <ChatIcon />
     </span>
-    {sidebar.hasSidebar() &&
-      layout.isMobile && (
-        <span onClick={sidebar.toggle}>
-          <MenuIcon />
-        </span>
-      )}
+    {layout.isMobile && (
+      <span onClick={sidebar.toggle}>
+        <MenuIcon />
+      </span>
+    )}
   </Fragment>
 ));
