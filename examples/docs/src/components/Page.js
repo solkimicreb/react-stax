@@ -11,6 +11,7 @@ const StyledPage = styled.div`
   margin-left: 15px;
   margin-right: 15px;
   margin-bottom: 60px;
+  padding-top: 30px;
 
   pre {
     background-color: ${colors.code};
