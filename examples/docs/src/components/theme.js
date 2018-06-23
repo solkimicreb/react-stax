@@ -16,14 +16,27 @@ export const ease = {
   both: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
 };
 
-const mql = window.matchMedia('(max-width: 1050px)');
+const mql = window.matchMedia('(max-width: 1100px)');
+const mqlLarge = window.matchMedia('(min-width: 1700px)');
 export const layout = store({
   topbarHeight: 50,
   actionbarHeight: 40,
   sidebarWidth: 250,
+  chatWidth: 500,
   appWidth: 800,
   isMobile: mql.matches,
-  touchZone: 40,
-  currentPage: {}
+  isLarge: mqlLarge.matches,
+  currentPage: {},
+  get correction() {
+    let takenSpace = 0;
+    if (!this.isMobile) {
+      takenSpace += this.sidebarWidth;
+    }
+    if (this.isLarge) {
+      takenSpace -= this.chatWidth;
+    }
+    return takenSpace;
+  }
 });
 mql.addListener(() => (layout.isMobile = mql.matches));
+mql.addListener(() => (layout.isLarge = mqlLarge.matches));

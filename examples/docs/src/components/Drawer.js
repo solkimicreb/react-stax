@@ -25,9 +25,7 @@ const onTouchStart = ev => {
     if (docked) {
       return;
     }
-    if (width === 'full') {
-      width = windowWidth;
-    }
+    width = Math.min(windowWidth, width);
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX;
 
     if (
@@ -48,9 +46,7 @@ const onTouchMove = ev => {
 
   drawers.forEach(drawer => {
     let { width, right } = drawer.props;
-    if (width === 'full') {
-      width = windowWidth;
-    }
+    width = Math.min(windowWidth, width);
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX;
 
     if (drawer.store.isTouching && touchX <= width) {
@@ -104,7 +100,6 @@ const StyledDrawer = styled.div`
   bottom: 0;
   width: ${props => props.width}px;
   z-index: ${props => (!props.docked ? 70 : 10)};
-  width: ${props => props.width}px;
   padding-top: ${props => (!props.docked ? 0 : layout.topbarHeight)}px;
   transition: ${props => (props.isTouching ? 'none' : 'transform')};
   transition-duration: ${props => 0.15}s;
@@ -157,10 +152,7 @@ class Drawer extends Component {
   render() {
     let { width, right, docked, onClose, open, children } = this.props;
     const { isTouching } = this.store;
-
-    if (width === 'full') {
-      width = window.innerWidth;
-    }
+    width = Math.min(window.innerWidth, width);
 
     return (
       <Fragment>

@@ -5,7 +5,7 @@ import Drawer from './Drawer';
 import { colors, ease, layout } from './theme';
 
 export const chatStore = store({
-  open: !layout.isMobile
+  open: layout.isLarge
 });
 
 export function open() {
@@ -51,8 +51,8 @@ class Chat extends Component {
   render() {
     return (
       <Drawer
-        width="full"
-        docked={!layout.isMobile}
+        width={layout.chatWidth}
+        docked={layout.isLarge}
         right={true}
         open={chatStore.open}
         onOpen={open}
