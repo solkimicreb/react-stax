@@ -14,42 +14,47 @@ export const touchStore = store({
 });
 
 const onTouchStart = ev => {
+  const windowWidth = window.innerWidth;
   touchStore.touchX = ev.touches[0].pageX;
   touchStore.touchStart = Date.now();
 
   drawers.forEach(drawer => {
-    if (drawer.props.docked) {
+    let { width, right, docked, open } = drawer.props;
+    if (docked) {
       return;
     }
-    const { width, right } = drawer.props;
-    const touchX = right
-      ? window.innerWidth - touchStore.touchX
-      : touchStore.touchX;
+    if (width === 'full') {
+      width = windowWidth;
+    }
+    const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX;
 
     if (
-      (!drawer.store.open && touchX < TOUCH_ZONE) ||
-      (drawer.store.open && Math.abs(touchX - width) < TOUCH_ZONE)
+      (!open && touchX < TOUCH_ZONE) ||
+      (open && Math.abs(touchX - width) < TOUCH_ZONE)
     ) {
+      console.log('in');
       drawer.store.isTouching = true;
     }
   });
 };
 
 const onTouchMove = ev => {
+  const windowWidth = window.innerWidth;
   const touchX = ev.touches[0].pageX;
   touchStore.touchDiff = touchX - touchStore.touchX;
   touchStore.touchX = touchX;
 
   drawers.forEach(drawer => {
-    const { width, right } = drawer.props;
-    const touchX = right
-      ? window.innerWidth - touchStore.touchX
-      : touchStore.touchX;
+    let { width, right } = drawer.props;
+    if (width === 'full') {
+      width = windowWidth;
+    }
+    const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX;
 
     if (drawer.store.isTouching && touchX <= width) {
       const transformX = right ? -touchX : touchX;
       drawer.ref.current.style.transform = `translateX(${transformX}px)`;
-      if (backdrop) {
+      if (backdrop.current) {
         backdrop.current.style.opacity = (touchX / width) * 0.7;
       }
     }
@@ -76,7 +81,7 @@ const onTouchEnd = ev => {
       drawer.ref.current.style.transform = null;
     }
   });
-  if (backdrop) {
+  if (backdrop.current) {
     backdrop.current.style.opacity = null;
   }
 
@@ -148,8 +153,20 @@ class Drawer extends Component {
   }
 
   render() {
-    const { width, right, docked, onClose, open, children } = this.props;
+    let {
+      width,
+      right,
+      docked,
+      backdrop,
+      onClose,
+      open,
+      children
+    } = this.props;
     const { isTouching } = this.store;
+
+    if (width === 'full') {
+      width = window.innerWidth;
+    }
 
     return (
       <Fragment>

@@ -43,9 +43,8 @@ class Chat extends Component {
   render() {
     return (
       <Drawer
-        width={layout.sidebarWidth}
+        width="full"
         docked={!layout.isMobile}
-        backdrop={false}
         right={true}
         open={chatStore.open}
         onOpen={open}
