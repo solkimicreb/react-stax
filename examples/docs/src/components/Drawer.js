@@ -18,6 +18,8 @@ const onTouchStart = ev => {
   touchStore.touchX = ev.touches[0].pageX;
   touchStore.touchStart = Date.now();
 
+  let hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open);
+
   drawers.forEach(drawer => {
     let { width, right, docked, open } = drawer.props;
     if (docked) {
@@ -29,7 +31,7 @@ const onTouchStart = ev => {
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX;
 
     if (
-      (!open && touchX < TOUCH_ZONE) ||
+      (!open && !hasOpenDrawer && touchX < TOUCH_ZONE) ||
       (open && Math.abs(touchX - width) < TOUCH_ZONE)
     ) {
       console.log('in');
@@ -153,15 +155,7 @@ class Drawer extends Component {
   }
 
   render() {
-    let {
-      width,
-      right,
-      docked,
-      backdrop,
-      onClose,
-      open,
-      children
-    } = this.props;
+    let { width, right, docked, onClose, open, children } = this.props;
     const { isTouching } = this.store;
 
     if (width === 'full') {
@@ -180,15 +174,13 @@ class Drawer extends Component {
         >
           {children}
         </StyledDrawer>
-        {backdrop && (
-          <Backdrop
-            open={open}
-            isTouching={isTouching}
-            docked={docked}
-            onClick={onClose}
-            innerRef={backdrop}
-          />
-        )}
+        <Backdrop
+          open={open}
+          isTouching={isTouching}
+          docked={docked}
+          onClick={onClose}
+          innerRef={backdrop}
+        />
       </Fragment>
     );
   }

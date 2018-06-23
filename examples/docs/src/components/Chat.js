@@ -25,7 +25,15 @@ export function toggle() {
 }
 
 const StyledChat = styled.div`
+  height: 100%;
   border-left: 1px solid #ddd;
+  background-color: white;
+  padding-left: 10px;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 class Chat extends Component {

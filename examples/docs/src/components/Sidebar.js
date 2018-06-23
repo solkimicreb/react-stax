@@ -37,7 +37,6 @@ export default view(({ children }) => {
     <Drawer
       width={layout.sidebarWidth}
       docked={!layout.isMobile}
-      backdrop={true}
       open={sidebarStore.open}
       onOpen={open}
       onClose={close}
