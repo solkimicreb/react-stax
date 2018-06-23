@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { path, view, params, store, Router, Link } from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
+import Chat from './components/Chat';
 import App from './components/App';
 import Page from './components/Page';
 import PageRouter from './components/PageRouter';
@@ -78,17 +79,6 @@ const Nav = () => (
   </Fragment>
 );
 
-const Chat = styled.div`
-  width: 100%;
-  max-width: 500px;
-  z-index: ${props => (props.isMobile ? 70 : 10)};
-  box-shadow: none;
-  transition: transform 0.15s;
-  border-left: solid 1px lightgray;
-  will-change: transform;
-  contain: strict;
-`;
-
 export default view(() => (
   <Fragment>
     <Topbar>
@@ -98,11 +88,7 @@ export default view(() => (
       <Content />
     </App>
     <SideNav />
-    <Chat
-      id="chat"
-      className="gitter-chat-embed is-collapsed"
-      isMobile={layout.isMobile}
-    />
+    <Chat />
     {layout.isMobile && <Actionbar />}
     <Notification />
   </Fragment>

@@ -38,6 +38,7 @@ export default view(({ children }) => {
       width={layout.sidebarWidth}
       docked={!layout.isMobile}
       open={sidebarStore.open}
+      onOpen={open}
       onClose={close}
     >
       <StyledSidebar>{children}</StyledSidebar>

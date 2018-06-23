@@ -67,7 +67,11 @@ const onTouchEnd = ev => {
 
     if (drawer.store.isTouching) {
       drawer.store.isTouching = false;
-      drawer.store.open = 0 < touchDiff;
+      if (0 < touchDiff) {
+        drawer.props.onOpen();
+      } else {
+        drawer.props.onClose();
+      }
 
       drawer.ref.current.style.transform = null;
     }
@@ -135,10 +139,6 @@ class Drawer extends Component {
     });
   }
 
-  static deriveStoresFromProps(props, store) {
-    store.open = props.open;
-  }
-
   componentDidMount() {
     drawers.add(this);
   }
@@ -148,8 +148,8 @@ class Drawer extends Component {
   }
 
   render() {
-    const { width, right, docked, onClose, children } = this.props;
-    const { open, isTouching } = this.store;
+    const { width, right, docked, onClose, open, children } = this.props;
+    const { isTouching } = this.store;
 
     return (
       <Fragment>
