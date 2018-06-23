@@ -174,13 +174,15 @@ class Drawer extends Component {
         >
           {children}
         </StyledDrawer>
-        <Backdrop
-          open={open}
-          isTouching={isTouching}
-          docked={docked}
-          onClick={onClose}
-          innerRef={backdrop}
-        />
+        {(open || isTouching) && (
+          <Backdrop
+            open={open}
+            isTouching={isTouching}
+            docked={docked}
+            onClick={onClose}
+            innerRef={backdrop}
+          />
+        )}
       </Fragment>
     );
   }
