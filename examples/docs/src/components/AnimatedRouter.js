@@ -25,7 +25,7 @@ const enterAnimation = () => ({
     : {
         opacity: [0, 1]
       },
-  duration: 1500,
+  duration: 150,
   ease: ease.in
 });
 
@@ -46,7 +46,7 @@ const leaveAnimation = () => {
           transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`],
           position: ['absolute', 'absolute']
         },
-    duration: 1500,
+    duration: 150,
     ease: ease.out
   };
 };
