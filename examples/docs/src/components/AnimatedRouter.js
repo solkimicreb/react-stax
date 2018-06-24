@@ -18,14 +18,14 @@ const StyledRouter = styled(Router)`
 `;
 
 const enterAnimation = () => ({
-  keyframes: layout.isMobile
+  keyframes: layout.isTiny
     ? {
         transform: ['translateX(100vw)', 'none']
       }
     : {
         opacity: [0, 1]
       },
-  duration: 150,
+  duration: layout.isTiny ? 200 : 150,
   ease: ease.in
 });
 
@@ -33,7 +33,7 @@ const leaveAnimation = () => {
   const scrollY = window.scrollY;
 
   return {
-    keyframes: layout.isMobile
+    keyframes: layout.isTiny
       ? {
           transform: [
             `translateY(-${scrollY}px)`,
@@ -46,7 +46,7 @@ const leaveAnimation = () => {
           transform: [`translateY(-${scrollY}px)`, `translateY(-${scrollY}px)`],
           position: ['absolute', 'absolute']
         },
-    duration: 150,
+    duration: layout.isTiny ? 200 : 150,
     ease: ease.out
   };
 };

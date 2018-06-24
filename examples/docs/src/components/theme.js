@@ -16,6 +16,7 @@ export const ease = {
   both: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
 };
 
+const mqlTiny = window.matchMedia('(max-width: 800px)');
 const mql = window.matchMedia('(max-width: 1100px)');
 const mqlLarge = window.matchMedia('(min-width: 1700px)');
 export const layout = store({
@@ -24,6 +25,7 @@ export const layout = store({
   sidebarWidth: 250,
   chatWidth: 500,
   appWidth: 800,
+  isTiny: mqlTiny.matches,
   isMobile: mql.matches,
   isLarge: mqlLarge.matches,
   currentPage: {},
@@ -38,5 +40,6 @@ export const layout = store({
     return takenSpace;
   }
 });
+mqlTiny.addListener(() => (layout.isTiny = mqlTiny.matches));
 mql.addListener(() => (layout.isMobile = mql.matches));
-mql.addListener(() => (layout.isLarge = mqlLarge.matches));
+mqlLarge.addListener(() => (layout.isLarge = mqlLarge.matches));
