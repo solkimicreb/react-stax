@@ -13,7 +13,7 @@ import { colors, ease, layout } from './theme';
 const BrowserFrame = styled.div`
   position: relative;
   width: ${props => (props.isMobile ? '100vw' : '100%')};
-  min-height: ${props => Math.min(300, Math.max(props.height, 150))}px;
+  min-height: ${props => Math.max(props.height, 150)}px;
   max-height: 300px;
   margin: 15px ${props => (props.isMobile ? -15 : 0)}px;
   border-radius: ${props => (props.isMobile ? 0 : 3)}px;
@@ -219,9 +219,10 @@ class Browser extends Component {
   onRefresh = () => {
     this.store.error = undefined;
     this.timers.forEach(window.clearTimeout);
-    this.height = this.browser.current.offsetHeight;
+    this.height = Math.max(this.height, this.browser.current.offsetHeight);
     this.store.Content = this.props.children(this.easyStack);
   };
+
   componentWillUnmount() {
     this.timers.forEach(window.clearTimeout);
   }
@@ -236,7 +237,7 @@ class Browser extends Component {
 
     const canGoBack = 0 < historyIdx;
     const canGoForward = historyIdx < history.length - 1;
-    const fullUrl = layout.isMobile ? url : BASE_URL + url;
+    const fullUrl = layout.isTiny ? url : BASE_URL + url;
 
     return (
       <BrowserFrame
