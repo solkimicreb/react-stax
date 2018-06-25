@@ -72,6 +72,12 @@ export function routeFromDepth(
     // only flush it if there is no ongoing routing
     // otherwise the old and new routing should be treated in one batch to avoid flicker
     schedulers.integrations.process();
+
+    // push a new history item when necessary
+    // only add new history items if there is no ongoing routing already
+    if (push !== false) {
+      history.push({ path, params, scroll });
+    }
   }
   // stop all schedulers until the end of the routing and commit them at once
   // this includes state based view updates, URL updates and localStorag updats
@@ -95,7 +101,7 @@ export function routeFromDepth(
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() => switchRoutersFromDepth(depth, status))
-    .then(() => finishRouting({ push, scroll }, status));
+    .then(() => finishRouting(scroll, status));
 }
 
 // this recursively routes all parallel routers form a given depth
@@ -141,14 +147,8 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ push, scroll }, status) {
+function finishRouting(scroll, status) {
   if (!status.cancelled) {
-    const pathChanged = toPathString(path) !== toPathString(history.state.path);
-    // push a new history item or replace the current one
-    // maybe also add scroll
-    if (push === true || (push !== false && pathChanged)) {
-      history.push({ path, params, scroll });
-    }
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
@@ -158,7 +158,7 @@ function finishRouting({ push, scroll }, status) {
       } else {
         scroller.scrollToLocation(scroll);
       }
-    } else if (scroll !== false && pathChanged) {
+    } else if (scroll !== false) {
       scroller.scrollToLocation({ top: 0, left: 0 });
     }
 
