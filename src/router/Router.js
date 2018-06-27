@@ -85,7 +85,7 @@ export default class Router extends PureComponent {
     let shouldAnimate = this.props.shouldAnimate;
 
     if (typeof shouldAnimate === 'function') {
-      shouldAnimate = { fromPage, toPage };
+      shouldAnimate = shouldAnimate({ fromPage, toPage });
     }
     if (shouldAnimate === undefined) {
       shouldAnimate = fromPage !== toPage;
