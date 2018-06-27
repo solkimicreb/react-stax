@@ -75,6 +75,8 @@ export function routeFromDepth(
 
     // push a new history item when necessary
     // only add new history items if there is no ongoing routing already
+    // it is important to do this at the beginning of the routing
+    // to let the browser correctly save scroll restoration values
     if (push !== false) {
       history.push({ path, params, scroll });
     }

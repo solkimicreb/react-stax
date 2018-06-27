@@ -11,7 +11,7 @@ Object.assign(animation, {
   enter(container, enterAnimation) {
     const toDOM = (container[TO_DOM] = container.firstElementChild);
     if (enterAnimation && toDOM) {
-      animateElement(toDOM, enterAnimation);
+      return enterAnimation(toDOM);
     }
   },
   leave(container, leaveAnimation) {
@@ -31,9 +31,9 @@ Object.assign(animation, {
       // there is no need to wait for the animation,
       // the views may be hidden by the animation, but the DOM routing is already over
       // it is safe to go on with routing the next level of routers
-      animateElement(fromDOM, leaveAnimation).then(() =>
-        this.cleanup(container)
-      );
+      return Promise.resolve()
+        .then(() => leaveAnimation(fromDOM))
+        .then(() => this.cleanup(container));
     }
   },
   cleanup(container) {
@@ -43,18 +43,3 @@ Object.assign(animation, {
     container[FROM_DOM] = container[TO_DOM] = undefined;
   }
 });
-
-function animateElement(element, options) {
-  // use the native webanimations API when available
-  // it is the user's responsibility to polyfill it otherwise
-  if (typeof element.animate === 'function') {
-    if (typeof options === 'function') {
-      options = options();
-    }
-    const animation = element.animate(options.keyframes, options);
-    return new Promise(resolve => (animation.onfinish = resolve));
-  } else {
-    console.warn('You should polyfill the webanimation API.');
-    return Promise.resolve();
-  }
-}
