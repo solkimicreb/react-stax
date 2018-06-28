@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { observe, unobserve } from '@nx-js/observer-util';
 import { routeFromDepth } from './core';
 import { toUrl, normalizePath, addExtraProps } from './utils';
-import { params, path, elements } from './integrations';
+import { params, path, history, elements } from './integrations';
 import { state as scheduler } from '../schedulers';
 
 // Link is used to navigate between pages
@@ -12,7 +12,7 @@ export default class Link extends PureComponent {
   static propTypes = {
     to: PropTypes.string,
     params: PropTypes.object,
-    scroll: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+    scroll: PropTypes.object,
     push: PropTypes.bool,
     inherit: PropTypes.bool,
     onClick: PropTypes.func,
@@ -68,15 +68,19 @@ export default class Link extends PureComponent {
   }
 
   isLinkActive() {
-    const { activeClass, activeStyle, isActive, params } = this.props;
+    const { activeClass, activeStyle, isActive, params, scroll } = this.props;
     // only calculate link activity if there is an activeClass or activeSyle prop
     // otherwise it is not needed
     if (activeClass || activeStyle) {
       // let the user fine tune link activity with an isActive function prop
       if (isActive) {
-        return isActive({ linkPath: this.absolutePath, linkParams: params });
+        return isActive({ path: this.absolutePath, params, scroll });
       }
-      return this.isLinkPathActive() && this.isLinkParamsActive();
+      return (
+        this.isLinkPathActive() &&
+        this.isLinkParamsActive() &&
+        this.isLinkScrollActive()
+      );
     }
   }
 
@@ -95,6 +99,17 @@ export default class Link extends PureComponent {
       // for example { a: 1 } link params matches with { a: 1, b: 2 } URL query
       const paramKeys = Object.keys(linkParams);
       return paramKeys.every(key => linkParams[key] === params[key]);
+    }
+    return true;
+  }
+
+  isLinkScrollActive() {
+    const linkScroll = this.props;
+    const historyScroll = history.state.scroll;
+    // scroll positions match when the link or the URL is missing a scroll anchor
+    // or when the two anchors macth
+    if (linkScroll && historyScroll) {
+      return linkScroll.anchor === historyScroll.anchor;
     }
     return true;
   }

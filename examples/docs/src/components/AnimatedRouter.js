@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Router } from 'react-easy-stack';
+import { Router, history } from 'react-easy-stack';
 import styled from 'styled-components';
 import anime from 'animejs';
 import { ease, layout } from './theme';
