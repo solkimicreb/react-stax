@@ -72,14 +72,6 @@ export function routeFromDepth(
     // only flush it if there is no ongoing routing
     // otherwise the old and new routing should be treated in one batch to avoid flicker
     schedulers.integrations.process();
-
-    // push a new history item when necessary
-    // only add new history items if there is no ongoing routing already
-    // it is important to do this at the beginning of the routing
-    // to let the browser correctly save scroll restoration values
-    if (push !== false) {
-      history.push({ path, params, scroll });
-    }
   }
   // stop all schedulers until the end of the routing and commit them at once
   // this includes state based view updates, URL updates and localStorag updats
@@ -103,7 +95,7 @@ export function routeFromDepth(
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() => switchRoutersFromDepth(depth, status))
-    .then(() => finishRouting(scroll, status));
+    .then(() => finishRouting({ scroll, push }, status));
 }
 
 // this recursively routes all parallel routers form a given depth
@@ -149,14 +141,22 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting(scroll, status) {
+function finishRouting({ scroll, push }, status) {
   if (!status.cancelled) {
+    const pathChanged = toPathString(path) !== toPathString(history.state.path);
+    // push a new history item when necessary
+    // it is important to do this before restarting the schedulers
+    // to apply all new history replace operations to the new item
+    if (push === true || (push !== false && pathChanged)) {
+      history.push({ path, params, scroll });
+    }
+
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
     if (typeof scroll === 'object') {
       scroller.scrollTo(scroll);
-    } else if (scroll !== false) {
+    } else if (pathChanged) {
       scroller.scrollTo({ top: 0, left: 0 });
     }
 
