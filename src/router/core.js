@@ -155,13 +155,9 @@ function finishRouting(scroll, status) {
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
     if (typeof scroll === 'object') {
-      if (scroll.anchor) {
-        scroller.scrollToAnchor(scroll);
-      } else {
-        scroller.scrollToLocation(scroll);
-      }
+      scroller.scrollTo(scroll);
     } else if (scroll !== false) {
-      scroller.scrollToLocation({ top: 0, left: 0 });
+      scroller.scrollTo({ top: 0, left: 0 });
     }
 
     // flush the URL updates in one batch and restart the automatic processing

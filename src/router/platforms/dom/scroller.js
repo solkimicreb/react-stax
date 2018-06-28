@@ -1,33 +1,33 @@
-import { scroller } from "../../integrations";
-import { toScroll } from "../../utils";
+import { scroller } from '../../integrations';
+import { toScroll } from '../../utils';
 
 Object.assign(scroller, {
-  scrollToAnchor(options) {
-    const anchor = document.getElementById(options.anchor);
-    if (anchor) {
-      anchor.scrollIntoView(options);
-      return true;
+  scrollTo(options) {
+    if (options.anchor) {
+      const anchor = document.getElementById(options.anchor);
+      if (anchor) {
+        anchor.scrollIntoView(options);
+        window.scrollBy(options);
+      }
+    } else {
+      window.scrollTo(options);
     }
-  },
-  scrollToLocation(options) {
-    const container = options.container
-      ? document.getElementById(options.container)
-      : window;
-    container.scrollTo(options);
   }
 });
 
-const { anchor } = toScroll(location.hash);
-if (anchor) {
-  const RETRY_INTERVAL = 100;
-  const FAIL_AFTER = 3000;
-  const start = Date.now();
+const scroll = toScroll(location.hash);
+const RETRY_INTERVAL = 100;
+const RETRY_TIMEOUT = 5000;
+const start = Date.now();
 
-  function initialScroll() {
-    const didScroll = scroller.scrollToAnchor({ anchor });
-    if (!didScroll && Date.now() - start < FAIL_AFTER) {
+function initialScroll() {
+  scroller.scrollTo(scroll);
+  if (scroll.anchor) {
+    const hasAnchor = document.getElementById(scroll.anchor);
+    const hasTime = Date.now() - start < RETRY_TIMEOUT;
+    if (!hasAnchor && hasTime) {
       setTimeout(initialScroll, RETRY_INTERVAL);
     }
   }
-  initialScroll();
 }
+initialScroll();
