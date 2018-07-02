@@ -8,8 +8,8 @@ import ForwardIcon from 'react-icons/lib/fa/angle-right';
 import { colors, layout } from './theme';
 
 const StyledPage = styled.div`
-  margin-left: 15px;
-  margin-right: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   margin-bottom: 60px;
   padding-top: 30px;
 
