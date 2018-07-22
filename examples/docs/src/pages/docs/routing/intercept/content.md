@@ -36,7 +36,7 @@ The `onRoute()` function is the only interception point for routing processes, b
 - <span id="lazy-link"></span> for the next page.
 - <span id="virtual-link"></span> for complex routing logic.
 
-## Protected pages
+## Redirection
 
 Starting a new routing process cancels any ongoing routings. You can call the top level `route()` function or the `target.route()` method inside the `onRoute()` function to intercept and redirect the current routing.
 
@@ -74,9 +74,9 @@ export default view(() => (
 
 <div id="protected-demo"></div>
 
-> Intercepting ongoing routings with new ones will not result in multiple history entries. New history items are never pushed before the end of the routing process.
+> Be careful to not cause infinite loops by continuously routing to the current page in the `onRoute` function.
 
-The same pattern can be used to do pattern matching and redirects for applications with complex routing requirements.
+> Intercepting ongoing routings with new ones will not result in multiple history entries. New history items are never pushed before the end of the routing process.
 
 ## Default parameters
 
