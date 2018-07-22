@@ -1,10 +1,10 @@
-const emptyTokens = new Set([undefined, "", "."]);
+const emptyTokens = new Set([undefined, '', '.']);
 const notEmpty = token => !emptyTokens.has(token);
 
-export function normalizePath(path = "", depth) {
+export function normalizePath(path = '', depth) {
   const normalizedPath = [];
   for (let token of toPathArray(path)) {
-    if (token === "..") {
+    if (token === '..') {
       depth--;
     } else if (notEmpty(token)) {
       normalizedPath.push(token);
@@ -13,19 +13,19 @@ export function normalizePath(path = "", depth) {
 
   return {
     normalizedPath,
-    depth: path[0] === "/" ? 0 : depth
+    depth: path[0] === '/' ? 0 : depth
   };
 }
 
 // convert pathname strings to arrays
-export function toPathArray(path = "") {
-  return path.split("/").filter(notEmpty);
+export function toPathArray(path = '') {
+  return path.split('/').filter(notEmpty);
 }
 
 // convert path arrays to absolute pathname strings
 export function toPathString(path = []) {
   // the leading '/' is important, it differentiates absolute pathnames from relative ones
-  return "/" + path.filter(notEmpty).join("/");
+  return '/' + path.filter(notEmpty).join('/');
 }
 
 // convert params objects to query strings
@@ -41,20 +41,20 @@ export function toQuery(params = {}) {
       tokens.push(`${key}=${value}`);
     }
   }
-  return tokens.length ? `?${tokens.join("&")}` : "";
+  return tokens.length ? `?${tokens.join('&')}` : '';
 }
 
 // converts &key=value strings to objects
-export function toParams(queryString = "") {
+export function toParams(queryString = '') {
   const queryTokens = queryString
     // remove the leading ? or # character
     .slice(1)
-    .split("&")
+    .split('&')
     .filter(notEmpty);
 
   const params = {};
   for (let token of queryTokens) {
-    const keyValue = token.split("=");
+    const keyValue = token.split('=');
     const key = decodeURIComponent(keyValue[0]);
     // JSON.stringify and parse keeps the type information
     const value = JSON.parse(decodeURIComponent(keyValue[1]));
@@ -65,12 +65,12 @@ export function toParams(queryString = "") {
 
 // convert scroll anchor to URL hash
 export function toHash(scroll = {}) {
-  return scroll && scroll.anchor ? `#${scroll.anchor}` : "";
+  return scroll.anchor ? `#${scroll.anchor}` : '';
 }
 
 // convert url hash to scroll anchor
 export function toScroll(hash) {
-  return hash ? { anchor: hash.slice(1) } : {};
+  return hash ? { anchor: hash.slice(1) } : undefined;
 }
 
 // convert object to url
@@ -80,9 +80,9 @@ export function toUrl({ path, params, scroll }) {
 
 // convert url to object
 export function toObject(url) {
-  let queryIndex = url.indexOf("?");
+  let queryIndex = url.indexOf('?');
   queryIndex = queryIndex === -1 ? Infinity : queryIndex;
-  let hashIndex = url.indexOf("#");
+  let hashIndex = url.indexOf('#');
   hashIndex = hashIndex === -1 ? Infinity : hashIndex;
 
   return {

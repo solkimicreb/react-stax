@@ -84,6 +84,8 @@ export function routeFromDepth(
   const status = (routingStatus = { depth, cancelled: false });
 
   // update the path array with the desired new path
+  // and save the old path for comparison at the end of the routing
+  const prevPath = Array.from(path);
   path.splice(depth, Infinity, ...normalizedPath);
   // replace or extend the query params with the new params
   // only mutate the params object, never replace it (because it is an observable)
@@ -95,7 +97,7 @@ export function routeFromDepth(
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() => switchRoutersFromDepth(depth, status))
-    .then(() => finishRouting({ scroll, push }, status));
+    .then(() => finishRouting({ scroll, push, prevPath }, status));
 }
 
 // this recursively routes all parallel routers form a given depth
@@ -141,9 +143,9 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ scroll, push }, status) {
+function finishRouting({ scroll, push, prevPath }, status) {
   if (!status.cancelled) {
-    const pathChanged = toPathString(path) !== toPathString(history.state.path);
+    const pathChanged = toPathString(path) !== toPathString(prevPath);
     // push a new history item when necessary
     // it is important to do this before restarting the schedulers
     // to apply all new history replace operations to the new item
@@ -156,6 +158,7 @@ function finishRouting({ scroll, push }, status) {
     // in case of a scrollToAnchor behavior
     if (typeof scroll === 'object') {
       scroller.scrollTo(scroll);
+      // TODO: something is bad! -> code gets here before the visual updte
     } else if (pathChanged) {
       scroller.scrollTo({ top: 0, left: 0 });
     }

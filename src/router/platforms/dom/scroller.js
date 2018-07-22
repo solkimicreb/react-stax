@@ -1,6 +1,9 @@
 import { scroller } from '../../integrations';
 import { toScroll } from '../../utils';
 
+// do not let the browser do its automatic scroll restoration (for now)
+window.history.scrollRestoration = 'manual';
+
 Object.assign(scroller, {
   scrollTo(options) {
     if (options.anchor) {
@@ -15,19 +18,25 @@ Object.assign(scroller, {
   }
 });
 
+// do an initial scrolling if there is scroll data in the url hash
 const scroll = toScroll(location.hash);
-const RETRY_INTERVAL = 100;
-const RETRY_TIMEOUT = 5000;
-const start = Date.now();
+if (typeof scroll === 'object') {
+  const RETRY_INTERVAL = 100;
+  const RETRY_TIMEOUT = 5000;
+  const start = Date.now();
 
-function initialScroll() {
-  scroller.scrollTo(scroll);
-  if (scroll.anchor) {
-    const hasAnchor = document.getElementById(scroll.anchor);
-    const hasTime = Date.now() - start < RETRY_TIMEOUT;
-    if (!hasAnchor && hasTime) {
-      setTimeout(initialScroll, RETRY_INTERVAL);
+  function initialScroll() {
+    scroller.scrollTo(scroll);
+    if (scroll.anchor) {
+      // in case of a scroll anchor we have to wait for the anchor to
+      // be mounted on the page, before the scrolling
+      // do a simple retry tactic with a fixed interval and timeout in this case
+      const hasAnchor = document.getElementById(scroll.anchor);
+      const hasTime = Date.now() - start < RETRY_TIMEOUT;
+      if (!hasAnchor && hasTime) {
+        setTimeout(initialScroll, RETRY_INTERVAL);
+      }
     }
   }
+  initialScroll();
 }
-initialScroll();

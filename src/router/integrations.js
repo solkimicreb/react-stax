@@ -34,7 +34,8 @@ export const history = {
     item = {
       path: Array.from(item.path),
       params: Object.assign({}, item.params),
-      scroll: Object.assign({}, item.scroll),
+      // scroll config can be passed without copying as it is read-only
+      scroll: item.scroll,
       url: toUrl(item)
     };
     // update the params and path to reflect the new history item

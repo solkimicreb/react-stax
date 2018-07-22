@@ -100,6 +100,7 @@ export default class Router extends PureComponent {
       resolvedData,
       page: toPage
     };
+
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
