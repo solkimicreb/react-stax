@@ -53,6 +53,7 @@
     "react-icons": "^2.2.7",
     "resolve": "1.6.0",
     "sass-loader": "7.0.1",
+    "serve": "^9.3.0",
     "style-loader": "0.21.0",
     "styled-components": "^3.3.3",
     "svgr": "1.9.2",
@@ -70,7 +71,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "now-start": "serve build --single --cache 0",
+    "now-start": "serve build --single",
     "deploy": "now && now alias"
   },
   "now": {
@@ -82,24 +83,33 @@
       "last 2 firefox versions",
       "last 2 edge versions"
     ],
-    "production": [">0.25%", "not op_mini all", "ie 11"]
+    "production": [
+      ">0.25%",
+      "not op_mini all",
+      "ie 11"
+    ]
   },
   "jest": {
-    "collectCoverageFrom": ["src/**/*.{js,jsx,mjs}"],
-    "setupFiles": ["<rootDir>/config/polyfills.js"],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,mjs}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
     "testMatch": [
       "**/__tests__/**/*.{js,jsx,mjs}",
       "**/?(*.)(spec|test).{js,jsx,mjs}"
     ],
-    "roots": ["<rootDir>/src"],
+    "roots": [
+      "<rootDir>/src"
+    ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^.+\\.(graphql)$": "<rootDir>/config/jest/graphqlTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|css|json|graphql)$)":
-        "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|mjs|css|json|graphql)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$",
