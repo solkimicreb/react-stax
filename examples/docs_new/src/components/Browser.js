@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { view, store, history } from 'react-easy-stack';
-import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es5';
+import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6.js';
 import styled, { keyframes } from 'styled-components';
-import Frame from 'react-frame-component';
 import GithubIcon from 'react-icons/lib/fa/github';
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import BackIcon from 'react-icons/lib/fa/angle-left';

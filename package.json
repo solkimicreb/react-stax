@@ -1,30 +1,27 @@
 {
   "name": "react-easy-stack",
   "version": "0.1.0-alpha.12",
-  "description":
-    "React state management with a minimal API. Made with ES6 Proxies.",
-  "main": "dist/dom.cjs.es5.js",
-  "module": "dist/dom.es.es5.js",
+  "description": "React state management with a minimal API. Made with ES6 Proxies.",
+  "main": "dist/dom.cjs.es6.js",
+  "module": "dist/dom.es.es6.js",
   "types": "types/index.d.ts",
-  "files": ["dist", "types"],
+  "files": [
+    "dist",
+    "types"
+  ],
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",
     "test-watch": "jest --watch",
     "test-builds": "node ./scripts/testBuilds.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint":
-      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --list-different",
-    "lint-fix":
-      "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --write",
+    "lint": "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --list-different",
+    "lint-fix": "prettier '**/*.{js,jsx}' '!**/build/**' --ignore-path '.gitignore' --write",
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
-    "deploy-examples":
-      "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
-    "link-examples":
-      "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
-    "unlink-examples":
-      "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
+    "deploy-examples": "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
+    "link-examples": "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
+    "unlink-examples": "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
     "build": "node ./scripts/build.js",
     "build-toc": "node ./scripts/buildToc.js"
   },
@@ -41,7 +38,9 @@
   },
   "homepage": "https://github.com/solkimicreb/react-easy-stack#readme",
   "license": "MIT",
-  "keywords": ["TODO"],
+  "keywords": [
+    "TODO"
+  ],
   "dependencies": {
     "@nx-js/observer-util": "^4.2.0",
     "@nx-js/queue-util": "^1.1.1",
@@ -70,9 +69,9 @@
     "markdown-toc": "^1.2.0",
     "pre-push": "0.1.1",
     "prettier": "^1.13.4",
-    "react": "^16.4.0",
+    "react": "^16.4.1",
     "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^16.4.0",
+    "react-dom": "^16.4.1",
     "rollup": "^0.59.4",
     "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-auto-external": "^1.2.0",
@@ -94,5 +93,8 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "pre-push": ["lint", "test-coverage"]
+  "pre-push": [
+    "lint",
+    "test-coverage"
+  ]
 }

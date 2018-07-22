@@ -92,7 +92,7 @@ export default class Router extends PureComponent {
     }
     // this typically saves the current view to use later for cross fade effects
     // the current view is soon replaced by setState, so this is necessary
-    if (shouldAnimate) {
+    if (shouldAnimate && this.container) {
       animation.setup(this.container);
     }
 
@@ -107,7 +107,7 @@ export default class Router extends PureComponent {
         // run the animations when the new page is fully rendered, but do not wait for them
         // the views may be hidden by the animation, but the DOM routing is already over
         // it is safe to go on with routing the next level of routers
-        if (shouldAnimate) {
+        if (shouldAnimate && this.container) {
           // only do an enter animation if this is not the initial routing of the router
           // this prevents cascading over-animation, in case of nested routers
           // only the outmost one will animate, the rest will appear normally
