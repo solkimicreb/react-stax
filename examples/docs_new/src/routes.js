@@ -82,6 +82,36 @@ export default {
         title: 'Async Interception',
         edit: 'github url',
         path: '/docs/routing/async'
+      },
+      {
+        name: 'parallel',
+        title: 'Parallel Routing',
+        edit: 'github url',
+        path: '/docs/routing/parallel'
+      },
+      {
+        name: 'scroll',
+        title: 'Scroll Handling',
+        edit: 'github url',
+        path: '/docs/routing/scroll'
+      },
+      {
+        name: 'animations',
+        title: 'Animations',
+        edit: 'github url',
+        path: '/docs/routing/animations'
+      },
+      {
+        name: 'advanced',
+        title: 'Advanced Animations',
+        edit: 'github url',
+        path: '/docs/routing/advanced'
+      },
+      {
+        name: 'api',
+        title: 'API Summary',
+        edit: 'github url',
+        path: '/docs/routing/api'
       }
     ]
   },

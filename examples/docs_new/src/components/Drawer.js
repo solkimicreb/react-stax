@@ -107,7 +107,6 @@ const StyledDrawer = styled.div`
     ${props =>
       props.open || props.docked ? (props.right ? '-100%' : '100%') : 'none'}
   );
-  pointer-events: none;
   overflow: scroll;
   will-change: transform;
   contain: strict;
