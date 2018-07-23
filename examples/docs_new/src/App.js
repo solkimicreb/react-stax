@@ -8,7 +8,8 @@ import Chat from './components/Chat';
 import App from './components/App';
 import Page from './components/Page';
 import PageRouter from './components/PageRouter';
-import AnimatedRouter from './components/AnimatedRouter';
+import ContentRouter from './components/ContentRouter';
+import SidebarRouter from './components/SidebarRouter';
 import Notification, { notify } from './components/Notification';
 import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
@@ -18,7 +19,7 @@ import routes from './routes';
 
 const SideNav = () => (
   <Sidebar>
-    <AnimatedRouter defaultPage="home">
+    <SidebarRouter defaultPage="home">
       <div page="home">
         {routes.home.map(page => (
           <SideSectionLink to={page.path} key={page.name}>
@@ -47,14 +48,14 @@ const SideNav = () => (
           </SideLink>
         ))}
       </div>
-    </AnimatedRouter>
+    </SidebarRouter>
   </Sidebar>
 );
 
 const Content = () => (
-  <AnimatedRouter defaultPage="home" debug="main">
+  <ContentRouter defaultPage="home" debug="main">
     <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
-    <AnimatedRouter page="docs" defaultPage="state" debug="docs">
+    <ContentRouter page="docs" defaultPage="state" debug="docs">
       <PageRouter
         page="state"
         pages={routes.docs.state}
@@ -66,9 +67,9 @@ const Content = () => (
         pages={routes.docs.routing}
         prevPages={routes.docs.state}
       />
-    </AnimatedRouter>
+    </ContentRouter>
     <PageRouter page="examples" pages={routes.examples} />
-  </AnimatedRouter>
+  </ContentRouter>
 );
 
 const Nav = () => (

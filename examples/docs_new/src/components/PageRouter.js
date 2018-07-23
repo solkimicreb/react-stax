@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Router, view, store } from 'react-easy-stack';
-import styled from 'styled-components';
+import { Router, view } from 'react-easy-stack';
+import anime from 'animejs';
 import { ease, layout } from './theme';
 import * as sidebar from './Sidebar';
 import { notify } from './Notification';
-import AnimatedRouter from './AnimatedRouter';
+import ContentRouter from './ContentRouter';
 
 class PageRouter extends Component {
   static defaultProps = {
@@ -35,14 +35,14 @@ class PageRouter extends Component {
     const { pages, prevPages, nextPages, ...rest } = this.props;
 
     return (
-      <AnimatedRouter
+      <ContentRouter
         {...rest}
         defaultPage={pages[0].name}
         notFoundPage="404"
         onRoute={this.onRoute}
       >
         <div page="404">Not Found Page!</div>
-      </AnimatedRouter>
+      </ContentRouter>
     );
   }
 }

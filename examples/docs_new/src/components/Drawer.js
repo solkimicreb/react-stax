@@ -32,7 +32,6 @@ const onTouchStart = ev => {
       (!open && !hasOpenDrawer && touchX < TOUCH_ZONE) ||
       (open && Math.abs(touchX - width) < TOUCH_ZONE)
     ) {
-      console.log('in');
       drawer.store.isTouching = true;
     }
   });
@@ -108,6 +107,8 @@ const StyledDrawer = styled.div`
     ${props =>
       props.open || props.docked ? (props.right ? '-100%' : '100%') : 'none'}
   );
+  pointer-events: none;
+  overflow: scroll;
   will-change: transform;
   contain: strict;
 `;
