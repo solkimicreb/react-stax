@@ -29,24 +29,36 @@ const SideNav = () => (
       </div>
       <div page="docs">
         <SideSectionLink to="state">State Management</SideSectionLink>
-        {routes.docs.state.map(page => (
-          <SideLink to={page.path} key={page.name}>
-            {page.title}
-          </SideLink>
-        ))}
+        <Router defaultPage="state">
+          <div page="state">
+            {routes.docs.state.map(page => (
+              <SideLink to={page.path} key={page.name}>
+                {page.title}
+              </SideLink>
+            ))}
+          </div>
+        </Router>
         <SideSectionLink to="routing">Routing</SideSectionLink>
-        {routes.docs.routing.map(page => (
-          <SideLink to={page.path} key={page.name}>
-            {page.title}
-          </SideLink>
-        ))}
+        <Router defaultPage="routing">
+          <div page="routing">
+            {routes.docs.routing.map(page => (
+              <SideLink to={page.path} key={page.name}>
+                {page.title}
+              </SideLink>
+            ))}
+          </div>
+        </Router>
       </div>
       <div page="examples">
-        {routes.examples.map(page => (
-          <SideLink to={page.path} key={page.name}>
-            {page.title}
-          </SideLink>
-        ))}
+        <Router defaultPage="examples">
+          <div page="examples">
+            {routes.examples.map(page => (
+              <SideLink to={page.path} key={page.name}>
+                {page.title}
+              </SideLink>
+            ))}
+          </div>
+        </Router>
       </div>
     </SidebarRouter>
   </Sidebar>
