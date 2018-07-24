@@ -1,4 +1,4 @@
-Routers can be nested to arbitrary levels and each of them is assigned a depth based on the nesting. Every router uses the url pathname token at its depth for the routing process.
+Routers can be nested to arbitrary levels and each of them is assigned a depth based on the nesting. Every Router uses the url pathname token at its depth for the routing process.
 
 ```jsx
 const ProfilePage = () => <h3>Profile Page</h3>;
@@ -37,7 +37,7 @@ Absolute links trigger a routing from the root level, while relative links only 
 - `./settings/privacy` is also a relative link from the current depth.
 - `../settings/privacy` is a relative link, which routes from the parent level.
 - `../../settings/privacy` is a relative link, which routes from the grandparent level.
-- `..` is a relative link, which routes to the default page of the parent router.
+- `..` is a relative link, which routes to the default page of the parent Router.
 - Having no `path` at all reloads the current page.
 
 ```jsx
@@ -72,6 +72,6 @@ export default () => (
 
 <div id="relative-demo"></div>
 
-Using relative links instead of absolute ones is usually a good practice. It makes refactoring easier when the project grows.
+Using relative links instead of absolute ones is a good practice. It makes refactoring easier when the project grows.
 
 > Relative paths don't make sense in case of the `route()` function, it always routes from the root level.

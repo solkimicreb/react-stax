@@ -1,71 +1,40 @@
-Dynamic parameters can be added with the `params` property of `Link` or the `route` function.
+## Router component
 
-```jsx
-import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+#### Properties
 
-const users = { '1': 'Ann', '12': 'Bob' };
+- `defaultPage`: A required string, which must match with a Router child's `page` prop. This will be the default page the Router routes to in case of no url pathname token.
+- `notFoundPage`: An optional string, which must match with a Router child's `page` prop. This will be the default page when there is a url pathname token, but it matches with no Router child.
+- `onRoute`: An optional function, which is called whenever the Router is routing. It can be used to <span id='intercept-link'>TODO</span>, <span id='params-link'>TODO</span>, <span id='resolve-link'>TODO</span> and <span id='lazy-link'>TODO</span>.
+- `enterAnimation`: An optional function, which
+- leaveAnimation: PropTypes.func,
+- shouldAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+- element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
 
-const UsersPage = () => (
-  <div>
-    <h3>User List</h3>
-    {Object.keys(users).map(id => (
-      <div key={id}>
-        <Link to="/details" params={{ id }}>
-          {users[id]}
-        </Link>
-      </div>
-    ))}
-  </div>
-);
-const DetailsPage = () => <p>User: {users[params.id]}</p>;
+#### Description
 
-export default () => (
-  <Router defaultPage="users">
-    <UsersPage page="users" />
-    <DetailsPage page="details" />
-  </Router>
-);
-```
+Wraps the object with a reactive Proxy, that is invisible from the outside. The returned object behaves exactly like the passed one.
 
-<div id="starting-params-demo"></div>
+## view(Comp)
 
-Parameters must be primitives, which are added to the query string and exposed on the `params` object. The type of each parameter is encoded in the query string and restored on page loads from links.
+#### Parameters
 
-## The params object
+- `Comp`: A React component, which can be a function or a class.
 
-The `params` object stores the current parameters and it is two-way synchronized with query string. The Link's `params` property should be used to set the starting parameter pool for the page and the `params` object can be used to manipulate the parameters while the page is active.
+#### Return value
 
-```jsx
-import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+A wrapping higher-order component over the passed component.
 
-const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
+#### Description
 
-const UsersPage = () => (
-  <div>
-    <h3>User List</h3>
-    {users.map(user => (
-      <div key={user.id}>
-        <Link to="/details" params={{ id: user.id }}>
-          {user.name}
-        </Link>
-      </div>
-    ))}
-  </div>
-);
-const DetailsPage = () => (
-  <p>User: {JSON.stringify(users.find(user => user.id === params.id))}</p>
-);
+Wraps the passed component with a [higher-order component](https://reactjs.org/docs/higher-order-components.html), which re-renders when the reactive data - used inside its render - is mutated.
 
-export default () => (
-  <Router defaultPage="users">
-    <UsersPage page="users" />
-    <DetailsPage page="details" />
-  </Router>
-);
-```
+### Comp.deriveStoresFromProps(props, ...stores)
 
-<div id="params-demo"></div>
+#### Parameters
 
-You can learn more about the params object in the <span id="integrations-link"></span>.
+- `props`: The next props object of the component.
+- `...stores`: The local stores of the component in definition order.
+
+#### Description
+
+Components wrapped with `view()` receive a new static `deriveStoresFromProps` lifecycle method. You can mutate the component's local stores directly inside it with data from the next props.

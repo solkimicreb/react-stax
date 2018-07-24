@@ -71,12 +71,14 @@ export default {
       {
         name: 'params',
         title: 'Routing Parameters',
+        link: 'Dynamic Parameters',
         edit: 'github url',
         path: '/docs/routing/params'
       },
       {
         name: 'intercept',
         title: 'Routing Interception',
+        link: 'Interception',
         edit: 'github url',
         path: '/docs/routing/intercept'
       },

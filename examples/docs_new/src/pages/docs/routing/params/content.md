@@ -1,4 +1,4 @@
-Routing parameters can be added via the `params` property of the `Link` component or the `route()` function. The parameters must be primitives and they are always saved in the query string.
+Routing parameters can be added via the `params` options of the `Link` component or the `route()` function. The parameters must be primitives and they are always saved in the query string.
 
 ```jsx
 import React from 'react';
@@ -32,7 +32,7 @@ export default () => (
 
 ## The params object
 
-The `Link`'s `params` property sets the starting parameter pool for the page on navigation and the top-level `params` object can be used to manipulate the parameters while the page is active. It reflects the current parameter pool and it is two-way synchronized with query string.
+The `Link`'s `params` property sets the starting parameter pool for the page on navigation and the top-level `params` object can be used to read and manipulate the parameters while the page is active. The `params` object is two-way synchronized with query string.
 
 ```jsx
 import React from 'react';
@@ -66,13 +66,11 @@ export default () => (
 
 <div id="params-demo"></div>
 
-> The parameters' type information is saved in the query string and types are respected during the two-way synchronization process.
-
 You can learn more about the params object in the <span id="integrations-link"></span>.
 
 ## The `inherit` option
 
-Links and the `route` function have an `inherit` boolean option, which toggles if the routing should inherit or overwrite to existing parameters. It defaults to `false`.
+Links and the `route()` function have an `inherit` boolean option, which toggles if the routing should inherit or overwrite to existing parameters. It defaults to `false`.
 
 ```jsx
 <Link to="path" params={{ param: 'value' }} inherit={true} />;

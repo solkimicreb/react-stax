@@ -116,14 +116,19 @@ export default class Link extends PureComponent {
 
   onClick = ev => {
     const { to, params, scroll, push, inherit, onClick } = this.props;
-    // route all Routers from below the links depth
-    // absolute links have a depth of 0
-    routeFromDepth({ to, params, scroll, push, inherit }, this.depth);
-    // prevent the default behavior of anchor clicks (page reload)
-    ev.preventDefault();
+
     // respect user defined onClick handlers on the Link
+    // let the user prevent the routing by ev.preventDefault()
     if (onClick) {
       onClick(ev);
+    }
+
+    // if the event is not prevented, route all Routers
+    // from below the links depth absolute links have a depth of 0
+    if (!ev.defaultPrevented) {
+      routeFromDepth({ to, params, scroll, push, inherit }, this.depth);
+      // prevent the default behavior of anchor clicks (page reload)
+      ev.preventDefault();
     }
   };
 

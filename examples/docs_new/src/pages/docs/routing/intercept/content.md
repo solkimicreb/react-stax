@@ -1,9 +1,9 @@
-The routing process can be intercepted for each `Router` by the `onRoute` property. `onRoute()` is a function with a single object parameter, which has the following properties:
+The routing process can be intercepted at each `Router` by the `onRoute` property. `onRoute()` is a function with a single object parameter, which has the following properties:
 
-- `fromPage`: the page name the router is routing away from.
-- `toPage`: the page name the router is routing to.
+- `fromPage`: the name of the previous page.
+- `toPage`: the name of the next page.
 - `fromParams`: the parameter pool of the previous page.
-- `target`: the Router instance, with a `target.route()` method. This method work exactly like the top-level `route()` function, but it can also handle relative paths.
+- `target`: the Router instance, with a `target.route()` method. This method works exactly like the top-level `route()` function, but it can also handle relative paths.
 
 ```jsx
 import React from 'react';

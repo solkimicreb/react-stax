@@ -70,6 +70,7 @@ export default class Router extends PureComponent {
         target: this,
         fromPage,
         toPage,
+        // TODO: is this correct in case of browser history navigation?
         fromParams: history.state.params
       });
     }

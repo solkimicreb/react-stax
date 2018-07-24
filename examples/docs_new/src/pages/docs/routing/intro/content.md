@@ -75,7 +75,7 @@ export default () => (
 
 ## The `push` option
 
-Links and the `route` function have a `push` boolean option, which toggles if the routing should push a new history item or replace the current one. By default it adds a new history item when the routing results in a new page.
+Links and the `route()` function have a `push` boolean option, which toggles if the routing should push a new history item or replace the current one. By default it adds a new history item when the routing results in a new page.
 
 ```jsx
 <Link to="path" push={false} />;
@@ -83,4 +83,4 @@ Links and the `route` function have a `push` boolean option, which toggles if th
 route({ to: 'path', push: false });
 ```
 
-See the <span id='api-link'></span> for a list of available `route()` and `Link` options.
+See the <span id='api-link'></span> for a full list of available `route()` and `Link` options.
