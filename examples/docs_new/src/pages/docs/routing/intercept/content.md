@@ -29,12 +29,12 @@ export default () => (
 
 The `onRoute()` function is the only interception point for routing processes, but it is extremely versatile. It can be used to:
 
-- <span id="redirect-link"></span> the routing.
-- <span id="params-link"></span> for the next page.
-- <span id="props-link"></span> into the next page.
-- <span id="fetch-link"></span> for the next page.
-- <span id="lazy-link"></span> for the next page.
-- <span id="virtual-link"></span> for complex routing logic.
+- <span id="redirect-link">Intercept, prevent or redirect </span> the routing.
+- <span id="params-link">Set default parameters </span> for the next page.
+- <span id="props-link">Inject props </span> into the next page.
+- <span id="fetch-link">Asynchronously fetch some data </span> for the next page.
+- <span id="lazy-link">Lazy load components</span> for the next page.
+- <span id="virtual-link">Create virtual Routers</span> for complex routing logic.
 
 ## Redirection
 

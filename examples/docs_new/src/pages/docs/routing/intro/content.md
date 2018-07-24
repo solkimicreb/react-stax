@@ -1,4 +1,4 @@
-Easy Stack clearly separates page navigation from <span id='params-link'></span>. The url pathname is used for navigation in the [application shell](https://developers.google.com/web/fundamentals/architecture/app-shell) while the query string stores the data shell for the current page. The data shell is a minimal set of dynamic primitives, which define the current application state. It usually consists of user inputs.
+Easy Stack clearly separates page navigation from <span id='params-link'> dynamic routing parameters</span>. The url pathname is used for navigation in the [application shell](https://developers.google.com/web/fundamentals/architecture/app-shell) while the query string stores the data shell for the current page. The data shell is a minimal set of dynamic primitives, which define the current application state. It usually consists of user inputs.
 
 ## The Router component
 
@@ -71,7 +71,7 @@ export default () => (
 );
 ```
 
-`route()` returns a Promise, which resolves after the whole routing process is over, in case of <span id='async-link'></span>.
+`route()` returns a Promise, which resolves after the whole routing process is over, in case of <span id='async-link'> async routing</span>.
 
 ## The `push` option
 
@@ -83,4 +83,4 @@ Links and the `route()` function have a `push` boolean option, which toggles if 
 route({ to: 'path', push: false });
 ```
 
-See the <span id='api-link'></span> for a full list of available `route()` and `Link` options.
+See the <span id='api-link'> routing API </span> for a full list of available `route()` and `Link` options.

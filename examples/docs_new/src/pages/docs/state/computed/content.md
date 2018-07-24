@@ -25,9 +25,9 @@ export default view(() => (
 
 <div id="getter-demo"></div>
 
-Using a mix of normal and getter properties in the stores with <span id="mutators-link"></span> is an elegant state management pattern.
+Using a mix of normal and getter properties in the stores with <span id="mutators-link"> separate mutator methods </span> is an elegant state management pattern.
 
-> You can safely use `this` inside getters, if you prefer it over the <span id="store-ref-link"></span>. Getters are always called with the correct `this`.
+> You can safely use `this` inside getters, if you prefer it over the <span id="store-ref-link"> direct store reference</span>. Getters are always called with the correct `this`.
 
 ## deriveStoresFromProps
 

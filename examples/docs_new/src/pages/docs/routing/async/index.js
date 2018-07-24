@@ -8,7 +8,7 @@ import content from './content.md';
 
 export default props => (
   <Page html={content} {...props}>
-    <Link to="../integrations">integrations docs</Link>
+    <Link to="../integrations" />
     <Browser mount="starting-params-demo">{StartingParamsDemo}</Browser>
     <Browser mount="params-demo">{ParamsDemo}</Browser>
   </Page>

@@ -11,16 +11,12 @@ export default props => (
       to="../mutations"
       scroll={{ anchor: 'mutating-inside-store-methods' }}
       portal="store-ref-link"
-    >
-      direct store reference
-    </Link>
+    />
     <Link
       to="../mutations"
       scroll={{ anchor: 'keeping-the-store-pure' }}
       portal="mutators-link"
-    >
-      separate mutator methods
-    </Link>
+    />
     <Browser mount="getter-demo">{GetterDemo}</Browser>
   </Page>
 );

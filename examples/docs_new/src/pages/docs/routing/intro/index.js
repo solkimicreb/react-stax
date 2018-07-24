@@ -8,15 +8,9 @@ import content from './content.md';
 
 export default props => (
   <Page html={content} {...props}>
-    <Link to="../params" portal="params-link">
-      dynamic routing parameters
-    </Link>
-    <Link to="../async" portal="async-link">
-      async routing
-    </Link>
-    <Link to="../api" portal="api-link">
-      routing API
-    </Link>
+    <Link to="../params" portal="params-link" />
+    <Link to="../async" portal="async-link" />
+    <Link to="../api" portal="api-link" />
     <Browser mount="links-demo">{LinksDemo}</Browser>
   </Page>
 );

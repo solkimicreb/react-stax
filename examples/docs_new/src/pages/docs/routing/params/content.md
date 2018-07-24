@@ -66,7 +66,7 @@ export default () => (
 
 <div id="params-demo"></div>
 
-You can learn more about the params object in the <span id="integrations-link"></span>.
+You can learn more about the params object in the <span id="integrations-link"> integrations docs</span>.
 
 ## The `inherit` option
 
