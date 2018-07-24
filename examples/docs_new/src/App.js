@@ -17,6 +17,23 @@ import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 import routes from './routes';
 
+const DocsNav = () => (
+  <div>
+    <SideSectionLink to="state">State Management</SideSectionLink>
+    {routes.docs.state.map(page => (
+      <SideLink to={page.path} key={page.name}>
+        {page.title}
+      </SideLink>
+    ))}
+    <SideSectionLink to="routing">Routing</SideSectionLink>
+    {routes.docs.routing.map(page => (
+      <SideLink to={page.path} key={page.name}>
+        {page.title}
+      </SideLink>
+    ))}
+  </div>
+);
+
 const SideNav = () => (
   <Sidebar>
     <SidebarRouter defaultPage="home">
@@ -27,47 +44,22 @@ const SideNav = () => (
           </SideSectionLink>
         ))}
       </div>
-      <div page="docs">
-        <SideSectionLink to="state">State Management</SideSectionLink>
-        <Router defaultPage="state">
-          <div page="state">
-            {routes.docs.state.map(page => (
-              <SideLink to={page.path} key={page.name}>
-                {page.title}
-              </SideLink>
-            ))}
-          </div>
-        </Router>
-        <SideSectionLink to="routing">Routing</SideSectionLink>
-        <Router defaultPage="routing">
-          <div page="routing">
-            {routes.docs.routing.map(page => (
-              <SideLink to={page.path} key={page.name}>
-                {page.title}
-              </SideLink>
-            ))}
-          </div>
-        </Router>
-      </div>
+      <DocsNav page="docs" />
       <div page="examples">
-        <Router defaultPage="examples">
-          <div page="examples">
-            {routes.examples.map(page => (
-              <SideLink to={page.path} key={page.name}>
-                {page.title}
-              </SideLink>
-            ))}
-          </div>
-        </Router>
+        {routes.examples.map(page => (
+          <SideLink to={page.path} key={page.name}>
+            {page.title}
+          </SideLink>
+        ))}
       </div>
     </SidebarRouter>
   </Sidebar>
 );
 
 const Content = () => (
-  <ContentRouter defaultPage="home" debug="main">
+  <ContentRouter defaultPage="home">
     <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
-    <ContentRouter page="docs" defaultPage="state" debug="docs">
+    <ContentRouter page="docs" defaultPage="state">
       <PageRouter
         page="state"
         pages={routes.docs.state}

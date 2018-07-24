@@ -1,6 +1,6 @@
 {
-  "short_name": "Generic Salad",
-  "name": "Generic Concrete Salad",
+  "short_name": "React Easy Stack",
+  "name": "React Easy Stack",
   "author": "Bertalan Miklos",
   "icons": [
     {
@@ -26,6 +26,6 @@
   ],
   "start_url": "./index.html",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#24292e",
   "background_color": "#ffffff"
 }

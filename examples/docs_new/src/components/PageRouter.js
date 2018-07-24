@@ -23,8 +23,9 @@ class PageRouter extends Component {
     /* webpackMode: "lazy-once" */
     /* webpackChunkName: "pages" */
     `../pages${page.path}`);
-    sidebar.close();
+
     layout.currentPage = page;
+    sidebar.close();
 
     return (
       <NextPage page={page.name} data={page} prev={prevPage} next={nextPage} />

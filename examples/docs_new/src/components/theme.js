@@ -1,3 +1,4 @@
+import { injectGlobal } from 'styled-components';
 import { store } from 'react-easy-stack';
 
 export const colors = {
@@ -43,3 +44,30 @@ export const layout = store({
 mqlTiny.addListener(() => (layout.isTiny = mqlTiny.matches));
 mql.addListener(() => (layout.isMobile = mql.matches));
 mqlLarge.addListener(() => (layout.isLarge = mqlLarge.matches));
+
+injectGlobal`
+* {
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  padding: 0;
+  margin: 0;
+  color: red !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (max-width: 800px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+`;
