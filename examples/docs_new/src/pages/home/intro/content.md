@@ -53,7 +53,7 @@ You can take a deeper dive in the <span id="routing-link"></span>.
 
 ## State Management
 
-State management focuses on freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation.
+State management provides freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation.
 
 ```jsx
 import React from 'react';
@@ -81,7 +81,7 @@ The state management API has two functions:
 - `store` creates reactive stores for your data.
 - `view` creates reactive views, which re-render when the data mutates.
 
-You can put anything in your stores and mutate them in arbitrary way, the necessary components will always re-render to reflect the new state. You could store a mix of deeply nested objects with arrays and maps. You could add or delete properties dynamically or even use computed getters or inheritance.
+You can put anything in your stores and mutate them in arbitrary way, the necessary components will always re-render to reflect the new state. You could store a mix of deeply nested objects, arrays and maps. You could add or delete properties dynamically or even use computed getters or inheritance.
 
 The possibilities are endless, learn more about common patterns in the <span id="state-link"></span>.
 

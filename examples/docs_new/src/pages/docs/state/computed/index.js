@@ -10,6 +10,13 @@ export default props => (
   <Page html={content} {...props}>
     <Link
       to="../mutations"
+      scroll={{ anchor: 'mutating-inside-store-methods' }}
+      portal="store-ref-link"
+    >
+      direct store reference
+    </Link>
+    <Link
+      to="../mutations"
       scroll={{ anchor: 'keeping-the-store-pure' }}
       portal="mutators-link"
     >

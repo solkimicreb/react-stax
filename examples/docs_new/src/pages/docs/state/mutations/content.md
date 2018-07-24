@@ -1,8 +1,8 @@
-State stores can be mutated from anywhere in arbitrary ways, but keeping state mutations in a central place is a good practice. In this section we will cover a few state management patterns.
+State stores can be mutated from anywhere in any way, but keeping state mutations in a central place is a good practice. In this section we will cover a few state management patterns.
 
-## Mutating from store methods
+## Mutating inside store methods
 
-Simple methods on the store are convenient places for mutating the state.
+The store's methods are convenient places for mutating the state.
 
 ```js
 import { store } from 'react-easy-stack';
@@ -21,7 +21,7 @@ const user = store({
 export default user;
 ```
 
-There is one big gotcha with this approach however. You can safely call `user.logout()` as a method, but as soon you pass it as a callback, it looses its `this` context. The below code would throw an error.
+There is one gotcha with this approach however. You can safely call `user.logout()` as a method, but as soon you as pass it as a callback, it looses its `this` context. The below code would throw an error.
 
 ```jsx
 export default () => <button onClick={user.logout}>Logout</button>;
@@ -74,7 +74,7 @@ In big applications a single mutator method typically mutates more than one stor
 
 ## Global components
 
-Some components - like notifications and loaders - are usually singleton inside applications. In these cases it makes sense to create a hidden store and expose a global mutator API for the component.
+Some components - like notifications and loaders - are usually singleton inside applications. In these cases it makes sense to create a single hidden store and expose a global mutator API for the component.
 
 _Loader.jsx_
 
@@ -111,4 +111,4 @@ export default () => (
 
 <div id="loader-demo"></div>
 
-Mounting a single loader somewhere visible and calling the `startLoading`/`stopLoading` pair from a global http hook produces a single central loading logic and UI.
+Mounting a single loader and calling the `startLoading`/`stopLoading` pair from a global http hook produces a central loading logic and UI.

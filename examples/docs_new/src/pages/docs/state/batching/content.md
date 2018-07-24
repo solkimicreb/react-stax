@@ -1,4 +1,4 @@
-Easy-stack is calling a dummy `setState()` on the related components whenever a store property mutates. This means that the usual batching rules of `setState` applies in case of store mutations.
+Easy Stack is calling a dummy `setState()` on the related components whenever a store property mutates. This means that the usual batching rules of `setState` applies in case of store mutations.
 
 - Everything inside an event handler is batched and committed in one batch at the end of the handler.
 - In all other cases `setState` is triggering an immediate synchronous re-render.

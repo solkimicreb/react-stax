@@ -76,11 +76,17 @@ const Body = styled.div`
     background-color: inherit;
     color: inherit;
   }
+
   a,
   button,
   input {
-    margin: 0 20px;
+    margin-bottom: 10px;
+
+    &:not(:first-child) {
+      margin-left: 20px;
+    }
   }
+
   button,
   input {
     padding: 0 8px;
@@ -89,9 +95,11 @@ const Body = styled.div`
     border: 1px solid ${colors.textLight};
     outline: none;
   }
+
   button {
     cursor: pointer;
   }
+
   ul {
     margin-top: 10px;
   }

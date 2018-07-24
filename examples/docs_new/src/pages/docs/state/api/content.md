@@ -2,7 +2,7 @@
 
 #### Parameters
 
-- `obj`: An object, which can also be an array, Map or Set.
+- `obj`: An object, which may also be an array, Map or Set.
 
 #### Return value
 
@@ -24,7 +24,7 @@ A wrapping higher-order component over the passed component.
 
 #### Description
 
-Wraps the passed component with a reactive [higher-order component](https://reactjs.org/docs/higher-order-components.html), which re-renders when the reactive data - used inside its render - is mutated.
+Wraps the passed component with a [higher-order component](https://reactjs.org/docs/higher-order-components.html), which re-renders when the reactive data - used inside its render - is mutated.
 
 ### Comp.deriveStoresFromProps(props, ...stores)
 
