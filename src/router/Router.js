@@ -13,12 +13,13 @@ export default class Router extends PureComponent {
     onRoute: PropTypes.func,
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
-    shouldAnimate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    shouldAnimate: PropTypes.func,
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   };
 
   static defaultProps = {
-    element: elements.div
+    element: elements.div,
+    shouldAnimate: this.defaultShouldAnimate
   };
 
   static childContextTypes = { easyRouterDepth: PropTypes.number };
@@ -46,11 +47,12 @@ export default class Router extends PureComponent {
   // the raw DOM container node is needed for the animations
   saveContainer = container => (this.container = container);
 
+  // default shouldAnimate implementation
+  defaultShouldAnimate = ({ fromPage, toPage }) => fromPage !== toPage;
+
   // this is part of the public API
   // it routes every router from this depth (including this one)
-  route(routingOptions) {
-    routeFromDepth(routingOptions, this.depth);
-  }
+  route = options => routeFromDepth(options, this.depth);
 
   // routing is split in 2 phases
   // first all parallel routers at the same depth executes startRouting
@@ -82,18 +84,13 @@ export default class Router extends PureComponent {
   finishRouting(resolvedData) {
     const fromPage = this.state.page;
     const toPage = path[this.depth];
-    const { enterAnimation, leaveAnimation } = this.props;
-    let shouldAnimate = this.props.shouldAnimate;
+    const { enterAnimation, leaveAnimation, shouldAnimate } = this.props;
 
-    if (typeof shouldAnimate === 'function') {
-      shouldAnimate = shouldAnimate({ fromPage, toPage });
-    }
-    if (shouldAnimate === undefined) {
-      shouldAnimate = fromPage !== toPage;
-    }
+    const canAnimate = this.container && shouldAnimate({ fromPage, toPage });
+
     // this typically saves the current view to use later for cross fade effects
     // the current view is soon replaced by setState, so this is necessary
-    if (shouldAnimate && this.container) {
+    if (canAnimate) {
       animation.setup(this.container);
     }
 
@@ -108,7 +105,7 @@ export default class Router extends PureComponent {
         // run the animations when the new page is fully rendered, but do not wait for them
         // the views may be hidden by the animation, but the DOM routing is already over
         // it is safe to go on with routing the next level of routers
-        if (shouldAnimate && this.container) {
+        if (canAnimate) {
           // only do an enter animation if this is not the initial routing of the router
           // this prevents cascading over-animation, in case of nested routers
           // only the outmost one will animate, the rest will appear normally
