@@ -9,8 +9,7 @@ export const elements = {
 };
 
 export const scroller = {
-  scrollToAnchor() {},
-  scrollToLocation() {}
+  scrollTo() {}
 };
 
 export const animation = {

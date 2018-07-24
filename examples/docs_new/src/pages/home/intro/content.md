@@ -21,7 +21,7 @@ npm start
 
 ## Routing
 
-Routing is inspired by file systems and the old school web. In its simplest form it looks like this:
+Routing is inspired by file systems and the old school web, in its simplest form it looks like this:
 
 ```jsx
 import React from 'react';
