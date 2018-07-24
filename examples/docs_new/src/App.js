@@ -22,13 +22,13 @@ const DocsNav = () => (
     <SideSectionLink to="state">State Management</SideSectionLink>
     {routes.docs.state.map(page => (
       <SideLink to={page.path} key={page.name}>
-        {page.title}
+        {page.link || page.title}
       </SideLink>
     ))}
     <SideSectionLink to="routing">Routing</SideSectionLink>
     {routes.docs.routing.map(page => (
       <SideLink to={page.path} key={page.name}>
-        {page.title}
+        {page.link || page.title}
       </SideLink>
     ))}
   </div>
@@ -40,7 +40,7 @@ const SideNav = () => (
       <div page="home">
         {routes.home.map(page => (
           <SideSectionLink to={page.path} key={page.name}>
-            {page.title}
+            {page.link || page.title}
           </SideSectionLink>
         ))}
       </div>
@@ -48,7 +48,7 @@ const SideNav = () => (
       <div page="examples">
         {routes.examples.map(page => (
           <SideLink to={page.path} key={page.name}>
-            {page.title}
+            {page.link || page.title}
           </SideLink>
         ))}
       </div>

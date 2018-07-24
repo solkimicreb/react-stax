@@ -3,6 +3,7 @@ export default {
     {
       name: 'intro',
       title: 'React Easy Stack',
+      link: 'Introduction',
       path: '/home/intro',
       edit: 'https://google.com'
     },
@@ -24,6 +25,7 @@ export default {
       {
         name: 'intro',
         title: 'State Management',
+        link: 'Introduction',
         edit: 'github url',
         path: '/docs/state/intro'
       },
@@ -56,6 +58,7 @@ export default {
       {
         name: 'intro',
         title: 'Routing',
+        link: 'Introduction',
         edit: 'github url',
         path: '/docs/routing/intro'
       },
@@ -84,16 +87,22 @@ export default {
         path: '/docs/routing/async'
       },
       {
-        name: 'parallel',
-        title: 'Parallel Routing',
-        edit: 'github url',
-        path: '/docs/routing/parallel'
-      },
-      {
         name: 'scroll',
         title: 'Scroll Handling',
         edit: 'github url',
         path: '/docs/routing/scroll'
+      },
+      {
+        name: 'link',
+        title: 'Link Activity',
+        edit: 'github url',
+        path: '/docs/routing/link'
+      },
+      {
+        name: 'parallel',
+        title: 'Parallel Routing',
+        edit: 'github url',
+        path: '/docs/routing/parallel'
       },
       {
         name: 'animations',

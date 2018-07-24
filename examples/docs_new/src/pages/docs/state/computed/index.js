@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import ReactDOM from 'react-dom';
 import { Link } from 'react-easy-stack';
 import Page from '../../../../components/Page';
 import Browser from '../../../../components/Browser';
