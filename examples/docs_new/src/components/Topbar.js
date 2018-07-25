@@ -25,7 +25,7 @@ const Topbar = styled.nav`
     img {
       width: 30px;
       height: 30px;
-      margin: 0 10px;
+      margin-right: 10px;
     }
   }
 `;

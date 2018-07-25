@@ -68,12 +68,6 @@ class Page extends Component {
       }
     });
     this.store.didMount = true;
-
-    let title = 'React Simple Stack';
-    if (data.title) {
-      title = `${data.title} | ${title}`;
-    }
-    document.title = title;
   }
 
   render() {

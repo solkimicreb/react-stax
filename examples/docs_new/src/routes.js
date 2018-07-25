@@ -1,22 +1,9 @@
 export default {
   home: [
     {
-      name: 'intro',
-      title: 'Introduction',
+      name: 'home',
       path: '/home/intro',
       edit: 'https://google.com'
-    },
-    {
-      name: 'platforms',
-      title: 'Platform Support',
-      edit: 'github url',
-      path: '/home/platforms'
-    },
-    {
-      name: 'performance',
-      title: 'Performance',
-      edit: 'github url',
-      path: '/home/performance'
     }
   ],
   docs: {
@@ -131,6 +118,20 @@ export default {
       title: 'Todo MVC',
       edit: '',
       path: '/examples/todomvc'
+    }
+  ],
+  faq: [
+    {
+      name: 'platforms',
+      title: 'Platform Support',
+      edit: 'github url',
+      path: '/faq/platforms'
+    },
+    {
+      name: 'performance',
+      title: 'Performance',
+      edit: 'github url',
+      path: '/faq/performance'
     }
   ]
 };

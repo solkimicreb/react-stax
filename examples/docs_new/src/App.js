@@ -46,13 +46,6 @@ const DocsNav = () => (
 const SideNav = () => (
   <Sidebar>
     <SidebarRouter defaultPage="home">
-      <div page="home">
-        {routes.home.map(page => (
-          <SideSectionLink to={page.path} key={page.name}>
-            {page.link || page.title}
-          </SideSectionLink>
-        ))}
-      </div>
       <DocsNav page="docs" />
       <div page="examples">
         {routes.examples.map(page => (
@@ -61,13 +54,23 @@ const SideNav = () => (
           </SideLink>
         ))}
       </div>
+      <div page="faq">
+        {routes.faq.map(page => (
+          <SideSectionLink to={page.path} key={page.name}>
+            {page.link || page.title}
+          </SideSectionLink>
+        ))}
+      </div>
     </SidebarRouter>
   </Sidebar>
 );
 
 const Content = () => (
-  <ContentRouter defaultPage="home">
-    <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
+  <PageRouter
+    defaultPage="home"
+    pages={routes.home}
+    nextPages={routes.docs.state}
+  >
     <ContentRouter page="docs" defaultPage="state">
       <PageRouter
         page="state"
@@ -81,15 +84,20 @@ const Content = () => (
         prevPages={routes.docs.state}
       />
     </ContentRouter>
-    <PageRouter page="examples" pages={routes.examples} />
-  </ContentRouter>
+    <PageRouter
+      page="examples"
+      pages={routes.examples}
+      nextPages={routes.faq}
+    />
+    <PageRouter page="faq" pages={routes.faq} prevPages={routes.examples} />
+  </PageRouter>
 );
 
 const Nav = () => (
   <Fragment>
     <TopLink to="docs">Docs</TopLink>
     <TopLink to="examples">Examples</TopLink>
-    <TopLink to="docs">FAQ</TopLink>
+    <TopLink to="faq">FAQ</TopLink>
   </Fragment>
 );
 
