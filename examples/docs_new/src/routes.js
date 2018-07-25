@@ -2,8 +2,7 @@ export default {
   home: [
     {
       name: 'intro',
-      title: 'React Easy Stack',
-      link: 'Introduction',
+      title: 'Introduction',
       path: '/home/intro',
       edit: 'https://google.com'
     },

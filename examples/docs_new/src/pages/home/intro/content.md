@@ -1,6 +1,4 @@
-> A complete routing and state management solution for practical developers.
-
-A React stack, which puts rapid development and product quality before theoretical code beauty. Easy Stack apps should effortlessly meet subtle user expectations - like browser history and URL integration, animated page transitions and routing without a cascade of loaders.
+TODO: add intro text here
 
 ## Installation
 
@@ -107,7 +105,7 @@ The integrations API has three objects:
 
 You can learn more about common use cases in the <span id="integrations-link"></span>.
 
-## Making an app
+## Creating an app
 
 The above examples fit together to create a simple beer fetching app. Just type in your favorite food and find out which beers pairs well with it.
 

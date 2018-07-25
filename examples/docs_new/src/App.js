@@ -1,7 +1,16 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { path, view, params, store, Router, Link } from 'react-easy-stack';
+import {
+  path,
+  view,
+  params,
+  store,
+  storage,
+  Router,
+  Link,
+  route
+} from 'react-easy-stack';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import Chat from './components/Chat';
@@ -16,6 +25,7 @@ import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 import routes from './routes';
+import Landing from './Landing';
 
 const DocsNav = () => (
   <div>
@@ -56,8 +66,15 @@ const SideNav = () => (
   </Sidebar>
 );
 
+function onRoute({ toPage }) {
+  if (toPage !== 'landing' && !storage.landed) {
+    route({ to: 'landing' });
+  }
+}
+
 const Content = () => (
-  <ContentRouter defaultPage="home">
+  <ContentRouter defaultPage="home" onRoute={onRoute}>
+    <Landing page="landing" />
     <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
     <ContentRouter page="docs" defaultPage="state">
       <PageRouter

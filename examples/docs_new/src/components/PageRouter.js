@@ -19,8 +19,7 @@ class PageRouter extends Component {
     const prevPage = pages[idx - 1] || prevPages[prevPages.length - 1];
     const nextPage = pages[idx + 1] || nextPages[0];
 
-    const { default: NextPage } = await import(/* webpackPrefetch: true */
-    /* webpackMode: "lazy-once" */
+    const { default: NextPage } = await import(/* webpackMode: "lazy-once" */
     /* webpackChunkName: "pages" */
     `../pages${page.path}`);
 

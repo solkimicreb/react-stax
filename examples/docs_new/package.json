@@ -83,33 +83,24 @@
       "last 2 firefox versions",
       "last 2 edge versions"
     ],
-    "production": [
-      ">0.25%",
-      "not op_mini all",
-      "ie 11"
-    ]
+    "production": [">0.25%", "not op_mini all", "ie 11"]
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,mjs}"
-    ],
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
+    "collectCoverageFrom": ["src/**/*.{js,jsx,mjs}"],
+    "setupFiles": ["<rootDir>/config/polyfills.js"],
     "testMatch": [
       "**/__tests__/**/*.{js,jsx,mjs}",
       "**/?(*.)(spec|test).{js,jsx,mjs}"
     ],
-    "roots": [
-      "<rootDir>/src"
-    ],
+    "roots": ["<rootDir>/src"],
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^.+\\.(graphql)$": "<rootDir>/config/jest/graphqlTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|css|json|graphql)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|mjs|css|json|graphql)$)":
+        "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$",

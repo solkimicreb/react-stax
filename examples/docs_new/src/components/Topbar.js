@@ -52,7 +52,9 @@ const Actions = styled.div`
 export default view(({ children }) => (
   <Topbar>
     <Navbar correction={layout.correction}>
-      <MenuItems isMobile={layout.isMobile}>{children}</MenuItems>
+      <MenuItems isMobile={layout.isMobile} className="items">
+        {children}
+      </MenuItems>
       {!layout.isMobile && (
         <Actions>
           <ActionIcons />
