@@ -24,7 +24,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <link rel="preload" href='/assets/logo.svg' as='image'/>
+    <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
     <script>
     ((window.gitter = {}).chat = {}).options = {
   room: 'nx-framework/general',
@@ -37,7 +37,84 @@
   // useStyles: false
 };
 </script>
-    <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+<style>
+
+* {
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (max-width: 800px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+#landing {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 10px;
+}
+
+#landing h1,
+#landing h3,
+#landing p {
+  margin: 0;
+  padding: 0;
+}
+
+#landing .title {
+  position: relative;
+  text-align: center;
+}
+
+#landing img {
+  width: 300px;
+  max-width: 90%;
+  margin: 25px 0;
+}
+
+#landing h1 {
+  font-size: 45px;
+}
+
+#landing h3 {
+  font-size: 25.5px;
+}
+
+#landing .get-started {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 22px 17px;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  background: rgb(96, 219, 251);
+  cursor: pointer;
+}
+
+#landing .description {
+  font-size: 21px;
+}
+</style>
+
+    <link rel="preload" href='/assets/logo.svg' as='image'/>
 
     <title>React Simple Stack</title>
   </head>
@@ -45,16 +122,37 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <div id='landing'>
+      <div class="title">
+        <h1>React Simple Stack</h1>
+        <h3>A solution for practical developers</h3>
+        <img src="/assets/logo.svg" />
+        <div class="get-started" onclick="land()">
+          GET STARTED
+        </div>
+      </div>
+      <p class="description">
+        A stack, which values product quality before code beauty. Simple Stack
+        apps should effortlessly meet subtle user expectations - like browser
+        history and URL integration, animated page transitions and routing without
+        a cascade of loaders.
+      </p>
+    </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+  <div id="root"></div>
+
+  <script>
+  const landingPage = document.getElementById('landing');
+const landed = localStorage.getItem('landed');
+if (landed) {
+  landingPage.remove();
+}
+window.land = function land() {
+  localStorage.setItem('landed', true);
+  landingPage.remove();
+  window.renderApp();
+};
+</script>
   </body>
 </html>

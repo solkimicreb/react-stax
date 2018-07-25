@@ -8,5 +8,12 @@ import './instrumentScroll';
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+window.renderApp = function renderApp() {
+  ReactDOM.render(<App />, document.getElementById('root'));
+};
+const landed = localStorage.getItem('landed');
+if (landed) {
+  window.renderApp();
+}
+
 registerServiceWorker();

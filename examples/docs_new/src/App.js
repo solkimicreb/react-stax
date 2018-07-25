@@ -25,7 +25,6 @@ import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
 import { layout } from './components/theme';
 import routes from './routes';
-import Landing from './Landing';
 
 const DocsNav = () => (
   <div>
@@ -66,15 +65,8 @@ const SideNav = () => (
   </Sidebar>
 );
 
-function onRoute({ toPage }) {
-  if (toPage !== 'landing' && !storage.landed) {
-    route({ to: 'landing' });
-  }
-}
-
 const Content = () => (
-  <ContentRouter defaultPage="home" onRoute={onRoute}>
-    <Landing page="landing" />
+  <ContentRouter defaultPage="home">
     <PageRouter page="home" pages={routes.home} nextPages={routes.docs.state} />
     <ContentRouter page="docs" defaultPage="state">
       <PageRouter
