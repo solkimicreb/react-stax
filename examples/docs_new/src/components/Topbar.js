@@ -33,6 +33,7 @@ const Topbar = styled.nav`
 const Navbar = styled.div`
   position: relative;
   left: ${props => props.correction / 2}px;
+  transition: left 0.15s;
   font-size: 26px;
   margin: auto;
   display: flex;

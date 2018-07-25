@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { store, view, path } from 'react-easy-stack';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { colors, ease, layout } from './theme';
 
 const TOUCH_ZONE = 20;
@@ -91,6 +91,12 @@ window.addEventListener('touchmove', onTouchMove, { passive: true });
 window.addEventListener('touchend', onTouchEnd, { passive: true });
 window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
+const rotate360 = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+`;
+
 const StyledDrawer = styled.div`
   position: fixed;
   top: 0;
@@ -110,6 +116,7 @@ const StyledDrawer = styled.div`
   overflow: scroll;
   will-change: transform;
   contain: strict;
+  animation: ${rotate360} 0.15s;
 `;
 
 const Backdrop = styled.div`
