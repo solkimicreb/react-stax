@@ -12,7 +12,7 @@
   <rect rx="15" id="svg_1" height="337" width="450" y="55" x="25" stroke-width="20" stroke="#25292e" fill="#ffffff"/>
   <rect rx="15" id="svg_2" height="8" width="300" y="435.166665" x="100" stroke-width="20" stroke="#25292e" fill="none"/>
   <rect stroke="#60dbfb" id="svg_3" height="30" width="370" y="322" x="65" stroke-width="20" fill="#60dbfb"/>
-  <rect stroke="#32A0E8" id="svg_4" height="30" width="370" y="252" x="65" stroke-width="20" fill="#60dbfb"/>
-  <rect stroke="#0366d6" id="svg_5" height="116" width="370" y="95" x="65" stroke-width="20" fill="#60dbfb"/>
+  <rect stroke="#32A0E8" id="svg_4" height="30" width="370" y="252" x="65" stroke-width="20" fill="#32A0E8"/>
+  <rect stroke="#0366d6" id="svg_5" height="116" width="370" y="95" x="65" stroke-width="20" fill="#0366d6"/>
  </g>
 </svg>

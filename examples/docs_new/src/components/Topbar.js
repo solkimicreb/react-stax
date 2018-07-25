@@ -1,5 +1,6 @@
 import React from 'react';
 import { view } from 'react-easy-stack';
+import { TopLink } from './Link';
 import styled from 'styled-components';
 import { colors, layout, ease } from './theme';
 import * as sidebar from './Sidebar';
@@ -13,6 +14,20 @@ const Topbar = styled.nav`
   height: ${layout.topbarHeight}px;
   background-color: ${colors.text};
   z-index: 50;
+
+  .logo {
+    position: ${props => (props.isMobile ? 'unset' : 'absolute')};
+    left: 60px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin: 0 10px;
+    }
+  }
 `;
 
 const Navbar = styled.div`
@@ -26,6 +41,7 @@ const Navbar = styled.div`
   align-content: center;
   max-width: ${layout.appWidth}px;
   color: ${colors.textLight};
+  overflow-x: scroll;
 
   svg,
   a {
@@ -49,17 +65,28 @@ const Actions = styled.div`
   }
 `;
 
-export default view(({ children }) => (
-  <Topbar>
-    <Navbar correction={layout.correction}>
-      <MenuItems isMobile={layout.isMobile} className="items">
-        {children}
-      </MenuItems>
-      {!layout.isMobile && (
-        <Actions>
-          <ActionIcons />
-        </Actions>
-      )}
-    </Navbar>
-  </Topbar>
-));
+export default view(({ children }) => {
+  const logo = (
+    <TopLink to="/home" className="logo">
+      <img src="/assets/logo_white_full.svg" />
+      <div>Stax</div>
+    </TopLink>
+  );
+
+  return (
+    <Topbar isMobile={layout.isMobile}>
+      {!layout.isMobile && logo}
+      <Navbar correction={layout.correction}>
+        <MenuItems isMobile={layout.isMobile} className="items">
+          {layout.isMobile && logo}
+          {children}
+        </MenuItems>
+        {!layout.isMobile && (
+          <Actions>
+            <ActionIcons />
+          </Actions>
+        )}
+      </Navbar>
+    </Topbar>
+  );
+});

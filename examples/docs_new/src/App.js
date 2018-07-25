@@ -87,9 +87,9 @@ const Content = () => (
 
 const Nav = () => (
   <Fragment>
-    <TopLink to="home">Home</TopLink>
     <TopLink to="docs">Docs</TopLink>
     <TopLink to="examples">Examples</TopLink>
+    <TopLink to="docs">FAQ</TopLink>
   </Fragment>
 );
 
