@@ -3,7 +3,8 @@ export default {
     {
       name: 'home',
       path: '/home/intro',
-      edit: 'https://google.com'
+      edit: 'https://google.com',
+      sidebar: false
     }
   ],
   docs: {

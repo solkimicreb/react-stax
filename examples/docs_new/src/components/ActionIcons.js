@@ -22,15 +22,17 @@ export default view(() => (
     <a href={layout.currentPage.edit}>
       <CorrectedEditIcon />
     </a>
-    {!layout.isLarge && (
-      <span onClick={chat.toggle}>
-        <ChatIcon />
-      </span>
-    )}
-    {layout.isMobile && (
-      <span onClick={sidebar.toggle}>
-        <MenuIcon />
-      </span>
-    )}
+    {!layout.isLarge &&
+      layout.currentPage.chat !== false && (
+        <span onClick={chat.toggle}>
+          <ChatIcon />
+        </span>
+      )}
+    {layout.isMobile &&
+      layout.currentPage.sidebar !== false && (
+        <span onClick={sidebar.toggle}>
+          <MenuIcon />
+        </span>
+      )}
   </Fragment>
 ));

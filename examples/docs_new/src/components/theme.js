@@ -31,10 +31,10 @@ export const layout = store({
   currentPage: {},
   get correction() {
     let takenSpace = 0;
-    if (!this.isMobile) {
+    if (!this.isMobile && this.currentPage.sidebar !== false) {
       takenSpace += this.sidebarWidth;
     }
-    if (this.isLarge) {
+    if (this.isLarge && this.currentPage.chat !== false) {
       takenSpace -= this.chatWidth;
     }
     return takenSpace;

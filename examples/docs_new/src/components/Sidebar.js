@@ -33,7 +33,7 @@ const StyledSidebar = styled.nav`
 `;
 
 export default view(({ children }) => {
-  return (
+  return layout.currentPage.sidebar !== false ? (
     <Drawer
       width={layout.sidebarWidth}
       docked={!layout.isMobile}
@@ -43,5 +43,5 @@ export default view(({ children }) => {
     >
       <StyledSidebar>{children}</StyledSidebar>
     </Drawer>
-  );
+  ) : null;
 });
