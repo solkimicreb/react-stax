@@ -8,11 +8,16 @@ import './instrumentScroll';
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
 
+const app = document.getElementById('root');
+
 window.renderApp = function renderApp() {
-  ReactDOM.render(<App />, document.getElementById('root'));
+  ReactDOM.render(<App />, app);
+  app.style.opacity = 1;
 };
+
 const landed = localStorage.getItem('landed');
 if (landed) {
+  app.style.transition = 'unset';
   window.renderApp();
 }
 

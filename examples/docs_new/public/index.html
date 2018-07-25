@@ -63,10 +63,33 @@ a {
   }
 }
 
+@keyframes block-enter {
+  from { top: 10%; z-index: -10; transform: rotateZ(40deg); }
+  to { z-index: -10; }
+}
+
+@keyframes started-enter {
+  from { top: -10%; z-index: -10; transform: rotateZ(40deg); }
+  to { z-index: -10; transform: translate(-50%, -4px) rotateZ(2deg); }
+}
+
+#root, #landing {
+  transition: opacity .25s;
+}
+
+#root {
+  opacity: 0;
+}
+
 #landing {
-  max-width: 800px;
-  margin: auto;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  max-width: 100%;
   padding: 20px;
+  text-align: center;
 }
 
 #landing h1,
@@ -74,10 +97,6 @@ a {
 #landing p {
   margin: 0;
   padding: 0;
-}
-
-#landing .title {
-  text-align: center;
 }
 
 #landing h1 {
@@ -89,30 +108,36 @@ a {
   font-size: 25.5px;
 }
 
+#landing .content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
 #landing .logo {
   overflow: hidden;
   display: inline-block;
   position: relative;
   margin: 25px 0;
-  width: 300px;
-  height: 300px;
-  max-width: 100%;
+  flex-basis: 46%;
+  flex-grow: 1;
+  min-width: 400px;
+  max-width: 500px;
+}
+
+#landing .description {
+  flex-basis: 46%;
+  flex-grow: 1;
+  min-width: 400px;
+  margin: 20px 0;
+  font-size: 21px;
+  line-height: 1.4;
 }
 
 #landing .logo img {
   width: 100%;
-  height: 100%;
   pointer-events: none;
-}
-
-@keyframes block-enter {
-  from { top: -30px; z-index: -10; transform: rotateZ(40deg); }
-  to { z-index: -10; }
-}
-
-@keyframes started-enter {
-  from { top: -30px; z-index: -10; transform: rotateZ(40deg); }
-  to { z-index: -10; transform: translate(-50%, -4px) rotateZ(2deg); }
 }
 
 #landing .logo .block {
@@ -120,24 +145,23 @@ a {
   left: 50%;
   width: 78%;
   transform: translateX(-50%);
-  background: rgb(96, 219, 251);
 }
 
 #landing .logo .get-started {
   top: 16.7%;
   height: 27.2%;
-  font-size: 30px;
+  font-size: 35px;
   font-weight: bold;
   color: white;
-  background: rgb(96, 219, 251);
   cursor: pointer;
-  animation: block-enter backwards 0.3s 1.1s;
+  animation: started-enter backwards 0.3s 1.1s;
   transform: translate(-50%, -4px) rotateZ(2deg);
   transition: transform 0.15s;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgb(3, 102, 214);
 }
 
 #landing .logo .get-started:hover, #landing .logo .get-started:active {
@@ -148,17 +172,14 @@ a {
   top: 47.9%;
   height: 10%;
   animation: block-enter backwards 0.4s 0.8s;
+  background-color: rgb(50, 160, 232);
 }
 
 #landing .logo .block-3 {
   top: 61.9%;
   height: 10%;
   animation: block-enter backwards 0.5s 0.5s;
-}
-
-#landing .description {
-  font-size: 21px;
-  line-height: 1.4;
+  background-color: rgb(96, 219, 251);
 }
 
 @media (max-width: 500px) {
@@ -168,6 +189,10 @@ a {
 
   #landing h3 {
     font-size: 5.2vw;
+  }
+
+  #landing .logo .get-started {
+    font-size: 8vw;
   }
 
   #landing .description {
@@ -187,9 +212,9 @@ a {
     </noscript>
 
     <div id='landing'>
-      <div class="title">
-        <h1>React Simple Stack</h1>
-        <h3>A solution for practical developers</h3>
+      <h1>React Simple Stack</h1>
+      <h3>A solution for practical developers</h3>
+      <div class='content'>
         <div class='logo'>
           <img src="/assets/logo_shell_inverse.svg" />
           <div class="block get-started" onclick="land()">
@@ -198,27 +223,32 @@ a {
           <div class="block block-2"></div>
           <div class="block block-3"></div>
         </div>
+        <div class='description'>
+          Modern web apps should effortlessly meet subtle user expectations - like browser
+  history and URL integration, animated page transitions and routing without
+  a cascade of loaders. Simple Stack values product quality over everything else
+  and provides practical solutions for
+        </div>
       </div>
-      <p class="description">
-        Modern web apps should effortlessly meet subtle user expectations - like browser
-        history and URL integration, animated page transitions and routing without
-        a cascade of loaders. Simple Stack values product quality over everything else
-        and provides practical solutions for
-      </p>
     </div>
 
   <div id="root"></div>
 
   <script>
   const landingPage = document.getElementById('landing');
+const app = document.getElementById('root');
 const landed = localStorage.getItem('landed');
+
 if (landed) {
   landingPage.remove();
 }
+
 window.land = function land() {
   localStorage.setItem('landed', true);
-  landingPage.remove();
+  landingPage.style.opacity = 0;
+  app.style.opacity = 1;
   window.renderApp();
+  setTimeout(() => landingPage.remove(), 260);
 };
 </script>
   </body>
