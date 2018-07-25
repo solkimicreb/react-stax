@@ -47,7 +47,7 @@ class PageRouter extends Component {
   };
 
   render() {
-    const { pages, prevPages, nextPages, ...rest } = this.props;
+    const { pages, prevPages, nextPages, children, ...rest } = this.props;
 
     return (
       <ContentRouter
@@ -56,6 +56,7 @@ class PageRouter extends Component {
         {...rest}
         onRoute={this.onRoute}
       >
+        {children}
         <div page="404">Not Found Page!</div>
       </ContentRouter>
     );
