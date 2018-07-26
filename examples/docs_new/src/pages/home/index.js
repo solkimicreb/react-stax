@@ -11,7 +11,6 @@ import content from './content.md';
 
 export default props => (
   <Page html={content} {...props}>
-    <Header portal="header" />
     <Link to="/docs/routing" portal="routing-link">
       routing docs
     </Link>
@@ -27,6 +26,7 @@ export default props => (
     <Link to="/examples" portal="examples-link">
       examples page
     </Link>
+    <Header mount="header" />
     <Browser mount="routing-demo">{RoutingDemo}</Browser>
     <Browser mount="state-demo">{StateDemo}</Browser>
     <Browser mount="integrations-demo">{IntegrationsDemo}</Browser>
