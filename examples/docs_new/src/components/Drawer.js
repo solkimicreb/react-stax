@@ -91,9 +91,15 @@ window.addEventListener('touchmove', onTouchMove, { passive: true });
 window.addEventListener('touchend', onTouchEnd, { passive: true });
 window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
-const rotate360 = keyframes`
+const slideFromLeft = keyframes`
   from {
     transform: translateX(-100%);
+  }
+`;
+
+const slideFromRight = keyframes`
+  from {
+    transform: translateX(100%);
   }
 `;
 
@@ -116,7 +122,7 @@ const StyledDrawer = styled.div`
   overflow: scroll;
   will-change: transform;
   contain: strict;
-  animation: ${rotate360} 0.15s;
+  animation: ${props => (props.right ? slideFromRight : slideFromLeft)} 0.15s;
 `;
 
 const Backdrop = styled.div`

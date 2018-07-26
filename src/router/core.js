@@ -85,9 +85,12 @@ export function routeFromDepth(
 
   // update the path array with the desired new path
   // and save the old path for comparison at the end of the routing
-  const prevPath = Array.from(path);
+  const fromPath = Array.from(path);
   path.splice(depth, Infinity, ...normalizedPath);
+
   // replace or extend the query params with the new params
+  // and save the old params for later comparision in the routing hooks
+  const fromParams = Object.assign({}, params);
   // only mutate the params object, never replace it (because it is an observable)
   if (!inherit) {
     Object.keys(params).forEach(key => delete params[key]);
@@ -96,13 +99,19 @@ export function routeFromDepth(
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
-    .then(() => switchRoutersFromDepth(depth, status))
-    .then(() => finishRouting({ scroll, push, prevPath }, status));
+    .then(() =>
+      switchRoutersFromDepth(
+        { scroll, push, inherit, fromParams },
+        depth,
+        status
+      )
+    )
+    .then(() => finishRouting({ scroll, push, fromPath }, status));
 }
 
 // this recursively routes all parallel routers form a given depth
 // all routers are finished routing at a depth before continuing with the next depth
-function switchRoutersFromDepth(depth, status) {
+function switchRoutersFromDepth(context, depth, status) {
   const routersAtDepth = Array.from(routers[depth] || []);
 
   if (routersAtDepth.length) {
@@ -112,10 +121,10 @@ function switchRoutersFromDepth(depth, status) {
         // and cancel it by triggering a new routing
         // we have to wait for all routers before we can go on
         // to make sure the routing was not cancelled
-        .then(() => startRoutingAtDepth(routersAtDepth, status))
+        .then(() => startRoutingAtDepth(routersAtDepth, context, status))
         // after all routers finished the first half, all of them does the second half
         .then(resolvedData =>
-          finishRoutingAtDepth(routersAtDepth, resolvedData, status)
+          finishRoutingAtDepth(routersAtDepth, context, resolvedData, status)
         )
         // all routers finished routing at this depth, go on with the next depth
         .then(() => switchRoutersFromDepth(++depth, status))
@@ -125,27 +134,31 @@ function switchRoutersFromDepth(depth, status) {
 
 // do the first routing half if the routing is not cancelled
 // it includes data resolving, interception and lazy loading
-function startRoutingAtDepth(routersAtDepth, status) {
+function startRoutingAtDepth(routersAtDepth, context, status) {
   if (!status.cancelled) {
-    return Promise.all(routersAtDepth.map(router => router.startRouting()));
+    return Promise.all(
+      routersAtDepth.map(router => router.startRouting(context))
+    );
   }
 }
 
 // do the second routing half if the routing is not cancelled
 // it includes rendering and animation
-function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
+function finishRoutingAtDepth(routersAtDepth, context, resolvedData, status) {
   if (!status.cancelled) {
     return Promise.all(
-      routersAtDepth.map((router, i) => router.finishRouting(resolvedData[i]))
+      routersAtDepth.map((router, i) =>
+        router.finishRouting(context, resolvedData[i])
+      )
     );
   }
 }
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ scroll, push, prevPath }, status) {
+function finishRouting({ scroll, push, fromPath }, status) {
   if (!status.cancelled) {
-    const pathChanged = toPathString(path) !== toPathString(prevPath);
+    const pathChanged = toPathString(path) !== toPathString(fromPath);
     // push a new history item when necessary
     // it is important to do this before restarting the schedulers
     // to apply all new history replace operations to the new item

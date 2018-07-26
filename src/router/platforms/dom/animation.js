@@ -8,13 +8,13 @@ Object.assign(animation, {
     this.cleanup(container);
     container[FROM_DOM] = container.firstElementChild;
   },
-  enter(container, enterAnimation) {
+  enter(container, enterAnimation, context) {
     const toDOM = (container[TO_DOM] = container.firstElementChild);
     if (enterAnimation && toDOM) {
-      return enterAnimation(toDOM);
+      return enterAnimation(toDOM, context);
     }
   },
-  leave(container, leaveAnimation) {
+  leave(container, leaveAnimation, context) {
     let fromDOM = container[FROM_DOM];
     const toDOM = (container[TO_DOM] = container.firstElementChild);
 
@@ -32,7 +32,7 @@ Object.assign(animation, {
       // the views may be hidden by the animation, but the DOM routing is already over
       // it is safe to go on with routing the next level of routers
       return Promise.resolve()
-        .then(() => leaveAnimation(fromDOM))
+        .then(() => leaveAnimation(fromDOM, context))
         .then(() => this.cleanup(container));
     }
   },

@@ -57,7 +57,7 @@ export default class Router extends PureComponent {
   // routing is split in 2 phases
   // first all parallel routers at the same depth executes startRouting
   // then all parallel routers at the same depth execute finishRouting
-  startRouting() {
+  startRouting(context) {
     const { onRoute } = this.props;
     const fromPage = this.state.page;
     const toPage = path[this.depth] || this.props.defaultPage;
@@ -68,25 +68,26 @@ export default class Router extends PureComponent {
 
     // onRoute is where do user can intercept the routing or resolve data
     if (onRoute) {
-      return onRoute({
-        target: this,
-        fromPage,
-        toPage,
-        // TODO: is this correct in case of browser history navigation?
-        fromParams: history.state.params
-      });
+      return onRoute(
+        Object.assign(context, {
+          target: this,
+          fromPage,
+          toPage
+        })
+      );
     }
   }
 
   // finishRouting is called when all parallel routers at the current depth
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
-  finishRouting(resolvedData) {
+  finishRouting(context, resolvedData) {
     const fromPage = this.state.page;
     const toPage = path[this.depth];
     const { enterAnimation, leaveAnimation, shouldAnimate } = this.props;
 
-    const canAnimate = this.container && shouldAnimate({ fromPage, toPage });
+    context = Object.assign(context, { fromPage, toPage });
+    const canAnimate = this.container && shouldAnimate(context);
 
     // this typically saves the current view to use later for cross fade effects
     // the current view is soon replaced by setState, so this is necessary
@@ -110,14 +111,14 @@ export default class Router extends PureComponent {
           // this prevents cascading over-animation, in case of nested routers
           // only the outmost one will animate, the rest will appear normally
           if (enterAnimation && this.inited) {
-            animation.enter(this.container, enterAnimation);
+            animation.enter(this.container, enterAnimation, context);
           }
           // leave must come after render
           // it is re-appending the old dom to the container
           // doing this before enter will confuse the render about which DOM
           // to animate and it will try to animate the old one twice instead of both once
           if (leaveAnimation) {
-            animation.leave(this.container, leaveAnimation);
+            animation.leave(this.container, leaveAnimation, context);
           }
         }
         // the router has done at least one full routing

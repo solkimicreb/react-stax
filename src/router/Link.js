@@ -68,13 +68,27 @@ export default class Link extends PureComponent {
   }
 
   isLinkActive() {
-    const { activeClass, activeStyle, isActive, params, scroll } = this.props;
+    const {
+      activeClass,
+      activeStyle,
+      isActive,
+      params,
+      scroll,
+      push,
+      inherit
+    } = this.props;
     // only calculate link activity if there is an activeClass or activeSyle prop
     // otherwise it is not needed
     if (activeClass || activeStyle) {
       // let the user fine tune link activity with an isActive function prop
       if (isActive) {
-        return isActive({ path: this.absolutePath, params, scroll });
+        return isActive({
+          path: this.absolutePath,
+          params,
+          scroll,
+          push,
+          inherit
+        });
       }
       return (
         this.isLinkPathActive() &&
