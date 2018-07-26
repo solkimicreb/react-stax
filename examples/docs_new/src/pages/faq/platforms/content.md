@@ -1,6 +1,6 @@
 Easy Stack uses none polyfillable ES6 Proxies, that are not supported on older platforms.
 
-<img src="/assets/platform_support.png" alt="platform support" style="display: block; width: 100%; max-width: 550px; margin: 10px auto;"/>
+<div id="support-table"></div>
 
 > You can read about the benefits of ES6 Proxies [here]() or learn how Easy Stack [uses them]() for robust reactivity.
 
