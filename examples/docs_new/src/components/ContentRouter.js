@@ -15,7 +15,7 @@ const enterAnimation = elem => {
           transform: ['translateX(-100%)', 'none']
         }
       : { opacity: [0, 1] },
-    { duration: layout.isMobile ? 200 : 150 }
+    { duration: layout.isMobile ? 240 : 150 }
   );
   return new Promise(resolve => (animation.onfinish = resolve));
 };
@@ -33,7 +33,7 @@ const leaveAnimation = elem => {
           transform: ['none', 'translateX(100%)']
         }
       : { opacity: [1, 0] },
-    { duration: layout.isMobile ? 200 : 150 }
+    { duration: layout.isMobile ? 240 : 150 }
   );
   return new Promise(resolve => (animation.onfinish = resolve));
 };

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { colors, layout, ease } from './theme';
 import * as sidebar from './Sidebar';
 import ActionIcons from './ActionIcons';
+import { ReactComponent as Logo } from '../assets/logo_custom.svg';
 
 const Topbar = styled.nav`
   position: fixed;
@@ -22,7 +23,7 @@ const Topbar = styled.nav`
     align-items: center;
     font-weight: bold;
 
-    img {
+    svg {
       width: 30px;
       height: 30px;
       margin-right: 10px;
@@ -68,7 +69,7 @@ const Actions = styled.div`
 export default view(({ children }) => {
   const logo = (
     <TopLink to="/home" className="logo">
-      <img src="/assets/logo_white_full.svg" />
+      <Logo />
       <div>Stax</div>
     </TopLink>
   );
