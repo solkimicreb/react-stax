@@ -19,7 +19,6 @@ import Page from './components/Page';
 import PageRouter from './components/PageRouter';
 import ContentRouter from './components/ContentRouter';
 import SidebarRouter from './components/SidebarRouter';
-import Notification, { notify } from './components/Notification';
 import Switch from './components/Switch';
 import { TopLink, SideLink, SideSectionLink } from './components/Link';
 import Actionbar from './components/Actionbar';
@@ -112,6 +111,5 @@ export default view(() => (
     <SideNav />
     <Chat />
     {layout.isMobile && <Actionbar />}
-    <Notification />
   </Fragment>
 ));

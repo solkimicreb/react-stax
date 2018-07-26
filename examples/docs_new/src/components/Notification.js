@@ -1,16 +1,17 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { store, view } from 'react-easy-stack';
 import styled from 'styled-components';
 import { colors, ease, layout } from './theme';
 
-let timeout;
+let timeoutId;
 const notificationStore = store({
   message: '',
   action: undefined,
   isOpen: false
 });
 
-const Notification = styled.div`
+const StyledNotification = styled.div`
   position: fixed;
   left: 0;
   right: 0;
@@ -38,12 +39,12 @@ const NotificationBody = styled.div`
   z-index: 5;
 `;
 
-export function notify(message, action) {
+export function notify(message, action, timeout = 5000) {
   notificationStore.message = message;
   notificationStore.action = action;
   notificationStore.open = true;
-  clearTimeout(timeout);
-  timeout = setTimeout(closeNotification, 5000);
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(closeNotification, timeout);
 }
 
 function closeNotification() {
@@ -52,14 +53,16 @@ function closeNotification() {
   notificationStore.open = false;
 }
 
-export default view(() => {
+const Notification = view(() => {
   const { open, action, message } = notificationStore;
 
   return (
-    <Notification open={open} isMobile={layout.isMobile}>
+    <StyledNotification open={open} isMobile={layout.isMobile}>
       <NotificationBody onClick={action} correction={layout.correction}>
         {message}
       </NotificationBody>
-    </Notification>
+    </StyledNotification>
   );
 });
+
+ReactDOM.render(<Notification />, document.getElementById('notification'));
