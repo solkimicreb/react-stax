@@ -1,15 +1,17 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-easy-stack';
-import Page from '../../../components/Page';
-import Browser from '../../../components/Browser';
+import Page from '../../components/Page';
+import Browser from '../../components/Browser';
 import RoutingDemo from './portals/RoutingDemo';
 import StateDemo from './portals/StateDemo';
 import IntegrationsDemo from './portals/IntegrationsDemo';
 import FinalDemo from './portals/FinalDemo';
+import Header from './portals/Header';
 import content from './content.md';
 
 export default props => (
   <Page html={content} {...props}>
+    <Header portal="header" />
     <Link to="/docs/routing" portal="routing-link">
       routing docs
     </Link>

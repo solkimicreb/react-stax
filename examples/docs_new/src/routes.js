@@ -2,7 +2,7 @@ export default {
   home: [
     {
       name: 'home',
-      path: '/home/intro',
+      path: '/home',
       edit: 'https://google.com',
       sidebar: false
     }
