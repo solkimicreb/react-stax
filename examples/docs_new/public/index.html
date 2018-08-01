@@ -86,7 +86,7 @@ a {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 1100px;
+  width: 1000px;
   max-width: 100%;
   padding: 20px;
   text-align: center;
@@ -101,12 +101,11 @@ a {
 
 #landing h1 {
   font-size: 55px;
-  margin-bottom: 8px;
 }
 
 #landing h3 {
   font-size: 30px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 #landing .content {
@@ -114,16 +113,16 @@ a {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 #landing .logo {
   overflow: hidden;
   position: relative;
-  flex-basis: 450px;
+  flex-basis: 350px;
   max-width: 100%;
   margin: 0 auto;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 #landing .description {
@@ -132,7 +131,7 @@ a {
   font-size: 21px;
   line-height: 1.4;
   margin: 0 auto;
-  margin-bottom: 70px;
+  margin-bottom: 45px;
 }
 
 #landing .logo svg {
@@ -193,7 +192,7 @@ a {
   }
 
   #landing .logo .get-started {
-    font-size: 8vw;
+    font-size: calc(2.5vw + 20px);
   }
 
   #landing .description {
@@ -260,9 +259,6 @@ const landed = localStorage.getItem('landed');
 
 if (landed) {
   landingPage.remove();
-} else {
-  document.body.style.background =
-    "url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2000px-React-icon.svg.png')";
 }
 
 window.land = function land() {

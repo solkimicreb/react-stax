@@ -1,39 +1,39 @@
-import React, { Component } from 'react';
-import { Router, view } from 'react-easy-stack';
-import anime from 'animejs';
-import { ease, layout } from './theme';
-import * as sidebar from './Sidebar';
-import { notify } from './Notification';
-import ContentRouter from './ContentRouter';
+import React, { Component } from 'react'
+import { Router, view } from 'react-easy-stack'
+import anime from 'animejs'
+import { ease, layout } from './theme'
+import * as sidebar from './Sidebar'
+import { notify } from './Notification'
+import ContentRouter from './ContentRouter'
 
 class PageRouter extends Component {
   static defaultProps = {
     nextPages: [],
     prevPages: []
-  };
+  }
 
   onRoute = async ({ toPage }) => {
-    const { pages, prevPages, nextPages } = this.props;
-    const idx = pages.findIndex(page => page.name === toPage);
-    const page = pages[idx];
+    const { pages, prevPages, nextPages } = this.props
+    const idx = pages.findIndex(page => page.name === toPage)
+    const page = pages[idx]
 
     if (page) {
-      const prevPage = pages[idx - 1] || prevPages[prevPages.length - 1];
-      const nextPage = pages[idx + 1] || nextPages[0];
+      const prevPage = pages[idx - 1] || prevPages[prevPages.length - 1]
+      const nextPage = pages[idx + 1] || nextPages[0]
 
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
-      `../pages${page.path}`);
+      `../pages${page.path}`)
 
-      layout.currentPage = page;
-      let title = 'React Stax';
+      layout.currentPage = page
+      let title = 'React Stax'
       if (page.title) {
-        title = `${page.title} | ${title}`;
+        title = `${page.title} | ${title}`
       }
-      document.title = title;
+      document.title = title
 
-      sidebar.close();
+      sidebar.close()
 
       return (
         <NextPage
@@ -42,12 +42,12 @@ class PageRouter extends Component {
           prev={prevPage}
           next={nextPage}
         />
-      );
+      )
     }
-  };
+  }
 
   render() {
-    const { pages, prevPages, nextPages, children, ...rest } = this.props;
+    const { pages, prevPages, nextPages, children, ...rest } = this.props
 
     return (
       <ContentRouter
@@ -59,8 +59,8 @@ class PageRouter extends Component {
         {children}
         <div page="404">Not Found Page!</div>
       </ContentRouter>
-    );
+    )
   }
 }
 
-export default view(PageRouter);
+export default view(PageRouter)

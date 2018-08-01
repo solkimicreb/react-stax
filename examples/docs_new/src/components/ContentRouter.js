@@ -1,14 +1,15 @@
-import React from 'react';
-import { Router } from 'react-easy-stack';
-import styled from 'styled-components';
-import { layout } from './theme';
+import React from 'react'
+import { Router } from 'react-easy-stack'
+import styled from 'styled-components'
+import { layout } from './theme'
 
 const StyledRouter = styled(Router)`
   position: relative;
   overflow: hidden;
-`;
+`
 
-const enterAnimation = elem => {
+const enterAnimation = (elem, ctx) => {
+  // get the page and make decisions based on it!!
   const animation = elem.animate(
     layout.isMobile
       ? {
@@ -16,16 +17,16 @@ const enterAnimation = elem => {
         }
       : { opacity: [0, 1] },
     { duration: layout.isMobile ? 240 : 150 }
-  );
-  return new Promise(resolve => (animation.onfinish = resolve));
-};
+  )
+  return new Promise(resolve => (animation.onfinish = resolve))
+}
 
-const leaveAnimation = elem => {
+const leaveAnimation = (elem, ctx) => {
   Object.assign(elem.style, {
     position: 'absolute',
     top: `${-window.scrollY}px`,
     left: `${-window.scrollX}px`
-  });
+  })
 
   const animation = elem.animate(
     layout.isMobile
@@ -33,10 +34,10 @@ const leaveAnimation = elem => {
           transform: ['none', 'translateX(100%)']
         }
       : { opacity: [1, 0] },
-    { duration: layout.isMobile ? 240 : 150 }
-  );
-  return new Promise(resolve => (animation.onfinish = resolve));
-};
+    { duration: layout.isMobile ? 220 : 150 }
+  )
+  return new Promise(resolve => (animation.onfinish = resolve))
+}
 
 export default ({ children, ...rest }) => (
   <StyledRouter
@@ -46,4 +47,4 @@ export default ({ children, ...rest }) => (
   >
     {children}
   </StyledRouter>
-);
+)

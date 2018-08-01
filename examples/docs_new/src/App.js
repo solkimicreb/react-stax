@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import React, { Fragment } from 'react'
+import ReactDOM from 'react-dom'
+import styled from 'styled-components'
 import {
   path,
   view,
@@ -10,20 +10,20 @@ import {
   Router,
   Link,
   route
-} from 'react-easy-stack';
-import Topbar from './components/Topbar';
-import Sidebar from './components/Sidebar';
-import Chat from './components/Chat';
-import App from './components/App';
-import Page from './components/Page';
-import PageRouter from './components/PageRouter';
-import ContentRouter from './components/ContentRouter';
-import SidebarRouter from './components/SidebarRouter';
-import Switch from './components/Switch';
-import { TopLink, SideLink, SideSectionLink } from './components/Link';
-import Actionbar from './components/Actionbar';
-import { layout } from './components/theme';
-import routes from './routes';
+} from 'react-easy-stack'
+import Topbar from './components/Topbar'
+import Sidebar from './components/Sidebar'
+import Chat from './components/Chat'
+import App from './components/App'
+import Page from './components/Page'
+import PageRouter from './components/PageRouter'
+import ContentRouter from './components/ContentRouter'
+import SidebarRouter from './components/SidebarRouter'
+import Switch from './components/Switch'
+import { TopLink, SideLink, SideSectionLink } from './components/Link'
+import Actionbar from './components/Actionbar'
+import { layout } from './components/theme'
+import routes from './routes'
 
 const DocsNav = () => (
   <div>
@@ -40,7 +40,7 @@ const DocsNav = () => (
       </SideLink>
     ))}
   </div>
-);
+)
 
 const SideNav = () => (
   <Sidebar>
@@ -62,7 +62,7 @@ const SideNav = () => (
       </div>
     </SidebarRouter>
   </Sidebar>
-);
+)
 
 const Content = () => (
   <PageRouter
@@ -90,7 +90,7 @@ const Content = () => (
     />
     <PageRouter page="faq" pages={routes.faq} prevPages={routes.examples} />
   </PageRouter>
-);
+)
 
 const Nav = () => (
   <Fragment>
@@ -98,7 +98,7 @@ const Nav = () => (
     <TopLink to="examples">Examples</TopLink>
     <TopLink to="faq">FAQ</TopLink>
   </Fragment>
-);
+)
 
 export default view(() => (
   <Fragment>
@@ -112,4 +112,4 @@ export default view(() => (
     <Chat />
     {layout.isMobile && <Actionbar />}
   </Fragment>
-));
+))
