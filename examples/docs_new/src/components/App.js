@@ -6,8 +6,9 @@ import * as sidebar from './Sidebar'
 import Button from './Button'
 
 const StyledApp = styled.main`
-  transform: translateX(${props => props.correction / 2}px);
-  transition: transform 0.15s;
+  position: relative;
+  left: ${props => props.correction / 2}px
+  transition: left 0.15s;
   max-width: ${layout.appWidth}px;
   margin: ${layout.topbarHeight}px auto;
   margin-bottom: 0;
