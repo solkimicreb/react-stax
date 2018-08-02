@@ -16,10 +16,13 @@ Object.assign(scroller, {
 })
 
 // do an initial scrolling if there is scroll data in the url hash
+// and the page is not visited by a reload or history event in the same session
+const RELOAD_KEY = 'STAX_RELOADED'
+const RETRY_INTERVAL = 100
+const RETRY_TIMEOUT = 5000
 const scroll = toScroll(location.hash)
-if (typeof scroll === 'object') {
-  const RETRY_INTERVAL = 100
-  const RETRY_TIMEOUT = 5000
+
+if (typeof scroll === 'object' && !sessionStorage.getItem(RELOAD_KEY)) {
   const start = Date.now()
 
   function initialScroll() {
@@ -37,3 +40,4 @@ if (typeof scroll === 'object') {
   }
   initialScroll()
 }
+sessionStorage.setItem(RELOAD_KEY, true)

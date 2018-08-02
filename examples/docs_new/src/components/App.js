@@ -12,6 +12,7 @@ const StyledApp = styled.main`
   max-width: ${layout.appWidth}px;
   margin: ${layout.topbarHeight}px auto;
   margin-bottom: 0;
+  will-change: left;
 `
 
 export default view(({ children }) => (
