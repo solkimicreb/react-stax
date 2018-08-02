@@ -11,16 +11,8 @@ export default class Router extends PureComponent {
     defaultPage: PropTypes.string.isRequired,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
-    enterAnimation: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.object,
-      PropTypes.string
-    ]),
-    leaveAnimation: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.object,
-      PropTypes.string
-    ]),
+    enterAnimation: PropTypes.func,
+    leaveAnimation: PropTypes.func,
     shouldAnimate: PropTypes.func,
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   }

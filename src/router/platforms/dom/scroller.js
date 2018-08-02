@@ -3,7 +3,6 @@ import { toScroll } from '../../utils'
 
 Object.assign(scroller, {
   scrollTo(options) {
-    console.log('scrolling', options)
     if (options.anchor) {
       const anchor = document.getElementById(options.anchor)
       if (anchor) {
