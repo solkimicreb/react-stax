@@ -99,6 +99,13 @@ export function routeFromDepth(
   }
   Object.assign(params, toParams)
 
+  // push a new history item when necessary
+  // it is important to do this before restarting the schedulers
+  // to apply all new history replace operations to the new item
+  if (push !== false) {
+    history.push({ path, params, scroll })
+  }
+
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() =>
@@ -161,21 +168,18 @@ function finishRoutingAtDepth(routersAtDepth, context, resolvedData, status) {
 function finishRouting({ scroll, push, fromPath }, status) {
   if (!status.cancelled) {
     const pathChanged = toPathString(path) !== toPathString(fromPath)
-    // push a new history item when necessary
-    // it is important to do this before restarting the schedulers
-    // to apply all new history replace operations to the new item
-    if (push === true || (push !== false && pathChanged)) {
-      history.push({ path, params, scroll })
-    }
 
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
-    if (typeof scroll === 'object') {
-      scroller.scrollTo(scroll)
-      // TODO: something is bad! -> code gets here before the visual updte
-    } else if (pathChanged) {
-      scroller.scrollTo({ top: 0, left: 0 })
+    // scroll === false lets the browser do its default scroll restoration
+    if (scroll !== false) {
+      if (typeof scroll === 'object') {
+        scroller.scrollTo(scroll)
+        // TODO: also do a 0,0 scroll is window.history.scrollRestoration === 'manual'
+      } else if (pathChanged) {
+        scroller.scrollTo({ top: 0, left: 0 })
+      }
     }
 
     // flush the URL updates in one batch and restart the automatic processing

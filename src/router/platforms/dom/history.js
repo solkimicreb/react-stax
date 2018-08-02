@@ -1,6 +1,6 @@
-import { history } from '../../integrations';
-import { route } from '../../core';
-import { toPathString } from '../../utils';
+import { history } from '../../integrations'
+import { route } from '../../core'
+import { toPathString } from '../../utils'
 
 Object.defineProperties(history, {
   state: {
@@ -9,34 +9,34 @@ Object.defineProperties(history, {
   length: {
     get: () => window.history.length
   }
-});
+})
 
 Object.assign(history, {
   push(item) {
-    item = history.createItem(item);
-    window.history.pushState(item, '', item.url);
+    item = history.createItem(item)
+    window.history.pushState(item, '', item.url)
   },
   replace(item) {
-    item = history.createItem(item);
-    window.history.replaceState(item, '', item.url);
+    item = history.createItem(item)
+    window.history.replaceState(item, '', item.url)
   },
   go(to) {
-    return window.history.go(to);
+    return window.history.go(to)
   },
   forward() {
-    return window.history.forward();
+    return window.history.forward()
   },
   back() {
-    return window.history.back();
+    return window.history.back()
   }
-});
+})
 
 window.addEventListener('popstate', ev => {
-  const { path, params, scroll } = ev.state;
+  const { path, params } = ev.state
   return route({
     to: toPathString(path),
     params,
-    scroll,
+    scroll: false,
     push: false
-  });
-});
+  })
+})

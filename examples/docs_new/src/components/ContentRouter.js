@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { layout } from './theme'
 
 const StyledRouter = styled(Router)`
-  position: relative;
   overflow: hidden;
 `
 
@@ -16,14 +15,14 @@ const enterAnimation = (elem, ctx) => {
           transform: ['translateX(-100%)', 'none']
         }
       : { opacity: [0, 1] },
-    { duration: layout.isMobile ? 240 : 150 }
+    { duration: layout.isMobile ? 240 : 15000 }
   )
   return new Promise(resolve => (animation.onfinish = resolve))
 }
 
 const leaveAnimation = (elem, ctx) => {
   Object.assign(elem.style, {
-    position: 'absolute',
+    position: 'fixed',
     top: `${-window.scrollY}px`,
     left: `${-window.scrollX}px`
   })
@@ -34,7 +33,7 @@ const leaveAnimation = (elem, ctx) => {
           transform: ['none', 'translateX(100%)']
         }
       : { opacity: [1, 0] },
-    { duration: layout.isMobile ? 220 : 150 }
+    { duration: layout.isMobile ? 220 : 15000 }
   )
   return new Promise(resolve => (animation.onfinish = resolve))
 }
