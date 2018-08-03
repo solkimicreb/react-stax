@@ -5,6 +5,10 @@ import { layout } from './theme'
 
 const StyledRouter = styled(Router)`
   overflow: hidden;
+
+  > * {
+    will-change: transform, opacity;
+  }
 `
 
 const enterAnimation = (elem, ctx) => {
