@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router } from 'react-easy-stack'
+import { Router, view } from 'react-easy-stack'
 import styled from 'styled-components'
 import { layout } from './theme'
 
@@ -7,7 +7,7 @@ const StyledRouter = styled(Router)`
   overflow: hidden;
 
   > * {
-    will-change: transform, opacity;
+    will-change: ${props => (props.isMobile ? 'transform' : 'opacity')};
   }
 `
 
@@ -46,12 +46,13 @@ const leaveAnimation = (elem, ctx) => {
   return new Promise(resolve => (animation.onfinish = resolve))
 }
 
-export default ({ children, ...rest }) => (
+export default view(({ children, ...rest }) => (
   <StyledRouter
     {...rest}
     enterAnimation={enterAnimation}
     leaveAnimation={leaveAnimation}
+    isMobile={layout.isMobile}
   >
     {children}
   </StyledRouter>
-)
+))
