@@ -74,6 +74,11 @@ export function routeFromDepth(
     // only flush it if there is no ongoing routing
     // otherwise the old and new routing should be treated in one batch to avoid flicker
     schedulers.integrations.process()
+    // the push option should default to true when the routing is not started
+    // from an interception, otherwise it stays falsy
+    if (push === undefined) {
+      push = true
+    }
   }
   // stop all schedulers until the end of the routing and commit them at once
   // this includes state based view updates, URL updates and localStorag updats
@@ -84,6 +89,15 @@ export function routeFromDepth(
   // create a new routing status
   // this may be cancelled by future routing processes
   const status = (routingStatus = { depth, cancelled: false })
+
+  // push a new history item when necessary
+  if (push) {
+    // it is important to do this before restarting the schedulers
+    // to apply all new history replace operations to the new item
+    // it is also important to do it before the view routing,
+    // because the scroll position is saved here for the auto restoration
+    history.push({ path, params, scroll })
+  }
 
   // update the path array with the desired new path
   // and save the old path for comparison at the end of the routing
@@ -99,13 +113,6 @@ export function routeFromDepth(
   }
   Object.assign(params, toParams)
 
-  // push a new history item when necessary
-  // it is important to do this before restarting the schedulers
-  // to apply all new history replace operations to the new item
-  if (push !== false) {
-    history.push({ path, params, scroll })
-  }
-
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() =>
@@ -115,7 +122,7 @@ export function routeFromDepth(
         status
       )
     )
-    .then(() => finishRouting({ scroll, push, fromPath }, status))
+    .then(() => finishRouting({ scroll }, status))
 }
 
 // this recursively routes all parallel routers form a given depth
@@ -165,21 +172,16 @@ function finishRoutingAtDepth(routersAtDepth, context, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ scroll, push, fromPath }, status) {
+function finishRouting({ scroll }, status) {
   if (!status.cancelled) {
-    const pathChanged = toPathString(path) !== toPathString(fromPath)
-
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered
     // in case of a scrollToAnchor behavior
-    // scroll === false lets the browser do its default scroll restoration
-    if (scroll !== false) {
-      if (typeof scroll === 'object') {
-        scroller.scrollTo(scroll)
-        // TODO: also do a 0,0 scroll is window.history.scrollRestoration === 'manual'
-      } else if (pathChanged) {
-        scroller.scrollTo({ top: 0, left: 0 })
-      }
+    if (typeof scroll === 'object') {
+      scroller.scrollTo(scroll)
+      // scroll === false lets the browser do its default scroll restoration
+    } else if (scroll !== false) {
+      scroller.scrollTo({ top: 0, left: 0 })
     }
 
     // flush the URL updates in one batch and restart the automatic processing
