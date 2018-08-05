@@ -5,12 +5,8 @@ import 'whatwg-fetch'
 import './instrumentScroll'
 import registerServiceWorker from './registerServiceWorker'
 import App from './App'
-
-const ua = navigator.userAgent.toLowerCase()
-//if (ua.indexOf('safari') === -1 || ua.indexOf('chrome') !== -1) {
-import('./code.css')
-import('./markdown.css')
-//}
+import './code.css'
+import './markdown.css'
 
 const app = document.getElementById('root')
 
