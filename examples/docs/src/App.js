@@ -18,7 +18,6 @@ import App from './components/App'
 import Page from './components/Page'
 import PageRouter from './components/PageRouter'
 import ContentRouter from './components/ContentRouter'
-import SidebarRouter from './components/SidebarRouter'
 import Switch from './components/Switch'
 import { TopLink, SideLink, SideSectionLink } from './components/Link'
 import Actionbar from './components/Actionbar'
@@ -44,7 +43,7 @@ const DocsNav = () => (
 
 const SideNav = () => (
   <Sidebar>
-    <SidebarRouter defaultPage="home">
+    <Router defaultPage="home">
       <DocsNav page="docs" />
       <div page="examples">
         {routes.examples.map(page => (
@@ -60,7 +59,7 @@ const SideNav = () => (
           </SideSectionLink>
         ))}
       </div>
-    </SidebarRouter>
+    </Router>
   </Sidebar>
 )
 

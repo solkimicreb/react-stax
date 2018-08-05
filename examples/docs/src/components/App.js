@@ -8,7 +8,6 @@ import Button from './Button'
 const StyledApp = styled.main`
   position: relative;
   left: ${props => props.correction / 2}px
-  transition: left 0.15s;
   max-width: ${layout.appWidth}px;
   margin: ${layout.topbarHeight}px auto;
   margin-bottom: 0;
