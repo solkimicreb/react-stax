@@ -1,18 +1,18 @@
 Store data can be dynamically derived with standard JavaScript getters.
 
 ```jsx
-import React from 'react';
-import { store } from 'react-easy-stack';
+import React from 'react'
+import { store } from 'react-easy-stack'
 
 const user = store({
   firstName: 'Dan',
   lastName: 'Developer',
   get fullName() {
-    return `${user.firstName} ${user.lastName}`;
+    return `${user.firstName} ${user.lastName}`
   }
-});
+})
 
-const onChange = ev => (user[ev.target.name] = ev.target.value);
+const onChange = ev => (user[ev.target.name] = ev.target.value)
 
 export default view(() => (
   <div>
@@ -20,7 +20,7 @@ export default view(() => (
     <input name="lastName" value={user.lastName} onChange={onChange} />
     <p>Full name is: {user.fullName}</p>
   </div>
-));
+))
 ```
 
 <div id="getter-demo"></div>
@@ -36,25 +36,25 @@ Deriving local store properties from component `props` is possible with the `der
 It has a `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stores` are the local stores of the component in definition order. The return value is ignored - unlike in `getDerivedStateFromProps`. You should directly mutate the stores inside the method instead of returning a diff object.
 
 ```jsx
-import React from 'react';
-import { store, view } from 'react-easy-stack';
+import React from 'react'
+import { store, view } from 'react-easy-stack'
 
 class SearchField extends Component {
   constructor(props) {
-    super(props);
-    this.store = store({ value: props.value });
+    super(props)
+    this.store = store({ value: props.value })
   }
 
   static deriveStoresFromProps(props, store) {
-    store.value = props.value;
+    store.value = props.value
   }
 
-  onChange = ev => (this.store.value = ev.target.value);
+  onChange = ev => (this.store.value = ev.target.value)
   onKeyPress = ev => {
     if (ev.key === 'Enter') {
-      this.props.onEnter(this.store.value);
+      this.props.onEnter(this.store.value)
     }
-  };
+  }
 
   render() {
     return (
@@ -63,10 +63,10 @@ class SearchField extends Component {
         onChange={this.onChange}
         onKeyPress={onKeyPress}
       />
-    );
+    )
   }
 }
-export default view(SearchField);
+export default view(SearchField)
 ```
 
 This search component has an encapsulated store `value`, that can be overridden by props with the help of `deriveStoresFromProps`.

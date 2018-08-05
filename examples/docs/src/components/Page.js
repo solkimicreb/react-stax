@@ -1,10 +1,10 @@
-import React, { Component, Fragment, Children } from 'react';
-import ReactDOM from 'react-dom';
-import { store, view, Link } from 'react-easy-stack';
-import styled from 'styled-components';
-import BackIcon from 'react-icons/lib/fa/angle-left';
-import ForwardIcon from 'react-icons/lib/fa/angle-right';
-import { colors, layout } from './theme';
+import React, { Component, Fragment, Children } from 'react'
+import ReactDOM from 'react-dom'
+import { store, view, Link } from 'react-easy-stack'
+import styled from 'styled-components'
+import BackIcon from 'react-icons/lib/fa/angle-left'
+import ForwardIcon from 'react-icons/lib/fa/angle-right'
+import { colors, layout } from './theme'
 
 const StyledPage = styled.div`
   padding-left: 15px;
@@ -21,11 +21,6 @@ const StyledPage = styled.div`
     border-radius: ${props => (props.isMobile ? 0 : 3)}px;
   }
 
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
-      monospace !important;
-  }
-
   .demo {
     display: block;
     width: ${props => (props.isMobile ? '100vw' : '100%')};
@@ -37,7 +32,7 @@ const StyledPage = styled.div`
     overflow: hidden;
     margin-bottom: 16px;
   }
-`;
+`
 
 const Stepper = styled.div`
   margin-top: 20px;
@@ -53,26 +48,26 @@ const Stepper = styled.div`
     height: 30px;
     width: 30px;
   }
-`;
+`
 
 class Page extends Component {
   store = store({
     didMount: false
-  });
+  })
 
   componentDidMount() {
-    const { children, data } = this.props;
+    const { children, data } = this.props
     Children.forEach(children, child => {
       if (child.props.mount) {
-        ReactDOM.render(child, document.getElementById(child.props.mount));
+        ReactDOM.render(child, document.getElementById(child.props.mount))
       }
-    });
-    this.store.didMount = true;
+    })
+    this.store.didMount = true
   }
 
   render() {
-    const { html, data, prev, next, children, ...rest } = this.props;
-    const { didMount } = this.store;
+    const { html, data, prev, next, children, ...rest } = this.props
+    const { didMount } = this.store
 
     return (
       <StyledPage
@@ -84,16 +79,16 @@ class Page extends Component {
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
           Children.map(children, child => {
-            const { portal } = child.props;
+            const { portal } = child.props
             if (!portal) {
-              return null;
+              return null
             }
-            const portalNode = document.getElementById(portal);
-            const { textContent } = portalNode;
+            const portalNode = document.getElementById(portal)
+            const { textContent } = portalNode
             if (textContent) {
-              child = React.cloneElement(child, {}, textContent);
+              child = React.cloneElement(child, {}, textContent)
             }
-            return ReactDOM.createPortal(child, portalNode);
+            return ReactDOM.createPortal(child, portalNode)
           })}
         <Stepper>
           <div>
@@ -112,8 +107,8 @@ class Page extends Component {
           </div>
         </Stepper>
       </StyledPage>
-    );
+    )
   }
 }
 
-export default view(Page);
+export default view(Page)
