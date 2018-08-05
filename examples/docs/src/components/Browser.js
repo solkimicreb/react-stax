@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { view, store, history } from 'react-easy-stack';
-import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es5';
+import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6.js';
 import styled, { keyframes } from 'styled-components';
-import Frame from 'react-frame-component';
 import GithubIcon from 'react-icons/lib/fa/github';
 import LinkIcon from 'react-icons/lib/fa/external-link';
 import BackIcon from 'react-icons/lib/fa/angle-left';
@@ -77,11 +76,17 @@ const Body = styled.div`
     background-color: inherit;
     color: inherit;
   }
+
   a,
   button,
   input {
-    margin: 0 20px;
+    margin-bottom: 10px;
+
+    &:not(:first-child) {
+      margin-left: 20px;
+    }
   }
+
   button,
   input {
     padding: 0 8px;
@@ -90,9 +95,11 @@ const Body = styled.div`
     border: 1px solid ${colors.textLight};
     outline: none;
   }
+
   button {
     cursor: pointer;
   }
+
   ul {
     margin-top: 10px;
   }

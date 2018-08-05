@@ -1,7 +1,6 @@
 import React, { Component, Fragment, Children } from 'react';
 import ReactDOM from 'react-dom';
-import { store, view } from 'react-easy-stack';
-import { BasicLink as Link } from './Link';
+import { store, view, Link } from 'react-easy-stack';
 import styled from 'styled-components';
 import BackIcon from 'react-icons/lib/fa/angle-left';
 import ForwardIcon from 'react-icons/lib/fa/angle-right';
@@ -69,10 +68,6 @@ class Page extends Component {
       }
     });
     this.store.didMount = true;
-    document.title =
-      data.title === 'React Easy Stack'
-        ? data.title
-        : `React Easy Stack | ${data.title}`;
   }
 
   render() {
@@ -88,16 +83,18 @@ class Page extends Component {
         {data.title && <h1>{data.title}</h1>}
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
-          Children.map(
-            children,
-            child =>
-              child.props.portal
-                ? ReactDOM.createPortal(
-                    child,
-                    document.getElementById(child.props.portal)
-                  )
-                : null
-          )}
+          Children.map(children, child => {
+            const { portal } = child.props;
+            if (!portal) {
+              return null;
+            }
+            const portalNode = document.getElementById(portal);
+            const { textContent } = portalNode;
+            if (textContent) {
+              child = React.cloneElement(child, {}, textContent);
+            }
+            return ReactDOM.createPortal(child, portalNode);
+          })}
         <Stepper>
           <div>
             {prev && (

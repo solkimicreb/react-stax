@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { store, view, path } from 'react-easy-stack';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { colors, ease, layout } from './theme';
 
 const TOUCH_ZONE = 20;
@@ -32,7 +32,6 @@ const onTouchStart = ev => {
       (!open && !hasOpenDrawer && touchX < TOUCH_ZONE) ||
       (open && Math.abs(touchX - width) < TOUCH_ZONE)
     ) {
-      console.log('in');
       drawer.store.isTouching = true;
     }
   });
@@ -92,6 +91,18 @@ window.addEventListener('touchmove', onTouchMove, { passive: true });
 window.addEventListener('touchend', onTouchEnd, { passive: true });
 window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
+const slideFromLeft = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+`;
+
+const slideFromRight = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+`;
+
 const StyledDrawer = styled.div`
   position: fixed;
   top: 0;
@@ -108,8 +119,10 @@ const StyledDrawer = styled.div`
     ${props =>
       props.open || props.docked ? (props.right ? '-100%' : '100%') : 'none'}
   );
+  overflow: scroll;
   will-change: transform;
   contain: strict;
+  animation: ${props => (props.right ? slideFromRight : slideFromLeft)} 0.15s;
 `;
 
 const Backdrop = styled.div`

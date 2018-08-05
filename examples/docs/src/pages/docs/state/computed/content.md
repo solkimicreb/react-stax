@@ -25,15 +25,15 @@ export default view(() => (
 
 <div id="getter-demo"></div>
 
-Using a mix of normal and getter properties in the stores with <span id="mutators-link"></span> is an elegant state management pattern.
+Using a mix of normal and getter properties in the stores with <span id="mutators-link"> separate mutator methods </span> is an elegant state management pattern.
 
-> You can safely use `this` inside getters, if you prefer it over the direct store reference. Getters are always called with the correct `this`.
+> You can safely use `this` inside getters, if you prefer it over the <span id="store-ref-link"> direct store reference</span>. Getters are always called with the correct `this`.
 
 ## deriveStoresFromProps
 
-Deriving local store properties from component `props` is possible with the `deriveStoresFromProps` static method, which is mirrored from React's `getDerivedStateFromProps`.
+Deriving local store properties from component `props` is possible with the `deriveStoresFromProps` static method, which is mirrored from React's <a href="https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops">getDerivedStateFromProps</a>.
 
-It has a `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stores` are the local stores of the component in definition order. You can directly mutate the stores inside the method and the return value is ignored - unlike in `getDerivedStateFromProps`.
+It has a `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stores` are the local stores of the component in definition order. The return value is ignored - unlike in `getDerivedStateFromProps`. You should directly mutate the stores inside the method instead of returning a diff object.
 
 ```jsx
 import React from 'react';

@@ -1,9 +1,9 @@
-The routing process can be intercepted for each `Router` by the `onRoute` property. `onRoute()` is a function with a single object parameter, which has the following properties:
+The routing process can be intercepted at each `Router` by the `onRoute` property. `onRoute()` is a function with a single object parameter, which has the following properties:
 
-- `fromPage`: the page name the router is routing away from.
-- `toPage`: the page name the router is routing to.
+- `fromPage`: the name of the previous page.
+- `toPage`: the name of the next page.
 - `fromParams`: the parameter pool of the previous page.
-- `target`: the Router instance, with a `target.route()` method. This method work exactly like the top-level `route()` function, but it can also handle relative paths.
+- `target`: the Router instance, with a `target.route()` method. This method works exactly like the top-level `route()` function, but it can also handle relative paths.
 
 ```jsx
 import React from 'react';
@@ -29,12 +29,12 @@ export default () => (
 
 The `onRoute()` function is the only interception point for routing processes, but it is extremely versatile. It can be used to:
 
-- <span id="redirect-link"></span> the routing.
-- <span id="params-link"></span> for the next page.
-- <span id="props-link"></span> into the next page.
-- <span id="fetch-link"></span> for the next page.
-- <span id="lazy-link"></span> for the next page.
-- <span id="virtual-link"></span> for complex routing logic.
+- <span id="redirect-link">Intercept, prevent or redirect </span> the routing.
+- <span id="params-link">Set default parameters </span> for the next page.
+- <span id="props-link">Inject props </span> into the next page.
+- <span id="fetch-link">Asynchronously fetch some data </span> for the next page.
+- <span id="lazy-link">Lazy load components</span> for the next page.
+- <span id="virtual-link">Create virtual Routers</span> for complex routing logic.
 
 ## Redirection
 

@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { Link } from 'react-easy-stack';
 import { colors, ease, layout } from './theme';
 
-export const BasicLink = props => <Link {...props}>{props.children}</Link>;
-
 export const NavLink = props => (
   <Link activeClass="active" {...props}>
     {props.children}

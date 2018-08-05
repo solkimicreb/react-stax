@@ -49,7 +49,7 @@ class Chat extends Component {
   }
 
   render() {
-    return (
+    return layout.currentPage.chat !== false ? (
       <Drawer
         width={layout.chatWidth}
         docked={layout.isLarge}
@@ -60,7 +60,7 @@ class Chat extends Component {
       >
         <StyledChat innerRef={this.ref} id="chat" />
       </Drawer>
-    );
+    ) : null;
   }
 }
 

@@ -1,13 +1,24 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "github-markdown-css";
-import "prismjs/themes/prism.css";
-import "web-animations-js";
-import "whatwg-fetch";
-import "./index.css";
-import "./instrumentScroll";
-import registerServiceWorker from "./registerServiceWorker";
-import App from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import 'github-markdown-css';
+import 'prismjs/themes/prism.css';
+import 'web-animations-js';
+import 'whatwg-fetch';
+import './instrumentScroll';
+import registerServiceWorker from './registerServiceWorker';
+import App from './App';
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const app = document.getElementById('root');
+
+window.renderApp = function renderApp() {
+  ReactDOM.render(<App />, app);
+  app.style.opacity = 1;
+};
+
+const landed = localStorage.getItem('landed');
+if (landed) {
+  app.style.transition = 'unset';
+  window.renderApp();
+}
+
 registerServiceWorker();
