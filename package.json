@@ -55,6 +55,7 @@
     "babel-eslint": "^8.2.3",
     "babel-loader": "7.1.4",
     "babel-minify": "^0.4.3",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
