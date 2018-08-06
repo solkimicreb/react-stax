@@ -13,15 +13,14 @@ const StyledRouter = styled(Router)`
 
 const enterAnimation = (elem, ctx) => {
   // get the page and make decisions based on it!!
-  const animation = elem.animate(
+  return elem.animate(
     layout.isMobile
       ? {
           transform: ['translateX(-100%)', 'none']
         }
       : { opacity: [0, 1] },
-    { duration: layout.isMobile ? 220 : 150, fill: 'both' }
-  )
-  return new Promise(resolve => (animation.onfinish = resolve))
+    { duration: layout.isMobile ? 220 : 1500, fill: 'both' }
+  ).finished
 }
 
 const leaveAnimation = (elem, ctx) => {
@@ -35,15 +34,14 @@ const leaveAnimation = (elem, ctx) => {
     height: `${height}px`
   })
 
-  const animation = elem.animate(
+  return elem.animate(
     layout.isMobile
       ? {
           transform: ['none', 'translateX(100%)']
         }
       : { opacity: [1, 0] },
-    { duration: layout.isMobile ? 220 : 150, fill: 'both' }
-  )
-  return new Promise(resolve => (animation.onfinish = resolve))
+    { duration: layout.isMobile ? 220 : 1500, fill: 'both' }
+  ).finished
 }
 
 export default view(({ children, ...rest }) => (

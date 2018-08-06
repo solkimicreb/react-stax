@@ -38,9 +38,9 @@ function leave(container, leaveAnimation, context) {
     // there is no need to wait for the animation,
     // the views may be hidden by the animation, but the DOM routing is already over
     // it is safe to go on with routing the next level of routers
-    return Promise.resolve()
-      .then(() => runAnimation(fromDOM, leaveAnimation, context))
-      .then(() => cleanup(container))
+    return runAnimation(fromDOM, leaveAnimation, context).then(() =>
+      cleanup(container)
+    )
   }
 }
 

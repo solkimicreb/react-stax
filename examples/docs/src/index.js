@@ -3,7 +3,7 @@ import './markdown.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import 'web-animations-js'
+import 'web-animations-js/web-animations-next.min.js'
 import 'whatwg-fetch'
 import './instrumentScroll'
 import registerServiceWorker from './registerServiceWorker'
