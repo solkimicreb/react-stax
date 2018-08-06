@@ -17,7 +17,6 @@ import Chat from './components/Chat'
 import App from './components/App'
 import Page from './components/Page'
 import PageRouter from './components/PageRouter'
-import ContentRouter from './components/ContentRouter'
 import Switch from './components/Switch'
 import { TopLink, SideLink, SideSectionLink } from './components/Link'
 import Actionbar from './components/Actionbar'
@@ -69,7 +68,7 @@ const Content = () => (
     pages={routes.home}
     nextPages={routes.docs.state}
   >
-    <ContentRouter page="docs" defaultPage="state">
+    <PageRouter page="docs" defaultPage="state">
       <PageRouter
         page="state"
         pages={routes.docs.state}
@@ -81,7 +80,7 @@ const Content = () => (
         pages={routes.docs.routing}
         prevPages={routes.docs.state}
       />
-    </ContentRouter>
+    </PageRouter>
     <PageRouter
       page="examples"
       pages={routes.examples}

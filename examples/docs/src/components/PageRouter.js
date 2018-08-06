@@ -88,13 +88,19 @@ class PageRouter extends Component {
 
   render() {
     const { pages, prevPages, nextPages, children, ...rest } = this.props
+    let { defaultPage } = this.props
+
+    if (!defaultPage && pages) {
+      defaultPage = pages[0].name
+    }
+    const onRoute = pages ? this.onRoute : undefined
 
     return (
       <StyledRouter
         {...rest}
-        defaultPage={pages[0].name}
         notFoundPage="404"
-        onRoute={this.onRoute}
+        defaultPage={defaultPage}
+        onRoute={onRoute}
         enterAnimation={enterAnimation}
         leaveAnimation={leaveAnimation}
       >
