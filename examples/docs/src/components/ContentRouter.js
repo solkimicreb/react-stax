@@ -19,7 +19,7 @@ const enterAnimation = (elem, ctx) => {
           transform: ['translateX(-100%)', 'none']
         }
       : { opacity: [0, 1] },
-    { duration: layout.isMobile ? 220 : 1500, fill: 'both' }
+    { duration: layout.isMobile ? 220 : 1500 }
   ).finished
 }
 
@@ -40,7 +40,7 @@ const leaveAnimation = (elem, ctx) => {
           transform: ['none', 'translateX(100%)']
         }
       : { opacity: [1, 0] },
-    { duration: layout.isMobile ? 220 : 1500, fill: 'both' }
+    { duration: layout.isMobile ? 220 : 1500 }
   ).finished
 }
 
@@ -49,7 +49,6 @@ export default view(({ children, ...rest }) => (
     {...rest}
     enterAnimation={enterAnimation}
     leaveAnimation={leaveAnimation}
-    isMobile={layout.isMobile}
   >
     {children}
   </StyledRouter>
