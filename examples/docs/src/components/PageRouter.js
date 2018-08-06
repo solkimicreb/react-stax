@@ -1,10 +1,50 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import { Router, view } from 'react-easy-stack'
 import anime from 'animejs'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
-import ContentRouter from './ContentRouter'
+
+const StyledRouter = styled(Router)`
+  overflow: hidden;
+
+  > * {
+    will-change: ${props => (props.isMobile ? 'transform' : 'opacity')};
+  }
+`
+
+const enterAnimation = (elem, ctx) => {
+  return elem.animate(
+    layout.isMobile
+      ? {
+          transform: ['translateX(-100%)', 'none']
+        }
+      : { opacity: [0, 1] },
+    { duration: layout.isMobile ? 220 : 150 }
+  ).finished
+}
+
+const leaveAnimation = (elem, ctx) => {
+  const { top, left, width, height } = elem.getBoundingClientRect()
+
+  Object.assign(elem.style, {
+    position: 'fixed',
+    top: `${top}px`,
+    left: `${left}px`,
+    width: `${width}px`,
+    height: `${height}px`
+  })
+
+  return elem.animate(
+    layout.isMobile
+      ? {
+          transform: ['none', 'translateX(100%)']
+        }
+      : { opacity: [1, 0] },
+    { duration: layout.isMobile ? 220 : 150 }
+  ).finished
+}
 
 class PageRouter extends Component {
   static defaultProps = {
@@ -50,15 +90,17 @@ class PageRouter extends Component {
     const { pages, prevPages, nextPages, children, ...rest } = this.props
 
     return (
-      <ContentRouter
+      <StyledRouter
+        {...rest}
         defaultPage={pages[0].name}
         notFoundPage="404"
-        {...rest}
         onRoute={this.onRoute}
+        enterAnimation={enterAnimation}
+        leaveAnimation={leaveAnimation}
       >
         {children}
         <div page="404">Not Found Page!</div>
-      </ContentRouter>
+      </StyledRouter>
     )
   }
 }
