@@ -94,14 +94,14 @@ class Page extends Component {
           <div>
             {prev && (
               <Link to={prev.path}>
-                <BackIcon /> {prev.title}
+                <BackIcon /> {prev.title || prev.link}
               </Link>
             )}
           </div>
           <div>
             {next && (
               <Link to={next.path}>
-                {next.title} <ForwardIcon />
+                {next.title || next.link} <ForwardIcon />
               </Link>
             )}
           </div>

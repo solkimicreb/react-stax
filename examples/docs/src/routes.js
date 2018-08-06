@@ -2,6 +2,7 @@ export default {
   home: [
     {
       name: 'home',
+      link: 'Home',
       path: '/home',
       edit: 'https://google.com',
       sidebar: false
@@ -135,4 +136,4 @@ export default {
       path: '/faq/performance'
     }
   ]
-};
+}
