@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { ReactComponent as Logo } from '../../../assets/logo.svg';
+import React from 'react'
+import styled from 'styled-components'
+import { ReactComponent as Logo } from '../../../assets/logo.svg'
 
 const Header = styled.div`
   display: flex;
@@ -19,11 +19,11 @@ const Header = styled.div`
     width: 140px;
     height: 140px;
   }
-`;
+`
 
 export default () => (
   <Header>
     <h1>React Stax</h1>
     <Logo />
   </Header>
-);
+)

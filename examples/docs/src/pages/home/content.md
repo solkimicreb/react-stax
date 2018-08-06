@@ -24,8 +24,8 @@ npm start
 Routing is inspired by file systems and the old school web, in its simplest form it looks like this:
 
 ```jsx
-import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import React from 'react'
+import { Router, Link } from 'react-easy-stack'
 
 export default () => (
   <div>
@@ -36,7 +36,7 @@ export default () => (
       <div page="details">Details Page</div>
     </Router>
   </div>
-);
+)
 ```
 
 <div id="routing-demo"></div>
@@ -56,22 +56,22 @@ You can take a deeper dive in the <span id="routing-link"></span>.
 State management provides freedom and flexibility. It automatically updates the view on state changes without any restrictions on state structure, placement or manipulation.
 
 ```jsx
-import React from 'react';
-import { view, store } from 'react-easy-stack';
+import React from 'react'
+import { view, store } from 'react-easy-stack'
 
-const beers = store([]);
+const beers = store([])
 
 const getRandomBeer = () =>
   fetch('https://api.punkapi.com/v2/beers/random')
     .then(res => res.json())
-    .then(json => beers.push(json[0]));
+    .then(json => beers.push(json[0]))
 
 export default view(() => (
   <div>
     <button onClick={getRandomBeer}>Get a random beer</button>
     <ul>{beers.map(beer => <li key={beer.id}>{beer.name}</li>)}</ul>
   </div>
-));
+))
 ```
 
 <div id="state-demo"></div>
@@ -90,11 +90,11 @@ The possibilities are endless, learn more about common patterns in the <span id=
 Good web pages use the platform, they are shareable by URL and integrate with the browser history. Easy Stack has a few plain objects, which automatically two-way synchronize with the URL and localStorage to offload some integration complexity from you.
 
 ```jsx
-import React from 'react';
-import { view, params } from 'react-easy-stack';
+import React from 'react'
+import { view, params } from 'react-easy-stack'
 
-const setFilter = ev => (params.value = ev.target.value);
-export default view(() => <input value={params.filter} onChange={setFilter} />);
+const setFilter = ev => (params.value = ev.target.value)
+export default view(() => <input value={params.filter} onChange={setFilter} />)
 ```
 
 <div id="integrations-demo"></div>
@@ -112,32 +112,32 @@ You can learn more about common use cases in the <span id="integrations-link"></
 The above examples fit together to create a simple beer fetching app. Just type in your favorite food and find out which beers pairs well with it.
 
 ```jsx
-import React from 'react';
-import { view, store, params, Router, Link } from 'react-easy-stack';
+import React from 'react'
+import { view, store, params, Router, Link } from 'react-easy-stack'
 
 const beers = store({
   list: [],
   selected: {}
-});
+})
 
 const fetchBeers = () =>
   fetch(`https://api.punkapi.com/v2/beers?food=${params.filter}`)
     .then(res => res.json())
-    .then(list => (beers.list = list || []));
+    .then(list => (beers.list = list || []))
 
 const fetchBeer = () =>
   fetch(`https://api.punkapi.com/v2/beers/${params.id}`)
     .then(res => res.json())
-    .then(list => (beers.selected = list[0] || {}));
+    .then(list => (beers.selected = list[0] || {}))
 
-const updateFilter = ev => (params.filter = ev.target.value);
+const updateFilter = ev => (params.filter = ev.target.value)
 
 async function onRoute({ toPage }) {
   if (toPage === 'list') {
-    params.filter = params.filter || 'apple';
-    await fetchBeers();
+    params.filter = params.filter || 'apple'
+    await fetchBeers()
   } else if (toPage === 'details') {
-    await fetchBeer();
+    await fetchBeer()
   }
 }
 
@@ -151,21 +151,21 @@ const List = view(() => (
       </Link>
     ))}
   </div>
-));
+))
 
 const Details = view(() => (
   <div>
     <h4>{beers.selected.name}</h4>
     <p>{beers.selected.description}</p>
   </div>
-));
+))
 
 return () => (
   <Router defaultPage="list" onRoute={onRoute}>
     <List page="list" />
     <Details page="details" />
   </Router>
-);
+)
 ```
 
 <div id="final-demo"></div>

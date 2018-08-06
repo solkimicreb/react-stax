@@ -1,13 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import { Link } from 'react-easy-stack';
-import Page from '../../components/Page';
-import Browser from '../../components/Browser';
-import RoutingDemo from './portals/RoutingDemo';
-import StateDemo from './portals/StateDemo';
-import IntegrationsDemo from './portals/IntegrationsDemo';
-import FinalDemo from './portals/FinalDemo';
-import Header from './portals/Header';
-import content from './content.md';
+import React, { Component, Fragment } from 'react'
+import { Link } from 'react-easy-stack'
+import Page from '../../components/Page'
+import Browser from '../../components/Browser'
+import RoutingDemo from './portals/RoutingDemo'
+import StateDemo from './portals/StateDemo'
+import IntegrationsDemo from './portals/IntegrationsDemo'
+import FinalDemo from './portals/FinalDemo'
+import Header from './portals/Header'
+import content from './content.md'
 
 export default props => (
   <Page html={content} {...props}>
@@ -32,4 +32,4 @@ export default props => (
     <Browser mount="integrations-demo">{IntegrationsDemo}</Browser>
     <Browser mount="final-demo">{FinalDemo}</Browser>
   </Page>
-);
+)
