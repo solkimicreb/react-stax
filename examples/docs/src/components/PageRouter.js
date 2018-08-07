@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Router, view } from 'react-stax'
+import { Router, route, view } from 'react-stax'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
+import * as routes from '../routes'
 
 const StyledRouter = styled(Router)`
   overflow: hidden;
@@ -15,26 +16,18 @@ const StyledRouter = styled(Router)`
 
 class PageRouter extends Component {
   static defaultProps = {
-    pages: [],
-    nextPages: [],
-    prevPages: []
+    pages: []
   }
 
   getPages = pageName => {
     const { pages, prevPages, nextPages } = this.props
 
-    const idx = pages.findIndex(page => page.name === pageName)
+    let idx = pages.findIndex(page => page.name === pageName)
     const page = pages[idx]
 
-    let prevPage = pages[idx - 1]
-    if (!prevPage || prevPage.virtual) {
-      prevPage = prevPages.reverse().find(page => !page.virtual)
-    }
-
-    let nextPage = pages[idx + 1]
-    if (!nextPage || nextPage.virtual) {
-      nextPage = nextPages.find(page => !page.virtual)
-    }
+    idx = routes.all.indexOf(page)
+    const prevPage = routes.all[idx - 1]
+    const nextPage = routes.all[idx + 1]
 
     return {
       idx,
@@ -47,7 +40,7 @@ class PageRouter extends Component {
   onRoute = async ({ toPage }) => {
     const { page, prevPage, nextPage } = this.getPages(toPage)
 
-    if (page && !page.virtual) {
+    if (page) {
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
@@ -92,7 +85,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [0, 1] },
-      { duration: layout.isMobile ? 220 : 150 }
+      { duration: layout.isMobile ? 200 : 140 }
     ).finished
   }
 
@@ -116,7 +109,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [1, 0] },
-      { duration: layout.isMobile ? 220 : 150 }
+      { duration: layout.isMobile ? 200 : 140 }
     ).finished
   }
 

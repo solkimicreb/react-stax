@@ -22,18 +22,18 @@ import Switch from './components/Switch'
 import { TopLink, SideLink, SideSectionLink } from './components/Link'
 import Actionbar from './components/Actionbar'
 import { layout } from './components/theme'
-import routes from './routes'
+import * as routes from './routes'
 
 const DocsNav = () => (
   <Fragment>
     <SideSectionLink to="state">State Management</SideSectionLink>
-    {routes.docs.state.map(page => (
+    {routes.state.map(page => (
       <SideLink to={page.path} key={page.name}>
         {page.link || page.title}
       </SideLink>
     ))}
     <SideSectionLink to="routing">Routing</SideSectionLink>
-    {routes.docs.routing.map(page => (
+    {routes.routing.map(page => (
       <SideLink to={page.path} key={page.name}>
         {page.link || page.title}
       </SideLink>
@@ -64,26 +64,13 @@ const SideNav = () => (
 )
 
 const Content = () => (
-  <PageRouter pages={routes.main} nextPages={routes.docs.state}>
-    <PageRouter page="docs" defaultPage="state" pages={routes.docsMain}>
-      <PageRouter
-        page="state"
-        pages={routes.docs.state}
-        prevPages={routes.main}
-        nextPages={routes.docs.routing}
-      />
-      <PageRouter
-        page="routing"
-        pages={routes.docs.routing}
-        prevPages={routes.docs.state}
-      />
+  <PageRouter pages={routes.main}>
+    <PageRouter page="docs" defaultPage="state">
+      <PageRouter page="state" pages={routes.state} />
+      <PageRouter page="routing" pages={routes.routing} />
     </PageRouter>
-    <PageRouter
-      page="examples"
-      pages={routes.examples}
-      nextPages={routes.faq}
-    />
-    <PageRouter page="faq" pages={routes.faq} prevPages={routes.examples} />
+    <PageRouter page="examples" pages={routes.examples} />
+    <PageRouter page="faq" pages={routes.faq} />
   </PageRouter>
 )
 
