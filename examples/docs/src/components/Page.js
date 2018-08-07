@@ -92,11 +92,11 @@ class Page extends Component {
           })}
         <Stepper>
           <div>
-            {prev && (
+            {/*prev && (
               <Link to={prev.path}>
                 <BackIcon /> {prev.title || prev.link}
               </Link>
-            )}
+            )*/}
           </div>
           <div>
             {next && (
