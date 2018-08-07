@@ -136,6 +136,7 @@ class PageRouter extends Component {
         onRoute={this.onRoute}
         enterAnimation={this.enterAnimation}
         leaveAnimation={this.leaveAnimation}
+        isMobile={layout.isMobile}
       >
         {children}
         <div page="404">Not Found Page!</div>
