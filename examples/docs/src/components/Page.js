@@ -56,7 +56,7 @@ class Page extends Component {
   })
 
   componentDidMount() {
-    const { children, data } = this.props
+    const { children, curr } = this.props
     Children.forEach(children, child => {
       if (child.props.mount) {
         ReactDOM.render(child, document.getElementById(child.props.mount))
@@ -66,7 +66,7 @@ class Page extends Component {
   }
 
   render() {
-    const { html, data, prev, next, children, ...rest } = this.props
+    const { html, curr, prev, next, children, ...rest } = this.props
     const { didMount } = this.store
 
     return (
@@ -75,7 +75,7 @@ class Page extends Component {
         className="markdown-body"
         {...rest}
       >
-        {data.title && <h1>{data.title}</h1>}
+        {curr.title && <h1>{curr.title}</h1>}
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
           Children.map(children, child => {

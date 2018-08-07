@@ -63,16 +63,12 @@ const SideNav = () => (
 )
 
 const Content = () => (
-  <PageRouter
-    defaultPage="home"
-    pages={routes.home}
-    nextPages={routes.docs.state}
-  >
-    <PageRouter page="docs" defaultPage="state">
+  <PageRouter pages={routes.main} nextPages={routes.docs.state}>
+    <PageRouter page="docs" defaultPage="state" pages={routes.docsMain}>
       <PageRouter
         page="state"
         pages={routes.docs.state}
-        prevPages={routes.home}
+        prevPages={routes.main}
         nextPages={routes.docs.routing}
       />
       <PageRouter

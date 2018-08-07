@@ -1,11 +1,33 @@
 export default {
-  home: [
+  main: [
     {
       name: 'home',
       link: 'Home',
       path: '/home',
       edit: 'https://google.com',
       sidebar: false
+    },
+    {
+      name: 'docs',
+      virtual: true
+    },
+    {
+      name: 'examples',
+      virtual: true
+    },
+    {
+      name: 'faq',
+      virtual: true
+    }
+  ],
+  docsMain: [
+    {
+      name: 'state',
+      virtual: true
+    },
+    {
+      name: 'routing',
+      virtual: true
     }
   ],
   docs: {

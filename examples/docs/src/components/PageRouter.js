@@ -16,21 +16,26 @@ const StyledRouter = styled(Router)`
 
 class PageRouter extends Component {
   static defaultProps = {
+    pages: [],
     nextPages: [],
     prevPages: []
   }
 
-  getPages = ({ toPage }) => {
+  getPages = pageName => {
     const { pages, prevPages, nextPages } = this.props
 
-    if (!pages) {
-      return {}
+    const idx = pages.findIndex(page => page.name === pageName)
+    const page = pages[idx]
+
+    let prevPage = pages[idx - 1]
+    if (!prevPage || prevPage.virtual) {
+      prevPage = prevPages.reverse().find(page => !page.virtual)
     }
 
-    const idx = pages.findIndex(page => page.name === toPage)
-    const page = pages[idx]
-    const prevPage = pages[idx - 1] || prevPages[prevPages.length - 1]
-    const nextPage = pages[idx + 1] || nextPages[0]
+    let nextPage = pages[idx + 1]
+    if (!nextPage || nextPage.virtual) {
+      nextPage = nextPages.find(page => !page.virtual)
+    }
 
     return {
       idx,
@@ -40,10 +45,14 @@ class PageRouter extends Component {
     }
   }
 
-  onRoute = async ctx => {
-    const { page, prevPage, nextPage } = this.getPages(ctx)
+  onRoute = async ({ toPage }) => {
+    const { page, prevPage, nextPage } = this.getPages(toPage)
 
-    if (page) {
+    if (page && !page.virtual) {
+      console.log('page', page)
+      console.log('prev', prevPage)
+      console.log('next', nextPage)
+
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
@@ -61,7 +70,7 @@ class PageRouter extends Component {
       return (
         <NextPage
           page={page.name}
-          data={page}
+          curr={page}
           prev={prevPage}
           next={nextPage}
         />
@@ -69,11 +78,23 @@ class PageRouter extends Component {
     }
   }
 
+  isForward = ({ fromPage, toPage }) => {
+    const { idx: fromIdx } = this.getPages(fromPage)
+    const { idx: toIdx } = this.getPages(toPage)
+
+    return fromIdx < toIdx
+  }
+
   enterAnimation = (elem, ctx) => {
+    const { page, prevPage, nextPage } = this.getPages(ctx)
+
     return elem.animate(
       layout.isMobile
         ? {
-            transform: ['translateX(-100%)', 'none']
+            transform: [
+              `translateX(${this.isForward(ctx) ? 100 : -100}%)`,
+              'none'
+            ]
           }
         : { opacity: [0, 1] },
       { duration: layout.isMobile ? 220 : 150 }
@@ -94,7 +115,10 @@ class PageRouter extends Component {
     return elem.animate(
       layout.isMobile
         ? {
-            transform: ['none', 'translateX(100%)']
+            transform: [
+              'none',
+              `translateX(${this.isForward(ctx) ? -100 : 100}%)`
+            ]
           }
         : { opacity: [1, 0] },
       { duration: layout.isMobile ? 220 : 150 }
