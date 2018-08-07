@@ -11,6 +11,7 @@ export default class Router extends PureComponent {
     defaultPage: PropTypes.string.isRequired,
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
+    slave: PropTypes.bool,
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
     shouldAnimate: PropTypes.func,
@@ -55,13 +56,16 @@ export default class Router extends PureComponent {
   // first all parallel routers at the same depth executes startRouting
   // then all parallel routers at the same depth execute finishRouting
   startRouting(context) {
-    const { onRoute, defaultPage } = this.props
+    const { onRoute, defaultPage, slave } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
 
-    // fill the path with the default page, if the current path token is empty
-    // this is important for relative links and automatic active link highlight
-    path[this.depth] = toPage
+    // (parallel) slave routers do not update the URL pathname to avoid collisions
+    if (!slave) {
+      // fill the path with the default page, if the current path token is empty
+      // this is important for relative links and automatic active link highlight
+      path[this.depth] = toPage
+    }
 
     // onRoute is where do user can intercept the routing or resolve data
     if (onRoute) {
