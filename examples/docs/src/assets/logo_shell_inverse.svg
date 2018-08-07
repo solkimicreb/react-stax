@@ -1,9 +1,6 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
  <g>
   <rect fill="none" id="canvas_background" height="502" width="502" y="-1" x="-1"/>
-  <g display="none" id="canvasGrid">
-   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%" id="svg_6"/>
-  </g>
  </g>
  <g>
   <rect stroke="#25292e" id="svg_8" height="447" width="32" y="16" x="468" stroke-opacity="null" stroke-width="0" fill="#ffffff"/>

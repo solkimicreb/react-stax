@@ -1,15 +1,12 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
  <g>
   <rect fill="none" id="canvas_background" height="502" width="502" y="-1" x="-1"/>
-  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
-   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
-  </g>
  </g>
  <g>
-  <rect rx="15" id="svg_1" height="337" width="450" y="55" x="25" stroke-width="20" stroke="#25292e" fill="#ffffff"/>
-  <rect rx="15" id="svg_2" height="8" width="300" y="435" x="100" stroke-width="20" stroke="#25292e" fill="none"/>
-  <rect rx="2" stroke="#60dbfb" id="svg_3" height="30" width="370" y="322" x="65" stroke-width="20" fill="#60dbfb"/>
-  <rect rx="2" stroke="#32A0E8" id="svg_4" height="30" width="370" y="252" x="65" stroke-width="20" fill="#32A0E8"/>
-  <rect rx="2" stroke="#0366d6" id="svg_5" height="116" width="370" y="95" x="65" stroke-width="20" fill="#0366d6"/>
+  <rect rx="2" stroke="#60dbfb" id="stack_1" height="30" width="370" y="322" x="65" stroke-width="20" fill="#60dbfb"/>
+  <rect rx="2" stroke="#32A0E8" id="stack_2" height="30" width="370" y="252" x="65" stroke-width="20" fill="#32A0E8"/>
+  <rect rx="2" stroke="#0366d6" id="stack_3" height="116" width="370" y="95" x="65" stroke-width="20" fill="#0366d6"/>
+  <rect rx="15" id="frame" height="337" width="450" y="55" x="25" stroke-width="20" stroke="#25292e" fill="none"/>
+  <rect rx="15" id="base" height="8" width="300" y="435" x="100" stroke-width="20" stroke="#25292e" fill="none"/>
  </g>
 </svg>
