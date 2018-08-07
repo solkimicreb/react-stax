@@ -17,6 +17,7 @@ import Chat from './components/Chat'
 import App from './components/App'
 import Page from './components/Page'
 import PageRouter from './components/PageRouter'
+import NavRouter from './components/NavRouter'
 import Switch from './components/Switch'
 import { TopLink, SideLink, SideSectionLink } from './components/Link'
 import Actionbar from './components/Actionbar'
@@ -24,7 +25,7 @@ import { layout } from './components/theme'
 import routes from './routes'
 
 const DocsNav = () => (
-  <div>
+  <Fragment>
     <SideSectionLink to="state">State Management</SideSectionLink>
     {routes.docs.state.map(page => (
       <SideLink to={page.path} key={page.name}>
@@ -37,12 +38,12 @@ const DocsNav = () => (
         {page.link || page.title}
       </SideLink>
     ))}
-  </div>
+  </Fragment>
 )
 
 const SideNav = () => (
   <Sidebar>
-    <Router defaultPage="home">
+    <NavRouter defaultPage="home">
       <DocsNav page="docs" />
       <div page="examples">
         {routes.examples.map(page => (
@@ -58,7 +59,7 @@ const SideNav = () => (
           </SideSectionLink>
         ))}
       </div>
-    </Router>
+    </NavRouter>
   </Sidebar>
 )
 

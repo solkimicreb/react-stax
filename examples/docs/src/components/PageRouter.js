@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Router, view } from 'react-stax'
-import anime from 'animejs'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
@@ -49,10 +48,6 @@ class PageRouter extends Component {
     const { page, prevPage, nextPage } = this.getPages(toPage)
 
     if (page && !page.virtual) {
-      console.log('page', page)
-      console.log('prev', prevPage)
-      console.log('next', nextPage)
-
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
