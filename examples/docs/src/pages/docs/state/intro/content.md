@@ -5,7 +5,7 @@ State management is based on transparent reactivity, which means you don't have 
 State can be stored in any object, but state stores must be wrapped with `store()` before they are used. `store()` wraps the passed object with a transparent reactive Proxy, which is invisible from the outside. The wrapped object behaves exactly like the original one.
 
 ```js
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 // wrap the object with `store` before you use it
 const user = store({
@@ -25,7 +25,7 @@ Any React component can be made reactive, by wrapping it with `view()`. Reactive
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { store, view } from 'react-stax';
 
 const counter = store({ num: 0 });
 setInterval(() => counter.num++, 1000);
@@ -43,7 +43,7 @@ Global state can be shared by using the same store in multiple components.
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { store, view } from 'react-stax';
 
 const counter = store({ num: 0 });
 const increment = () => counter.num++;
@@ -63,7 +63,7 @@ You can create stores as component properties to handle local state. These store
 
 ```jsx
 import React, { Component } from 'react';
-import { store, view } from 'react-easy-stack';
+import { store, view } from 'react-stax';
 
 class Counter extends Component {
   store = store({ num: 0 });
@@ -91,7 +91,7 @@ A component may use any combination of local and global state stores. In a typic
 _userStore.js_
 
 ```js
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 export default store({
   name: 'Dev Dan'
@@ -101,7 +101,7 @@ export default store({
 _reposStore.js_
 
 ```js
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 export default store({
   list: [],
@@ -113,7 +113,7 @@ _ReposPage.jsx_
 
 ```jsx
 import React from 'react';
-import { view } from 'react-easy-stack';
+import { view } from 'react-stax';
 import user from './userStore';
 import repos from './reposStore';
 

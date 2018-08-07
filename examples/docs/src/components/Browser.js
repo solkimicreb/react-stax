@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { view, store, history } from 'react-easy-stack';
-import easyStackFactory from 'react-easy-stack/dist/sandbox.es.es6.js';
+import { view, store, history } from 'react-stax';
+import easyStackFactory from 'react-stax/dist/sandbox.es.es6.js';
 import styled, { keyframes } from 'styled-components';
 import GithubIcon from 'react-icons/lib/fa/github';
 import LinkIcon from 'react-icons/lib/fa/external-link';

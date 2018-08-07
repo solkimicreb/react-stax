@@ -6,7 +6,7 @@ You can fetch the necessary data for the next page inside `onRoute` and save it 
 
 ```jsx
 import React from 'react';
-import { view, store, params, Router, Link } from 'react-easy-stack';
+import { view, store, params, Router, Link } from 'react-stax';
 
 const beers = store({
   list: [],
@@ -61,7 +61,7 @@ Mutating stores during a routing does not have an immediate effect. All view upd
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 
 const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 

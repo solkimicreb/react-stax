@@ -6,7 +6,7 @@ The `Router` component checks the url pathname token at the appropriate depth an
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 import { ProfilePage, SettingsPage } from './pages';
 
 export default () => (
@@ -27,7 +27,7 @@ Links update the url and navigate between the router pages.
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 
 const ProfilePage = () => <h3>Profile Page</h3>;
 const SettingsPage = () => <h3>Settings Page</h3>;
@@ -54,7 +54,7 @@ Routing can also be triggered by the `route()` function, which takes an options 
 
 ```jsx
 import React from 'react';
-import { Router, route } from 'react-easy-stack';
+import { Router, route } from 'react-stax';
 
 const routeToProfile = () => route({ to: 'profile' });
 const routeToSettings = () => route({ to: 'settings' });

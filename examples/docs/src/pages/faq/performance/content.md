@@ -4,7 +4,7 @@ React Easy Stack was born from years of practical problem solving. It promotes r
 
 ## Installation
 
-`npm install react-easy-stack`
+`npm install react-stax`
 
 ### From zero to a running app
 
@@ -13,7 +13,7 @@ Easy Stack supports [create-react-app](https://github.com/facebookincubator/crea
 ```bash
 npx create-react-app APP_NAME
 cd APP_NAME
-npm install react-easy-stack
+npm install react-stax
 npm start
 ```
 
@@ -25,7 +25,7 @@ Routing is inspired by file systems and the old school web. In its simplest form
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 
 export default () => (
   <div>
@@ -57,7 +57,7 @@ State management focuses on freedom and flexibility. It automatically updates th
 
 ```jsx
 import React from 'react';
-import { view, store } from 'react-easy-stack';
+import { view, store } from 'react-stax';
 
 const beers = store([]);
 
@@ -91,7 +91,7 @@ Good web pages use the platform. They are shareable by URL and integrate with th
 
 ```jsx
 import React from 'react';
-import { view, params } from 'react-easy-stack';
+import { view, params } from 'react-stax';
 
 const setFilter = ev => (params.value = ev.target.value);
 export default view(() => <input value={params.filter} onChange={setFilter} />);
@@ -113,7 +113,7 @@ The above examples fit together to create a simple beer fetching app. Just type 
 
 ```jsx
 import React from 'react';
-import { view, store, params, Router, Link } from 'react-easy-stack';
+import { view, store, params, Router, Link } from 'react-stax';
 
 const beers = store({
   list: [],

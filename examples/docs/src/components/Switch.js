@@ -1,5 +1,5 @@
 import React from "react";
-import { Router } from "react-easy-stack";
+import { Router } from "react-stax";
 import { ease, layout } from "./theme";
 
 const enterAnimation = {

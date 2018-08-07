@@ -23,16 +23,16 @@ export default class Router extends PureComponent {
     shouldAnimate: defaultShouldAnimate
   }
 
-  static childContextTypes = { easyRouterDepth: PropTypes.number }
-  static contextTypes = { easyRouterDepth: PropTypes.number }
+  static childContextTypes = { staxDepth: PropTypes.number }
+  static contextTypes = { staxDepth: PropTypes.number }
 
   getChildContext() {
-    return { easyRouterDepth: this.depth + 1 }
+    return { staxDepth: this.depth + 1 }
   }
 
   // depth stores how nested is the router, root routers have a depth of 0
   get depth() {
-    return this.context.easyRouterDepth || 0
+    return this.context.staxDepth || 0
   }
 
   state = {}

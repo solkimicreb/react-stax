@@ -11,7 +11,7 @@ You can manually batch store mutations by wrapping them with the `flushSync()` f
 
 ```js
 import ReactDOM from 'react-dom';
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 const user = store({});
 

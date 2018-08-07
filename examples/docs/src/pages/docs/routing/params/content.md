@@ -2,7 +2,7 @@ Routing parameters can be added via the `params` options of the `Link` component
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { Router, Link, params } from 'react-stax';
 
 const users = { '1': 'Ann', '12': 'Bob' };
 
@@ -36,7 +36,7 @@ The `Link`'s `params` property sets the starting parameter pool for the page on 
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { Router, Link, params } from 'react-stax';
 
 const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 

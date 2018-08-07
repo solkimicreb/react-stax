@@ -5,7 +5,7 @@ State stores can be mutated from anywhere in any way, but keeping state mutation
 The store's methods are convenient places for mutating the state.
 
 ```js
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 const user = store({
   isLoggedIn: true,
@@ -45,7 +45,7 @@ export default user;
 Keeping the mutator functions separate from the store is another approach.
 
 ```js
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 const user = store({
   isLoggedIn: true,
@@ -80,7 +80,7 @@ _Loader.jsx_
 
 ```jsx
 import React from 'react';
-import { store, view } from 'react-easy-stack';
+import { store, view } from 'react-stax';
 
 const loader = store({
   isLoading: false

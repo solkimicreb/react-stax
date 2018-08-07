@@ -7,7 +7,7 @@ The routing process can be intercepted at each `Router` by the `onRoute` propert
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 
 function onRoute({ fromPage, toPage }) {
   alert(`Routing from ${fromPage} to ${toPage}`);
@@ -42,7 +42,7 @@ Starting a new routing process cancels any ongoing routings. You can call the to
 
 ```jsx
 import React from 'react';
-import { Router, Link, route, store, view } from 'react-easy-stack';
+import { Router, Link, route, store, view } from 'react-stax';
 
 const user = store({});
 
@@ -84,7 +84,7 @@ export default view(() => (
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { Router, Link, params } from 'react-stax';
 
 function onRoute({ toPage }) {
   if (toPage === 'list') {
@@ -117,7 +117,7 @@ You can use the `fromParams` property of `onRoute()`'s argument to read paramete
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { Router, Link, params } from 'react-stax';
 
 function onRoute({ toPage }) {
   if (toPage === 'list') {

@@ -1,6 +1,6 @@
 {
-  "name": "react-easy-stack",
-  "version": "0.1.0-alpha.13",
+  "name": "react-stax",
+  "version": "0.1.0-alpha.2",
   "description": "React state management with a minimal API. Made with ES6 Proxies.",
   "main": "dist/dom.cjs.es6.js",
   "module": "dist/dom.es.es6.js",
@@ -20,8 +20,8 @@
     "install-examples": "COMMAND='npm i' node ./scripts/runOnExamples.js",
     "build-examples": "COMMAND='npm run build' node ./scripts/runOnExamples.js",
     "deploy-examples": "COMMAND='npm run deploy' node ./scripts/runOnExamples.js",
-    "link-examples": "npm link && COMMAND='npm link react-easy-stack' node ./scripts/runOnExamples.js",
-    "unlink-examples": "COMMAND='npm uninstall react-easy-stack && npm install react-easy-stack' node ./scripts/runOnExamples.js",
+    "link-examples": "npm link && COMMAND='npm link react-stax' node ./scripts/runOnExamples.js",
+    "unlink-examples": "COMMAND='npm uninstall react-stax && npm install react-stax' node ./scripts/runOnExamples.js",
     "build": "node ./scripts/build.js",
     "build-toc": "node ./scripts/buildToc.js"
   },
@@ -31,12 +31,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:solkimicreb/react-easy-stack.git"
+    "url": "git@github.com:solkimicreb/react-stax.git"
   },
   "bugs": {
-    "url": "https://github.com/solkimicreb/react-easy-stack/issues"
+    "url": "https://github.com/solkimicreb/react-stax/issues"
   },
-  "homepage": "https://github.com/solkimicreb/react-easy-stack#readme",
+  "homepage": "https://github.com/solkimicreb/react-stax#readme",
   "license": "MIT",
   "keywords": [
     "TODO"

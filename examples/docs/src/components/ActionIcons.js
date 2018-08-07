@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { view } from 'react-easy-stack';
+import { view } from 'react-stax';
 import styled from 'styled-components';
 import GithubIcon from 'react-icons/lib/fa/github';
 import ChatIcon from 'react-icons/lib/fa/comments-o';
@@ -16,7 +16,7 @@ const CorrectedEditIcon = styled(EditIcon)`
 
 export default view(() => (
   <Fragment>
-    <a href="https://github.com/solkimicreb/react-easy-stack">
+    <a href="https://github.com/solkimicreb/react-stax">
       <GithubIcon />
     </a>
     <a href={layout.currentPage.edit}>

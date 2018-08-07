@@ -2,7 +2,7 @@ Dynamic parameters can be added with the `params` property of `Link` or the `rou
 
 ```jsx
 import React from 'react';
-import { Router, Link, params } from 'react-easy-stack';
+import { Router, Link, params } from 'react-stax';
 
 const users = { '1': 'Ann', '12': 'Bob' };
 
@@ -38,7 +38,7 @@ The `params` object stores the current parameters and it is two-way synchronized
 
 ```jsx
 import React from 'react';
-import { Router, Link } from 'react-easy-stack';
+import { Router, Link } from 'react-stax';
 
 const users = [{ id: 1, name: 'Ann' }, { id: 2, name: 'Bob' }];
 

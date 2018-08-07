@@ -1,4 +1,4 @@
-import { scroller } from 'react-easy-stack';
+import { scroller } from 'react-stax';
 
 const originalScrollTo = scroller.scrollTo;
 scroller.scrollTo = function scrollTo(options) {

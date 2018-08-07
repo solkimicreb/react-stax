@@ -1,6 +1,6 @@
 import React, { Component, Fragment, Children } from 'react'
 import ReactDOM from 'react-dom'
-import { store, view, Link } from 'react-easy-stack'
+import { store, view, Link } from 'react-stax'
 import styled from 'styled-components'
 import BackIcon from 'react-icons/lib/fa/angle-left'
 import ForwardIcon from 'react-icons/lib/fa/angle-right'

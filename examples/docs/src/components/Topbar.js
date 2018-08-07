@@ -1,5 +1,5 @@
 import React from 'react';
-import { view } from 'react-easy-stack';
+import { view } from 'react-stax';
 import { TopLink } from './Link';
 import styled from 'styled-components';
 import { colors, layout, ease } from './theme';

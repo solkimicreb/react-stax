@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { view, store, path } from 'react-easy-stack'
+import { view, store, path } from 'react-stax'
 import styled from 'styled-components'
 import { colors, layout, ease } from './theme'
 import * as sidebar from './Sidebar'

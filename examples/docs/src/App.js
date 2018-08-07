@@ -10,7 +10,7 @@ import {
   Router,
   Link,
   route
-} from 'react-easy-stack'
+} from 'react-stax'
 import Topbar from './components/Topbar'
 import Sidebar from './components/Sidebar'
 import Chat from './components/Chat'

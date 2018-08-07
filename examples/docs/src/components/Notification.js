@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { store, view } from 'react-easy-stack';
+import { store, view } from 'react-stax';
 import styled from 'styled-components';
 import { colors, ease, layout } from './theme';
 

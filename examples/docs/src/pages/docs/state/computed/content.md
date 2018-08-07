@@ -2,7 +2,7 @@ Store data can be dynamically derived with standard JavaScript getters.
 
 ```jsx
 import React from 'react'
-import { store } from 'react-easy-stack'
+import { store } from 'react-stax'
 
 const user = store({
   firstName: 'Dan',
@@ -37,7 +37,7 @@ It has a `deriveStoresFromProps(nextProps, ...stores)` signature, where `...stor
 
 ```jsx
 import React from 'react'
-import { store, view } from 'react-easy-stack'
+import { store, view } from 'react-stax'
 
 class SearchField extends Component {
   constructor(props) {

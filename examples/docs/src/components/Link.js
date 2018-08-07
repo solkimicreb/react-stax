@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-easy-stack';
+import { Link } from 'react-stax';
 import { colors, ease, layout } from './theme';
 
 export const NavLink = props => (

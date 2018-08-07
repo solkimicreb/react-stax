@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Router, view } from 'react-easy-stack'
+import { Router, view } from 'react-stax'
 import anime from 'animejs'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'

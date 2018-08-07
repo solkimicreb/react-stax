@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { store, view, path } from 'react-easy-stack';
+import { store, view, path } from 'react-stax';
 import styled from 'styled-components';
 import Drawer from './Drawer';
 import { colors, ease, layout } from './theme';

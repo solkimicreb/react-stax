@@ -1,4 +1,4 @@
-import { store } from 'react-easy-stack';
+import { store } from 'react-stax';
 
 export const colors = {
   code: '#f6f8fa',

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-easy-stack';
+import { Link } from 'react-stax';
 import Page from '../../../../components/Page';
 import Browser from '../../../../components/Browser';
 import InterceptionDemo from './portals/InterceptionDemo';
