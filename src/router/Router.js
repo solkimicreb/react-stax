@@ -185,11 +185,14 @@ export default class Router extends PureComponent {
 // all Router children must have a page prop
 function validateChild(child) {
   if (typeof child.props.page !== 'string') {
-    throw new Error('Every Router child must have a string valued page prop')
+    throw new Error(
+      'Every Router child must have a string valued, unique page prop'
+    )
   }
 }
 
 // default shouldAnimate implementation
+// animates when the pathname token (page) at the router level changes
 function defaultShouldAnimate({ fromPage, toPage }) {
   return fromPage !== toPage
 }
