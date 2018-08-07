@@ -1,53 +1,36 @@
-import React, { Component, Fragment } from 'react';
-import { store, view, path } from 'react-stax';
-import styled from 'styled-components';
-import Drawer from './Drawer';
-import { colors, ease, layout } from './theme';
+import React, { Component, Fragment } from 'react'
+import { store, view, path } from 'react-stax'
+import styled from 'styled-components'
+import Drawer from './Drawer'
+import { colors, ease, layout } from './theme'
 
 export const chatStore = store({
   open: layout.isLarge
-});
+})
 
 export function open() {
-  chatStore.open = true;
+  chatStore.open = true
 }
 
 export function close() {
-  chatStore.open = false;
+  chatStore.open = false
 }
 
 export function toggle() {
   if (!chatStore.open) {
-    open();
+    open()
   } else {
-    close();
+    close()
   }
 }
 
-const StyledChat = styled.div`
+const StyledChat = styled.iframe`
   height: 100%;
-  border-left: 1px solid #ddd;
-  background-color: white;
-  padding-left: 10px;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-  }
-`;
+  width: 100%;
+  border: none;
+`
 
 class Chat extends Component {
-  ref = React.createRef();
-
-  componentDidMount() {
-    this.listener = ev => (ev.detail.state ? open() : close());
-    this.ref.current.addEventListener('gitter-chat-toggle', this.listener);
-  }
-
-  componentWillUnmount() {
-    this.ref.current.removeEventListener('gitter-chat-toggle', this.listener);
-  }
-
   render() {
     return layout.currentPage.chat !== false ? (
       <Drawer
@@ -58,10 +41,14 @@ class Chat extends Component {
         onOpen={open}
         onClose={close}
       >
-        <StyledChat innerRef={this.ref} id="chat" />
+        <StyledChat
+          src="https://discordapp.com/widget?id=476396897549025283&theme=dark"
+          allowtransparency="true"
+          frameborder="0"
+        />
       </Drawer>
-    ) : null;
+    ) : null
   }
 }
 
-export default view(Chat);
+export default view(Chat)
