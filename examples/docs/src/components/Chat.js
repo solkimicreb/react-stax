@@ -27,7 +27,9 @@ export function toggle() {
 const StyledChat = styled.iframe`
   height: 100%;
   width: 100%;
-  border: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 `
 
 class Chat extends Component {
@@ -36,10 +38,11 @@ class Chat extends Component {
       <Drawer
         width={layout.chatWidth}
         docked={layout.isLarge}
-        right={true}
         open={chatStore.open}
         onOpen={open}
         onClose={close}
+        touchZone={15}
+        right
       >
         <StyledChat
           src="https://discordapp.com/widget?id=476396897549025283&theme=dark"

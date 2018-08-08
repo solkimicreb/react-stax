@@ -4,39 +4,36 @@ import { store, view, path } from 'react-stax'
 import styled, { keyframes } from 'styled-components'
 import { colors, ease, layout } from './theme'
 
-const TOUCH_ZONE = 20
 const drawers = new Set()
 const backdrop = React.createRef()
 
 export const touchStore = store({
   touchX: 0,
-  touchXDiff: 0,
-  touchStart: 0
+  touchXDiff: 0
 })
 
 const onTouchStart = ev => {
+  touchStore.touchX = ev.touches[0].pageX
+  const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
   const windowWidth = window.innerWidth
-  const touch = ev.touches[0]
-  touchStore.touchX = touch.pageX
-  touchStore.touchStart = Date.now()
-
-  let hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
 
   drawers.forEach(drawer => {
-    let { width, right, docked, open } = drawer.props
+    let { right, docked, open, touchZone } = drawer.props
     if (docked) {
       return
     }
-    width = Math.min(windowWidth, width)
+
+    const drawerNode = drawer.ref.current
+    const backdropNode = backdrop.current
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX
 
-    if ((!open && !hasOpenDrawer && touchX < TOUCH_ZONE) || open) {
+    if (open || (!hasOpenDrawer && touchX < touchZone)) {
+      drawerNode.style.transition = 'none'
       drawer.isTouching = true
-      drawer.ref.current.style.transition = 'none'
       drawer.forceUpdate()
 
-      if (backdrop.current) {
-        backdrop.current.style.transition = 'none'
+      if (backdropNode) {
+        backdropNode.style.transition = 'none'
       }
     }
   })
@@ -44,53 +41,58 @@ const onTouchStart = ev => {
 
 const onTouchMove = ev => {
   const windowWidth = window.innerWidth
-  const touch = ev.touches[0]
-  const touchX = touch.pageX
+  const touchX = ev.touches[0].pageX
   touchStore.touchXDiff = touchX - touchStore.touchX
 
   drawers.forEach(drawer => {
-    let { width, right, open } = drawer.props
-    width = Math.min(windowWidth, width)
+    const { right, open } = drawer.props
+    if (!drawer.isTouching) {
+      return
+    }
+
+    const drawerNode = drawer.ref.current
+    const backdropNode = backdrop.current
+    const drawerWidth = drawerNode.offsetWidth
     const absTouchX = right ? windowWidth - touchX : touchX
 
-    if (drawer.isTouching && absTouchX <= width) {
+    if (absTouchX <= drawerWidth) {
       let transformX = right ? -absTouchX : absTouchX
-      let correction = open ? Math.max(width - touchStore.touchX, 0) : 0
+      let correction = open ? Math.max(drawerWidth - touchStore.touchX, 0) : 0
       transformX = right
-        ? Math.max(transformX - correction, -width)
-        : Math.min(transformX + correction, width)
+        ? Math.max(transformX - correction, -drawerWidth)
+        : Math.min(transformX + correction, drawerWidth)
 
-      drawer.ref.current.style.transform = `translateX(${transformX}px)`
-      if (backdrop.current) {
-        backdrop.current.style.opacity = (absTouchX / width) * 0.7
+      drawerNode.style.transform = `translateX(${transformX}px)`
+      if (backdropNode) {
+        backdropNode.style.opacity = (absTouchX / drawerWidth) * 0.7
       }
     }
   })
 }
 
 const onTouchEnd = ev => {
-  const touchTime = Date.now() - touchStore.touchStart
-
   drawers.forEach(drawer => {
-    let touchXDiff = touchStore.touchXDiff
-    if (drawer.props.right) {
-      touchXDiff = -touchXDiff
-    }
+    const { right, onOpen, onClose } = drawer.props
+
+    const drawerNode = drawer.ref.current
+    const touchXDiff = right ? -touchStore.touchXDiff : touchStore.touchXDiff
 
     if (drawer.isTouching) {
       if (0 < touchXDiff) {
-        drawer.props.onOpen()
+        onOpen()
       } else {
-        drawer.props.onClose()
+        onClose()
       }
       drawer.isTouching = false
-      drawer.ref.current.style.transform = null
-      drawer.ref.current.style.transition = null
+      drawerNode.style.transform = null
+      drawerNode.style.transition = null
     }
   })
-  if (backdrop.current) {
-    backdrop.current.style.opacity = null
-    backdrop.current.style.transition = null
+
+  const backdropNode = backdrop.current
+  if (backdropNode) {
+    backdropNode.style.opacity = null
+    backdropNode.style.transition = null
   }
 
   touchStore.touchX = 0
