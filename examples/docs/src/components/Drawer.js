@@ -64,7 +64,7 @@ const onTouchMove = ev => {
       continue
     }
 
-    if (2 * xDiff < yDiff) {
+    if (xDiff < 5 * yDiff) {
       drawer.store.isTouching = false
       break
     }
@@ -156,7 +156,7 @@ const StyledDrawer = styled.div`
   max-width: 100%;
   z-index: ${props => (!props.docked ? 70 : 10)};
   transition: transform;
-  transition-duration: ${props => 0.15}s;
+  transition-duration: ${props => 0.2}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
     ${props =>
@@ -176,7 +176,7 @@ const Backdrop = styled.div`
   background-color: ${colors.text};
   opacity: ${props => (props.open && !props.docked ? 0.7 : 0)};
   transition: opacity;
-  transition-duration: ${props => 0.15}s;
+  transition-duration: ${props => 0.2}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   z-index: 60;
   will-change: opacity;

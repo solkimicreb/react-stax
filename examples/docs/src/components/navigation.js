@@ -11,6 +11,8 @@ let startTouch
 function onTouchStart(ev) {
   startTouch = ev.touches[0]
   if (
+    !chatStore.open &&
+    !sidebarStore.open &&
     layout.touchZone < startTouch.pageX &&
     startTouch.pageX < window.innerWidth - layout.touchZone
   ) {
@@ -21,32 +23,29 @@ function onTouchStart(ev) {
 function onTouchMove(ev) {
   if (isTouching) {
     const touch = ev.touches[0]
-    const xDiff = startTouch.pageX - touch.pageX
-    const yDiff = startTouch.pageY - touch.pageY
+    let xDiff = startTouch.pageX - touch.pageX
+    let yDiff = startTouch.pageY - touch.pageY
+    const offset = xDiff < 0 ? -1 : 1
+    xDiff = Math.abs(xDiff)
+    yDiff = Math.abs(yDiff)
 
     if (THRESHOLD < xDiff) {
-      if (2 * Math.abs(xDiff) < Math.abs(yDiff)) {
+      if (xDiff < 5 * yDiff) {
         isTouching = false
         return
       }
-      // document.body.style.overflow = 'hidden'
-      goToPage(1)
-      onTouchEnd()
-    } else if (xDiff < -THRESHOLD) {
-      if (2 * Math.abs(xDiff) < Math.abs(yDiff)) {
-        isTouching = false
-        return
-      }
-      // document.body.style.overflow = 'hidden'
-      goToPage(-1)
+      document.body.style.overflow = 'hidden'
+      goToPage(offset)
       onTouchEnd()
     }
   }
 }
 
 function onTouchEnd(ev) {
-  isTouching = false
-  // document.body.style.overflow = null
+  if (isTouching) {
+    isTouching = false
+    document.body.style.overflow = null
+  }
 }
 
 window.addEventListener('touchstart', onTouchStart, { passive: true })
@@ -61,7 +60,7 @@ function goToPage(offset) {
 
   const nextPage = routes.all[idx + offset]
 
-  if (nextPage && !chatStore.open && !sidebarStore.open) {
+  if (nextPage) {
     route({ to: nextPage.path })
   }
 }
