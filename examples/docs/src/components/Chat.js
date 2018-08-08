@@ -50,7 +50,7 @@ class Chat extends Component {
         <iframe
           src="https://discordapp.com/widget?id=476396897549025283&theme=dark"
           allowtransparency="true"
-          frameborder="0"
+          frameBorder="0"
         />
       </StyledChat>
     ) : null

@@ -4,17 +4,18 @@ import { store, view, path } from 'react-stax'
 import styled, { keyframes } from 'styled-components'
 import { colors, ease, layout } from './theme'
 
+const THRESHOLD = 20
 const drawers = new Set()
 const backdrop = React.createRef()
 
 export const touchStore = store({
-  touchX: 0,
-  touchStart: 0,
+  touch: undefined,
+  startTouch: undefined,
   touchDiff: 0
 })
 
 const onTouchStart = ev => {
-  touchStore.touchStart = ev.touches[0].pageX
+  touchStore.touch = touchStore.startTouch = ev.touches[0]
   const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
   const windowWidth = window.innerWidth
 
@@ -27,8 +28,8 @@ const onTouchStart = ev => {
     const drawerNode = drawer.ref.current
     const backdropNode = backdrop.current
     const distance = right
-      ? windowWidth - touchStore.touchStart
-      : touchStore.touchStart
+      ? windowWidth - touchStore.touch.pageX
+      : touchStore.touch.pageX
 
     if (open || (!hasOpenDrawer && distance < touchZone)) {
       drawerNode.style.transition = 'none'
@@ -46,28 +47,36 @@ const onTouchStart = ev => {
 
 const onTouchMove = ev => {
   const windowWidth = window.innerWidth
-  const touchX = ev.touches[0].pageX
+  const touch = ev.touches[0]
 
   // add inertia to touchDiff
-  const touchDiff = touchX - touchStore.touchX
+  const touchDiff = touch.pageX - touchStore.touch.pageX
   touchStore.touchDiff = (4 * touchStore.touchDiff + touchDiff) / 5
 
-  touchStore.touchX = touchX
+  const xDiff = Math.abs(touchStore.startTouch.pageX - touch.pageX)
+  const yDiff = Math.abs(touchStore.startTouch.pageY - touch.pageY)
+
+  touchStore.touch = touch
 
   for (const drawer of drawers) {
     const { right, open, touchZone } = drawer.props
-    if (!drawer.store.isTouching) {
+    if (!drawer.store.isTouching || xDiff < THRESHOLD) {
       continue
+    }
+
+    if (xDiff < yDiff) {
+      drawer.store.isTouching = false
+      break
     }
 
     const drawerNode = drawer.ref.current
     const backdropNode = backdrop.current
     const drawerWidth = drawerNode.offsetWidth
     // distance is the (absolute) distance from the edge of the window
-    const distance = right ? windowWidth - touchX : touchX
+    const distance = right ? windowWidth - touch.pageX : touch.pageX
     const initialDistance = right
-      ? windowWidth - touchStore.touchStart
-      : touchStore.touchStart
+      ? windowWidth - touchStore.startTouch.pageX
+      : touchStore.startTouch.pageX
 
     // move the drawer if the touch position is inside it
     if (distance <= drawerWidth + touchZone) {
@@ -130,10 +139,6 @@ const onTouchEnd = ev => {
     backdropNode.style.opacity = null
     backdropNode.style.transition = null
   }
-
-  touchStore.touchStart = 0
-  touchStore.touchX = 0
-  touchStore.touchDiff = 0
 }
 
 // TODO: allow touch through chat iframe!!
@@ -158,7 +163,7 @@ const StyledDrawer = styled.div`
     ${props =>
       props.open || props.docked ? 0 : props.right ? '100%' : '-100%'}
   );
-  overflow: scroll;
+  overflow: auto;
   will-change: transform;
   contain: strict;
 `
@@ -231,7 +236,8 @@ class Drawer extends Component {
   }
 
   componentDidUpdate() {
-    document.body.style.overflow = this.props.open ? 'hidden' : null
+    document.body.style.overflow =
+      this.props.open || this.store.isTouching ? 'hidden' : null
   }
 }
 

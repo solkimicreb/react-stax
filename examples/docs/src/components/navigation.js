@@ -29,7 +29,7 @@ function onTouchMove(ev) {
         isTouching = false
         return
       }
-      document.body.style.overflow = 'hidden'
+      // document.body.style.overflow = 'hidden'
       goToPage(1)
       onTouchEnd()
     } else if (xDiff < -THRESHOLD) {
@@ -37,7 +37,7 @@ function onTouchMove(ev) {
         isTouching = false
         return
       }
-      document.body.style.overflow = 'hidden'
+      // document.body.style.overflow = 'hidden'
       goToPage(-1)
       onTouchEnd()
     }
@@ -46,7 +46,7 @@ function onTouchMove(ev) {
 
 function onTouchEnd(ev) {
   isTouching = false
-  document.body.style.overflow = null
+  // document.body.style.overflow = null
 }
 
 window.addEventListener('touchstart', onTouchStart, { passive: true })
