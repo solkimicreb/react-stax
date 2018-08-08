@@ -8,12 +8,12 @@ const drawers = new Set()
 const backdrop = React.createRef()
 
 export const touchStore = store({
-  touchX: 0,
-  touchXDiff: 0
+  touchStart: 0,
+  touchDiff: 0
 })
 
 const onTouchStart = ev => {
-  touchStore.touchX = ev.touches[0].pageX
+  touchStore.touchStart = ev.touches[0].pageX
   const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
   const windowWidth = window.innerWidth
 
@@ -25,9 +25,11 @@ const onTouchStart = ev => {
 
     const drawerNode = drawer.ref.current
     const backdropNode = backdrop.current
-    const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX
+    const distance = right
+      ? windowWidth - touchStore.touchStart
+      : touchStore.touchStart
 
-    if (open || (!hasOpenDrawer && touchX < touchZone)) {
+    if (open || (!hasOpenDrawer && distance < touchZone)) {
       drawerNode.style.transition = 'none'
       drawer.isTouching = true
       drawer.forceUpdate()
@@ -42,10 +44,10 @@ const onTouchStart = ev => {
 const onTouchMove = ev => {
   const windowWidth = window.innerWidth
   const touchX = ev.touches[0].pageX
-  touchStore.touchXDiff = touchX - touchStore.touchX
+  touchStore.touchDiff = touchX - touchStore.touchX
 
   drawers.forEach(drawer => {
-    const { right, open } = drawer.props
+    const { right, open, touchZone } = drawer.props
     if (!drawer.isTouching) {
       return
     }
@@ -53,18 +55,35 @@ const onTouchMove = ev => {
     const drawerNode = drawer.ref.current
     const backdropNode = backdrop.current
     const drawerWidth = drawerNode.offsetWidth
-    const absTouchX = right ? windowWidth - touchX : touchX
+    // distance is the (absolute) distance from the edge of the window
+    const distance = right ? windowWidth - touchX : touchX
+    const initialDistance = right
+      ? windowWidth - touchStore.touchStart
+      : touchStore.touchStart
 
-    if (absTouchX <= drawerWidth) {
-      let transformX = right ? -absTouchX : absTouchX
-      let correction = open ? Math.max(drawerWidth - touchStore.touchX, 0) : 0
-      transformX = right
-        ? Math.max(transformX - correction, -drawerWidth)
-        : Math.min(transformX + correction, drawerWidth)
+    // move the drawer if the touch position is inside it
+    if (distance <= drawerWidth + touchZone) {
+      // transformX is the part of the drawer that should be outside the screen
+      let transform = distance - drawerWidth
+      if (right) {
+        transform = -transform
+      }
+      // correction is relevant if the inital touch was inside the drawer
+      const correction = open ? Math.max(drawerWidth - initialDistance, 0) : 0
 
-      drawerNode.style.transform = `translateX(${transformX}px)`
+      // do not let the drawer transform to be bigger then 0
+      transform = right
+        ? Math.max(transform - correction, 0)
+        : Math.min(transform + correction, 0)
+
+      drawerNode.style.transform = `translateX(${transform}px)`
       if (backdropNode) {
-        backdropNode.style.opacity = (absTouchX / drawerWidth) * 0.7
+        backdropNode.style.opacity = (distance / drawerWidth) * 0.7
+      }
+    } else {
+      drawerNode.style.transform = `translateX(0)`
+      if (backdropNode) {
+        backdropNode.style.opacity = 0.7
       }
     }
   })
@@ -75,10 +94,10 @@ const onTouchEnd = ev => {
     const { right, onOpen, onClose } = drawer.props
 
     const drawerNode = drawer.ref.current
-    const touchXDiff = right ? -touchStore.touchXDiff : touchStore.touchXDiff
+    const touchDiff = right ? -touchStore.touchDiff : touchStore.touchDiff
 
     if (drawer.isTouching) {
-      if (0 < touchXDiff) {
+      if (0 < touchDiff) {
         onOpen()
       } else {
         onClose()
@@ -96,7 +115,7 @@ const onTouchEnd = ev => {
   }
 
   touchStore.touchX = 0
-  touchStore.touchXDiff = 0
+  touchStore.touchDiff = 0
 }
 
 // TODO: allow touch through chat iframe!!
@@ -108,8 +127,8 @@ window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 const StyledDrawer = styled.div`
   position: fixed;
   top: 0;
-  left: ${props => (props.right ? 'unset' : `${-props.width}px`)};
-  right: ${props => (props.right ? `${-props.width}px` : 'unset')};
+  left: ${props => (props.right ? null : 0)};
+  right: ${props => (props.right ? 0 : null)};
   bottom: 0;
   width: ${props => props.width}px;
   z-index: ${props => (!props.docked ? 70 : 10)};
@@ -119,7 +138,7 @@ const StyledDrawer = styled.div`
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
     ${props =>
-      props.open || props.docked ? (props.right ? '-100%' : '100%') : 'none'}
+      props.open || props.docked ? 0 : props.right ? '100%' : '-100%'}
   );
   overflow: scroll;
   will-change: transform;
