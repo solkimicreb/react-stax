@@ -56,7 +56,9 @@ const onTouchMove = ev => {
     if (drawer.isTouching && absTouchX <= width) {
       let transformX = right ? -absTouchX : absTouchX
       let correction = open ? Math.max(width - touchStore.touchX, 0) : 0
-      transformX = Math.min(transformX + correction, width)
+      transformX = right
+        ? Math.max(transformX - correction, -width)
+        : Math.min(transformX + correction, width)
 
       drawer.ref.current.style.transform = `translateX(${transformX}px)`
       if (backdrop.current) {
@@ -95,10 +97,11 @@ const onTouchEnd = ev => {
   touchStore.touchXDiff = 0
 }
 
-/*window.addEventListener('touchstart', onTouchStart, { passive: true })
+// TODO: allow touch through chat iframe!!
+window.addEventListener('touchstart', onTouchStart, { passive: true })
 window.addEventListener('touchmove', onTouchMove, { passive: true })
 window.addEventListener('touchend', onTouchEnd, { passive: true })
-window.addEventListener('touchcancel', onTouchEnd, { passive: true })*/
+window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
 const StyledDrawer = styled.div`
   position: fixed;
@@ -174,16 +177,14 @@ class Drawer extends Component {
         >
           {children}
         </StyledDrawer>
-        {(open || this.isTouching) &&
-          ReactDOM.createPortal(
-            <Backdrop
-              open={open}
-              docked={docked}
-              onClick={onClose}
-              innerRef={backdrop}
-            />,
-            document.getElementById('backdrop')
-          )}
+        {(open || this.isTouching) && (
+          <Backdrop
+            open={open}
+            docked={docked}
+            onClick={onClose}
+            innerRef={backdrop}
+          />
+        )}
       </Fragment>
     )
   }
@@ -195,7 +196,7 @@ class Drawer extends Component {
 
 export default view(Drawer)
 
-ReactDOM.render(
+/*ReactDOM.render(
   <Register
     onTouchStart={onTouchStart}
     onTouchMove={onTouchMove}
@@ -203,4 +204,4 @@ ReactDOM.render(
     onTouchCancel={onTouchEnd}
   />,
   document.getElementById('touch-register')
-)
+)*/
