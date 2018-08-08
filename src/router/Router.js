@@ -14,13 +14,11 @@ export default class Router extends PureComponent {
     slave: PropTypes.bool,
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
-    shouldAnimate: PropTypes.func,
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   }
 
   static defaultProps = {
-    element: elements.div,
-    shouldAnimate: defaultShouldAnimate
+    element: elements.div
   }
 
   static childContextTypes = { staxDepth: PropTypes.number }
@@ -82,40 +80,36 @@ export default class Router extends PureComponent {
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
   finishRouting(context, resolvedData) {
-    const {
-      enterAnimation,
-      leaveAnimation,
-      shouldAnimate,
-      defaultPage
-    } = this.props
+    const { enterAnimation, leaveAnimation, defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
-
-    context = { fromPage, toPage, depth: this.depth, ...context }
-    const canAnimate = this.container && shouldAnimate(context)
-
-    // this typically saves the current view to use later for cross fade effects
-    // the current view is soon replaced by setState, so this is necessary
-    if (canAnimate) {
-      animation.setup(this.container)
-    }
 
     const nextState = {
       resolvedData,
       page: toPage
     }
 
+    // only animate if this is not a new (appearing) router and its page changed
+    // these means there is only one animating router per (nested) routing process
+    const shouldAnimate = this.inited && fromPage !== toPage
+    if (shouldAnimate) {
+      // this typically saves the current view to use later for cross fade effects
+      // the current view is soon replaced by setState, so this is necessary
+      animation.setup(this.container)
+    }
+
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
-        // run the animations when the new page is fully rendered, but do not wait for them
-        // the views may be hidden by the animation, but the DOM routing is already over
-        // it is safe to go on with routing the next level of routers
-        if (canAnimate) {
+        if (shouldAnimate) {
+          context = { fromPage, toPage, depth: this.depth, ...context }
+          // run the animations when the new page is fully rendered, but do not wait for them
+          // the views may be hidden by the animation, but the DOM routing is already over
+          // it is safe to go on with routing the next level of routers
           // only do an enter animation if this is not the initial routing of the router
           // this prevents cascading over-animation, in case of nested routers
           // only the outmost one will animate, the rest will appear normally
-          if (enterAnimation && this.inited) {
+          if (enterAnimation) {
             animation.enter(this.container, enterAnimation, context)
           }
           // leave must come after enter
@@ -189,10 +183,4 @@ function validateChild(child) {
       'Every Router child must have a string valued, unique page prop'
     )
   }
-}
-
-// default shouldAnimate implementation
-// animates when the pathname token (page) at the router level changes
-function defaultShouldAnimate({ fromPage, toPage }) {
-  return fromPage !== toPage
 }

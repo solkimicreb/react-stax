@@ -10,7 +10,7 @@ const StyledRouter = styled(Router)`
   overflow: hidden;
 
   > * {
-    will-change: ${props => (props.isMobile ? 'transform' : 'opacity')};
+    will-change: ${props => (props.isMobile ? null : 'opacity')};
   }
 `
 
@@ -75,8 +75,6 @@ class PageRouter extends Component {
   }
 
   enterAnimation = (elem, ctx) => {
-    const { page, prevPage, nextPage } = this.getPages(ctx)
-
     return elem.animate(
       layout.isMobile
         ? {
@@ -86,7 +84,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [0, 1] },
-      { duration: layout.isMobile ? 300 : 140 }
+      { duration: layout.isMobile ? 3000 : 3000 }
     ).finished
   }
 
@@ -110,7 +108,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [1, 0] },
-      { duration: layout.isMobile ? 300 : 140 }
+      { duration: layout.isMobile ? 3000 : 3000 }
     ).finished
   }
 
