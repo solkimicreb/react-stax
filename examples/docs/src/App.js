@@ -24,6 +24,8 @@ import Actionbar from './components/Actionbar'
 import { layout } from './components/theme'
 import * as routes from './routes'
 
+import './components/navigation'
+
 const DocsNav = () => (
   <Fragment>
     <SideSectionLink to="state">State Management</SideSectionLink>

@@ -1,19 +1,21 @@
 import React, { Component, Fragment } from 'react'
-import { store, view, path } from 'react-stax'
+import { store, view, path, route, params } from 'react-stax'
 import styled from 'styled-components'
 import Drawer from './Drawer'
 import { colors, ease, layout } from './theme'
 
 export const chatStore = store({
-  open: layout.isLarge
+  get open() {
+    return layout.isLarge || params.chat
+  }
 })
 
 export function open() {
-  chatStore.open = true
+  route({ params: { chat: true }, push: layout.isMobile })
 }
 
 export function close() {
-  chatStore.open = false
+  route({ push: layout.isMobile })
 }
 
 export function toggle() {
@@ -42,7 +44,7 @@ class Chat extends Component {
         open={chatStore.open}
         onOpen={open}
         onClose={close}
-        touchZone={15}
+        touchZone={layout.touchZone}
         right
       >
         <iframe

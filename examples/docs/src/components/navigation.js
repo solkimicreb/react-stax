@@ -1,30 +1,43 @@
 import { route } from 'react-stax'
 import { layout } from './theme'
 import * as routes from '../routes'
+import { chatStore } from './Chat'
+import { sidebarStore } from './Sidebar'
 
-const TOUCH_ZONE = 20
-const THRESHOLD = 40
+const THRESHOLD = 20
 let isTouching = false
-let touchStart = 0
-let touchDiff = 0
+let startTouch
 
 function onTouchStart(ev) {
-  touchStart = ev.touches[0].pageX
-
-  if (touchStart < TOUCH_ZONE || window.innerWidth - TOUCH_ZONE < touchStart) {
+  startTouch = ev.touches[0]
+  if (
+    layout.touchZone < startTouch.pageX &&
+    startTouch.pageX < window.innerWidth - layout.touchZone
+  ) {
     isTouching = true
-    document.body.style.overflow = 'hidden'
   }
 }
 
 function onTouchMove(ev) {
   if (isTouching) {
-    touchDiff = touchStart - ev.touches[0].pageX
+    const touch = ev.touches[0]
+    const xDiff = startTouch.pageX - touch.pageX
+    const yDiff = startTouch.pageY - touch.pageY
 
-    if (THRESHOLD < touchDiff) {
+    if (THRESHOLD < xDiff) {
+      if (Math.abs(xDiff) < Math.abs(yDiff)) {
+        isTouching = false
+        return
+      }
+      document.body.style.overflow = 'hidden'
       goToPage(1)
       onTouchEnd()
-    } else if (touchDiff < -THRESHOLD) {
+    } else if (xDiff < -THRESHOLD) {
+      if (Math.abs(xDiff) < Math.abs(yDiff)) {
+        isTouching = false
+        return
+      }
+      document.body.style.overflow = 'hidden'
       goToPage(-1)
       onTouchEnd()
     }
@@ -32,7 +45,6 @@ function onTouchMove(ev) {
 }
 
 function onTouchEnd(ev) {
-  touchStart = touchDiff = 0
   isTouching = false
   document.body.style.overflow = null
 }
@@ -48,5 +60,8 @@ function goToPage(offset) {
   )
 
   const nextPage = routes.all[idx + offset]
-  route({ to: nextPage.path })
+
+  if (nextPage && !chatStore.open && !sidebarStore.open) {
+    route({ to: nextPage.path })
+  }
 }

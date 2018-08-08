@@ -39,7 +39,7 @@ export default view(({ children }) => {
       open={sidebarStore.open}
       onOpen={open}
       onClose={close}
-      touchZone={15}
+      touchZone={layout.touchZone}
     >
       {children}
     </StyledSidebar>
