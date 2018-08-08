@@ -6,6 +6,8 @@ import * as sidebar from './Sidebar'
 import { notify } from './Notification'
 import * as routes from '../routes'
 
+import './navigation'
+
 const StyledRouter = styled(Router)`
   overflow: hidden;
 
@@ -47,13 +49,12 @@ class PageRouter extends Component {
       `../pages${page.path}`)
 
       layout.currentPage = page
+      sidebar.close()
       let title = 'React Stax'
       if (page.title) {
         title = `${page.title} | ${title}`
       }
       document.title = title
-
-      sidebar.close()
 
       return (
         <NextPage
@@ -67,6 +68,8 @@ class PageRouter extends Component {
   }
 
   isForward = ({ fromPage, toPage }) => {
+    // maybe make a decision based on router depth?
+    // TODO: fix animation direction
     const { idx: fromIdx } = this.getPages(fromPage)
     const { idx: toIdx } = this.getPages(toPage)
 

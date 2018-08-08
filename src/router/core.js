@@ -118,7 +118,7 @@ export function routeFromDepth(
     .then(() =>
       switchRoutersFromDepth(
         depth,
-        { scroll, push, inherit, fromParams },
+        { scroll, push, inherit, fromParams, fromPath },
         status
       )
     )

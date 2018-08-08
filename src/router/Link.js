@@ -87,7 +87,8 @@ export default class Link extends PureComponent {
           params,
           scroll,
           push,
-          inherit
+          inherit,
+          depth: this.depth
         })
       }
       return (

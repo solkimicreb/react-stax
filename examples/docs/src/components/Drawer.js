@@ -86,10 +86,10 @@ const onTouchEnd = ev => {
   touchStore.touchDiff = 0
 }
 
-window.addEventListener('touchstart', onTouchStart, { passive: true })
+/*window.addEventListener('touchstart', onTouchStart, { passive: true })
 window.addEventListener('touchmove', onTouchMove, { passive: true })
 window.addEventListener('touchend', onTouchEnd, { passive: true })
-window.addEventListener('touchcancel', onTouchEnd, { passive: true })
+window.addEventListener('touchcancel', onTouchEnd, { passive: true })*/
 
 const StyledDrawer = styled.div`
   position: fixed;

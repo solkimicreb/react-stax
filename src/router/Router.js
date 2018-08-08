@@ -59,7 +59,6 @@ export default class Router extends PureComponent {
     const { onRoute, defaultPage, slave } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
-
     // (parallel) slave routers do not update the URL pathname to avoid collisions
     if (!slave) {
       // fill the path with the default page, if the current path token is empty
@@ -73,6 +72,7 @@ export default class Router extends PureComponent {
         target: this,
         fromPage,
         toPage,
+        depth: this.depth,
         ...context
       })
     }
@@ -91,7 +91,7 @@ export default class Router extends PureComponent {
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
 
-    context = { fromPage, toPage, ...context }
+    context = { fromPage, toPage, depth: this.depth, ...context }
     const canAnimate = this.container && shouldAnimate(context)
 
     // this typically saves the current view to use later for cross fade effects
