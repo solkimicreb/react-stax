@@ -31,8 +31,7 @@ const onTouchStart = ev => {
 
     if (open || (!hasOpenDrawer && distance < touchZone)) {
       drawerNode.style.transition = 'none'
-      drawer.isTouching = true
-      drawer.forceUpdate()
+      drawer.store.isTouching = true
 
       if (backdropNode) {
         backdropNode.style.transition = 'none'
@@ -51,7 +50,7 @@ const onTouchMove = ev => {
 
   for (const drawer of drawers) {
     const { right, open, touchZone } = drawer.props
-    if (!drawer.isTouching) {
+    if (!drawer.store.isTouching) {
       continue
     }
 
@@ -99,7 +98,7 @@ const onTouchMove = ev => {
 const onTouchEnd = ev => {
   for (const drawer of drawers) {
     const { right, onOpen, onClose } = drawer.props
-    if (!drawer.isTouching) {
+    if (!drawer.store.isTouching) {
       continue
     }
 
@@ -111,7 +110,8 @@ const onTouchEnd = ev => {
     } else {
       onClose()
     }
-    drawer.isTouching = false
+
+    drawer.store.isTouching = false
     drawerNode.style.transform = null
     drawerNode.style.transition = null
 
@@ -184,7 +184,9 @@ const Register = styled.div`
 
 class Drawer extends Component {
   ref = React.createRef()
-  isTouching = false
+  store = store({
+    isTouching: false
+  })
 
   componentDidMount() {
     drawers.add(this)
@@ -196,6 +198,7 @@ class Drawer extends Component {
 
   render() {
     const { right, docked, onClose, open, children, ...rest } = this.props
+    const { isTouching } = this.store
 
     return (
       <Fragment>
@@ -208,7 +211,7 @@ class Drawer extends Component {
         >
           {children}
         </StyledDrawer>
-        {(open || this.isTouching) && (
+        {(open || isTouching) && (
           <Backdrop
             open={open}
             docked={docked}
