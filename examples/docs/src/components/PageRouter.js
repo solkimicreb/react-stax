@@ -84,7 +84,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [0, 1] },
-      { duration: layout.isMobile ? 3000 : 3000 }
+      { duration: layout.isMobile ? 300 : 140 }
     ).finished
   }
 
@@ -108,7 +108,7 @@ class PageRouter extends Component {
             ]
           }
         : { opacity: [1, 0] },
-      { duration: layout.isMobile ? 3000 : 3000 }
+      { duration: layout.isMobile ? 300 : 140 }
     ).finished
   }
 

@@ -64,7 +64,7 @@ const onTouchMove = ev => {
       continue
     }
 
-    if (xDiff < yDiff) {
+    if (2 * xDiff < yDiff) {
       drawer.store.isTouching = false
       break
     }

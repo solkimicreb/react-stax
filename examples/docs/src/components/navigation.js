@@ -25,7 +25,7 @@ function onTouchMove(ev) {
     const yDiff = startTouch.pageY - touch.pageY
 
     if (THRESHOLD < xDiff) {
-      if (Math.abs(xDiff) < Math.abs(yDiff)) {
+      if (2 * Math.abs(xDiff) < Math.abs(yDiff)) {
         isTouching = false
         return
       }
@@ -33,7 +33,7 @@ function onTouchMove(ev) {
       goToPage(1)
       onTouchEnd()
     } else if (xDiff < -THRESHOLD) {
-      if (Math.abs(xDiff) < Math.abs(yDiff)) {
+      if (2 * Math.abs(xDiff) < Math.abs(yDiff)) {
         isTouching = false
         return
       }
