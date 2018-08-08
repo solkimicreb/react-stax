@@ -24,8 +24,8 @@ export function toggle() {
   }
 }
 
-const StyledSidebar = styled.nav`
-  height: 100%;
+const StyledSidebar = styled(Drawer)`
+  width: ${layout.sidebarWidth}px;
   background-color: ${colors.backgroundLight};
   overflow-y: scroll;
   padding: 10px;
@@ -34,15 +34,14 @@ const StyledSidebar = styled.nav`
 
 export default view(({ children }) => {
   return layout.currentPage.sidebar !== false ? (
-    <Drawer
-      width={layout.sidebarWidth}
+    <StyledSidebar
       docked={!layout.isMobile}
       open={sidebarStore.open}
       onOpen={open}
       onClose={close}
       touchZone={15}
     >
-      <StyledSidebar>{children}</StyledSidebar>
-    </Drawer>
+      {children}
+    </StyledSidebar>
   ) : null
 })

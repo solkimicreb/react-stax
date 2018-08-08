@@ -141,7 +141,7 @@ const StyledDrawer = styled.div`
   left: ${props => (props.right ? null : 0)};
   right: ${props => (props.right ? 0 : null)};
   bottom: 0;
-  width: ${props => props.width}px;
+  max-width: 100%;
   z-index: ${props => (!props.docked ? 70 : 10)};
   padding-top: ${props => (!props.docked ? 0 : layout.topbarHeight)}px;
   transition: transform;
@@ -195,14 +195,13 @@ class Drawer extends Component {
   }
 
   render() {
-    let { width, right, docked, onClose, open, children } = this.props
-    width = Math.min(window.innerWidth, width)
+    const { right, docked, onClose, open, children, ...rest } = this.props
 
     return (
       <Fragment>
         <StyledDrawer
+          {...rest}
           open={open}
-          width={width}
           right={right}
           docked={docked}
           innerRef={this.ref}

@@ -24,19 +24,20 @@ export function toggle() {
   }
 }
 
-const StyledChat = styled.iframe`
-  height: 100%;
-  width: 100%;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+const StyledChat = styled(Drawer)`
+  width: ${layout.chatWidth}px;
+
+  iframe {
+    height: 100%;
+    width: 100%;
+    border: none;
+  }
 `
 
 class Chat extends Component {
   render() {
     return layout.currentPage.chat !== false ? (
-      <Drawer
-        width={layout.chatWidth}
+      <StyledChat
         docked={layout.isLarge}
         open={chatStore.open}
         onOpen={open}
@@ -44,12 +45,12 @@ class Chat extends Component {
         touchZone={15}
         right
       >
-        <StyledChat
+        <iframe
           src="https://discordapp.com/widget?id=476396897549025283&theme=dark"
           allowtransparency="true"
           frameborder="0"
         />
-      </Drawer>
+      </StyledChat>
     ) : null
   }
 }
