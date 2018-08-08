@@ -149,13 +149,12 @@ window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
 const StyledDrawer = styled.div`
   position: fixed;
-  top: 0;
+  top: ${props => (props.docked ? layout.topbarHeight : 0)}px;
   left: ${props => (props.right ? null : 0)};
   right: ${props => (props.right ? 0 : null)};
   bottom: 0;
   max-width: 100%;
   z-index: ${props => (!props.docked ? 70 : 10)};
-  padding-top: ${props => (!props.docked ? 0 : layout.topbarHeight)}px;
   transition: transform;
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};

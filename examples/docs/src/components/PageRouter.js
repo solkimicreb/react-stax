@@ -68,8 +68,14 @@ class PageRouter extends Component {
   isForward = ({ fromPage, toPage }) => {
     // maybe make a decision based on router depth?
     // TODO: fix animation direction
+    // the from page might not be inside router.pages
+    // it can be anthing
+    // based on the context I get I have to determine which leaf page was I on previously
     const { idx: fromIdx } = this.getPages(fromPage)
     const { idx: toIdx } = this.getPages(toPage)
+
+    // issue -> it is not even sure that I am animating a router wit leaf pages
+    // the animated router might be the root router (home -> docs/state/intro) for example
 
     return fromIdx < toIdx
   }
@@ -79,7 +85,7 @@ class PageRouter extends Component {
       layout.isMobile
         ? {
             transform: [
-              `translateX(${this.isForward(ctx) ? 100 : -100}%)`,
+              `translate3d(${this.isForward(ctx) ? 100 : -100}%, 0, 0)`,
               'none'
             ]
           }
@@ -104,7 +110,7 @@ class PageRouter extends Component {
         ? {
             transform: [
               'none',
-              `translateX(${this.isForward(ctx) ? -100 : 100}%)`
+              `translate3d(${this.isForward(ctx) ? -100 : 100}%, 0, 0)`
             ]
           }
         : { opacity: [1, 0] },
