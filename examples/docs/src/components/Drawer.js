@@ -8,6 +8,7 @@ const drawers = new Set()
 const backdrop = React.createRef()
 
 export const touchStore = store({
+  touchX: 0,
   touchStart: 0,
   touchDiff: 0
 })
@@ -46,7 +47,12 @@ const onTouchStart = ev => {
 const onTouchMove = ev => {
   const windowWidth = window.innerWidth
   const touchX = ev.touches[0].pageX
-  touchStore.touchDiff = touchX - touchStore.touchX
+
+  // add inertia to touchDiff
+  const touchDiff = touchX - touchStore.touchX
+  touchStore.touchDiff = (4 * touchStore.touchDiff + touchDiff) / 5
+
+  touchStore.touchX = touchX
 
   for (const drawer of drawers) {
     const { right, open, touchZone } = drawer.props
@@ -125,6 +131,7 @@ const onTouchEnd = ev => {
     backdropNode.style.transition = null
   }
 
+  touchStore.touchStart = 0
   touchStore.touchX = 0
   touchStore.touchDiff = 0
 }
