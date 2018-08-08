@@ -6,8 +6,6 @@ import * as sidebar from './Sidebar'
 import { notify } from './Notification'
 import * as routes from '../routes'
 
-import './navigation'
-
 const StyledRouter = styled(Router)`
   overflow: hidden;
 

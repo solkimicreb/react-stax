@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import ReactDOM from 'react-dom'
 import { store, view, path } from 'react-stax'
 import styled, { keyframes } from 'styled-components'
 import { colors, ease, layout } from './theme'
@@ -9,13 +10,14 @@ const backdrop = React.createRef()
 
 export const touchStore = store({
   touchX: 0,
-  touchDiff: 0,
+  touchXDiff: 0,
   touchStart: 0
 })
 
 const onTouchStart = ev => {
   const windowWidth = window.innerWidth
-  touchStore.touchX = ev.touches[0].pageX
+  const touch = ev.touches[0]
+  touchStore.touchX = touch.pageX
   touchStore.touchStart = Date.now()
 
   let hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
@@ -28,10 +30,7 @@ const onTouchStart = ev => {
     width = Math.min(windowWidth, width)
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX
 
-    if (
-      (!open && !hasOpenDrawer && touchX < TOUCH_ZONE) ||
-      (open && Math.abs(touchX - width) < TOUCH_ZONE)
-    ) {
+    if ((!open && !hasOpenDrawer && touchX < TOUCH_ZONE) || open) {
       drawer.store.isTouching = true
     }
   })
@@ -39,20 +38,23 @@ const onTouchStart = ev => {
 
 const onTouchMove = ev => {
   const windowWidth = window.innerWidth
-  const touchX = ev.touches[0].pageX
-  touchStore.touchDiff = touchX - touchStore.touchX
-  touchStore.touchX = touchX
+  const touch = ev.touches[0]
+  const touchX = touch.pageX
+  touchStore.touchXDiff = touchX - touchStore.touchX
 
   drawers.forEach(drawer => {
-    let { width, right } = drawer.props
+    let { width, right, open } = drawer.props
     width = Math.min(windowWidth, width)
-    const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX
+    const absTouchX = right ? windowWidth - touchX : touchX
 
-    if (drawer.store.isTouching && touchX <= width) {
-      const transformX = right ? -touchX : touchX
+    if (drawer.store.isTouching && absTouchX <= width) {
+      let transformX = right ? -absTouchX : absTouchX
+      let correction = open ? Math.max(width - touchStore.touchX, 0) : 0
+      transformX = Math.min(transformX + correction, width)
+
       drawer.ref.current.style.transform = `translateX(${transformX}px)`
       if (backdrop.current) {
-        backdrop.current.style.opacity = (touchX / width) * 0.7
+        backdrop.current.style.opacity = (absTouchX / width) * 0.7
       }
     }
   })
@@ -62,14 +64,14 @@ const onTouchEnd = ev => {
   const touchTime = Date.now() - touchStore.touchStart
 
   drawers.forEach(drawer => {
-    let touchDiff = touchStore.touchDiff
+    let touchXDiff = touchStore.touchXDiff
     if (drawer.props.right) {
-      touchDiff = -touchDiff
+      touchXDiff = -touchXDiff
     }
 
     if (drawer.store.isTouching) {
       drawer.store.isTouching = false
-      if (0 < touchDiff) {
+      if (0 < touchXDiff) {
         drawer.props.onOpen()
       } else {
         drawer.props.onClose()
@@ -83,13 +85,13 @@ const onTouchEnd = ev => {
   }
 
   touchStore.touchX = 0
-  touchStore.touchDiff = 0
+  touchStore.touchXDiff = 0
 }
 
-/*window.addEventListener('touchstart', onTouchStart, { passive: true })
+window.addEventListener('touchstart', onTouchStart, { passive: true })
 window.addEventListener('touchmove', onTouchMove, { passive: true })
 window.addEventListener('touchend', onTouchEnd, { passive: true })
-window.addEventListener('touchcancel', onTouchEnd, { passive: true })*/
+window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
 const StyledDrawer = styled.div`
   position: fixed;
@@ -126,6 +128,16 @@ const Backdrop = styled.div`
   z-index: 60;
   will-change: opacity;
   contain: strict;
+`
+
+const Register = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  z-index: 200;
 `
 
 class Drawer extends Component {
@@ -184,3 +196,13 @@ class Drawer extends Component {
 }
 
 export default view(Drawer)
+
+/*ReactDOM.render(
+  <Register
+    onTouchStart={onTouchStart}
+    onTouchMove={onTouchMove}
+    onTouchEnd={onTouchEnd}
+    onTouchCancel={onTouchEnd}
+  />,
+  document.getElementById('touch-register')
+)*/
