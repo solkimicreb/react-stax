@@ -31,7 +31,13 @@ const onTouchStart = ev => {
     const touchX = right ? windowWidth - touchStore.touchX : touchStore.touchX
 
     if ((!open && !hasOpenDrawer && touchX < TOUCH_ZONE) || open) {
-      drawer.store.isTouching = true
+      drawer.isTouching = true
+      drawer.ref.current.style.transition = 'none'
+      drawer.forceUpdate()
+
+      if (backdrop.current) {
+        backdrop.current.style.transition = 'none'
+      }
     }
   })
 }
@@ -47,7 +53,7 @@ const onTouchMove = ev => {
     width = Math.min(windowWidth, width)
     const absTouchX = right ? windowWidth - touchX : touchX
 
-    if (drawer.store.isTouching && absTouchX <= width) {
+    if (drawer.isTouching && absTouchX <= width) {
       let transformX = right ? -absTouchX : absTouchX
       let correction = open ? Math.max(width - touchStore.touchX, 0) : 0
       transformX = Math.min(transformX + correction, width)
@@ -69,29 +75,30 @@ const onTouchEnd = ev => {
       touchXDiff = -touchXDiff
     }
 
-    if (drawer.store.isTouching) {
-      drawer.store.isTouching = false
+    if (drawer.isTouching) {
       if (0 < touchXDiff) {
         drawer.props.onOpen()
       } else {
         drawer.props.onClose()
       }
-
+      drawer.isTouching = false
       drawer.ref.current.style.transform = null
+      drawer.ref.current.style.transition = null
     }
   })
   if (backdrop.current) {
     backdrop.current.style.opacity = null
+    backdrop.current.style.transition = null
   }
 
   touchStore.touchX = 0
   touchStore.touchXDiff = 0
 }
 
-window.addEventListener('touchstart', onTouchStart, { passive: true })
+/*window.addEventListener('touchstart', onTouchStart, { passive: true })
 window.addEventListener('touchmove', onTouchMove, { passive: true })
 window.addEventListener('touchend', onTouchEnd, { passive: true })
-window.addEventListener('touchcancel', onTouchEnd, { passive: true })
+window.addEventListener('touchcancel', onTouchEnd, { passive: true })*/
 
 const StyledDrawer = styled.div`
   position: fixed;
@@ -102,7 +109,7 @@ const StyledDrawer = styled.div`
   width: ${props => props.width}px;
   z-index: ${props => (!props.docked ? 70 : 10)};
   padding-top: ${props => (!props.docked ? 0 : layout.topbarHeight)}px;
-  transition: ${props => (props.isTouching ? 'none' : 'transform')};
+  transition: transform;
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
@@ -122,7 +129,7 @@ const Backdrop = styled.div`
   right: 0;
   background-color: ${colors.text};
   opacity: ${props => (props.open && !props.docked ? 0.7 : 0)};
-  transition: ${props => (props.isTouching ? 'none' : 'opacity')};
+  transition: opacity;
   transition-duration: ${props => 0.15}s;
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   z-index: 60;
@@ -142,15 +149,7 @@ const Register = styled.div`
 
 class Drawer extends Component {
   ref = React.createRef()
-
-  constructor(props) {
-    super(props)
-
-    this.store = store({
-      open: props.open,
-      isTouching: false
-    })
-  }
+  isTouching = false
 
   componentDidMount() {
     drawers.add(this)
@@ -162,7 +161,6 @@ class Drawer extends Component {
 
   render() {
     let { width, right, docked, onClose, open, children } = this.props
-    const { isTouching } = this.store
     width = Math.min(window.innerWidth, width)
 
     return (
@@ -172,20 +170,20 @@ class Drawer extends Component {
           width={width}
           right={right}
           docked={docked}
-          isTouching={isTouching}
           innerRef={this.ref}
         >
           {children}
         </StyledDrawer>
-        {(open || isTouching) && (
-          <Backdrop
-            open={open}
-            isTouching={isTouching}
-            docked={docked}
-            onClick={onClose}
-            innerRef={backdrop}
-          />
-        )}
+        {(open || this.isTouching) &&
+          ReactDOM.createPortal(
+            <Backdrop
+              open={open}
+              docked={docked}
+              onClick={onClose}
+              innerRef={backdrop}
+            />,
+            document.getElementById('backdrop')
+          )}
       </Fragment>
     )
   }
@@ -197,7 +195,7 @@ class Drawer extends Component {
 
 export default view(Drawer)
 
-/*ReactDOM.render(
+ReactDOM.render(
   <Register
     onTouchStart={onTouchStart}
     onTouchMove={onTouchMove}
@@ -205,4 +203,4 @@ export default view(Drawer)
     onTouchCancel={onTouchEnd}
   />,
   document.getElementById('touch-register')
-)*/
+)
