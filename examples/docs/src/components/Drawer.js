@@ -17,10 +17,10 @@ const onTouchStart = ev => {
   const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
   const windowWidth = window.innerWidth
 
-  drawers.forEach(drawer => {
-    let { right, docked, open, touchZone } = drawer.props
+  for (const drawer of drawers) {
+    const { right, docked, open, touchZone } = drawer.props
     if (docked) {
-      return
+      continue
     }
 
     const drawerNode = drawer.ref.current
@@ -37,8 +37,11 @@ const onTouchStart = ev => {
       if (backdropNode) {
         backdropNode.style.transition = 'none'
       }
+
+      // break after the first open loader is handled
+      break
     }
-  })
+  }
 }
 
 const onTouchMove = ev => {
@@ -46,10 +49,10 @@ const onTouchMove = ev => {
   const touchX = ev.touches[0].pageX
   touchStore.touchDiff = touchX - touchStore.touchX
 
-  drawers.forEach(drawer => {
+  for (const drawer of drawers) {
     const { right, open, touchZone } = drawer.props
     if (!drawer.isTouching) {
-      return
+      continue
     }
 
     const drawerNode = drawer.ref.current
@@ -81,32 +84,40 @@ const onTouchMove = ev => {
         backdropNode.style.opacity = (distance / drawerWidth) * 0.7
       }
     } else {
+      // fully drawn drawers
       drawerNode.style.transform = `translateX(0)`
       if (backdropNode) {
         backdropNode.style.opacity = 0.7
       }
     }
-  })
+
+    // break after the first open loader is handled
+    break
+  }
 }
 
 const onTouchEnd = ev => {
-  drawers.forEach(drawer => {
+  for (const drawer of drawers) {
     const { right, onOpen, onClose } = drawer.props
+    if (!drawer.isTouching) {
+      continue
+    }
 
     const drawerNode = drawer.ref.current
     const touchDiff = right ? -touchStore.touchDiff : touchStore.touchDiff
 
-    if (drawer.isTouching) {
-      if (0 < touchDiff) {
-        onOpen()
-      } else {
-        onClose()
-      }
-      drawer.isTouching = false
-      drawerNode.style.transform = null
-      drawerNode.style.transition = null
+    if (0 < touchDiff) {
+      onOpen()
+    } else {
+      onClose()
     }
-  })
+    drawer.isTouching = false
+    drawerNode.style.transform = null
+    drawerNode.style.transition = null
+
+    // break after the first open loader is handled
+    break
+  }
 
   const backdropNode = backdrop.current
   if (backdropNode) {
