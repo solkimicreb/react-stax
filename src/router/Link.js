@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { observe, unobserve } from '@nx-js/observer-util'
-import { routeFromDepth } from './core'
+import { route } from './core'
 import { toUrl, normalizePath, addExtraProps } from './utils'
 import { params, path, history, elements } from './integrations'
 import { state as scheduler } from '../schedulers'
@@ -38,19 +38,13 @@ export default class Link extends PureComponent {
 
   state = {}
 
-  // absolute links ('/home') have a depth of 0
-  // relative links have the depth of their closest router ancestor
   get depth() {
-    const { to } = this.props
-    const depth = this.context.staxDepth || 0
-    const isRelative = !to || to[0] !== '/'
-    return isRelative ? depth : 0
+    return this.context.staxDepth || 0
   }
 
   // gets the full path for relative and absolute links too
   get absolutePath() {
-    const { depth, normalizedPath } = normalizePath(this.props.to, this.depth)
-    return path.slice(0, depth).concat(normalizedPath)
+    return normalizePath(path, this.props.to, this.depth)
   }
 
   // automatically update the link activity on pathname and params changes
@@ -87,8 +81,7 @@ export default class Link extends PureComponent {
           params,
           scroll,
           push,
-          inherit,
-          depth: this.depth
+          inherit
         })
       }
       return (
@@ -139,11 +132,20 @@ export default class Link extends PureComponent {
     }
 
     // if the event is not prevented, route all Routers
-    // from below the links depth absolute links have a depth of 0
+    // from the root level (use the absolute path for the link)
     if (!ev.defaultPrevented) {
-      routeFromDepth({ to, params, scroll, push, inherit }, this.depth)
       // prevent the default behavior of anchor clicks (page reload)
       ev.preventDefault()
+      return route(
+        {
+          to,
+          params,
+          scroll,
+          push,
+          inherit
+        },
+        this.depth
+      )
     }
   }
 

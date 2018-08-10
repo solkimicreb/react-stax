@@ -2,7 +2,7 @@ import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
 import { path, params, history, elements, animation } from './integrations'
 import { addExtraProps } from './utils'
-import { registerRouter, releaseRouter, routeFromDepth } from './core'
+import { registerRouter, releaseRouter, route } from './core'
 
 // Router selects a single child to render based on its children's page props
 // and the URL pathname token at the Router's depth (they can be nested)
@@ -47,8 +47,8 @@ export default class Router extends PureComponent {
   saveContainer = container => (this.container = container)
 
   // this is part of the public API
-  // it routes every router from this depth (including this one)
-  route = options => routeFromDepth(options, this.depth)
+  // it routes every router from the root depth
+  route = options => route(options, this.depth)
 
   // routing is split in 2 phases
   // first all parallel routers at the same depth executes startRouting
@@ -70,7 +70,6 @@ export default class Router extends PureComponent {
         target: this,
         fromPage,
         toPage,
-        depth: this.depth,
         ...context
       })
     }
@@ -84,6 +83,12 @@ export default class Router extends PureComponent {
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
 
+    // do not update the view if the page did not change
+    // and there is no new resolved data from onRoute
+    if (fromPage === toPage && !resolvedData) {
+      return
+    }
+
     const nextState = {
       resolvedData,
       page: toPage
@@ -91,8 +96,8 @@ export default class Router extends PureComponent {
 
     // only animate if this is not a new (appearing) router and its page changed
     // these means there is only one animating router per (nested) routing process
-    const shouldAnimate = this.inited && fromPage !== toPage
-    if (shouldAnimate) {
+    // (fromPage !== toPage && this.inited)
+    if (this.inited) {
       // this typically saves the current view to use later for cross fade effects
       // the current view is soon replaced by setState, so this is necessary
       animation.setup(this.container)
@@ -101,8 +106,8 @@ export default class Router extends PureComponent {
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
-        if (shouldAnimate) {
-          context = { fromPage, toPage, depth: this.depth, ...context }
+        if (this.inited) {
+          context = { fromPage, toPage, ...context }
           // run the animations when the new page is fully rendered, but do not wait for them
           // the views may be hidden by the animation, but the DOM routing is already over
           // it is safe to go on with routing the next level of routers

@@ -1,5 +1,5 @@
 import { path, params, history, scroller } from './integrations'
-import { toPathString, normalizePath } from './utils'
+import { normalizePath } from './utils'
 import * as schedulers from '../schedulers'
 
 const routers = []
@@ -43,29 +43,16 @@ export function releaseRouter(router, depth) {
   routers[depth].delete(router)
 }
 
-// this is part of the public API, it triggers root level routings
-export function route(args) {
-  routeFromDepth(args, 0)
-}
-
-// this cancels ongoing routings and recursively routes all routers
-export function routeFromDepth(
-  {
-    to = toPathString(path),
-    params: toParams = {},
-    scroll,
-    push,
-    inherit
-  } = {},
+// this is part of the public API
+// it cancels ongoing routings and recursively routes all routers from the root level
+export function route(
+  { to, params: toParams = {}, scroll, push, inherit } = {},
   depth = 0
 ) {
-  const { depth: normalizedDepth, normalizedPath } = normalizePath(to, depth)
-  depth = normalizedDepth
-
   // there may be routers which route outside of the standard routing process
   // for example a router was added by lazy loading and does its initial routing
   // cancel routings for these routers
-  initStatuses.forEach(status => (status.cancelled = depth <= status.depth))
+  initStatuses.forEach(status => (status.cancelled = true))
   // cancel the standard ongoing routing process if there is one
   if (routingStatus) {
     routingStatus.cancelled = true
@@ -88,7 +75,7 @@ export function routeFromDepth(
 
   // create a new routing status
   // this may be cancelled by future routing processes
-  const status = (routingStatus = { depth, cancelled: false })
+  const status = (routingStatus = { cancelled: false })
 
   // push a new history item when necessary
   if (push) {
@@ -102,7 +89,9 @@ export function routeFromDepth(
   // update the path array with the desired new path
   // and save the old path for comparison at the end of the routing
   const fromPath = Array.from(path)
-  path.splice(depth, Infinity, ...normalizedPath)
+  if (to) {
+    path.splice(0, Infinity, ...normalizePath(path, to, depth))
+  }
 
   // replace or extend the query params with the new params
   // and save the old params for later comparision in the routing hooks
@@ -117,7 +106,7 @@ export function routeFromDepth(
   return Promise.resolve()
     .then(() =>
       switchRoutersFromDepth(
-        depth,
+        0,
         { scroll, push, inherit, fromParams, fromPath },
         status
       )
