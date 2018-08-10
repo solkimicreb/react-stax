@@ -1,6 +1,6 @@
 {
-  "short_name": "React Easy Stack",
-  "name": "React Easy Stack",
+  "short_name": "React Stax",
+  "name": "React Stax",
   "author": "Bertalan Miklos",
   "icons": [
     {
@@ -24,7 +24,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#24292e",
   "background_color": "#ffffff"

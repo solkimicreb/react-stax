@@ -4,12 +4,12 @@ import * as routes from '../routes'
 import { chatStore } from './Chat'
 import { sidebarStore } from './Sidebar'
 
-const THRESHOLD = 20
+const THRESHOLD = 50
 let isTouching = false
 let startTouch
 
 function onTouchStart(ev) {
-  startTouch = ev.touches[0]
+  startTouch = ev.changedTouches[0]
   if (
     !chatStore.open &&
     !sidebarStore.open &&
@@ -22,7 +22,7 @@ function onTouchStart(ev) {
 
 function onTouchMove(ev) {
   if (isTouching) {
-    const touch = ev.touches[0]
+    const touch = ev.changedTouches[0]
     let xDiff = startTouch.pageX - touch.pageX
     let yDiff = startTouch.pageY - touch.pageY
     const offset = xDiff < 0 ? -1 : 1

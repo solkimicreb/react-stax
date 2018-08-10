@@ -15,7 +15,7 @@ const StyledPage = styled.div`
   pre {
     background-color: ${colors.code};
     color: ${colors.text};
-    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    width: 100%;
     margin-left: ${props => (props.isMobile ? -15 : 0)}px;
     margin-right: ${props => (props.isMobile ? -15 : 0)}px;
     border-radius: ${props => (props.isMobile ? 0 : 3)}px;
@@ -23,7 +23,7 @@ const StyledPage = styled.div`
 
   .demo {
     display: block;
-    width: ${props => (props.isMobile ? '100vw' : '100%')};
+    width: 100%;
     height: 400px;
     margin-left: ${props => (props.isMobile ? -15 : 0)}px;
     margin-right: ${props => (props.isMobile ? -15 : 0)}px;
@@ -51,6 +51,7 @@ const Stepper = styled.div`
 `
 
 class Page extends Component {
+  portals = {}
   store = store({
     didMount: false
   })
@@ -58,8 +59,15 @@ class Page extends Component {
   componentDidMount() {
     const { children, curr } = this.props
     Children.forEach(children, child => {
-      if (child.props.mount) {
-        ReactDOM.render(child, document.getElementById(child.props.mount))
+      const { mount, portal } = child.props
+      if (mount) {
+        ReactDOM.render(child, document.getElementById(mount))
+      } else if (portal) {
+        const node = document.getElementById(portal)
+        this.portals[portal] = {
+          node,
+          text: node.textContent
+        }
       }
     })
     this.store.didMount = true
@@ -79,16 +87,13 @@ class Page extends Component {
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
           Children.map(children, child => {
-            const { portal } = child.props
-            if (!portal) {
-              return null
+            const portal = this.portals[child.props.portal]
+
+            if (portal) {
+              child = React.cloneElement(child, {}, portal.text)
+              return ReactDOM.createPortal(child, portal.node)
             }
-            const portalNode = document.getElementById(portal)
-            const { textContent } = portalNode
-            if (textContent) {
-              child = React.cloneElement(child, {}, textContent)
-            }
-            return ReactDOM.createPortal(child, portalNode)
+            return null
           })}
         <Stepper>
           <div>

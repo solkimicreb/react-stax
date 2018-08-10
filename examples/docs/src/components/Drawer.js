@@ -14,8 +14,8 @@ export const touchStore = store({
   touchDiff: 0
 })
 
-const onTouchStart = ev => {
-  touchStore.touch = touchStore.startTouch = ev.touches[0]
+function onTouchStart(ev) {
+  touchStore.touch = touchStore.startTouch = ev.changedTouches[0]
   const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
   const windowWidth = window.innerWidth
 
@@ -33,7 +33,7 @@ const onTouchStart = ev => {
 
     if (open || (!hasOpenDrawer && distance < touchZone)) {
       drawerNode.style.transition = 'none'
-      drawer.store.isTouching = true
+      drawer.isCandidate = true
 
       if (backdropNode) {
         backdropNode.style.transition = 'none'
@@ -45,9 +45,9 @@ const onTouchStart = ev => {
   }
 }
 
-const onTouchMove = ev => {
+function onTouchMove(ev) {
   const windowWidth = window.innerWidth
-  const touch = ev.touches[0]
+  const touch = ev.changedTouches[0]
 
   // add inertia to touchDiff
   const touchDiff = touch.pageX - touchStore.touch.pageX
@@ -60,13 +60,20 @@ const onTouchMove = ev => {
 
   for (const drawer of drawers) {
     const { right, open, touchZone } = drawer.props
-    if (!drawer.store.isTouching || xDiff < THRESHOLD) {
+    if (!drawer.isCandidate) {
       continue
     }
 
-    if (xDiff < 5 * yDiff) {
-      drawer.store.isTouching = false
-      break
+    if (!drawer.store.isTouching && THRESHOLD < xDiff) {
+      if (xDiff < 5 * yDiff) {
+        drawer.isCandidate = false
+        continue
+      }
+      drawer.store.isTouching = true
+    }
+
+    if (!drawer.store.isTouching) {
+      continue
     }
 
     const drawerNode = drawer.ref.current
@@ -110,8 +117,10 @@ const onTouchMove = ev => {
   }
 }
 
-const onTouchEnd = ev => {
+function onTouchEnd(ev) {
   for (const drawer of drawers) {
+    drawer.isCandidate = false
+
     const { right, onOpen, onClose } = drawer.props
     if (!drawer.store.isTouching) {
       continue
@@ -141,7 +150,6 @@ const onTouchEnd = ev => {
   }
 }
 
-// TODO: allow touch through chat iframe!!
 window.addEventListener('touchstart', onTouchStart, { passive: true })
 window.addEventListener('touchmove', onTouchMove, { passive: true })
 window.addEventListener('touchend', onTouchEnd, { passive: true })
@@ -181,16 +189,6 @@ const Backdrop = styled.div`
   z-index: 60;
   will-change: opacity;
   contain: strict;
-`
-
-const Register = styled.div`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  z-index: 200;
 `
 
 class Drawer extends Component {
@@ -241,13 +239,3 @@ class Drawer extends Component {
 }
 
 export default view(Drawer)
-
-/*ReactDOM.render(
-  <Register
-    onTouchStart={onTouchStart}
-    onTouchMove={onTouchMove}
-    onTouchEnd={onTouchEnd}
-    onTouchCancel={onTouchEnd}
-  />,
-  document.getElementById('touch-register')
-)*/

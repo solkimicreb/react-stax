@@ -18,7 +18,7 @@ window.renderApp = function renderApp() {
 
 const landed = localStorage.getItem('landed')
 if (landed) {
-  app.style.transition = 'unset'
+  app.style.transition = null
   window.renderApp()
 }
 

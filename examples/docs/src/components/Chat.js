@@ -11,11 +11,11 @@ export const chatStore = store({
 })
 
 export function open() {
-  route({ params: { chat: true }, push: layout.isMobile })
+  route({ params: { chat: true }, push: layout.isMobile, scroll: false })
 }
 
 export function close() {
-  route({ push: layout.isMobile })
+  route({ push: layout.isMobile, scroll: false })
 }
 
 export function toggle() {

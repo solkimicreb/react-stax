@@ -25,7 +25,7 @@ export const layout = store({
   sidebarWidth: 250,
   chatWidth: 500,
   appWidth: 800,
-  touchZone: 20,
+  touchZone: 35,
   isTiny: mqlTiny.matches,
   isMobile: mql.matches,
   isLarge: mqlLarge.matches,

@@ -1,0 +1,9 @@
+* {
+  box-sizing: border-box;
+  outline: none;
+  /* add some highlight none stuff!*/
+}
+
+svg {
+  user-select: none;
+}
