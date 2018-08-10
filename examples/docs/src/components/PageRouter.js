@@ -37,10 +37,10 @@ class PageRouter extends Component {
     }
   }
 
-  onRoute = async ({ toPage }) => {
+  onRoute = async ({ fromPage, toPage }) => {
     const { page, prevPage, nextPage } = this.getPages(toPage)
 
-    if (page) {
+    if (fromPage !== toPage && page) {
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */

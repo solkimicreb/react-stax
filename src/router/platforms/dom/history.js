@@ -1,6 +1,5 @@
 import { history } from '../../integrations'
 import { route } from '../../core'
-import { toPathString } from '../../utils'
 
 Object.defineProperties(history, {
   state: {
@@ -34,7 +33,7 @@ Object.assign(history, {
 window.addEventListener('popstate', ev => {
   const { path, params } = ev.state
   return route({
-    to: toPathString(path),
+    to: path,
     params,
     scroll: false,
     push: false

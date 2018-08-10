@@ -18,14 +18,14 @@ export function registerRouter(router, depth) {
   // this may happen if the router is not added because of the routing process
   // but was hidden some by conditional or lazy loading for example
   if (!routingStatus || depth <= routingStatus.depth) {
-    initRouter(router, depth)
+    initRouter(router)
   }
 }
 
 // router newly added routers even if there is no ongoing routing process
-function initRouter(router, depth) {
+function initRouter(router) {
   const context = { fromParams: params }
-  const status = { depth, cancelled: false }
+  const status = { cancelled: false }
   initStatuses.add(status)
 
   return Promise.resolve()
@@ -75,7 +75,7 @@ export function route(
 
   // create a new routing status
   // this may be cancelled by future routing processes
-  const status = (routingStatus = { cancelled: false })
+  const status = (routingStatus = { cancelled: false, depth })
 
   // push a new history item when necessary
   if (push) {
@@ -106,7 +106,6 @@ export function route(
   return Promise.resolve()
     .then(() =>
       switchRoutersFromDepth(
-        0,
         { scroll, push, inherit, fromParams, fromPath },
         status
       )
@@ -116,8 +115,8 @@ export function route(
 
 // this recursively routes all parallel routers form a given depth
 // all routers are finished routing at a depth before continuing with the next depth
-function switchRoutersFromDepth(depth, context, status) {
-  const routersAtDepth = Array.from(routers[depth] || [])
+function switchRoutersFromDepth(context, status) {
+  const routersAtDepth = Array.from(routers[status.depth] || [])
 
   if (routersAtDepth.length) {
     return (
@@ -132,7 +131,10 @@ function switchRoutersFromDepth(depth, context, status) {
           finishRoutingAtDepth(routersAtDepth, context, resolvedData, status)
         )
         // all routers finished routing at this depth, go on with the next depth
-        .then(() => switchRoutersFromDepth(++depth, context, status))
+        .then(() => {
+          ++status.depth
+          return switchRoutersFromDepth(context, status)
+        })
     )
   }
 }

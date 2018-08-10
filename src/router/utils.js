@@ -1,31 +1,36 @@
 const emptyTokens = new Set([undefined, '', '.'])
 const notEmpty = token => !emptyTokens.has(token)
 
-export function normalizePath(fromPath, toPath = '', depth) {
+export function normalizePath(fromPath, toPath, depth) {
+  const isAbsolute = toPath[0] === '/'
+  fromPath = toPathArray(fromPath)
+  toPath = toPathArray(toPath)
+
+  // TODO: validate it!
+  if (isAbsolute) {
+    return toPath
+  }
+
   const normalizedPath = []
-  for (let token of toPathArray(toPath)) {
+  for (let token of toPath) {
     if (token === '..') {
       depth--
     } else if (notEmpty(token)) {
       normalizedPath.push(token)
     }
   }
-
-  if (toPath[0] === '/') {
-    return normalizedPath
-  }
   return fromPath.slice(0, depth).concat(normalizedPath)
 }
 
 // convert pathname strings to arrays
 export function toPathArray(path = '') {
-  return path.split('/').filter(notEmpty)
+  return Array.isArray(path) ? path : path.split('/').filter(notEmpty)
 }
 
 // convert path arrays to absolute pathname strings
 export function toPathString(path = []) {
   // the leading '/' is important, it differentiates absolute pathnames from relative ones
-  return '/' + path.filter(notEmpty).join('/')
+  return typeof path === 'string' ? path : '/' + path.filter(notEmpty).join('/')
 }
 
 // convert params objects to query strings
