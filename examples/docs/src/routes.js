@@ -5,7 +5,20 @@ export const main = [
     path: '/home',
     edit: 'https://google.com',
     sidebar: false
+  },
+  {
+    name: 'docs',
+    virtual: true
+  },
+  {
+    name: 'faq',
+    virtual: true
   }
+]
+
+export const docs = [
+  { name: 'state', virtual: true },
+  { name: 'routing', virtual: true }
 ]
 
 export const state = [

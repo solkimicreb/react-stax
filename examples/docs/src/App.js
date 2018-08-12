@@ -67,7 +67,7 @@ const SideNav = () => (
 
 const Content = () => (
   <PageRouter pages={routes.main}>
-    <PageRouter page="docs" defaultPage="state">
+    <PageRouter page="docs" pages={routes.docs}>
       <PageRouter page="state" pages={routes.state} />
       <PageRouter page="routing" pages={routes.routing} />
     </PageRouter>

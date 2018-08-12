@@ -96,8 +96,9 @@ export default class Router extends PureComponent {
 
     // only animate if this is not a new (appearing) router and its page changed
     // these means there is only one animating router per (nested) routing process
-    // (fromPage !== toPage && this.inited)
-    if (this.inited) {
+    // (fromPage !== toPage && this.inited && this.container)
+    const canAnimate = this.inited && this.container
+    if (canAnimate) {
       // this typically saves the current view to use later for cross fade effects
       // the current view is soon replaced by setState, so this is necessary
       animation.setup(this.container)
@@ -106,7 +107,7 @@ export default class Router extends PureComponent {
     // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
-        if (this.inited) {
+        if (canAnimate) {
           context = { fromPage, toPage, ...context }
           // run the animations when the new page is fully rendered, but do not wait for them
           // the views may be hidden by the animation, but the DOM routing is already over

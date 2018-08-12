@@ -26,8 +26,12 @@ class PageRouter extends Component {
     const page = pages[idx]
 
     idx = routes.all.indexOf(page)
-    const prevPage = routes.all[idx - 1]
-    const nextPage = routes.all[idx + 1]
+    // find the closest none virtual one!
+    const prevPage = routes.all
+      .slice(0, idx - 1)
+      .reverse()
+      .find(page => !page.virtual)
+    const nextPage = routes.all.slice(idx + 1).find(page => page.virtual)
 
     return {
       idx,
@@ -38,21 +42,24 @@ class PageRouter extends Component {
   }
 
   onRoute = async ({ fromPage, toPage }) => {
-    const { page, prevPage, nextPage } = this.getPages(toPage)
+    const { idx, page, prevPage, nextPage } = this.getPages(toPage)
 
-    if (fromPage !== toPage && page) {
+    if (fromPage !== toPage && page && !page.virtual) {
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
       `../pages${page.path}`)
 
-      layout.currentPage = page
       sidebar.close()
       let title = 'React Stax'
       if (page.title) {
         title = `${page.title} | ${title}`
       }
       document.title = title
+
+      layout.fromIdx = layout.idx
+      layout.idx = idx
+      layout.currentPage = page
 
       return (
         <NextPage
@@ -65,27 +72,12 @@ class PageRouter extends Component {
     }
   }
 
-  isForward = ({ fromPage, toPage }) => {
-    // maybe make a decision based on router depth?
-    // TODO: fix animation direction
-    // the from page might not be inside router.pages
-    // it can be anthing
-    // based on the context I get I have to determine which leaf page was I on previously
-    const { idx: fromIdx } = this.getPages(fromPage)
-    const { idx: toIdx } = this.getPages(toPage)
-
-    // issue -> it is not even sure that I am animating a router wit leaf pages
-    // the animated router might be the root router (home -> docs/state/intro) for example
-
-    return fromIdx < toIdx
-  }
-
-  enterAnimation = (elem, ctx) => {
+  enterAnimation = elem => {
     return elem.animate(
       layout.isMobile
         ? {
             transform: [
-              `translate3d(${this.isForward(ctx) ? 100 : -100}%, 0, 0)`,
+              `translate3d(${layout.fromIdx < layout.idx ? 100 : -100}%, 0, 0)`,
               'none'
             ]
           }
@@ -94,7 +86,7 @@ class PageRouter extends Component {
     ).finished
   }
 
-  leaveAnimation = (elem, ctx) => {
+  leaveAnimation = elem => {
     const { top, left, width, height } = elem.getBoundingClientRect()
 
     Object.assign(elem.style, {
@@ -110,7 +102,7 @@ class PageRouter extends Component {
         ? {
             transform: [
               'none',
-              `translate3d(${this.isForward(ctx) ? -100 : 100}%, 0, 0)`
+              `translate3d(${layout.fromIdx < layout.idx ? -100 : 100}%, 0, 0)`
             ]
           }
         : { opacity: [1, 0] },
