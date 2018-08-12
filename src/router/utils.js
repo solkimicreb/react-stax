@@ -2,8 +2,13 @@ const emptyTokens = new Set([undefined, '', '.'])
 const notEmpty = token => !emptyTokens.has(token)
 
 export function normalizePath(fromPath, toPath, depth) {
-  const isAbsolute = toPath[0] === '/'
   fromPath = toPathArray(fromPath)
+
+  if (!toPath) {
+    return fromPath
+  }
+
+  const isAbsolute = toPath[0] === '/'
   toPath = toPathArray(toPath)
 
   // TODO: validate it!
