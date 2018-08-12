@@ -1,5 +1,5 @@
-import { path, params, history, scroller } from './integrations'
-import { normalizePath } from './utils'
+import { path, params, session, history, scroller } from './integrations'
+import { normalizePath, replace } from './utils'
 import * as schedulers from '../schedulers'
 
 const routers = []
@@ -46,7 +46,7 @@ export function releaseRouter(router, depth) {
 // this is part of the public API
 // it cancels ongoing routings and recursively routes all routers from the root level
 export function route(
-  { to, params: toParams = {}, scroll, push } = {},
+  { to, params: toParams = {}, toSession = {}, scroll, push } = {},
   depth = 0
 ) {
   // there may be routers which route outside of the standard routing process
@@ -90,15 +90,16 @@ export function route(
   // and save the old path for comparison at the end of the routing
   const fromPath = Array.from(path)
   if (to) {
-    path.splice(0, Infinity, ...normalizePath(path, to, depth))
+    replace(path, normalizePath(path, to, depth))
   }
 
   // replace or extend the query params with the new params
   // and save the old params for later comparision in the routing hooks
   const fromParams = Object.assign({}, params)
-  // only mutate the params object, never replace it (because it is an observable)
-  Object.keys(params).forEach(key => delete params[key])
-  Object.assign(params, toParams)
+  // only mutate the params and session objects, never replace them
+  // because they are observables
+  replace(params, toParams)
+  replace(session, toSession)
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()

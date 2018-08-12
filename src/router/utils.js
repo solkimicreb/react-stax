@@ -112,3 +112,14 @@ export function addExtraProps(props, extraProps, excludeProps) {
   }
   return props
 }
+
+// replace the data inside obj with the new data with mutations
+// useful for 'replacing' observables while keeping the original reference
+export function replace(obj, data) {
+  if (Array.isArray(obj)) {
+    obj.splice(0, Infinity, ...data)
+  } else {
+    Object.keys(obj).forEach(key => delete obj[key])
+    Object.assign(obj, data)
+  }
+}
