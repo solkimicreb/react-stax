@@ -46,7 +46,7 @@ export function releaseRouter(router, depth) {
 // this is part of the public API
 // it cancels ongoing routings and recursively routes all routers from the root level
 export function route(
-  { to, params: toParams = {}, scroll, push, inherit } = {},
+  { to, params: toParams = {}, scroll, push } = {},
   depth = 0
 ) {
   // there may be routers which route outside of the standard routing process
@@ -97,18 +97,13 @@ export function route(
   // and save the old params for later comparision in the routing hooks
   const fromParams = Object.assign({}, params)
   // only mutate the params object, never replace it (because it is an observable)
-  if (!inherit) {
-    Object.keys(params).forEach(key => delete params[key])
-  }
+  Object.keys(params).forEach(key => delete params[key])
   Object.assign(params, toParams)
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() =>
-      switchRoutersFromDepth(
-        { scroll, push, inherit, fromParams, fromPath },
-        status
-      )
+      switchRoutersFromDepth({ scroll, push, fromParams, fromPath }, status)
     )
     .then(() => finishRouting({ scroll }, status))
 }

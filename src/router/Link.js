@@ -14,7 +14,6 @@ export default class Link extends PureComponent {
     params: PropTypes.object,
     scroll: PropTypes.object,
     push: PropTypes.bool,
-    inherit: PropTypes.bool,
     onClick: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.object,
@@ -68,8 +67,7 @@ export default class Link extends PureComponent {
       isActive,
       params,
       scroll,
-      push,
-      inherit
+      push
     } = this.props
     // only calculate link activity if there is an activeClass or activeSyle prop
     // otherwise it is not needed
@@ -80,8 +78,7 @@ export default class Link extends PureComponent {
           path: this.absolutePath,
           params,
           scroll,
-          push,
-          inherit
+          push
         })
       }
       return (
@@ -123,7 +120,7 @@ export default class Link extends PureComponent {
   }
 
   onClick = ev => {
-    const { to, params, scroll, push, inherit, onClick } = this.props
+    const { to, params, scroll, push, onClick } = this.props
 
     // respect user defined onClick handlers on the Link
     // let the user prevent the routing by ev.preventDefault()
@@ -141,8 +138,7 @@ export default class Link extends PureComponent {
           to,
           params,
           scroll,
-          push,
-          inherit
+          push
         },
         this.depth
       )
