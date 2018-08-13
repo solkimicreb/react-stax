@@ -1,5 +1,5 @@
 import { observable, observe, raw } from '@nx-js/observer-util'
-import { toPathString, toUrl, toObject } from './utils'
+import { toPathString, toUrl, toObject, replace } from './utils'
 import { route } from './core'
 import { integrations as scheduler } from '../schedulers'
 
@@ -27,7 +27,7 @@ export const history = [{}]
 let idx = 0
 
 function createHistoryItem(item = {}) {
-  item = {
+  return {
     // raw (non Proxied) versions must be used here
     // Proxies can not be serialized by browsers
     path: Array.from(raw(item.path)),
@@ -38,7 +38,13 @@ function createHistoryItem(item = {}) {
     url: toUrl(item),
     idx
   }
-  return item
+}
+
+// TODO: this must be batched! (for the scheduler)
+function updateCurrent(item) {
+  replace(path, item.path)
+  replace(params, item.params)
+  replace(session, item.session)
 }
 
 Object.defineProperties(history, {
@@ -51,18 +57,18 @@ Object.assign(history, {
   push(item) {
     item = createHistoryItem(item)
     history.splice(++idx, Infinity, item)
+    updateCurrent(item)
     return item
   },
   replace(item) {
     item = createHistoryItem(item)
     history[idx] = item
+    updateCurrent(item)
     return item
   },
   go(offset) {
     idx = Math.min(history.length - 1, Math.max(0, idx + offset))
     const { path, params, session } = history[idx]
-    console.log(history.length - 1, idx + offset)
-    console.log('go', idx, path, params, session)
     return route({
       to: toPathString(path),
       params,
@@ -70,6 +76,10 @@ Object.assign(history, {
       scroll: false,
       push: false
     })
+  },
+  get(offset) {
+    const getIdx = Math.min(history.length - 1, Math.max(0, idx + offset))
+    return history[getIdx]
   }
 })
 

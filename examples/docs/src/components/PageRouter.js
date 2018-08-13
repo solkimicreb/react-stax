@@ -41,10 +41,10 @@ class PageRouter extends Component {
 
     if (page) {
       session.page = page
-      session.fromIdx = history.current.session.idx
+      session.fromIdx = history.get(-1).session.idx
       session.idx = idx
     } else {
-      Object.assign(session, history.current.session)
+      Object.assign(session, history.get(-1).session)
     }
 
     if (fromPage !== toPage && page && !page.virtual) {

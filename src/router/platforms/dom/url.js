@@ -1,11 +1,9 @@
-import { toPathArray, toParams, toScroll } from "../../utils";
-import { params, path, history } from "../../integrations";
-
-Object.assign(params, toParams(location.search));
-path.push(...toPathArray(location.pathname));
+import { toPathArray, toParams, toScroll } from '../../utils'
+import { history } from '../../integrations'
 
 history.replace({
-  path,
-  params,
-  scroll: toScroll(location.hash)
-});
+  path: toPathArray(location.pathname),
+  params: toParams(location.search),
+  scroll: toScroll(location.hash),
+  session: history.current.session
+})

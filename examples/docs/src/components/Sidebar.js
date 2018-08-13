@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { store, view, path, session } from 'react-stax'
+import { store, view, session } from 'react-stax'
 import styled from 'styled-components'
 import Drawer from './Drawer'
 import { colors, ease, layout } from './theme'
@@ -32,16 +32,17 @@ const StyledSidebar = styled(Drawer)`
   border-right: 1px solid #ddd;
 `
 
-export default view(({ children }) => {
-  return session.page.sidebar !== false ? (
-    <StyledSidebar
-      docked={!layout.isMobile}
-      open={sidebarStore.open}
-      onOpen={open}
-      onClose={close}
-      touchZone={layout.touchZone}
-    >
-      {children}
-    </StyledSidebar>
-  ) : null
-})
+export default view(
+  ({ children }) =>
+    session.page.sidebar !== false ? (
+      <StyledSidebar
+        docked={!layout.isMobile}
+        open={sidebarStore.open}
+        onOpen={open}
+        onClose={close}
+        touchZone={layout.touchZone}
+      >
+        {children}
+      </StyledSidebar>
+    ) : null
+)

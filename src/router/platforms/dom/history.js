@@ -13,9 +13,9 @@ Object.assign(history, {
     item = originalReplace.call(history, item)
     window.history.replaceState(item, '', item.url)
   },
-  go(to) {
-    originalGo.call(history, to)
-    return window.history.go(to)
+  go(offset) {
+    originalGo.call(history, offset)
+    return window.history.go(offset)
   }
 })
 

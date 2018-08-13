@@ -1,4 +1,4 @@
-import { path, params, session, history, scroller } from './integrations'
+import { path, history, scroller } from './integrations'
 import { normalizePath, replace } from './utils'
 import * as schedulers from '../schedulers'
 
@@ -44,7 +44,7 @@ export function releaseRouter(router, depth) {
 // this is part of the public API
 // it cancels ongoing routings and recursively routes all routers from the root level
 export function route(
-  { to, params: toParams = {}, toSession = {}, scroll, push } = {},
+  { to, params = {}, session = {}, scroll, push } = {},
   depth = 0
 ) {
   // there may be routers which route outside of the standard routing process
@@ -75,25 +75,17 @@ export function route(
   // this may be cancelled by future routing processes
   const status = (routingStatus = { cancelled: false, depth })
 
+  const toPath = to ? normalizePath(path, to, depth) : path
   // push a new history item when necessary
+  // it is important to do this before restarting the schedulers
+  // to apply all new history replace operations to the new item
+  // it is also important to do it before the view routing,
+  // because the scroll position is saved here for the auto restoration
   if (push) {
-    // it is important to do this before restarting the schedulers
-    // to apply all new history replace operations to the new item
-    // it is also important to do it before the view routing,
-    // because the scroll position is saved here for the auto restoration
-    history.push({ path, params, scroll })
+    history.push({ path: toPath, params, session, scroll })
+  } else {
+    history.replace({ path: toPath, params, session, scroll })
   }
-
-  // update the path array with the desired new path
-  // and save the old path for comparison at the end of the routing
-  if (to) {
-    replace(path, normalizePath(path, to, depth))
-  }
-
-  // only mutate the params and session objects, never replace them
-  // because they are observables
-  replace(params, toParams)
-  replace(session, toSession)
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
