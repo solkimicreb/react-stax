@@ -110,7 +110,7 @@ export default class Link extends PureComponent {
 
   isLinkScrollActive() {
     const linkScroll = this.props.scroll
-    const historyScroll = history.state.scroll
+    const historyScroll = history.current.scroll
     // scroll positions match when the link or the URL is missing a scroll anchor
     // or when the two anchors macth
     if (linkScroll && historyScroll) {

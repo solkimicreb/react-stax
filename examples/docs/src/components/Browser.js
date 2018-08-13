@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { view, store, history } from 'react-stax';
-import easyStackFactory from 'react-stax/dist/sandbox.es.es6.js';
-import styled, { keyframes } from 'styled-components';
-import GithubIcon from 'react-icons/lib/fa/github';
-import LinkIcon from 'react-icons/lib/fa/external-link';
-import BackIcon from 'react-icons/lib/fa/angle-left';
-import ForwardIcon from 'react-icons/lib/fa/angle-right';
-import RefreshIcon from 'react-icons/lib/fa/refresh';
-import { colors, ease, layout } from './theme';
+import React, { Component } from 'react'
+import { view, store, history } from 'react-stax'
+import easyStackFactory from 'react-stax/dist/sandbox.es.es6.js'
+import styled, { keyframes } from 'styled-components'
+import GithubIcon from 'react-icons/lib/fa/github'
+import LinkIcon from 'react-icons/lib/fa/external-link'
+import BackIcon from 'react-icons/lib/fa/angle-left'
+import ForwardIcon from 'react-icons/lib/fa/angle-right'
+import RefreshIcon from 'react-icons/lib/fa/refresh'
+import { colors, ease, layout } from './theme'
 
 const BrowserFrame = styled.div`
   position: relative;
@@ -18,7 +18,7 @@ const BrowserFrame = styled.div`
   border-radius: ${props => (props.isMobile ? 0 : 3)}px;
   box-shadow: 0.5px 0.5px 4px 0.5px ${colors.textLight};
   overflow: hidden;
-`;
+`
 
 const BrowserBar = styled.nav`
   position: absolute;
@@ -32,7 +32,7 @@ const BrowserBar = styled.nav`
   background-color: ${colors.code};
   color: ${colors.text};
   border-bottom: 1px solid ${colors.textLight};
-`;
+`
 
 const IconButton = styled.button`
   width: 30px;
@@ -52,7 +52,7 @@ const IconButton = styled.button`
     background-color: ${props =>
       props.disabled ? 'inherit' : colors.textLight};
   }
-`;
+`
 
 const AddressBar = styled.input`
   height: 30px;
@@ -63,7 +63,7 @@ const AddressBar = styled.input`
   width: 500px;
   border: 1px solid ${colors.textLight};
   border-radius: 3px;
-`;
+`
 
 const Body = styled.div`
   max-height: 260px;
@@ -103,7 +103,7 @@ const Body = styled.div`
   ul {
     margin-top: 10px;
   }
-`;
+`
 
 const slide = keyframes`
   from {
@@ -112,7 +112,7 @@ const slide = keyframes`
   to {
     transform: translateX(150%);
   }
-`;
+`
 
 const Loader = styled.div`
   position: absolute;
@@ -128,123 +128,123 @@ const Loader = styled.div`
     rgba(0, 0, 0, 0)
   );
   animation: ${slide} 0.8s linear infinite;
-`;
+`
 
-const BASE_URL = 'example.com';
+const BASE_URL = 'example.com'
 
 class Browser extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.height = 0;
-    this.timers = [];
-    this.browser = React.createRef();
-    this.easyStack = easyStackFactory();
-    this.instrumentFetch();
-    this.instrumentHistory();
-    this.instrumentTimers();
+    this.height = 0
+    this.timers = []
+    this.browser = React.createRef()
+    this.easyStack = easyStackFactory()
+    this.instrumentFetch()
+    this.instrumentHistory()
+    this.instrumentTimers()
     this.store = store({
       url: '',
       historyIdx: 0,
       Content: props.children(this.easyStack),
       isLoading: false
-    });
+    })
   }
 
   instrumentFetch = () => {
     this.easyStack.fetch = url => {
-      this.store.isLoading = true;
+      this.store.isLoading = true
       return window
         .fetch(url)
         .then(resp => {
-          this.store.isLoading = false;
-          return resp;
+          this.store.isLoading = false
+          return resp
         })
         .catch(err => {
-          this.store.isLoading = false;
-          throw err;
-        });
-    };
-  };
+          this.store.isLoading = false
+          throw err
+        })
+    }
+  }
 
   instrumentHistory = () => {
-    const { history } = this.easyStack;
+    const { history } = this.easyStack
 
-    const originalPush = history.push;
-    const originalReplace = history.replace;
-    const originalGo = history.go;
+    const originalPush = history.push
+    const originalReplace = history.replace
+    const originalGo = history.go
     Object.assign(history, {
       push: item => {
-        Reflect.apply(originalPush, history, [item]);
-        this.store.url = decodeURI(history.state.url);
-        this.store.historyIdx++;
+        Reflect.apply(originalPush, history, [item])
+        this.store.url = decodeURI(history.current.url)
+        this.store.historyIdx++
       },
       replace: item => {
-        Reflect.apply(originalReplace, history, [item]);
-        this.store.url = decodeURI(history.state.url);
+        Reflect.apply(originalReplace, history, [item])
+        this.store.url = decodeURI(history.current.url)
       },
       go: toIdx => {
-        Reflect.apply(originalGo, history, [toIdx]);
+        Reflect.apply(originalGo, history, [toIdx])
         this.store.historyIdx = Math.min(
           history.length - 1,
           Math.max(0, this.store.historyIdx + toIdx)
-        );
+        )
       }
-    });
-  };
+    })
+  }
 
   instrumentTimers = () => {
     this.easyStack.setTimeout = (...args) => {
-      const timerId = window.setTimeout(...args);
-      this.timers.push(timerId);
-      return timerId;
-    };
-    this.easyStack.setInterval = (...args) => {
-      const timerId = window.setInterval(...args);
-      this.timers.push(timerId);
-      return timerId;
-    };
-  };
-
-  onHistoryBack = () => this.easyStack.history.back();
-  onHistoryForward = () => this.easyStack.history.forward();
-  onUrlChange = ev => {
-    let url = ev.target.value;
-    const baseUrlIndex = url.indexOf(BASE_URL);
-    if (baseUrlIndex === 0) {
-      url = url.slice(BASE_URL.length);
+      const timerId = window.setTimeout(...args)
+      this.timers.push(timerId)
+      return timerId
     }
-    this.store.url = url;
-  };
+    this.easyStack.setInterval = (...args) => {
+      const timerId = window.setInterval(...args)
+      this.timers.push(timerId)
+      return timerId
+    }
+  }
+
+  onHistoryBack = () => this.easyStack.history.go(-1)
+  onHistoryForward = () => this.easyStack.history.go(1)
+  onUrlChange = ev => {
+    let url = ev.target.value
+    const baseUrlIndex = url.indexOf(BASE_URL)
+    if (baseUrlIndex === 0) {
+      url = url.slice(BASE_URL.length)
+    }
+    this.store.url = url
+  }
   onUrlReload = ev => {
     if (ev.key === 'Enter') {
       // push a new state and refresh (reload page)
-      this.easyStack.history.push(this.store.url);
-      this.onRefresh();
+      this.easyStack.history.push(this.store.url)
+      this.onRefresh()
     }
-  };
+  }
   onRefresh = () => {
-    this.store.error = undefined;
-    this.timers.forEach(window.clearTimeout);
-    this.height = Math.max(this.height, this.browser.current.offsetHeight);
-    this.store.Content = this.props.children(this.easyStack);
-  };
+    this.store.error = undefined
+    this.timers.forEach(window.clearTimeout)
+    this.height = Math.max(this.height, this.browser.current.offsetHeight)
+    this.store.Content = this.props.children(this.easyStack)
+  }
 
   componentWillUnmount() {
-    this.timers.forEach(window.clearTimeout);
+    this.timers.forEach(window.clearTimeout)
   }
 
   componentDidCatch(error, info) {
-    this.store.error = info;
+    this.store.error = info
   }
 
   render() {
-    const { Content, url, historyIdx, isLoading, error } = this.store;
-    const { history } = this.easyStack;
+    const { Content, url, historyIdx, isLoading, error } = this.store
+    const { history } = this.easyStack
 
-    const canGoBack = 0 < historyIdx;
-    const canGoForward = historyIdx < history.length - 1;
-    const fullUrl = layout.isTiny ? url : BASE_URL + url;
+    const canGoBack = 0 < historyIdx
+    const canGoForward = historyIdx < history.length - 1
+    const fullUrl = layout.isTiny ? url : BASE_URL + url
 
     return (
       <BrowserFrame
@@ -274,8 +274,8 @@ class Browser extends Component {
           {error ? 'An unexpected error occured, please reload!' : <Content />}
         </Body>
       </BrowserFrame>
-    );
+    )
   }
 }
 
-export default view(Browser);
+export default view(Browser)
