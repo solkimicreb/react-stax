@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Router, route, view, session } from 'react-stax'
+import { Router, route, view, session, history } from 'react-stax'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
@@ -36,15 +36,15 @@ class PageRouter extends Component {
     }
   }
 
-  onRoute = async ({ fromPage, toPage, fromSession }) => {
+  onRoute = async ({ fromPage, toPage }) => {
     const { idx, page, prevPage, nextPage } = this.getPages(toPage)
 
     if (page) {
       session.page = page
-      session.fromIdx = fromSession.idx
+      session.fromIdx = history.current.session.idx
       session.idx = idx
     } else {
-      Object.assign(session, fromSession)
+      Object.assign(session, history.current.session)
     }
 
     if (fromPage !== toPage && page && !page.virtual) {

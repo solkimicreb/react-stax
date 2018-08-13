@@ -24,16 +24,14 @@ export function registerRouter(router, depth) {
 
 // router newly added routers even if there is no ongoing routing process
 function initRouter(router) {
-  const context = { fromParams: params, fromSession: session }
   const status = { cancelled: false }
   initStatuses.add(status)
 
   return Promise.resolve()
-    .then(() => router.startRouting(context))
+    .then(() => router.startRouting())
     .then(
       // cancel the routing if a new routing started in the meantime
-      resolvedData =>
-        !status.cancelled && router.finishRouting(context, resolvedData)
+      resolvedData => !status.cancelled && router.finishRouting(resolvedData)
     )
     .then(() => initStatuses.delete(status))
 }
@@ -88,15 +86,10 @@ export function route(
 
   // update the path array with the desired new path
   // and save the old path for comparison at the end of the routing
-  const fromPath = Array.from(path)
   if (to) {
     replace(path, normalizePath(path, to, depth))
   }
 
-  // replace or extend the query params with the new params
-  // and save the old params for later comparision in the routing hooks
-  const fromParams = Object.assign({}, params)
-  const fromSession = Object.assign({}, session)
   // only mutate the params and session objects, never replace them
   // because they are observables
   replace(params, toParams)
@@ -104,18 +97,13 @@ export function route(
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
-    .then(() =>
-      switchRoutersFromDepth(
-        { scroll, push, fromParams, fromSession, fromPath },
-        status
-      )
-    )
+    .then(() => switchRoutersFromDepth(status))
     .then(() => finishRouting({ scroll }, status))
 }
 
 // this recursively routes all parallel routers form a given depth
 // all routers are finished routing at a depth before continuing with the next depth
-function switchRoutersFromDepth(context, status) {
+function switchRoutersFromDepth(status) {
   const routersAtDepth = Array.from(routers[status.depth] || [])
 
   if (routersAtDepth.length) {
@@ -125,15 +113,15 @@ function switchRoutersFromDepth(context, status) {
         // and cancel it by triggering a new routing
         // we have to wait for all routers before we can go on
         // to make sure the routing was not cancelled
-        .then(() => startRoutingAtDepth(routersAtDepth, context, status))
+        .then(() => startRoutingAtDepth(routersAtDepth, status))
         // after all routers finished the first half, all of them does the second half
         .then(resolvedData =>
-          finishRoutingAtDepth(routersAtDepth, context, resolvedData, status)
+          finishRoutingAtDepth(routersAtDepth, resolvedData, status)
         )
         // all routers finished routing at this depth, go on with the next depth
         .then(() => {
           ++status.depth
-          return switchRoutersFromDepth(context, status)
+          return switchRoutersFromDepth(status)
         })
     )
   }
@@ -141,22 +129,18 @@ function switchRoutersFromDepth(context, status) {
 
 // do the first routing half if the routing is not cancelled
 // it includes data resolving, interception and lazy loading
-function startRoutingAtDepth(routersAtDepth, context, status) {
+function startRoutingAtDepth(routersAtDepth, status) {
   if (!status.cancelled) {
-    return Promise.all(
-      routersAtDepth.map(router => router.startRouting(context))
-    )
+    return Promise.all(routersAtDepth.map(router => router.startRouting()))
   }
 }
 
 // do the second routing half if the routing is not cancelled
 // it includes rendering and animation
-function finishRoutingAtDepth(routersAtDepth, context, resolvedData, status) {
+function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
   if (!status.cancelled) {
     return Promise.all(
-      routersAtDepth.map((router, i) =>
-        router.finishRouting(context, resolvedData[i])
-      )
+      routersAtDepth.map((router, i) => router.finishRouting(resolvedData[i]))
     )
   }
 }

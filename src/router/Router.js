@@ -53,7 +53,7 @@ export default class Router extends PureComponent {
   // routing is split in 2 phases
   // first all parallel routers at the same depth executes startRouting
   // then all parallel routers at the same depth execute finishRouting
-  startRouting(context) {
+  startRouting() {
     const { onRoute, defaultPage, slave } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
@@ -69,8 +69,7 @@ export default class Router extends PureComponent {
       return onRoute({
         target: this,
         fromPage,
-        toPage,
-        ...context
+        toPage
       })
     }
   }
@@ -78,7 +77,7 @@ export default class Router extends PureComponent {
   // finishRouting is called when all parallel routers at the current depth
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
-  finishRouting(context, resolvedData) {
+  finishRouting(resolvedData) {
     const { enterAnimation, leaveAnimation, defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
@@ -108,7 +107,7 @@ export default class Router extends PureComponent {
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
         if (canAnimate) {
-          context = { fromPage, toPage, ...context }
+          const context = { fromPage, toPage }
           // run the animations when the new page is fully rendered, but do not wait for them
           // the views may be hidden by the animation, but the DOM routing is already over
           // it is safe to go on with routing the next level of routers

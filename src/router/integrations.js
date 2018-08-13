@@ -50,17 +50,19 @@ Object.defineProperties(history, {
 Object.assign(history, {
   push(item) {
     item = createHistoryItem(item)
-    this.splice(++idx, Infinity, item)
+    history.splice(++idx, Infinity, item)
     return item
   },
   replace(item) {
     item = createHistoryItem(item)
-    this[idx] = item
+    history[idx] = item
     return item
   },
   go(offset) {
-    idx = Math.min(this.length - 1, Math.max(0, idx + offset))
-    const { path, params, session } = this[idx]
+    idx = Math.min(history.length - 1, Math.max(0, idx + offset))
+    const { path, params, session } = history[idx]
+    console.log(history.length - 1, idx + offset)
+    console.log('go', idx, path, params, session)
     return route({
       to: toPathString(path),
       params,

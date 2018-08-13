@@ -3,7 +3,6 @@ import { history } from '../../integrations'
 const originalPush = history.push
 const originalReplace = history.replace
 const originalGo = history.go
-let currIdx = 0
 
 Object.assign(history, {
   push(item) {
@@ -21,11 +20,6 @@ Object.assign(history, {
 })
 
 window.addEventListener('popstate', ev => {
-  if (ev.state) {
-    // TODO paste this here
-  }
-  const { idx } = ev.state
-  const offset = currIdx < idx ? 1 : -1
-  currIdx = idx
+  const offset = history.current.idx < ev.state.idx ? 1 : -1
   originalGo.call(history, offset)
 })
