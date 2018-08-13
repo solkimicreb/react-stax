@@ -1,4 +1,4 @@
-import { store } from 'react-stax'
+import { store, session } from 'react-stax'
 
 export const colors = {
   code: '#f6f8fa',
@@ -29,13 +29,12 @@ export const layout = store({
   isTiny: mqlTiny.matches,
   isMobile: mql.matches,
   isLarge: mqlLarge.matches,
-  currentPage: {},
   get correction() {
     let takenSpace = 0
-    if (!this.isMobile && this.currentPage.sidebar !== false) {
+    if (!this.isMobile && session.page.sidebar !== false) {
       takenSpace += this.sidebarWidth
     }
-    if (this.isLarge && this.currentPage.chat !== false) {
+    if (this.isLarge && session.page.chat !== false) {
       takenSpace -= this.chatWidth
     }
     return takenSpace

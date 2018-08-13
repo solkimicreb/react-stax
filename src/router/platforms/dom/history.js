@@ -31,10 +31,11 @@ Object.assign(history, {
 })
 
 window.addEventListener('popstate', ev => {
-  const { path, params } = ev.state
+  const { path, params, session } = ev.state
   return route({
     to: path,
     params,
+    session,
     scroll: false,
     push: false
   })

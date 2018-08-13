@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Router, route, view } from 'react-stax'
+import { Router, route, view, session } from 'react-stax'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
@@ -24,14 +24,9 @@ class PageRouter extends Component {
 
     let idx = pages.findIndex(page => page.name === pageName)
     const page = pages[idx]
-
     idx = routes.all.indexOf(page)
-    // find the closest none virtual one!
-    const prevPage = routes.all
-      .slice(0, idx - 1)
-      .reverse()
-      .find(page => !page.virtual)
-    const nextPage = routes.all.slice(idx + 1).find(page => page.virtual)
+    const prevPage = routes.all[idx - 1]
+    const nextPage = routes.all[idx + 1]
 
     return {
       idx,
@@ -41,8 +36,16 @@ class PageRouter extends Component {
     }
   }
 
-  onRoute = async ({ fromPage, toPage }) => {
+  onRoute = async ({ fromPage, toPage, fromSession }) => {
     const { idx, page, prevPage, nextPage } = this.getPages(toPage)
+
+    if (page) {
+      session.page = page
+      session.fromIdx = fromSession.idx
+      session.idx = idx
+    } else {
+      Object.assign(session, fromSession)
+    }
 
     if (fromPage !== toPage && page && !page.virtual) {
       // TODO: rework this with lazy mode, prefetch and http2
@@ -56,10 +59,6 @@ class PageRouter extends Component {
         title = `${page.title} | ${title}`
       }
       document.title = title
-
-      layout.fromIdx = layout.idx
-      layout.idx = idx
-      layout.currentPage = page
 
       return (
         <NextPage
@@ -77,7 +76,9 @@ class PageRouter extends Component {
       layout.isMobile
         ? {
             transform: [
-              `translate3d(${layout.fromIdx < layout.idx ? 100 : -100}%, 0, 0)`,
+              `translate3d(${
+                session.fromIdx < session.idx ? 100 : -100
+              }%, 0, 0)`,
               'none'
             ]
           }
@@ -102,7 +103,9 @@ class PageRouter extends Component {
         ? {
             transform: [
               'none',
-              `translate3d(${layout.fromIdx < layout.idx ? -100 : 100}%, 0, 0)`
+              `translate3d(${
+                session.fromIdx < session.idx ? -100 : 100
+              }%, 0, 0)`
             ]
           }
         : { opacity: [1, 0] },

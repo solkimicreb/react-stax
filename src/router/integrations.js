@@ -1,4 +1,4 @@
-import { observable, observe } from '@nx-js/observer-util'
+import { observable, observe, raw } from '@nx-js/observer-util'
 import { toPathString, toUrl, toObject } from './utils'
 import { route } from './core'
 import { integrations as scheduler } from '../schedulers'
@@ -32,17 +32,19 @@ export const history = {
       item = toObject(item)
     }
     item = {
-      path: Array.from(item.path),
-      params: Object.assign({}, item.params),
-      session: Object.assign({}, item.session),
+      // raw (non Proxied) versions must be used here
+      // Proxies can not be serialized by browsers
+      path: Array.from(raw(item.path)),
+      params: Object.assign({}, raw(item.params)),
+      session: Object.assign({}, raw(item.session)),
       // scroll config can be passed without copying as it is read-only
       scroll: item.scroll,
       url: toUrl(item)
     }
     // TODO: WHY IS THIS HERE??
     // update the params and path to reflect the new history item
-    Object.assign(params, item.params)
-    path.splice(0, Infinity, ...item.path)
+    /*Object.assign(params, item.params)
+    path.splice(0, Infinity, ...item.path)*/
     return item
   },
   get state() {
@@ -59,12 +61,12 @@ export const history = {
   },
   go(toIdx) {
     idx = Math.min(items.length - 1, Math.max(0, idx + toIdx))
-    const { path, params, session, scroll } = items[idx]
+    const { path, params, session } = items[idx]
     return route({
       to: toPathString(path),
       params,
       session,
-      scroll,
+      scroll: false,
       push: false
     })
   },
@@ -78,6 +80,6 @@ export const history = {
 
 function syncHistory() {
   const scroll = history.state ? history.state.scroll : undefined
-  history.replace({ path, params, scroll })
+  history.replace({ path, params, session, scroll })
 }
 observe(syncHistory, { scheduler })

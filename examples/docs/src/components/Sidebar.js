@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { store, view, path } from 'react-stax'
+import { store, view, path, session } from 'react-stax'
 import styled from 'styled-components'
 import Drawer from './Drawer'
 import { colors, ease, layout } from './theme'
@@ -33,7 +33,7 @@ const StyledSidebar = styled(Drawer)`
 `
 
 export default view(({ children }) => {
-  return layout.currentPage.sidebar !== false ? (
+  return session.page.sidebar !== false ? (
     <StyledSidebar
       docked={!layout.isMobile}
       open={sidebarStore.open}

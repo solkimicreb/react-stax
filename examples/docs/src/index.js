@@ -1,14 +1,14 @@
+import 'web-animations-js/web-animations-next.min.js'
+import 'whatwg-fetch'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import './reset.css'
 import './code.css'
 import './markdown.css'
-
-import React from 'react'
-import ReactDOM from 'react-dom'
-import 'web-animations-js/web-animations-next.min.js'
-import 'whatwg-fetch'
 import './instrumentScroll'
-import registerServiceWorker from './registerServiceWorker'
+import './init'
 import App from './App'
+import registerServiceWorker from './registerServiceWorker'
 
 const app = document.getElementById('root')
 

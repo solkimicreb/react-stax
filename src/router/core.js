@@ -24,7 +24,7 @@ export function registerRouter(router, depth) {
 
 // router newly added routers even if there is no ongoing routing process
 function initRouter(router) {
-  const context = { fromParams: params }
+  const context = { fromParams: params, fromSession: session }
   const status = { cancelled: false }
   initStatuses.add(status)
 
@@ -96,6 +96,7 @@ export function route(
   // replace or extend the query params with the new params
   // and save the old params for later comparision in the routing hooks
   const fromParams = Object.assign({}, params)
+  const fromSession = Object.assign({}, session)
   // only mutate the params and session objects, never replace them
   // because they are observables
   replace(params, toParams)
@@ -104,7 +105,10 @@ export function route(
   // recursively route all routers, then finish the routing
   return Promise.resolve()
     .then(() =>
-      switchRoutersFromDepth({ scroll, push, fromParams, fromPath }, status)
+      switchRoutersFromDepth(
+        { scroll, push, fromParams, fromSession, fromPath },
+        status
+      )
     )
     .then(() => finishRouting({ scroll }, status))
 }

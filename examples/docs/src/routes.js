@@ -8,17 +8,24 @@ export const main = [
   },
   {
     name: 'docs',
+    path: '/docs',
+    virtual: true
+  },
+  {
+    name: 'examples',
+    path: '/examples',
     virtual: true
   },
   {
     name: 'faq',
+    path: '/faq',
     virtual: true
   }
 ]
 
 export const docs = [
-  { name: 'state', virtual: true },
-  { name: 'routing', virtual: true }
+  { name: 'state', path: '/docs/state', virtual: true },
+  { name: 'routing', path: '/docs/routing', virtual: true }
 ]
 
 export const state = [
@@ -151,4 +158,14 @@ export const faq = [
   }
 ]
 
-export const all = [...main, ...state, ...routing, ...examples, ...faq]
+export const all = [
+  main[0],
+  docs[0],
+  ...state,
+  docs[1],
+  ...routing,
+  main[1],
+  ...examples,
+  main[2],
+  ...faq
+]

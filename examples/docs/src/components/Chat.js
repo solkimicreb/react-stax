@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { store, view, path, route, params } from 'react-stax'
+import { store, view, path, route, params, session } from 'react-stax'
 import styled from 'styled-components'
 import Drawer from './Drawer'
 import { colors, ease, layout } from './theme'
@@ -38,7 +38,7 @@ const StyledChat = styled(Drawer)`
 
 class Chat extends Component {
   render() {
-    return layout.currentPage.chat !== false ? (
+    return session.page.chat !== false ? (
       <StyledChat
         docked={layout.isLarge}
         open={chatStore.open}

@@ -1,4 +1,4 @@
-import { route } from 'react-stax'
+import { route, session } from 'react-stax'
 import { layout } from './theme'
 import * as routes from '../routes'
 import { chatStore } from './Chat'
@@ -54,11 +54,14 @@ window.addEventListener('touchend', onTouchEnd, { passive: true })
 window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
 function goToPage(offset) {
-  const idx = routes.all.findIndex(
-    page => page.path === layout.currentPage.path
-  )
+  let idx = routes.all.findIndex(page => page.path === session.page.path)
 
-  const nextPage = routes.all[idx + offset]
+  idx = idx + offset
+  let nextPage = routes.all[idx]
+  while (nextPage && nextPage.virtual) {
+    idx = idx + offset
+    nextPage = routes.all[idx]
+  }
 
   if (nextPage) {
     route({ to: nextPage.path })
