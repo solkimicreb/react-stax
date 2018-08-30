@@ -34,7 +34,7 @@ const StyledSidebar = styled(Drawer)`
 
 export default view(
   ({ children }) =>
-    session.page.sidebar !== false ? (
+    session.sidebar !== false ? (
       <StyledSidebar
         docked={!layout.isMobile}
         open={sidebarStore.open}

@@ -1,13 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-stax';
-import { colors, ease, layout } from './theme';
+import React from 'react'
+import styled from 'styled-components'
+import { Link } from 'react-stax'
+import { colors, ease, layout } from './theme'
+import * as routes from '../routes'
 
 export const NavLink = props => (
   <Link activeClass="active" {...props}>
     {props.children}
   </Link>
-);
+)
 
 export const TopLink = styled(NavLink)`
   cursor: pointer;
@@ -23,7 +24,7 @@ export const TopLink = styled(NavLink)`
   &.active {
     color: ${colors.accentLight};
   }
-`;
+`
 
 export const SideLink = styled(NavLink)`
   cursor: pointer;
@@ -44,7 +45,7 @@ export const SideLink = styled(NavLink)`
   &.active {
     border-color: ${colors.accent};
   }
-`;
+`
 
 export const SideSectionLink = styled(NavLink)`
   cursor: pointer;
@@ -61,4 +62,4 @@ export const SideSectionLink = styled(NavLink)`
   &.active {
     color: ${colors.accent};
   }
-`;
+`

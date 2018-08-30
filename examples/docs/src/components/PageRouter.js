@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Router, route, view, session, history } from 'react-stax'
+import { Router, view, session, path } from 'react-stax'
 import { ease, layout } from './theme'
 import * as sidebar from './Sidebar'
 import { notify } from './Notification'
 import * as routes from '../routes'
+
+let prevSession = {}
 
 const StyledRouter = styled(Router)`
   overflow: hidden;
@@ -22,14 +24,16 @@ class PageRouter extends Component {
   getPages = pageName => {
     const { pages, prevPages, nextPages } = this.props
 
-    let idx = pages.findIndex(page => page.name === pageName)
-    const page = pages[idx]
-    idx = routes.all.indexOf(page)
+    const pathname = '/' + path.join('/')
+    const page = pages.find(page => page.path.indexOf(pathname) === 0)
+    const isLeaf = pages.some(page => page.name === pageName)
+    const idx = routes.all.indexOf(page)
     const prevPage = routes.all[idx - 1]
     const nextPage = routes.all[idx + 1]
 
     return {
       idx,
+      isLeaf,
       page,
       prevPage,
       nextPage
@@ -37,17 +41,14 @@ class PageRouter extends Component {
   }
 
   onRoute = async ({ fromPage, toPage }) => {
-    const { idx, page, prevPage, nextPage } = this.getPages(toPage)
+    const { idx, page, prevPage, nextPage, isLeaf } = this.getPages(toPage)
 
-    if (page) {
-      session.page = page
-      session.fromIdx = history.get(-1).session.idx
-      session.idx = idx
-    } else {
-      Object.assign(session, history.get(-1).session)
-    }
+    session.fromIdx = prevSession.idx
+    Object.assign(session, page)
+    console.log(session, prevSession, page)
+    prevSession = session
 
-    if (fromPage !== toPage && page && !page.virtual) {
+    if (fromPage !== toPage && isLeaf) {
       // TODO: rework this with lazy mode, prefetch and http2
       const { default: NextPage } = await import(/* webpackMode: "eager" */
       /* webpackChunkName: "pages" */
@@ -72,6 +73,7 @@ class PageRouter extends Component {
   }
 
   enterAnimation = elem => {
+    console.log('session', session.idx, session.fromIdx)
     return elem.animate(
       layout.isMobile
         ? {

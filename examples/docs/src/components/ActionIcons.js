@@ -19,17 +19,17 @@ export default view(() => (
     <a href="https://github.com/solkimicreb/react-stax">
       <GithubIcon />
     </a>
-    <a href={session.page.edit}>
+    <a href={session.edit}>
       <CorrectedEditIcon />
     </a>
     {!layout.isLarge &&
-      session.page.chat !== false && (
+      session.chat !== false && (
         <span onClick={chat.toggle}>
           <ChatIcon />
         </span>
       )}
     {layout.isMobile &&
-      session.page.sidebar !== false && (
+      session.sidebar !== false && (
         <span onClick={sidebar.toggle}>
           <MenuIcon />
         </span>

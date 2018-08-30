@@ -54,16 +54,8 @@ window.addEventListener('touchend', onTouchEnd, { passive: true })
 window.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
 function goToPage(offset) {
-  let idx = routes.all.findIndex(page => page.path === session.page.path)
-
-  idx = idx + offset
-  let nextPage = routes.all[idx]
-  while (nextPage && nextPage.virtual) {
-    idx = idx + offset
-    nextPage = routes.all[idx]
-  }
-
-  if (nextPage) {
-    route({ to: nextPage.path })
+  const page = routes.all[session.idx + offset]
+  if (page) {
+    route({ to: page.path })
   }
 }

@@ -31,10 +31,10 @@ export const layout = store({
   isLarge: mqlLarge.matches,
   get correction() {
     let takenSpace = 0
-    if (!this.isMobile && session.page.sidebar !== false) {
+    if (!this.isMobile && session.sidebar !== false) {
       takenSpace += this.sidebarWidth
     }
-    if (this.isLarge && session.page.chat !== false) {
+    if (this.isLarge && session.chat !== false) {
       takenSpace -= this.chatWidth
     }
     return takenSpace

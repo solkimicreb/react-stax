@@ -38,7 +38,7 @@ const StyledChat = styled(Drawer)`
 
 class Chat extends Component {
   render() {
-    return session.page.chat !== false ? (
+    return session.chat !== false ? (
       <StyledChat
         docked={layout.isLarge}
         open={chatStore.open}
