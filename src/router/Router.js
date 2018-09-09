@@ -14,6 +14,7 @@ export default class Router extends PureComponent {
     slave: PropTypes.bool,
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
+    // TODO: allowing none string elemnts messes with the animations (container ref is not a DOM Node)
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   }
 
