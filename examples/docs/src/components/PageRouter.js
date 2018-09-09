@@ -45,7 +45,6 @@ class PageRouter extends Component {
 
     session.fromIdx = prevSession.idx
     Object.assign(session, page)
-    console.log(session, prevSession, page)
     prevSession = session
 
     if (fromPage !== toPage && isLeaf) {
@@ -73,7 +72,6 @@ class PageRouter extends Component {
   }
 
   enterAnimation = elem => {
-    console.log('session', session.idx, session.fromIdx)
     return elem.animate(
       layout.isMobile
         ? {

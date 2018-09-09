@@ -7,6 +7,7 @@ import LinkIcon from 'react-icons/lib/fa/external-link'
 import BackIcon from 'react-icons/lib/fa/angle-left'
 import ForwardIcon from 'react-icons/lib/fa/angle-right'
 import RefreshIcon from 'react-icons/lib/fa/refresh'
+import fetch from '../backend'
 import { colors, ease, layout } from './theme'
 
 const BrowserFrame = styled.div`
@@ -140,22 +141,24 @@ class Browser extends Component {
     this.timers = []
     this.browser = React.createRef()
     this.easyStack = easyStackFactory()
-    this.instrumentFetch()
-    this.instrumentHistory()
-    this.instrumentTimers()
+
     this.store = store({
       url: '',
       historyIdx: 0,
-      Content: props.children(this.easyStack),
       isLoading: false
     })
+
+    this.instrumentFetch()
+    this.instrumentHistory()
+    this.instrumentTimers()
+
+    this.store.Content = props.children(this.easyStack)
   }
 
   instrumentFetch = () => {
     this.easyStack.fetch = url => {
       this.store.isLoading = true
-      return window
-        .fetch(url)
+      return fetch(url)
         .then(resp => {
           this.store.isLoading = false
           return resp
