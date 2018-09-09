@@ -1,19 +1,20 @@
 // a fake backend for the doc examples, to let it work offline too
 import Router from 'universal-router'
+import queryString from 'query-string'
 
 const NETWORK_DELAY = 300
 
-const data = [
-  { id: 1, name: 'Cool Beer' },
-  { id: 2, name: 'Better Beer' },
-  { id: 3, name: 'Best Beer' }
-]
-
 const routes = [
   {
-    path: '(.*)',
-    action() {
+    path: '/pokemons',
+    action({ data, query }) {
       return data
+    }
+  },
+  {
+    path: '/pokemons/:id',
+    action({ data, query, params }) {
+      return data.find(item => item.id === params.id)
     }
   }
 ]
@@ -22,9 +23,19 @@ const router = new Router(routes)
 
 export default function fetch(url) {
   const { pathname, search, hash } = new URL(url)
-  const path = pathname + search + hash
 
-  return new Promise(resolve => setTimeout(resolve, NETWORK_DELAY)).then(
-    () => ({ json: () => router.resolve(path) })
-  )
+  const promises = Promise.all([
+    import('./data.json'),
+    new Promise(resolve => setTimeout(resolve, NETWORK_DELAY))
+  ])
+
+  return promises.then(([data]) => ({
+    json: () =>
+      router.resolve({
+        pathname,
+        query: queryString.parse(search),
+        hash,
+        data
+      })
+  }))
 }
