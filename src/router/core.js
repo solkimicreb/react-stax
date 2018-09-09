@@ -73,7 +73,7 @@ export function route(
 
   // create a new routing status
   // this may be cancelled by future routing processes
-  const status = (routingStatus = { cancelled: false, depth })
+  const status = (routingStatus = { cancelled: false, depth: 0 })
 
   const toPath = to ? normalizePath(path, to, depth) : path
   // push a new history item when necessary

@@ -8,13 +8,13 @@ const routes = [
   {
     path: '/pokemons',
     action({ data, query }) {
-      return data
+      return data.filter(item => item.name.indexOf(query.name) !== -1)
     }
   },
   {
     path: '/pokemons/:id',
-    action({ data, query, params }) {
-      return data.find(item => item.id === params.id)
+    action({ data, params }) {
+      return data.find(item => item.id == params.id)
     }
   }
 ]
@@ -35,7 +35,7 @@ export default function fetch(url) {
         pathname,
         query: queryString.parse(search),
         hash,
-        data
+        data: data.default
       })
   }))
 }
