@@ -4,6 +4,11 @@ import { path, params, elements, animation } from './integrations'
 import { addExtraProps } from './utils'
 import { registerRouter, releaseRouter, route } from './core'
 
+// a key for dummy pages when no matching page is found
+const DUMMY_KEY = 'REACT_STAX_DUMMY'
+// a key for leaving nodes, when the entering and leaving page is the same
+const LEAVING_KEY = 'REACT_STAX_LEAVING'
+
 // Router selects a single child to render based on its children's page props
 // and the URL pathname token at the Router's depth (they can be nested)
 export default class Router extends PureComponent {
@@ -15,7 +20,7 @@ export default class Router extends PureComponent {
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
     // TODO: allowing none string elemnts messes with the animations (container ref is not a DOM Node)
-    element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
+    element: PropTypes.string
   }
 
   static defaultProps = {
@@ -85,59 +90,45 @@ export default class Router extends PureComponent {
 
     // do not update the view if the page did not change
     // and there is no new resolved data from onRoute
+    // TODO: but animations should still kick in!
     if (fromPage === toPage && !resolvedData) {
       return
     }
 
     const nextState = {
       resolvedData,
-      page: toPage
+      page: toPage,
+      // reuse the current child (page) as the leaving page
+      // if it is not a dummy page (used when no matching page is found)
+      fromChild:
+        leaveAnimation && this.toChild.key === DUMMY_KEY ? null : this.toChild
     }
 
-    // only animate if this is not a new (appearing) router and its page changed
-    // these means there is only one animating router per (nested) routing process
-    // (fromPage !== toPage && this.inited && this.container)
-    const canAnimate = this.inited && this.container
-    if (canAnimate) {
-      // this typically saves the current view to use later for cross fade effects
-      // the current view is soon replaced by setState, so this is necessary
-      animation.setup(this.container)
-    }
-
-    // render the new page with the resolvedData
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
-        if (canAnimate) {
-          const context = { fromPage, toPage }
-          // run the animations when the new page is fully rendered, but do not wait for them
-          // the views may be hidden by the animation, but the DOM routing is already over
-          // it is safe to go on with routing the next level of routers
-          // only do an enter animation if this is not the initial routing of the router
-          // this prevents cascading over-animation, in case of nested routers
-          // only the outmost one will animate, the rest will appear normally
-          if (enterAnimation) {
-            animation.enter(this.container, enterAnimation, context)
-          }
-          // leave must come after enter
-          // it is re-appending the old dom to the container
-          // doing this before enter will confuse the render about which DOM
-          // to animate and it will try to animate the old one twice instead of both once
-          if (leaveAnimation) {
-            animation.leave(this.container, leaveAnimation, context)
-          }
+        const context = { fromPage, toPage }
+
+        if (enterAnimation) {
+          animation.enter(this.container, enterAnimation, context)
         }
-        // the router has done at least one full routing
-        this.inited = true
+
+        if (leaveAnimation) {
+          animation
+            .leave(this.container, leaveAnimation, context)
+            // remove the leaving page after the leave animation is over
+            .then(() => this.setState({ fromChild: null }))
+        }
       }
     )
   }
 
   render() {
     const { element } = this.props
-    const { page, resolvedData } = this.state
+    const { page, resolvedData, fromChild } = this.state
 
-    // render nothing if no matching view is found
-    let toChild = null
+    const children = []
+
+    let toChild
     // if the resolvedData from onRoute is a React element use it as the view
     // this allows lazy loading components (and virtual routing)
     if (React.isValidElement(resolvedData)) {
@@ -154,12 +145,31 @@ export default class Router extends PureComponent {
       }
     }
 
+    // if there is no matching page render an empty div
+    toChild = toChild || React.createElement('div')
+    toChild = React.cloneElement(toChild, { key: page || DUMMY_KEY })
+    children.push(toChild)
+    // save the current node (page) for later use
+    // it has to fade out later during leave animations,
+    // while the new page is already rendered
+    this.toChild = toChild
+
+    if (fromChild) {
+      // if the same page is animated out and in, replace the leaving node's key
+      // to avoid conflicts
+      if (fromChild.key === toChild.key) {
+        fromChild = React.cloneElement(fromChild, { key: LEAVING_KEY })
+      }
+      children.push(fromChild)
+    }
+
     return React.createElement(
       element,
       // forward none Router specific props to the underlying DOM element
       addExtraProps({ ref: this.saveContainer }, this.props, Router.propTypes),
-      // render the selected child as the only child element
-      toChild
+      // render the selected child or a dummy node
+      // and a potential leaving child
+      children
     )
   }
 

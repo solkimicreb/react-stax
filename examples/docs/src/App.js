@@ -17,7 +17,7 @@ import * as routes from './routes'
 import './components/navigation'
 
 const DocsNav = () => (
-  <Fragment>
+  <div>
     <SideSectionLink to="/docs/state">State Management</SideSectionLink>
     {routes.state.map(page => (
       <SideLink to={page.path} key={page.name}>
@@ -30,7 +30,7 @@ const DocsNav = () => (
         {page.link || page.title}
       </SideLink>
     ))}
-  </Fragment>
+  </div>
 )
 
 const SideNav = () => (
