@@ -127,6 +127,7 @@ export default class Router extends PureComponent {
     const { page, resolvedData } = this.state
     let { fromChild } = this.state
 
+    // TODO: fromChild must come before toChild
     const children = []
 
     let toChild
