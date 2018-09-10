@@ -13,13 +13,14 @@ const enterAnimation = elem =>
       opacity: [0, 1]
     },
     {
-      duration: 15000
+      duration: 150
     }
   ).finished
 
 const leaveAnimation = elem => {
   const { top, left, width, height } = elem.getBoundingClientRect()
 
+  // TODO: top is somewhy 65 instead of 50
   Object.assign(elem.style, {
     position: 'fixed',
     top: `${top}px`,
@@ -33,7 +34,7 @@ const leaveAnimation = elem => {
       opacity: [1, 0]
     },
     {
-      duration: 15000
+      duration: 150
     }
   ).finished
 }

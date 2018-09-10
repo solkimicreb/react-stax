@@ -4,8 +4,6 @@ import { path, params, elements, animation } from './integrations'
 import { addExtraProps } from './utils'
 import { registerRouter, releaseRouter, route } from './core'
 
-// a key for dummy pages when no matching page is found
-const DUMMY_KEY = 'REACT_STAX_DUMMY'
 // a key for leaving nodes, when the entering and leaving page is the same
 const LEAVING_KEY = 'REACT_STAX_LEAVING'
 
@@ -19,7 +17,8 @@ export default class Router extends PureComponent {
     slave: PropTypes.bool,
     enterAnimation: PropTypes.func,
     leaveAnimation: PropTypes.func,
-    // TODO: allowing none string elemnts messes with the animations (container ref is not a DOM Node)
+    // do not allow components here, only string DOM elements
+    // components would give a none DOM ref, which can not be used for animations
     element: PropTypes.string
   }
 
@@ -39,7 +38,9 @@ export default class Router extends PureComponent {
     return this.context.staxDepth || 0
   }
 
-  state = {}
+  state = {
+    fromChild: null
+  }
 
   componentDidMount() {
     registerRouter(this, this.depth)
@@ -98,21 +99,26 @@ export default class Router extends PureComponent {
     const nextState = {
       resolvedData,
       page: toPage,
-      // reuse the current child (page) as the leaving page
-      // if it is not a dummy page (used when no matching page is found)
-      fromChild:
-        leaveAnimation && this.toChild.key === DUMMY_KEY ? null : this.toChild
+      // reuse the current page as the leaving page, if there is a leave animation
+      fromChild: leaveAnimation ? this.toChild : null
     }
 
     return new Promise(resolve => this.setState(nextState, resolve)).then(
       () => {
+        // continue the routing from here,
+        // do not wait for the animations to finish (do not return the promises)
         const context = { fromPage, toPage }
 
-        if (enterAnimation) {
-          animation.enter(this.container, enterAnimation, context)
+        if (enterAnimation && this.toChild) {
+          animation.enter(
+            this.container,
+            enterAnimation,
+            context,
+            nextState.fromChild
+          )
         }
 
-        if (leaveAnimation) {
+        if (leaveAnimation && nextState.fromChild) {
           animation
             .leave(this.container, leaveAnimation, context)
             // remove the leaving page after the leave animation is over
@@ -127,10 +133,7 @@ export default class Router extends PureComponent {
     const { page, resolvedData } = this.state
     let { fromChild } = this.state
 
-    // TODO: fromChild must come before toChild
-    const children = []
-
-    let toChild
+    let toChild = null
     // if the resolvedData from onRoute is a React element use it as the view
     // this allows lazy loading components (and virtual routing)
     if (React.isValidElement(resolvedData)) {
@@ -147,31 +150,27 @@ export default class Router extends PureComponent {
       }
     }
 
-    // if there is no matching page render an empty div
-    toChild = toChild || React.createElement('div')
-    toChild = React.cloneElement(toChild, { key: page || DUMMY_KEY })
-    children.push(toChild)
+    // page names are uniqueue between router pages, they can be used as keys
+    toChild = toChild ? React.cloneElement(toChild, { key: page }) : null
     // save the current node (page) for later use
     // it has to fade out later during leave animations,
     // while the new page is already rendered
     this.toChild = toChild
 
-    if (fromChild) {
-      // if the same page is animated out and in, replace the leaving node's key
-      // to avoid conflicts
-      if (fromChild.key === toChild.key) {
-        fromChild = React.cloneElement(fromChild, { key: LEAVING_KEY })
-      }
-      children.push(fromChild)
+    // if the same page is animated in and out,
+    // replace the leaving node's key to avoid conflicts
+    if (fromChild && toChild && fromChild.key === toChild.key) {
+      fromChild = React.cloneElement(fromChild, { key: LEAVING_KEY })
     }
 
     return React.createElement(
       element,
       // forward none Router specific props to the underlying DOM element
       addExtraProps({ ref: this.saveContainer }, this.props, Router.propTypes),
-      // render the selected child or a dummy node
-      // and a potential leaving child
-      children
+      // render the selected child and a potential leaving child, both might be null
+      // fromChild must come before toChild to render at at the same place
+      // where it used to be before the start of the leave animation
+      [fromChild, toChild]
     )
   }
 

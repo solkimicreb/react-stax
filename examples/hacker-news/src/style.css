@@ -44,7 +44,7 @@ a {
 }
 
 .story {
-  margin: 15px 0;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
 }
@@ -75,16 +75,15 @@ a {
   --accent-color: #0366d6;
   --bg-color: #242938;
 
+  min-height: 100vh;
   transition: color 0.2s, background-color 0.2s;
 
   color: var(--text-color);
   background-color: var(--bg-color);
-
-  padding: 50px 0;
-  min-height: 100vh;
 }
 
 .router {
   max-width: 900px;
-  margin: auto;
+  margin: 0 auto;
+  padding-top: 60px;
 }
