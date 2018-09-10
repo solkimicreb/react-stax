@@ -1,4 +1,4 @@
-import { store, params } from "react-easy-stack";
+import { store, params } from "react-stax";
 import * as api from "./api";
 
 const appStore = store({

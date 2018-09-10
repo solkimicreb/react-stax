@@ -1,41 +1,58 @@
-import React from 'react';
-import { view, Link, Router, params } from 'react-easy-stack';
-import classNames from 'classnames';
-import { StoriesPage, resolveStories } from './StoriesPage';
-import { StoryPage, resolveStory } from './StoryPage';
-import { UserPage, resolveUser } from './UserPage';
-import appStore from './appStore';
-import { STORY_TYPES } from './config';
+import React from 'react'
+import { view, Link, Router, params } from 'react-stax'
+import classNames from 'classnames'
+import { StoriesPage, resolveStories } from './StoriesPage'
+import { StoryPage, resolveStory } from './StoryPage'
+import { UserPage, resolveUser } from './UserPage'
+import appStore from './appStore'
+import { STORY_TYPES } from './config'
 
-const enterAnimation = {
-  keyframes: {
-    opacity: [0, 1]
-  },
-  duration: 150
-};
+const enterAnimation = elem =>
+  elem.animate(
+    {
+      opacity: [0, 1]
+    },
+    {
+      duration: 1500
+    }
+  ).finished
 
-const leaveAnimation = {
-  keyframes: {
-    opacity: [1, 0]
-  },
-  duration: 150
-};
+const leaveAnimation = elem => {
+  const { top, left, width, height } = elem.getBoundingClientRect()
+
+  Object.assign(elem.style, {
+    position: 'fixed',
+    top: `${top}px`,
+    left: `${left}px`,
+    width: `${width}px`,
+    height: `${height}px`
+  })
+
+  return elem.animate(
+    {
+      opacity: [1, 0]
+    },
+    {
+      duration: 1500
+    }
+  ).finished
+}
 
 function onRoute({ toPage }) {
   if (toPage === 'story') {
-    return resolveStory();
+    return resolveStory()
   } else if (toPage === 'user') {
-    return resolveUser();
+    return resolveUser()
   } else {
-    params.type = params.type || 'top';
-    return resolveStories();
+    params.type = params.type || 'top'
+    return resolveStories()
   }
 }
 
 function App() {
-  const { loading, dark, toggleTheme } = appStore;
-  const appClass = classNames('app', { dark });
-  const themeClass = classNames('theme-toggle', { loading });
+  const { loading, dark, toggleTheme } = appStore
+  const appClass = classNames('app', { dark })
+  const themeClass = classNames('theme-toggle', { loading })
 
   return (
     <div className={appClass}>
@@ -46,7 +63,6 @@ function App() {
               <Link
                 to="stories"
                 params={{ type }}
-                options={{ history: true }}
                 activeClass="active"
                 key={type}
               >
@@ -65,14 +81,13 @@ function App() {
         onRoute={onRoute}
         enterAnimation={enterAnimation}
         leaveAnimation={leaveAnimation}
-        shouldAnimate={true}
       >
         <StoriesPage page="stories" />
         <StoryPage page="story" />
         <UserPage page="user" />
       </Router>
     </div>
-  );
+  )
 }
 
-export default view(App);
+export default view(App)

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
-import { view, storage, params, path, Link } from "react-easy-stack";
+import { view, storage, params, path, Link } from "react-stax";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import Zoom from "@material-ui/core/Zoom";

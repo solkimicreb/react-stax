@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { view, store } from "react-easy-stack";
+import { view, store } from "react-stax";
 
 const searchStyle = {
   width: "50%",

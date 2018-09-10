@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { view, store, params, route } from "react-easy-stack";
+import { view, store, params, route } from "react-stax";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Button from "@material-ui/core/Button";

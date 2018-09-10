@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { view, store, Link } from "react-easy-stack";
+import { view, store, Link } from "react-stax";
 import timeago from "timeago.js";
 import { fetchComment } from "./api";
 

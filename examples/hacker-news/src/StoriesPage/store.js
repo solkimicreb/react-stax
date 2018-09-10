@@ -1,4 +1,4 @@
-import { store, params } from "react-easy-stack";
+import { store, params } from "react-stax";
 import { fetchStoriesByType } from "../api";
 
 const storiesStore = store({

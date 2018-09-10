@@ -1,5 +1,5 @@
 import React from "react";
-import { store, view } from "react-easy-stack";
+import { store, view } from "react-stax";
 import Snackbar from "@material-ui/core/Snackbar";
 
 const notificationStore = store({

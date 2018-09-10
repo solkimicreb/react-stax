@@ -1,5 +1,5 @@
 import React from "react";
-import { view } from "react-easy-stack";
+import { view } from "react-stax";
 
 function UserPage({ user }) {
   const { id, created, karma, about, isLoading } = user;

@@ -87,22 +87,4 @@ a {
 .router {
   max-width: 900px;
   margin: auto;
-  position: relative;
-  transition: 0.15s opacity;
-}
-
-.router > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.router.enter {
-  opacity: 1;
-}
-
-.router.leave {
-  opacity: 0;
 }

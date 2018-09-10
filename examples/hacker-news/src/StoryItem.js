@@ -1,5 +1,5 @@
 import React from "react";
-import { view, Link } from "react-easy-stack";
+import { view, Link } from "react-stax";
 import timeago from "timeago.js";
 
 function StoryItem({ idx, story }) {

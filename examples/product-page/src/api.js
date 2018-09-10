@@ -2,7 +2,7 @@ import axios from "axios";
 import { startLoading, stopLoading } from "./Loader";
 import { notify } from "./Notification";
 import { pick, defaults } from "lodash";
-import { storage } from "react-easy-stack";
+import { storage } from "react-stax";
 
 defaults(storage, {
   cache: {}

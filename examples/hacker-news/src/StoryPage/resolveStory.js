@@ -1,4 +1,4 @@
-import { params } from "react-easy-stack";
+import { params } from "react-stax";
 import { fetchFullStory } from "../api";
 
 export default async function resolveStory() {

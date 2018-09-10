@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { view } from "react-easy-stack";
+import { view } from "react-stax";
 import StoryItem from "../StoryItem";
 import Comment from "../Comment";
 
