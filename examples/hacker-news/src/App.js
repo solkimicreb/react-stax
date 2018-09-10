@@ -13,7 +13,7 @@ const enterAnimation = elem =>
       opacity: [0, 1]
     },
     {
-      duration: 1500
+      duration: 15000
     }
   ).finished
 
@@ -33,7 +33,7 @@ const leaveAnimation = elem => {
       opacity: [1, 0]
     },
     {
-      duration: 1500
+      duration: 15000
     }
   ).finished
 }

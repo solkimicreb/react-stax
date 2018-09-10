@@ -69,7 +69,7 @@ async function build() {
       })
       fs.writeFileSync(es6MinPath, es6MinCode, 'utf-8')
 
-      /*const es5Path = path.resolve('dist', `${name}.es5.js`)
+      const es5Path = path.resolve('dist', `${name}.es5.js`)
       const { code: es5Code } = buble.transform(es6Code, {
         transforms: {
           dangerousForOf: true,
@@ -82,7 +82,7 @@ async function build() {
       const { code: es5MinCode } = babel.transform(es5Code, {
         presets: ['minify']
       })
-      fs.writeFileSync(es5MinPath, es5MinCode, 'utf-8')*/
+      fs.writeFileSync(es5MinPath, es5MinCode, 'utf-8')
     }
   }
 }

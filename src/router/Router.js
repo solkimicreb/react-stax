@@ -124,7 +124,8 @@ export default class Router extends PureComponent {
 
   render() {
     const { element } = this.props
-    const { page, resolvedData, fromChild } = this.state
+    const { page, resolvedData } = this.state
+    let { fromChild } = this.state
 
     const children = []
 
