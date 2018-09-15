@@ -31,7 +31,8 @@ function initRouter(router) {
     .then(() => router.startRouting())
     .then(
       // cancel the routing if a new routing started in the meantime
-      resolvedData => !status.cancelled && router.finishRouting(resolvedData)
+      resolvedData =>
+        !status.cancelled && router.finishRouting(resolvedData, status)
     )
     .then(() => initStatuses.delete(status))
 }
@@ -134,7 +135,9 @@ function startRoutingAtDepth(routersAtDepth, status) {
 function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
   if (!status.cancelled) {
     return Promise.all(
-      routersAtDepth.map((router, i) => router.finishRouting(resolvedData[i]))
+      routersAtDepth.map((router, i) =>
+        router.finishRouting(resolvedData[i], status)
+      )
     )
   }
 }
@@ -153,14 +156,18 @@ function finishRouting({ scroll }, status) {
       scroller.scrollTo({ top: 0, left: 0 })
     }
 
-    // flush the URL updates in one batch and restart the automatic processing
-    // it is important to call this after handleHistory()
-    // in case of a newly pushed history item, the flushed URL changes
-    // should replace the new item instead of the old one
-    // also flush the view updates
-    schedulers.process()
-    schedulers.start()
-    // the routing is over and the is no currently ongoing routing process
-    routingStatus = undefined
+    // wait with anything resource intensive until the whole routing and animation
+    // is finished to keep it smooth
+    // allowing view updates during the routing could also cause potential flicker
+    // and tearing, depending on store implementations
+    Promise.all([status.enterAnimation, status.leaveAnimation]).then(() => {
+      // flush the URL and view updates in one batch and restart the automatic processing
+      if (!status.cancelled) {
+        schedulers.process()
+        schedulers.start()
+      }
+      // the routing is over and the is no currently ongoing routing process
+      routingStatus = undefined
+    })
   }
 }

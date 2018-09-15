@@ -84,15 +84,16 @@ export default class Router extends PureComponent {
   // finishRouting is called when all parallel routers at the current depth
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
-  finishRouting(resolvedData) {
+  finishRouting(resolvedData, status) {
     const { enterAnimation, leaveAnimation, defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
 
     // do not update the view if the page did not change
     // and there is no new resolved data from onRoute
-    // TODO: but animations should still kick in!
-    if (fromPage === toPage && !resolvedData) {
+    // the view has to be updated in case of a leave animation
+    // even when the pages match, because the same page has to animate in and out
+    if (fromPage === toPage && !resolvedData && !leaveAnimation) {
       return
     }
 
@@ -109,8 +110,10 @@ export default class Router extends PureComponent {
         // do not wait for the animations to finish (do not return the promises)
         const context = { fromPage, toPage }
 
-        if (enterAnimation && this.toChild) {
-          animation.enter(
+        // there is no enter animation for this routing already
+        // and there is a node to animate and an animation function
+        if (!status.enterAnimation && enterAnimation && this.toChild) {
+          status.enterAnimation = animation.enter(
             this.container,
             enterAnimation,
             context,
@@ -118,8 +121,10 @@ export default class Router extends PureComponent {
           )
         }
 
-        if (leaveAnimation && nextState.fromChild) {
-          animation
+        // there is no leave animation for this routing already
+        // and there is a node to animate and an animation function
+        if (!status.leaveAnimation && leaveAnimation && nextState.fromChild) {
+          status.leaveAnimation = animation
             .leave(this.container, leaveAnimation, context)
             // remove the leaving page after the leave animation is over
             .then(() => this.setState({ fromChild: null }))
