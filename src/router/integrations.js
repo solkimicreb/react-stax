@@ -1,7 +1,7 @@
 import { observable, observe, raw } from '@nx-js/observer-util'
 import { toPathString, toUrl, toObject, replace } from './utils'
 import { route } from './core'
-import { integrations as scheduler } from '../schedulers'
+import * as schedulers from '../schedulers'
 
 export const elements = {
   anchor: 'a',
@@ -86,4 +86,5 @@ Object.assign(history, {
 function syncHistory() {
   history.replace({ path, params, session, scroll: history.current.scroll })
 }
-observe(syncHistory, { scheduler })
+// the URL and history can be updated with a low priority, the user won't notice
+observe(syncHistory, { scheduler: schedulers.low })

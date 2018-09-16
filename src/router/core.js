@@ -59,7 +59,7 @@ export function route(
     // flush the pending low priority URL changes to have a consistent state before starting a new routing
     // only flush it if there is no ongoing routing
     // otherwise the old and new routing should be treated in one batch to avoid flicker
-    schedulers.integrations.process()
+    schedulers.low.process()
     // the push option should default to true when the routing is not started
     // from an interception, otherwise it stays falsy
     if (push === undefined) {
@@ -67,10 +67,11 @@ export function route(
     }
   }
   // stop all schedulers until the end of the routing and commit them at once
-  // this includes state based view updates, URL updates and localStorag updats
+  // this includes state based view updates, URL updates and localStorag updates
   // having view updates during the routing can cause flickers
   // because of the random onRoute data resolve timings, it is nicer to commit everything at once
-  schedulers.stop()
+  schedulers.low.stop()
+  schedulers.sync.stop()
 
   // create a new routing status
   // this may be cancelled by future routing processes
@@ -156,15 +157,21 @@ function finishRouting({ scroll }, status) {
       scroller.scrollTo({ top: 0, left: 0 })
     }
 
-    // wait with anything resource intensive until the whole routing and animation
-    // is finished to keep it smooth
+    // allow the URL to sync from now on, the animations may still be running
+    // but URL updates are low prio, so they won't block the animations
+    schedulers.low.start()
+
+    // wait with anything resource intensive
+    // until the whole routing and animation is finished to keep it smooth
     // allowing view updates during the routing could also cause potential flicker
     // and tearing, depending on store implementations
     Promise.all([status.enterAnimation, status.leaveAnimation]).then(() => {
-      // flush the URL and view updates in one batch and restart the automatic processing
+      // flush the URL and view updates in one batch
+      // and restart the automatic processing for view updates
       if (!status.cancelled) {
-        schedulers.process()
-        schedulers.start()
+        schedulers.sync.process()
+        schedulers.low.process()
+        schedulers.sync.start()
       }
       // the routing is over and the is no currently ongoing routing process
       routingStatus = undefined

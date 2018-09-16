@@ -4,7 +4,7 @@ import { observe, unobserve } from '@nx-js/observer-util'
 import { route } from './core'
 import { toUrl, normalizePath, addExtraProps } from './utils'
 import { params, path, history, elements } from './integrations'
-import { state as scheduler } from '../schedulers'
+import * as schedulers from '../schedulers'
 
 // Link is used to navigate between pages
 // it can be relative ('home') or absolute ('/home'), just like vanilla HTML links
@@ -47,11 +47,12 @@ export default class Link extends PureComponent {
   }
 
   // automatically update the link activity on pathname and params changes
-  // with a low priority scheduler
+  // with a low priority scheduler, to do not have a performance impact during
+  // page transitions
   componentDidMount() {
     this.activityUpdater = observe(
       () => this.setState({ isActive: this.isLinkActive() }),
-      { scheduler }
+      { scheduler: schedulers.low }
     )
   }
 

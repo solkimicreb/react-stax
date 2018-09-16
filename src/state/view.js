@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util'
-import { state as scheduler } from '../schedulers'
+import * as schedulers from '../schedulers'
 
 // this is used to save the component on the state for static lifecycle methods
 const COMPONENT = Symbol('owner component')
@@ -30,8 +30,8 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       // the used scheduler ca be stopped, restarted and flushed any time
       this.render = observe(this.render, {
         scheduler: {
-          add: () => scheduler.add(updater),
-          delete: () => scheduler.delete(updater)
+          add: () => schedulers.sync.add(updater),
+          delete: () => schedulers.sync.delete(updater)
         },
         debugger: devtool,
         lazy: true

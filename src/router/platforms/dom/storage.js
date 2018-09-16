@@ -1,6 +1,6 @@
 import { observe } from '@nx-js/observer-util'
 import { storage } from '../../integrations'
-import { integrations as scheduler } from '../../../schedulers'
+import * as schedulers from '../../../schedulers'
 
 const STORAGE_NAME = 'STAX_STORAGE'
 Object.assign(storage, JSON.parse(localStorage.getItem(STORAGE_NAME)))
@@ -9,4 +9,5 @@ Object.assign(storage, JSON.parse(localStorage.getItem(STORAGE_NAME)))
 function syncStorage() {
   localStorage.setItem(STORAGE_NAME, JSON.stringify(storage))
 }
-observe(syncStorage, { scheduler })
+// localStorage sync can be done with a low priority, the user won't notice
+observe(syncStorage, { scheduler: schedulers.low })
