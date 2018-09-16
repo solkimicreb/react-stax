@@ -1,22 +1,22 @@
 import React from 'react'
-import { view } from 'react-stax'
+import { view, params, Link } from 'react-stax'
 import InfiniteScroll from 'react-infinite-scroller'
 import StoryItem from '../components/StoryItem'
 import storiesStore from '../stores/stories'
 
 export default view(() => {
-  const { fetchPage, hasMore, stories } = storiesStore
+  const { stories, prevPage, nextPage } = storiesStore
   return (
-    <InfiniteScroll
-      loadMore={fetchPage}
-      hasMore={hasMore}
-      pageStart={1}
-      initialLoad={false}
-      threshold={400}
-    >
+    <div>
       {stories.map((story, idx) => (
         <StoryItem story={story} idx={idx} key={story.id} />
       ))}
-    </InfiniteScroll>
+      <Link params={{ page: params.page - 1 }} inherit>
+        Prev page
+      </Link>
+      <Link params={{ page: params.page + 1 }} inherit>
+        Next page
+      </Link>
+    </div>
   )
 })

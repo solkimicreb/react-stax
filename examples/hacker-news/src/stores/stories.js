@@ -1,26 +1,18 @@
 import { store, params } from 'react-stax'
+import _defaults from 'lodash/defaults'
 import { fetchStoriesByType } from '../api'
 
 const storiesStore = store({
   stories: [],
-  pages: 0,
-  hasMore: true,
   async init() {
-    storiesStore.stories = await fetchStoriesByType(
-      params.type,
-      0,
-      storiesStore.pages
-    )
+    _defaults(params, {
+      type: 'top',
+      page: 1
+    })
+    storiesStore.fetchPage()
   },
-  async fetchPage(page) {
-    const stories = await fetchStoriesByType(params.type, page)
-    if (!stories.length) {
-      storiesStore.hasMore = false
-    } else {
-      storiesStore.stories.push(...stories)
-      storiesStore.hasMore = true
-    }
-    storiesStore.pages = page
+  async fetchPage() {
+    storiesStore.stories = await fetchStoriesByType(params.type, params.page)
   }
 })
 

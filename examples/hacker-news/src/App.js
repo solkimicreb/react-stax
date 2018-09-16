@@ -1,5 +1,5 @@
 import React from 'react'
-import { view, Link, Router, params } from 'react-stax'
+import { view, Link, Router } from 'react-stax'
 import StoriesPage from './pages/Stories'
 import StoryPage from './pages/Story'
 import UserPage from './pages/User'
@@ -15,7 +15,6 @@ function onRoute({ toPage }) {
   } else if (toPage === 'user') {
     return initUser()
   } else {
-    params.type = params.type || 'top'
     return storiesStore.init()
   }
 }

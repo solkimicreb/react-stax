@@ -12,21 +12,21 @@
 .topnav .links {
   max-width: 900px;
   margin: 0 auto;
-  color: rgba(255, 255, 255, 0.7);
   transition: color 0.3s;
 }
 
 .topnav a {
+  color: rgba(170, 170, 170);
   margin: 0 15px;
 }
 
 .topnav a.active,
 .topnav a:hover {
-  color: rgba(255, 255, 255, 1);
+  color: rgb(255, 255, 255);
 }
 
 a {
-  color: inherit;
+  color: rgb(30, 30, 30);
   text-decoration: none;
 }
 
@@ -55,7 +55,7 @@ a {
   min-height: 100vh;
   transition: color 0.2s, background-color 0.2s;
 
-  color: black;
+  color: rgb(130, 130, 130);
   background-color: white;
 }
 
