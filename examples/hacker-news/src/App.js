@@ -1,93 +1,49 @@
 import React from 'react'
 import { view, Link, Router, params } from 'react-stax'
-import classNames from 'classnames'
-import { StoriesPage, resolveStories } from './StoriesPage'
-import { StoryPage, resolveStory } from './StoryPage'
-import { UserPage, resolveUser } from './UserPage'
-import appStore from './appStore'
+import StoriesPage from './pages/Stories'
+import StoryPage from './pages/Story'
+import UserPage from './pages/User'
+import storiesStore from './stores/stories'
+import initStory from './stores/story'
+import initUser from './stores/user'
+import appStore from './stores/app'
 import { STORY_TYPES } from './config'
-
-const enterAnimation = elem =>
-  elem.animate(
-    {
-      opacity: [0, 1]
-    },
-    {
-      duration: 5000
-    }
-  ).finished
-
-const leaveAnimation = elem => {
-  const { top, left, width, height } = elem.getBoundingClientRect()
-
-  Object.assign(elem.style, {
-    position: 'fixed',
-    top: `${top}px`,
-    left: `${left}px`,
-    width: `${width}px`,
-    height: `${height}px`
-  })
-
-  return elem.animate(
-    {
-      opacity: [1, 0]
-    },
-    {
-      duration: 5000
-    }
-  ).finished
-}
 
 function onRoute({ toPage }) {
   if (toPage === 'story') {
-    return resolveStory()
+    return initStory()
   } else if (toPage === 'user') {
-    return resolveUser()
+    return initUser()
   } else {
     params.type = params.type || 'top'
-    return resolveStories()
+    return storiesStore.init()
   }
 }
 
-function App() {
-  const { loading, dark, toggleTheme } = appStore
-  const appClass = classNames('app', { dark })
-  const themeClass = classNames('theme-toggle', { loading })
+export default view(() => {
+  const { loading } = appStore
 
   return (
-    <div className={appClass}>
+    <div className="app">
       <nav className="topnav">
-        <div className="inner">
-          <div className="links">
-            {STORY_TYPES.map(type => (
-              <Link
-                to="stories"
-                params={{ type }}
-                activeClass="active"
-                key={type}
-              >
-                {type}
-              </Link>
-            ))}
-          </div>
-          <div className={themeClass} onClick={toggleTheme}>
-            THEME
-          </div>
+        <div className="links">
+          {STORY_TYPES.map(type => (
+            <Link
+              to="stories"
+              params={{ type }}
+              activeClass="active"
+              key={type}
+            >
+              {type}
+            </Link>
+          ))}
         </div>
       </nav>
-      <Router
-        className="router"
-        defaultPage="stories"
-        onRoute={onRoute}
-        enterAnimation={enterAnimation}
-        leaveAnimation={leaveAnimation}
-      >
+      <Router className="router" defaultPage="stories" onRoute={onRoute}>
         <StoriesPage page="stories" />
         <StoryPage page="story" />
         <UserPage page="user" />
       </Router>
     </div>
   )
-}
-
-export default view(App)
+})

@@ -4,9 +4,6 @@ import { path, params, elements, animation } from './integrations'
 import { addExtraProps } from './utils'
 import { registerRouter, releaseRouter, route } from './core'
 
-// a key for leaving nodes, when the entering and leaving page is the same
-const LEAVING_KEY = 'REACT_STAX_LEAVING'
-
 // Router selects a single child to render based on its children's page props
 // and the URL pathname token at the Router's depth (they can be nested)
 export default class Router extends PureComponent {
@@ -50,9 +47,6 @@ export default class Router extends PureComponent {
     releaseRouter(this, this.depth)
   }
 
-  // the raw DOM container node is needed for the animations
-  saveContainer = container => (this.container = container)
-
   // this is part of the public API
   // it routes every router from the root depth
   route = options => route(options, this.depth)
@@ -91,9 +85,7 @@ export default class Router extends PureComponent {
 
     // do not update the view if the page did not change
     // and there is no new resolved data from onRoute
-    // the view has to be updated in case of a leave animation
-    // even when the pages match, because the same page has to animate in and out
-    if (fromPage === toPage && !resolvedData && !leaveAnimation) {
+    if (fromPage === toPage && !resolvedData) {
       return
     }
 
@@ -133,6 +125,8 @@ export default class Router extends PureComponent {
     )
   }
 
+  saveContainer = container => (this.container = container)
+
   render() {
     const { element } = this.props
     const { page, resolvedData } = this.state
@@ -161,12 +155,6 @@ export default class Router extends PureComponent {
     // it has to fade out later during leave animations,
     // while the new page is already rendered
     this.toChild = toChild
-
-    // if the same page is animated in and out,
-    // replace the leaving node's key to avoid conflicts
-    if (fromChild && toChild && fromChild.key === toChild.key) {
-      fromChild = React.cloneElement(fromChild, { key: LEAVING_KEY })
-    }
 
     return React.createElement(
       element,

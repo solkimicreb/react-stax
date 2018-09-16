@@ -1,5 +1,5 @@
 .topnav {
-  background-color: #222;
+  background-color: black;
   position: fixed;
   top: 0;
   height: 40px;
@@ -9,28 +9,15 @@
   z-index: 100;
 }
 
-.topnav .inner {
+.topnav .links {
   max-width: 900px;
   margin: 0 auto;
   color: rgba(255, 255, 255, 0.7);
   transition: color 0.3s;
 }
 
-.topnav .links {
-  float: left;
-}
-
-.topnav .theme-toggle {
-  float: right;
-}
-
-.topnav .theme-toggle.loading {
-  color: green;
-}
-
 .topnav a {
   margin: 0 15px;
-  transition: 0.3s color;
 }
 
 .topnav a.active,
@@ -39,7 +26,7 @@
 }
 
 a {
-  color: var(--accent-color);
+  color: inherit;
   text-decoration: none;
 }
 
@@ -64,22 +51,12 @@ a {
   left: 15px;
 }
 
-.app.dark {
-  --text-color: red;
-  --bg-color: white;
-}
-
 .app {
-  --text-color: rgba(230, 230, 230);
-  --faded-color: rgba(230, 230, 230, 0.7);
-  --accent-color: #0366d6;
-  --bg-color: #242938;
-
   min-height: 100vh;
   transition: color 0.2s, background-color 0.2s;
 
-  color: var(--text-color);
-  background-color: var(--bg-color);
+  color: black;
+  background-color: white;
 }
 
 .router {

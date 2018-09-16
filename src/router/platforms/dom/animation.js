@@ -5,15 +5,14 @@ Object.assign(animation, {
   leave
 })
 
-function enter(container, enterAnimation, context, hasBoth) {
-  const toDOM = hasBoth ? container.children[1] : container.children[0]
-  return runAnimation(toDOM, enterAnimation, context)
+function enter(container, enterAnimation, context, hasLeaving) {
+  const toNode = container.children[hasLeaving ? 1 : 0]
+  return runAnimation(toNode, enterAnimation, context)
 }
 
-// TODO: somehow decide if the children are entering or leaving nodes
 function leave(container, leaveAnimation, context) {
-  const fromDOM = container.children[0]
-  return runAnimation(fromDOM, leaveAnimation, context)
+  const fromNode = container.children[0]
+  return runAnimation(fromNode, leaveAnimation, context)
 }
 
 function runAnimation(elem, animation, context) {
