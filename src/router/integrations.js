@@ -12,12 +12,6 @@ export const scroller = {
   scrollTo() {}
 }
 
-export const animation = {
-  setup() {},
-  enter() {},
-  leave() {}
-}
-
 export const storage = observable()
 export const params = observable()
 export const session = observable()

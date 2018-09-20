@@ -70,8 +70,7 @@ export function route(
   // this includes state based view updates, URL updates and localStorag updates
   // having view updates during the routing can cause flickers
   // because of the random onRoute data resolve timings, it is nicer to commit everything at once
-  schedulers.low.stop()
-  schedulers.sync.stop()
+  schedulers.stop()
 
   // create a new routing status
   // this may be cancelled by future routing processes
@@ -132,7 +131,6 @@ function startRoutingAtDepth(routersAtDepth, status) {
 }
 
 // do the second routing half if the routing is not cancelled
-// it includes rendering and animation
 function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
   if (!status.cancelled) {
     return Promise.all(
@@ -157,24 +155,14 @@ function finishRouting({ scroll }, status) {
       scroller.scrollTo({ top: 0, left: 0 })
     }
 
-    // allow the URL to sync from now on, the animations may still be running
-    // but URL updates are low prio, so they won't block the animations
-    schedulers.low.start()
-
     // wait with anything resource intensive
-    // until the whole routing and animation is finished to keep it smooth
+    // until the whole routing is finished to keep it smooth
     // allowing view updates during the routing could also cause potential flicker
     // and tearing, depending on store implementations
-    Promise.all([status.enterAnimation, status.leaveAnimation]).then(() => {
-      // flush the URL and view updates in one batch
-      // and restart the automatic processing for view updates
-      if (!status.cancelled) {
-        schedulers.sync.process()
-        schedulers.low.process()
-        schedulers.sync.start()
-      }
-      // the routing is over and the is no currently ongoing routing process
-      routingStatus = undefined
-    })
+    // the routing is over and the is no currently ongoing routing process
+    schedulers.process()
+    schedulers.start()
+
+    routingStatus = undefined
   }
 }

@@ -1,6 +1,6 @@
 import React, { PureComponent, Children } from 'react'
 import PropTypes from 'prop-types'
-import { path, params, elements, animation } from './integrations'
+import { path, params, elements } from './integrations'
 import { addExtraProps } from './utils'
 import { registerRouter, releaseRouter, route } from './core'
 
@@ -12,11 +12,7 @@ export default class Router extends PureComponent {
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
     slave: PropTypes.bool,
-    enterAnimation: PropTypes.func,
-    leaveAnimation: PropTypes.func,
-    // do not allow components here, only string DOM elements
-    // components would give a none DOM ref, which can not be used for animations
-    element: PropTypes.string
+    element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
   }
 
   static defaultProps = {
@@ -79,7 +75,7 @@ export default class Router extends PureComponent {
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
   finishRouting(resolvedData, status) {
-    const { enterAnimation, leaveAnimation, defaultPage } = this.props
+    const { defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
 
@@ -91,38 +87,9 @@ export default class Router extends PureComponent {
 
     const nextState = {
       resolvedData,
-      page: toPage,
-      // reuse the current page as the leaving page, if there is a leave animation
-      fromChild: leaveAnimation ? this.toChild : null
+      page: toPage
     }
-
-    return new Promise(resolve => this.setState(nextState, resolve)).then(
-      () => {
-        // continue the routing from here,
-        // do not wait for the animations to finish (do not return the promises)
-        const context = { fromPage, toPage }
-
-        // there is no enter animation for this routing already
-        // and there is a node to animate and an animation function
-        if (!status.enterAnimation && enterAnimation && this.toChild) {
-          status.enterAnimation = animation.enter(
-            this.container,
-            enterAnimation,
-            context,
-            nextState.fromChild
-          )
-        }
-
-        // there is no leave animation for this routing already
-        // and there is a node to animate and an animation function
-        if (!status.leaveAnimation && leaveAnimation && nextState.fromChild) {
-          status.leaveAnimation = animation
-            .leave(this.container, leaveAnimation, context)
-            // remove the leaving page after the leave animation is over
-            .then(() => this.setState({ fromChild: null }))
-        }
-      }
-    )
+    return new Promise(resolve => this.setState(nextState, resolve))
   }
 
   saveContainer = container => (this.container = container)
@@ -149,21 +116,11 @@ export default class Router extends PureComponent {
       }
     }
 
-    // page names are uniqueue between router pages, they can be used as keys
-    toChild = toChild ? React.cloneElement(toChild, { key: page }) : null
-    // save the current node (page) for later use
-    // it has to fade out later during leave animations,
-    // while the new page is already rendered
-    this.toChild = toChild
-
     return React.createElement(
       element,
       // forward none Router specific props to the underlying DOM element
-      addExtraProps({ ref: this.saveContainer }, this.props, Router.propTypes),
-      // render the selected child and a potential leaving child, both might be null
-      // fromChild must come before toChild to render at at the same place
-      // where it used to be before the start of the leave animation
-      [fromChild, toChild]
+      addExtraProps({}, this.props, Router.propTypes),
+      toChild
     )
   }
 
