@@ -1,10 +1,8 @@
 import { Component } from 'react'
 import { observe, unobserve, raw, isObservable } from '@nx-js/observer-util'
-import * as schedulers from '../schedulers'
+import * as scheduler from './scheduler'
 
-// this is used to save the component on the state for static lifecycle methods
 const COMPONENT = Symbol('owner component')
-// this used for empty setState calls to trigger component updates
 const DUMMY_STATE = {}
 
 export default function view(Comp, { devtool: rawDevtool } = {}) {
@@ -24,14 +22,14 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       this.state = this.state || {}
       this.state[COMPONENT] = this
 
-      // create a reactive render for the component
-      // run a dummy setState to schedule a new reactive render, avoid forceUpdate
+      // run a dummy setState to schedule a new render, avoid forceUpdate
       const updater = () => this.setState(DUMMY_STATE)
-      // the used scheduler ca be stopped, restarted and flushed any time
+
+      // create a reactive render for the component
       this.render = observe(this.render, {
         scheduler: {
-          add: () => schedulers.sync.add(updater),
-          delete: () => schedulers.sync.delete(updater)
+          add: () => scheduler.add(updater),
+          delete: () => scheduler.remove(updater)
         },
         debugger: devtool,
         lazy: true
@@ -42,7 +40,7 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       return isStatelessComp ? Comp(this.props, this.context) : super.render()
     }
 
-    // react should trigger updates on prop changes, while stax handles store changes
+    // react should trigger updates on prop changes, while easyState handles store changes
     shouldComponentUpdate(nextProps, nextState) {
       const { props, state } = this
 
@@ -99,7 +97,7 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
       if (super.componentWillUnmount) {
         super.componentWillUnmount()
       }
-      // clean up memory used by stax
+      // clean up memory used by Easy State
       unobserve(this.render)
     }
   }
@@ -108,7 +106,9 @@ export default function view(Comp, { devtool: rawDevtool } = {}) {
   // static props are inherited by class components,
   // but have to be copied for function components
   if (isStatelessComp) {
-    Object.assign(ReactiveHOC, Comp)
+    for (let key of Object.keys(Comp)) {
+      ReactiveHOC[key] = Comp[key]
+    }
   }
 
   return ReactiveHOC
