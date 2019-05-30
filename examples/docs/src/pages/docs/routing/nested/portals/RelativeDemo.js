@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function render({ Link, Router }) {
   const ProfilePage = () => <h3>Profile Page</h3>;

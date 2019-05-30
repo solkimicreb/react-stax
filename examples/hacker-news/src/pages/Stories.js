@@ -1,11 +1,11 @@
-import React from 'react'
-import { view, params, Link } from 'react-stax'
-import InfiniteScroll from 'react-infinite-scroller'
-import StoryItem from '../components/StoryItem'
-import storiesStore from '../stores/stories'
+import React from "react";
+import { view, params, Link } from "react-stax";
+import InfiniteScroll from "react-infinite-scroller";
+import StoryItem from "../components/StoryItem";
+import storiesStore from "../stores/stories";
 
 export default view(() => {
-  const { stories, prevPage, nextPage } = storiesStore
+  const { stories, prevPage, nextPage } = storiesStore;
   return (
     <div>
       {stories.map((story, idx) => (
@@ -18,5 +18,5 @@ export default view(() => {
         Next page
       </Link>
     </div>
-  )
-})
+  );
+});

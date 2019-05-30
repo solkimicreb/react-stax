@@ -1,3 +1,3 @@
 import "./router/platforms/dom";
-export * from "./state";
 export * from "./router";
+export * from "react-easy-state";

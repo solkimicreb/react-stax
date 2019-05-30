@@ -1,6 +1,6 @@
-import React from 'react'
-import styled, { keyframes } from 'styled-components'
-import { ReactComponent as Logo } from '../../../assets/logo.svg'
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import { ReactComponent as Logo } from "../../../assets/logo.svg";
 
 const flicker = keyframes`
   0%, 80% { opacity: 1 }
@@ -10,7 +10,7 @@ const flicker = keyframes`
   91%, 98% { opacity: 1 }
   99% { opacity: 0.4 }
   100% { opacity: 1 }
-`
+`;
 
 const Header = styled.div`
   display: flex;
@@ -39,11 +39,11 @@ const Header = styled.div`
       animation-delay: 1.9s;
     }
   }
-`
+`;
 
 export default () => (
   <Header>
     <h1>React Stax</h1>
     <Logo />
   </Header>
-)
+);

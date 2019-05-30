@@ -1,11 +1,11 @@
-import React from 'react';
-import { view } from 'react-stax';
-import { TopLink } from './Link';
-import styled from 'styled-components';
-import { colors, layout, ease } from './theme';
-import * as sidebar from './Sidebar';
-import ActionIcons from './ActionIcons';
-import { ReactComponent as Logo } from '../assets/logo_custom.svg';
+import React from "react";
+import { view } from "react-stax";
+import { TopLink } from "./Link";
+import styled from "styled-components";
+import { colors, layout, ease } from "./theme";
+import * as sidebar from "./Sidebar";
+import ActionIcons from "./ActionIcons";
+import { ReactComponent as Logo } from "../assets/logo_custom.svg";
 
 const Topbar = styled.nav`
   position: fixed;
@@ -17,7 +17,7 @@ const Topbar = styled.nav`
   z-index: 50;
 
   .logo {
-    position: ${props => (props.isMobile ? 'unset' : 'absolute')};
+    position: ${props => (props.isMobile ? "unset" : "absolute")};
     left: 60px;
     display: flex;
     align-items: center;
@@ -56,8 +56,8 @@ const Navbar = styled.div`
 
 const MenuItems = styled.div`
   display: flex;
-  justify-content: ${props => (props.isMobile ? 'space-around' : 'flex-start')};
-  width: ${props => (props.isMobile ? '100%' : 'auto')};
+  justify-content: ${props => (props.isMobile ? "space-around" : "flex-start")};
+  width: ${props => (props.isMobile ? "100%" : "auto")};
 `;
 
 const Actions = styled.div`

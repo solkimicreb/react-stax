@@ -14,6 +14,6 @@ export function stopLoading() {
   loaderStore.isLoading = false;
 }
 
-export default view(
-  () => (loaderStore.isLoading ? <LinearProgress color="secondary" /> : null)
+export default view(() =>
+  loaderStore.isLoading ? <LinearProgress color="secondary" /> : null
 );

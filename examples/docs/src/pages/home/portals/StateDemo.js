@@ -11,7 +11,11 @@ export default function render({ view, store, fetch }) {
   return view(() => (
     <div>
       <button onClick={getRandomBeer}>Get a random beer</button>
-      <ul>{beers.map(beer => <li key={beer.id}>{beer.name}</li>)}</ul>
+      <ul>
+        {beers.map(beer => (
+          <li key={beer.id}>{beer.name}</li>
+        ))}
+      </ul>
     </div>
   ));
 }

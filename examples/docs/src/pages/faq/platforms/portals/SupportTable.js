@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import supportTable from '../../../../assets/platform_support.png';
+import React from "react";
+import styled from "styled-components";
+import supportTable from "../../../../assets/platform_support.png";
 
 const StyledImg = styled.img`
   display: block;

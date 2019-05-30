@@ -1651,9 +1651,9 @@ object-assign
         typeof window != "undefined" && window.Math == Math
           ? window
           : typeof self != "undefined" && self.Math == Math
-            ? self
-            : // eslint-disable-next-line no-new-func
-              Function("return this")());
+          ? self
+          : // eslint-disable-next-line no-new-func
+            Function("return this")());
       if (typeof __g == "number") __g = global; // eslint-disable-line no-undef
 
       /***/
@@ -1678,8 +1678,8 @@ object-assign
         var target = IS_GLOBAL
           ? global
           : IS_STATIC
-            ? global[name]
-            : (global[name] || {})[PROTOTYPE];
+          ? global[name]
+          : (global[name] || {})[PROTOTYPE];
         var key, own, out;
         if (IS_GLOBAL) source = name;
         for (key in source) {
@@ -1693,32 +1693,32 @@ object-assign
             IS_GLOBAL && typeof target[key] != "function"
               ? source[key]
               : // bind timers to global for call from export context
-                IS_BIND && own
-                ? ctx(out, global)
-                : // wrap global constructors for prevent change them in library
-                  IS_WRAP && target[key] == out
-                  ? (function(C) {
-                      var F = function(a, b, c) {
-                        if (this instanceof C) {
-                          switch (arguments.length) {
-                            case 0:
-                              return new C();
-                            case 1:
-                              return new C(a);
-                            case 2:
-                              return new C(a, b);
-                          }
-                          return new C(a, b, c);
-                        }
-                        return C.apply(this, arguments);
-                      };
-                      F[PROTOTYPE] = C[PROTOTYPE];
-                      return F;
-                      // make static versions for prototype methods
-                    })(out)
-                  : IS_PROTO && typeof out == "function"
-                    ? ctx(Function.call, out)
-                    : out;
+              IS_BIND && own
+              ? ctx(out, global)
+              : // wrap global constructors for prevent change them in library
+              IS_WRAP && target[key] == out
+              ? (function(C) {
+                  var F = function(a, b, c) {
+                    if (this instanceof C) {
+                      switch (arguments.length) {
+                        case 0:
+                          return new C();
+                        case 1:
+                          return new C(a);
+                        case 2:
+                          return new C(a, b);
+                      }
+                      return new C(a, b, c);
+                    }
+                    return C.apply(this, arguments);
+                  };
+                  F[PROTOTYPE] = C[PROTOTYPE];
+                  return F;
+                  // make static versions for prototype methods
+                })(out)
+              : IS_PROTO && typeof out == "function"
+              ? ctx(Function.call, out)
+              : out;
           // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
           if (IS_PROTO) {
             (exports.virtual || (exports.virtual = {}))[key] = out;
@@ -4157,8 +4157,8 @@ object-assign
                     "Objects are not valid as a React child (found: %s).%s",
                     childrenString === "[object Object]"
                       ? "object with keys {" +
-                        Object.keys(children).join(", ") +
-                        "}"
+                          Object.keys(children).join(", ") +
+                          "}"
                       : childrenString,
                     addendum
                   );
@@ -4410,8 +4410,8 @@ object-assign
                     source.lineNumber +
                     ")"
                   : ownerName
-                    ? " (created by " + ownerName + ")"
-                    : "")
+                  ? " (created by " + ownerName + ")"
+                  : "")
               );
             };
 
@@ -5022,12 +5022,12 @@ object-assign
               oa.hasOwnProperty(a)
                 ? (a = !0)
                 : (b = wa(a))
-                  ? (a =
-                      b.hasBooleanValue ||
-                      b.hasStringBooleanValue ||
-                      b.hasOverloadedBooleanValue)
-                  : ((a = a.toLowerCase().slice(0, 5)),
-                    (a = "data-" === a || "aria-" === a)),
+                ? (a =
+                    b.hasBooleanValue ||
+                    b.hasStringBooleanValue ||
+                    b.hasOverloadedBooleanValue)
+                : ((a = a.toLowerCase().slice(0, 5)),
+                  (a = "data-" === a || "aria-" === a)),
               a
             );
           case "undefined":
@@ -5564,8 +5564,8 @@ object-assign
             ((b = a[e])
               ? (this[e] = b(c))
               : "target" === e
-                ? (this.target = d)
-                : (this[e] = c[e]));
+              ? (this.target = d)
+              : (this[e] = c[e]));
         this.isDefaultPrevented = (null != c.defaultPrevented
         ? c.defaultPrevented
         : !1 === c.returnValue)
@@ -6061,8 +6061,8 @@ object-assign
         return b.getModifierState
           ? b.getModifierState(a)
           : (a = cd[a])
-            ? !!b[a]
-            : !1;
+          ? !!b[a]
+          : !1;
       }
       function ed() {
         return dd;
@@ -6113,8 +6113,8 @@ object-assign
               d.window === d
                 ? d
                 : (e = d.ownerDocument)
-                  ? e.defaultView || e.parentWindow
-                  : window;
+                ? e.defaultView || e.parentWindow
+                : window;
             "topMouseOut" === a
               ? ((a = b),
                 (b = (b = c.relatedTarget || c.toElement) ? pb(b) : null))
@@ -6142,8 +6142,8 @@ object-assign
         return "string" === typeof a
           ? a
           : "function" === typeof a
-            ? a.displayName || a.name
-            : null;
+          ? a.displayName || a.name
+          : null;
       }
       function kd(a) {
         var b = a;
@@ -6503,14 +6503,14 @@ object-assign
         "selectionStart" in c && Kd(c)
           ? (c = { start: c.selectionStart, end: c.selectionEnd })
           : window.getSelection
-            ? ((c = window.getSelection()),
-              (c = {
-                anchorNode: c.anchorNode,
-                anchorOffset: c.anchorOffset,
-                focusNode: c.focusNode,
-                focusOffset: c.focusOffset
-              }))
-            : (c = void 0);
+          ? ((c = window.getSelection()),
+            (c = {
+              anchorNode: c.anchorNode,
+              anchorOffset: c.anchorOffset,
+              focusNode: c.focusNode,
+              focusOffset: c.focusOffset
+            }))
+          : (c = void 0);
         return Pd && ea(Pd, c)
           ? null
           : ((Pd = c),
@@ -6527,8 +6527,8 @@ object-assign
               d.window === d
                 ? d.document
                 : 9 === d.nodeType
-                  ? d
-                  : d.ownerDocument,
+                ? d
+                : d.ownerDocument,
             f;
           if (!(f = !e)) {
             a: {
@@ -6661,8 +6661,8 @@ object-assign
           return "keypress" === a.type
             ? ((a = Wd(a)), 13 === a ? "Enter" : String.fromCharCode(a))
             : "keydown" === a.type || "keyup" === a.type
-              ? Yd[a.keyCode] || "Unidentified"
-              : "";
+            ? Yd[a.keyCode] || "Unidentified"
+            : "";
         },
         location: null,
         ctrlKey: null,
@@ -6682,8 +6682,8 @@ object-assign
           return "keypress" === a.type
             ? Wd(a)
             : "keydown" === a.type || "keyup" === a.type
-              ? a.keyCode
-              : 0;
+            ? a.keyCode
+            : 0;
         }
       });
       function $d(a, b, c, d) {
@@ -6719,17 +6719,17 @@ object-assign
           return "deltaX" in a
             ? a.deltaX
             : "wheelDeltaX" in a
-              ? -a.wheelDeltaX
-              : 0;
+            ? -a.wheelDeltaX
+            : 0;
         },
         deltaY: function(a) {
           return "deltaY" in a
             ? a.deltaY
             : "wheelDeltaY" in a
-              ? -a.wheelDeltaY
-              : "wheelDelta" in a
-                ? -a.wheelDelta
-                : 0;
+            ? -a.wheelDeltaY
+            : "wheelDelta" in a
+            ? -a.wheelDelta
+            : 0;
         },
         deltaZ: null,
         deltaMode: null
@@ -6959,10 +6959,10 @@ object-assign
             (d.type = e),
             (d.pendingProps = a.props))
           : "string" === typeof e
-            ? ((d = new Y(5, f, b)), (d.type = e), (d.pendingProps = a.props))
-            : "object" === typeof e && null !== e && "number" === typeof e.tag
-              ? ((d = e), (d.pendingProps = a.props))
-              : E("130", null == e ? e : typeof e, "");
+          ? ((d = new Y(5, f, b)), (d.type = e), (d.pendingProps = a.props))
+          : "object" === typeof e && null !== e && "number" === typeof e.tag
+          ? ((d = e), (d.pendingProps = a.props))
+          : E("130", null == e ? e : typeof e, "");
         d.expirationTime = c;
         return d;
       }
@@ -7060,8 +7060,8 @@ object-assign
         null === a
           ? Ge(d, b)
           : null === d.last || null === a.last
-            ? (Ge(d, b), Ge(a, b))
-            : (Ge(d, b), (a.last = b));
+          ? (Ge(d, b), Ge(a, b))
+          : (Ge(d, b), (a.last = b));
       }
       function Ie(a, b, c, d) {
         a = a.partialState;
@@ -7255,8 +7255,8 @@ object-assign
                 "function" === typeof I.shouldComponentUpdate
                   ? I.shouldComponentUpdate(G, e, z)
                   : L.prototype && L.prototype.isPureReactComponent
-                    ? !ea(h, G) || !ea(u, e)
-                    : !0;
+                  ? !ea(h, G) || !ea(u, e)
+                  : !0;
             }
             G
               ? ("function" === typeof g.componentWillUpdate &&
@@ -8023,8 +8023,8 @@ object-assign
               c !== e && d(b);
             }))
           : q
-            ? E("235")
-            : E("236");
+          ? E("235")
+          : E("236");
         return {
           completeWork: function(a, b, c) {
             var m = b.pendingProps;
@@ -8301,8 +8301,8 @@ object-assign
                     ? L(b, e.stateNode, c)
                     : I(b, e.stateNode, c)
                   : d
-                    ? G(b, e.stateNode)
-                    : z(b, e.stateNode);
+                  ? G(b, e.stateNode)
+                  : z(b, e.stateNode);
               else if (4 !== e.tag && null !== e.child) {
                 e.child["return"] = e;
                 e = e.child;
@@ -8847,8 +8847,8 @@ object-assign
                         k.lineNumber +
                         ")"
                       : n
-                        ? " (created by " + n + ")"
-                        : "");
+                      ? " (created by " + n + ")"
+                      : "");
                   break a;
                 default:
                   m = "";
@@ -8900,12 +8900,12 @@ object-assign
           return 0 !== ka
             ? ka
             : ja
-              ? Qb
-                ? 1
-                : H
-              : !Hg || a.internalContextTag & 1
-                ? v()
-                : 1;
+            ? Qb
+              ? 1
+              : H
+            : !Hg || a.internalContextTag & 1
+            ? v()
+            : 1;
         }
         function u(a, b) {
           return z(a, b, !1);
@@ -8939,8 +8939,8 @@ object-assign
                   (la
                     ? Sb && ((ma = d), (na = 1), m(ma, na))
                     : 1 === e
-                      ? w(1, null)
-                      : L(e));
+                    ? w(1, null)
+                    : L(e));
                 !ja && c === ra && b < H && ((F = ra = null), (H = 0));
               } else break;
             a = a["return"];
@@ -9389,16 +9389,15 @@ object-assign
               (d.hasNumericValue && isNaN(c)) ||
               (d.hasPositiveNumericValue && 1 > c) ||
               (d.hasOverloadedBooleanValue && !1 === c)
-              ? Jf(a, b)
-              : d.mustUseProperty
-                ? (a[d.propertyName] = c)
-                : ((b = d.attributeName),
-                  (e = d.attributeNamespace)
-                    ? a.setAttributeNS(e, b, "" + c)
-                    : d.hasBooleanValue ||
-                      (d.hasOverloadedBooleanValue && !0 === c)
-                      ? a.setAttribute(b, "")
-                      : a.setAttribute(b, "" + c));
+            ? Jf(a, b)
+            : d.mustUseProperty
+            ? (a[d.propertyName] = c)
+            : ((b = d.attributeName),
+              (e = d.attributeNamespace)
+                ? a.setAttributeNS(e, b, "" + c)
+                : d.hasBooleanValue || (d.hasOverloadedBooleanValue && !0 === c)
+                ? a.setAttribute(b, "")
+                : a.setAttribute(b, "" + c));
         } else Kf(a, b, va(b, c) ? c : null);
       }
       function Kf(a, b, c) {
@@ -9410,8 +9409,8 @@ object-assign
           ? (b = c.mutationMethod)
             ? b(a, void 0)
             : c.mustUseProperty
-              ? (a[c.propertyName] = c.hasBooleanValue ? !1 : "")
-              : a.removeAttribute(c.attributeName)
+            ? (a[c.propertyName] = c.hasBooleanValue ? !1 : "")
+            : a.removeAttribute(c.attributeName)
           : a.removeAttribute(b);
       }
       function Lf(a, b) {
@@ -9579,8 +9578,8 @@ object-assign
         return null == a || "http://www.w3.org/1999/xhtml" === a
           ? Zf(b)
           : "http://www.w3.org/2000/svg" === a && "foreignObject" === b
-            ? "http://www.w3.org/1999/xhtml"
-            : a;
+          ? "http://www.w3.org/1999/xhtml"
+          : a;
       }
       var ag = void 0,
         bg = (function(a) {
@@ -9674,8 +9673,8 @@ object-assign
                   "number" !== typeof f ||
                   0 === f ||
                   (dg.hasOwnProperty(e) && dg[e])
-                  ? ("" + f).trim()
-                  : f + "px";
+                ? ("" + f).trim()
+                : f + "px";
             "float" === c && (c = "cssFloat");
             d ? a.setProperty(c, e) : (a[c] = e);
           }
@@ -9744,17 +9743,17 @@ object-assign
             ("topScroll" === e
               ? wd("topScroll", "scroll", a)
               : "topFocus" === e || "topBlur" === e
-                ? (wd("topFocus", "focus", a),
-                  wd("topBlur", "blur", a),
-                  (c.topBlur = !0),
-                  (c.topFocus = !0))
-                : "topCancel" === e
-                  ? (yc("cancel", !0) && wd("topCancel", "cancel", a),
-                    (c.topCancel = !0))
-                  : "topClose" === e
-                    ? (yc("close", !0) && wd("topClose", "close", a),
-                      (c.topClose = !0))
-                    : Dd.hasOwnProperty(e) && U(e, Dd[e], a),
+              ? (wd("topFocus", "focus", a),
+                wd("topBlur", "blur", a),
+                (c.topBlur = !0),
+                (c.topFocus = !0))
+              : "topCancel" === e
+              ? (yc("cancel", !0) && wd("topCancel", "cancel", a),
+                (c.topCancel = !0))
+              : "topClose" === e
+              ? (yc("close", !0) && wd("topClose", "close", a),
+                (c.topClose = !0))
+              : Dd.hasOwnProperty(e) && U(e, Dd[e], a),
             (c[e] = !0));
         }
       }
@@ -9866,19 +9865,19 @@ object-assign
             "style" === h
               ? fg(a, k, kg)
               : "dangerouslySetInnerHTML" === h
-                ? ((k = k ? k.__html : void 0), null != k && bg(a, k))
-                : "children" === h
-                  ? "string" === typeof k
-                    ? ("textarea" !== b || "" !== k) && cg(a, k)
-                    : "number" === typeof k && cg(a, "" + k)
-                  : "suppressContentEditableWarning" !== h &&
-                    "suppressHydrationWarning" !== h &&
-                    "autoFocus" !== h &&
-                    (Ra.hasOwnProperty(h)
-                      ? null != k && lg(d, h)
-                      : e
-                        ? Kf(a, h, k)
-                        : null != k && If(a, h, k));
+              ? ((k = k ? k.__html : void 0), null != k && bg(a, k))
+              : "children" === h
+              ? "string" === typeof k
+                ? ("textarea" !== b || "" !== k) && cg(a, k)
+                : "number" === typeof k && cg(a, "" + k)
+              : "suppressContentEditableWarning" !== h &&
+                "suppressHydrationWarning" !== h &&
+                "autoFocus" !== h &&
+                (Ra.hasOwnProperty(h)
+                  ? null != k && lg(d, h)
+                  : e
+                  ? Kf(a, h, k)
+                  : null != k && If(a, h, k));
           }
         switch (b) {
           case "input":
@@ -9970,14 +9969,14 @@ object-assign
                   (b = b ? b.__html : void 0),
                   null != k && b !== k && (f = f || []).push(g, "" + k))
                 : "children" === g
-                  ? b === k ||
-                    ("string" !== typeof k && "number" !== typeof k) ||
-                    (f = f || []).push(g, "" + k)
-                  : "suppressContentEditableWarning" !== g &&
-                    "suppressHydrationWarning" !== g &&
-                    (Ra.hasOwnProperty(g)
-                      ? (null != k && lg(e, g), f || b === k || (f = []))
-                      : (f = f || []).push(g, k));
+                ? b === k ||
+                  ("string" !== typeof k && "number" !== typeof k) ||
+                  (f = f || []).push(g, "" + k)
+                : "suppressContentEditableWarning" !== g &&
+                  "suppressHydrationWarning" !== g &&
+                  (Ra.hasOwnProperty(g)
+                    ? (null != k && lg(e, g), f || b === k || (f = []))
+                    : (f = f || []).push(g, k));
         }
         a && (f = f || []).push("style", a);
         return f;
@@ -9992,16 +9991,16 @@ object-assign
           "style" === g
             ? fg(a, h, kg)
             : "dangerouslySetInnerHTML" === g
-              ? bg(a, h)
-              : "children" === g
-                ? cg(a, h)
-                : d
-                  ? null != h
-                    ? Kf(a, g, h)
-                    : a.removeAttribute(g)
-                  : null != h
-                    ? If(a, g, h)
-                    : Jf(a, g);
+            ? bg(a, h)
+            : "children" === g
+            ? cg(a, h)
+            : d
+            ? null != h
+              ? Kf(a, g, h)
+              : a.removeAttribute(g)
+            : null != h
+            ? If(a, g, h)
+            : Jf(a, g);
         }
         switch (c) {
           case "input":
@@ -11666,15 +11665,15 @@ object-assign
                 var listenersLen = listenersIsArr
                   ? dispatchListeners.length
                   : dispatchListeners
-                    ? 1
-                    : 0;
+                  ? 1
+                  : 0;
 
                 var instancesIsArr = Array.isArray(dispatchInstances);
                 var instancesLen = instancesIsArr
                   ? dispatchInstances.length
                   : dispatchInstances
-                    ? 1
-                    : 0;
+                  ? 1
+                  : 0;
 
                 warning(
                   instancesIsArr === listenersIsArr &&
@@ -15684,8 +15683,8 @@ object-assign
                   nativeEventTarget.window === nativeEventTarget
                     ? nativeEventTarget.document
                     : nativeEventTarget.nodeType === DOCUMENT_NODE
-                      ? nativeEventTarget
-                      : nativeEventTarget.ownerDocument;
+                    ? nativeEventTarget
+                    : nativeEventTarget.ownerDocument;
                 // Track whether all listeners exists for this plugin. If none exist, we do
                 // not extract events. See #3639.
                 if (!doc || !isListeningToAllDependencies("onSelect", doc)) {
@@ -16189,17 +16188,17 @@ object-assign
                 return "deltaX" in event
                   ? event.deltaX // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
                   : "wheelDeltaX" in event
-                    ? -event.wheelDeltaX
-                    : 0;
+                  ? -event.wheelDeltaX
+                  : 0;
               },
               deltaY: function(event) {
                 return "deltaY" in event
                   ? event.deltaY // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
                   : "wheelDeltaY" in event
-                    ? -event.wheelDeltaY // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
-                    : "wheelDelta" in event
-                      ? -event.wheelDelta
-                      : 0;
+                  ? -event.wheelDeltaY // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
+                  : "wheelDelta" in event
+                  ? -event.wheelDelta
+                  : 0;
               },
               deltaZ: null,
 
@@ -16597,8 +16596,8 @@ object-assign
                     source.lineNumber +
                     ")"
                   : ownerName
-                    ? " (created by " + ownerName + ")"
-                    : "")
+                  ? " (created by " + ownerName + ")"
+                  : "")
               );
             };
 
@@ -19060,8 +19059,8 @@ object-assign
                   "Objects are not valid as a React child (found: %s).%s",
                   Object.prototype.toString.call(newChild) === "[object Object]"
                     ? "object with keys {" +
-                      Object.keys(newChild).join(", ") +
-                      "}"
+                        Object.keys(newChild).join(", ") +
+                        "}"
                     : newChild,
                   addendum
                 );
@@ -30247,9 +30246,9 @@ object-assign
                         "was rendered by React and is not a top-level container. %s",
                       isContainerReactRoot
                         ? "You may have accidentally passed in a React root node instead " +
-                          "of its container."
+                            "of its container."
                         : "Instead, have the parent component update its state and " +
-                          "rerender in order to remove this component."
+                            "rerender in order to remove this component."
                     );
                   }
 
@@ -30630,8 +30629,8 @@ object-assign
                 obj !== _symbol2.default.prototype
                 ? "symbol"
                 : typeof obj === "undefined"
-                  ? "undefined"
-                  : _typeof(obj);
+                ? "undefined"
+                : _typeof(obj);
             };
 
       /***/
@@ -32378,8 +32377,8 @@ object-assign
       });
 
       /*!
- * Programatically add the following
- */
+       * Programatically add the following
+       */
 
       // lower case chars
       for (i = 97; i < 123; i++) codes[String.fromCharCode(i)] = i - 32;
@@ -35687,8 +35686,8 @@ object-assign
             return b < Math.min(c.delay, d)
               ? H
               : b >= Math.min(c.delay + a, d)
-                ? I
-                : J;
+              ? I
+              : J;
           }
           function p(a, b, c, d, e) {
             switch (d) {
@@ -35717,8 +35716,8 @@ object-assign
             return a === I && b === 1 / 0
               ? 1 / 0
               : 1 === c
-                ? Math.floor(d) - 1
-                : Math.floor(d);
+              ? Math.floor(d) - 1
+              : Math.floor(d);
           }
           function t(a, b, c) {
             var d = a;
@@ -36796,12 +36795,12 @@ object-assign
                             !this._paused &&
                             0 != this.playbackRate) ||
                           this._currentTimePending
-                          ? "pending"
-                          : this._paused
-                            ? "paused"
-                            : this._isFinished
-                              ? "finished"
-                              : "running";
+                        ? "pending"
+                        : this._paused
+                        ? "paused"
+                        : this._isFinished
+                        ? "finished"
+                        : "running";
                     },
                     _rewind: function() {
                       if (this._playbackRate >= 0) this._currentTime = 0;
@@ -37531,31 +37530,28 @@ object-assign
                             0.25 / u
                           ]))
                         : q[0][0] > q[1][1] && q[0][0] > q[2][2]
-                          ? ((u =
-                              2 * Math.sqrt(1 + q[0][0] - q[1][1] - q[2][2])),
-                            (v = [
-                              0.25 * u,
-                              (q[0][1] + q[1][0]) / u,
-                              (q[0][2] + q[2][0]) / u,
-                              (q[2][1] - q[1][2]) / u
-                            ]))
-                          : q[1][1] > q[2][2]
-                            ? ((u =
-                                2 * Math.sqrt(1 + q[1][1] - q[0][0] - q[2][2])),
-                              (v = [
-                                (q[0][1] + q[1][0]) / u,
-                                0.25 * u,
-                                (q[1][2] + q[2][1]) / u,
-                                (q[0][2] - q[2][0]) / u
-                              ]))
-                            : ((u =
-                                2 * Math.sqrt(1 + q[2][2] - q[0][0] - q[1][1])),
-                              (v = [
-                                (q[0][2] + q[2][0]) / u,
-                                (q[1][2] + q[2][1]) / u,
-                                0.25 * u,
-                                (q[1][0] - q[0][1]) / u
-                              ])),
+                        ? ((u = 2 * Math.sqrt(1 + q[0][0] - q[1][1] - q[2][2])),
+                          (v = [
+                            0.25 * u,
+                            (q[0][1] + q[1][0]) / u,
+                            (q[0][2] + q[2][0]) / u,
+                            (q[2][1] - q[1][2]) / u
+                          ]))
+                        : q[1][1] > q[2][2]
+                        ? ((u = 2 * Math.sqrt(1 + q[1][1] - q[0][0] - q[2][2])),
+                          (v = [
+                            (q[0][1] + q[1][0]) / u,
+                            0.25 * u,
+                            (q[1][2] + q[2][1]) / u,
+                            (q[0][2] - q[2][0]) / u
+                          ]))
+                        : ((u = 2 * Math.sqrt(1 + q[2][2] - q[0][0] - q[1][1])),
+                          (v = [
+                            (q[0][2] + q[2][0]) / u,
+                            (q[1][2] + q[2][1]) / u,
+                            0.25 * u,
+                            (q[1][0] - q[0][1]) / u
+                          ])),
                       [p, r, s, v, n]
                     );
                   }
@@ -38571,21 +38567,21 @@ object-assign
                           ")"
                         ])
                       : "ellipse" == b[0]
-                        ? a.mergeList(b.slice(1), c.slice(1), [
-                            "ellipse(",
-                            a.mergeNonNegativeSizePair,
-                            " at ",
-                            a.mergeOffsetList,
-                            ")"
-                          ])
-                        : "polygon" == b[0] && b[1] == c[1]
-                          ? a.mergeList(b.slice(2), c.slice(2), [
-                              "polygon(",
-                              b[1],
-                              g,
-                              ")"
-                            ])
-                          : void 0;
+                      ? a.mergeList(b.slice(1), c.slice(1), [
+                          "ellipse(",
+                          a.mergeNonNegativeSizePair,
+                          " at ",
+                          a.mergeOffsetList,
+                          ")"
+                        ])
+                      : "polygon" == b[0] && b[1] == c[1]
+                      ? a.mergeList(b.slice(2), c.slice(2), [
+                          "polygon(",
+                          b[1],
+                          g,
+                          ")"
+                        ])
+                      : void 0;
                 }
                 var d = a.consumeParenthesised.bind(
                     null,
@@ -39137,8 +39133,8 @@ object-assign
               ? s.charAt(i)
               : a
             : TO_STRING
-              ? s.slice(i, i + 2)
-              : ((a - 0xd800) << 10) + (b - 0xdc00) + 0x10000;
+            ? s.slice(i, i + 2)
+            : ((a - 0xd800) << 10) + (b - 0xdc00) + 0x10000;
         };
       };
 
@@ -40573,17 +40569,17 @@ object-assign
         return it === undefined
           ? "Undefined"
           : it === null
-            ? "Null"
-            : // @@toStringTag case
-              typeof (T = tryGet((O = Object(it)), TAG)) == "string"
-              ? T
-              : // builtinTag case
-                ARG
-                ? cof(O)
-                : // ES3 arguments fallback
-                  (B = cof(O)) == "Object" && typeof O.callee == "function"
-                  ? "Arguments"
-                  : B;
+          ? "Null"
+          : // @@toStringTag case
+          typeof (T = tryGet((O = Object(it)), TAG)) == "string"
+          ? T
+          : // builtinTag case
+          ARG
+          ? cof(O)
+          : // ES3 arguments fallback
+          (B = cof(O)) == "Object" && typeof O.callee == "function"
+          ? "Arguments"
+          : B;
       };
 
       /***/
@@ -43065,8 +43061,7 @@ object-assign
           for (var i = 0, len = requiredPrefixes.length; i < len; ++i) {
             style[
               requiredPrefixes[i] + (0, _capitalizeString2.default)(property)
-            ] =
-              style[property];
+            ] = style[property];
           }
         }
       }
@@ -43481,10 +43476,10 @@ object-assign
     /* 189 */
     /***/ function(module, exports, __webpack_require__) {
       /*!
- * Bowser - a browser detector
- * https://github.com/ded/bowser
- * MIT License | (c) Dustin Diaz 2015
- */
+       * Bowser - a browser detector
+       * https://github.com/ded/bowser
+       * MIT License | (c) Dustin Diaz 2015
+       */
 
       !(function(root, name, definition) {
         if (typeof module != "undefined" && module.exports)
@@ -43773,8 +43768,8 @@ object-assign
                 iosdevice == "iphone"
                   ? "iPhone"
                   : iosdevice == "ipad"
-                    ? "iPad"
-                    : "iPod"
+                  ? "iPad"
+                  : "iPod"
             };
             // WTF: version is not part of user agent in web apps
             if (versionIdentifier) {
@@ -44118,16 +44113,16 @@ object-assign
         bowser.check = check;
 
         /*
-   * Set our detect method to the main bowser object so we can
-   * reuse it to test other user agents.
-   * This is needed to implement future tests.
-   */
+         * Set our detect method to the main bowser object so we can
+         * reuse it to test other user agents.
+         * This is needed to implement future tests.
+         */
         bowser._detect = detect;
 
         /*
-   * Set our detect public method to the main bowser object
-   * This is needed to implement bowser in server side
-   */
+         * Set our detect public method to the main bowser object
+         * This is needed to implement bowser in server side
+         */
         bowser.detect = detect;
         return bowser;
       });
@@ -45956,9 +45951,9 @@ object-assign
                     value = value.replace(
                       matches[0],
                       matches[1] +
-                      -parseFloat(matches[4]) +
-                      matches[5] +
-                      matches[6]
+                        -parseFloat(matches[4]) +
+                        matches[5] +
+                        matches[6]
                         ? ", " + (-parseFloat(matches[7]) + matches[8])
                         : ""
                     );
@@ -46568,10 +46563,10 @@ object-assign
                   Math.max(
                     this.state.swiping === "closing"
                       ? this.getTranslateMultiplier() *
-                        (currentX - this.swipeStartX)
+                          (currentX - this.swipeStartX)
                       : this.getMaxTranslateX() -
-                        this.getTranslateMultiplier() *
-                          (this.swipeStartX - currentX),
+                          this.getTranslateMultiplier() *
+                            (this.swipeStartX - currentX),
                     0
                   ),
                   this.getMaxTranslateX()
@@ -47734,8 +47729,8 @@ object-assign
                 var leftIconElement = leftIcon
                   ? leftIcon
                   : checked
-                    ? _react2.default.createElement(_check2.default, null)
-                    : null;
+                  ? _react2.default.createElement(_check2.default, null)
+                  : null;
                 if (leftIconElement) {
                   var mergedLeftIconStyles = desktop
                     ? (0, _simpleAssign2.default)(
@@ -49269,8 +49264,8 @@ object-assign
           return isBinary || reIsOctal.test(value)
             ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
             : reIsBadHex.test(value)
-              ? NAN
-              : +value;
+            ? NAN
+            : +value;
         }
 
         module.exports = throttle;
@@ -50050,8 +50045,8 @@ object-assign
                 (nestedItems.length && autoGenerateNestedIndicator)
                   ? 56
                   : rightToggle
-                    ? 72
-                    : 16,
+                  ? 72
+                  : 16,
               paddingBottom: singleAvatar ? 20 : 16,
               paddingTop: singleNoAvatar || threeLine ? 16 : 20,
               position: "relative"
@@ -50689,52 +50684,48 @@ object-assign
                   simpleLabel
                     ? this.createLabelElement(styles, contentChildren, other)
                     : disabled
-                      ? this.createDisabledElement(
-                          styles,
-                          contentChildren,
-                          other
-                        )
-                      : _react2.default.createElement(
-                          _EnhancedButton2.default,
-                          (0, _extends3.default)(
-                            {
-                              containerElement: containerElement
+                    ? this.createDisabledElement(styles, contentChildren, other)
+                    : _react2.default.createElement(
+                        _EnhancedButton2.default,
+                        (0, _extends3.default)(
+                          {
+                            containerElement: containerElement
+                          },
+                          other,
+                          {
+                            disableKeyboardFocus:
+                              disableKeyboardFocus ||
+                              this.state.rightIconButtonKeyboardFocused,
+                            onKeyboardFocus: this.handleKeyboardFocus,
+                            onMouseLeave: this.handleMouseLeave,
+                            onMouseEnter: this.handleMouseEnter,
+                            onTouchStart: this.handleTouchStart,
+                            onTouchEnd: this.handleTouchEnd,
+                            onClick: this.handleTouchTap,
+                            disabled: disabled,
+                            ref: function ref(node) {
+                              return (_this2.button = node);
                             },
-                            other,
-                            {
-                              disableKeyboardFocus:
-                                disableKeyboardFocus ||
-                                this.state.rightIconButtonKeyboardFocused,
-                              onKeyboardFocus: this.handleKeyboardFocus,
-                              onMouseLeave: this.handleMouseLeave,
-                              onMouseEnter: this.handleMouseEnter,
-                              onTouchStart: this.handleTouchStart,
-                              onTouchEnd: this.handleTouchEnd,
-                              onClick: this.handleTouchTap,
-                              disabled: disabled,
-                              ref: function ref(node) {
-                                return (_this2.button = node);
-                              },
-                              style: (0, _simpleAssign2.default)(
-                                {},
-                                styles.root,
-                                style
-                              )
-                            }
-                          ),
-                          _react2.default.createElement(
-                            "div",
-                            {
-                              style: prepareStyles(
-                                (0, _simpleAssign2.default)(
-                                  styles.innerDiv,
-                                  innerDivStyle
-                                )
-                              )
-                            },
-                            contentChildren
-                          )
+                            style: (0, _simpleAssign2.default)(
+                              {},
+                              styles.root,
+                              style
+                            )
+                          }
                         ),
+                        _react2.default.createElement(
+                          "div",
+                          {
+                            style: prepareStyles(
+                              (0, _simpleAssign2.default)(
+                                styles.innerDiv,
+                                innerDivStyle
+                              )
+                            )
+                          },
+                          contentChildren
+                        )
+                      ),
                   nestedList
                 );
               }
@@ -53091,8 +53082,8 @@ object-assign
                 horizontalPosition === "center"
                   ? ((state.offsetWidth - 48) / 2) * -1
                   : horizontalPosition === "right"
-                    ? 12
-                    : null,
+                  ? 12
+                  : null,
               transition:
                 _transitions2.default.easeOut("0ms", "top", "450ms") +
                 ", " +
@@ -53110,8 +53101,8 @@ object-assign
                 horizontalPosition === "center"
                   ? "50%"
                   : horizontalPosition === "left"
-                    ? "100%"
-                    : "0%",
+                  ? "100%"
+                  : "0%",
               top: verticalPosition === "bottom" ? 0 : "100%",
               transform: "translate(-50%, -50%)",
               borderRadius: "50%",
@@ -53358,8 +53349,8 @@ object-assign
             typeof extendedChildren === "function"
               ? extendedChildren(child)
               : extendedChildren
-                ? extendedChildren
-                : child.props.children;
+              ? extendedChildren
+              : child.props.children;
 
           return _react2.default.cloneElement(child, newProps, newChildren);
         });
@@ -53784,8 +53775,8 @@ object-assign
             var newFocusIndex = props.disableAutoFocus
               ? -1
               : selectedIndex >= 0
-                ? selectedIndex
-                : 0;
+              ? selectedIndex
+              : 0;
             if (newFocusIndex !== -1 && props.onMenuItemFocusChange) {
               props.onMenuItemFocusChange(null, newFocusIndex);
             }
@@ -53829,8 +53820,8 @@ object-assign
                 var newFocusIndex = nextProps.disableAutoFocus
                   ? -1
                   : selectedIndex >= 0
-                    ? selectedIndex
-                    : 0;
+                  ? selectedIndex
+                  : 0;
                 if (
                   newFocusIndex !== this.state.focusIndex &&
                   this.props.onMenuItemFocusChange

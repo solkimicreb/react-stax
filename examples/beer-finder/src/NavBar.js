@@ -1,5 +1,5 @@
 import React from "react";
-import { view, params } from "react-easy-stack";
+import { view, params } from "react-stax";
 import SearchBar from "material-ui-search-bar";
 import { LinearProgress } from "material-ui/Progress";
 import appStore, { fetchBeers } from "./appStore";

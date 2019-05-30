@@ -1,159 +1,159 @@
-import React, { Component, Fragment } from 'react'
-import ReactDOM from 'react-dom'
-import { store, view, path } from 'react-stax'
-import styled, { keyframes } from 'styled-components'
-import { colors, ease, layout } from './theme'
+import React, { Component, Fragment } from "react";
+import ReactDOM from "react-dom";
+import { store, view, path } from "react-stax";
+import styled, { keyframes } from "styled-components";
+import { colors, ease, layout } from "./theme";
 
-const THRESHOLD = 20
-const drawers = new Set()
-const backdrop = React.createRef()
+const THRESHOLD = 20;
+const drawers = new Set();
+const backdrop = React.createRef();
 
 export const touchStore = store({
   touch: undefined,
   startTouch: undefined,
   touchDiff: 0
-})
+});
 
 function onTouchStart(ev) {
-  touchStore.touch = touchStore.startTouch = ev.changedTouches[0]
-  const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open)
-  const windowWidth = window.innerWidth
+  touchStore.touch = touchStore.startTouch = ev.changedTouches[0];
+  const hasOpenDrawer = Array.from(drawers).some(drawer => drawer.props.open);
+  const windowWidth = window.innerWidth;
 
   for (const drawer of drawers) {
-    const { right, docked, open, touchZone } = drawer.props
+    const { right, docked, open, touchZone } = drawer.props;
     if (docked) {
-      continue
+      continue;
     }
 
-    const drawerNode = drawer.ref.current
-    const backdropNode = backdrop.current
+    const drawerNode = drawer.ref.current;
+    const backdropNode = backdrop.current;
     const distance = right
       ? windowWidth - touchStore.touch.pageX
-      : touchStore.touch.pageX
+      : touchStore.touch.pageX;
 
     if (open || (!hasOpenDrawer && distance < touchZone)) {
-      drawerNode.style.transition = 'none'
-      drawer.isCandidate = true
+      drawerNode.style.transition = "none";
+      drawer.isCandidate = true;
 
       if (backdropNode) {
-        backdropNode.style.transition = 'none'
+        backdropNode.style.transition = "none";
       }
 
       // break after the first open loader is handled
-      break
+      break;
     }
   }
 }
 
 function onTouchMove(ev) {
-  const windowWidth = window.innerWidth
-  const touch = ev.changedTouches[0]
+  const windowWidth = window.innerWidth;
+  const touch = ev.changedTouches[0];
 
   // add inertia to touchDiff
-  const touchDiff = touch.pageX - touchStore.touch.pageX
-  touchStore.touchDiff = (4 * touchStore.touchDiff + touchDiff) / 5
+  const touchDiff = touch.pageX - touchStore.touch.pageX;
+  touchStore.touchDiff = (4 * touchStore.touchDiff + touchDiff) / 5;
 
-  const xDiff = Math.abs(touchStore.startTouch.pageX - touch.pageX)
-  const yDiff = Math.abs(touchStore.startTouch.pageY - touch.pageY)
+  const xDiff = Math.abs(touchStore.startTouch.pageX - touch.pageX);
+  const yDiff = Math.abs(touchStore.startTouch.pageY - touch.pageY);
 
-  touchStore.touch = touch
+  touchStore.touch = touch;
 
   for (const drawer of drawers) {
-    const { right, open, touchZone } = drawer.props
+    const { right, open, touchZone } = drawer.props;
     if (!drawer.isCandidate) {
-      continue
+      continue;
     }
 
     if (!drawer.store.isTouching && THRESHOLD < xDiff) {
       if (xDiff < 5 * yDiff) {
-        drawer.isCandidate = false
-        continue
+        drawer.isCandidate = false;
+        continue;
       }
-      drawer.store.isTouching = true
+      drawer.store.isTouching = true;
     }
 
     if (!drawer.store.isTouching) {
-      continue
+      continue;
     }
 
-    const drawerNode = drawer.ref.current
-    const backdropNode = backdrop.current
-    const drawerWidth = drawerNode.offsetWidth
+    const drawerNode = drawer.ref.current;
+    const backdropNode = backdrop.current;
+    const drawerWidth = drawerNode.offsetWidth;
     // distance is the (absolute) distance from the edge of the window
-    const distance = right ? windowWidth - touch.pageX : touch.pageX
+    const distance = right ? windowWidth - touch.pageX : touch.pageX;
     const initialDistance = right
       ? windowWidth - touchStore.startTouch.pageX
-      : touchStore.startTouch.pageX
+      : touchStore.startTouch.pageX;
 
     // move the drawer if the touch position is inside it
     if (distance <= drawerWidth + touchZone) {
       // transformX is the part of the drawer that should be outside the screen
-      let transform = distance - drawerWidth
+      let transform = distance - drawerWidth;
       if (right) {
-        transform = -transform
+        transform = -transform;
       }
       // correction is relevant if the inital touch was inside the drawer
-      const correction = open ? Math.max(drawerWidth - initialDistance, 0) : 0
+      const correction = open ? Math.max(drawerWidth - initialDistance, 0) : 0;
 
       // do not let the drawer transform to be bigger then 0
       transform = right
         ? Math.max(transform - correction, 0)
-        : Math.min(transform + correction, 0)
+        : Math.min(transform + correction, 0);
 
-      drawerNode.style.transform = `translateX(${transform}px)`
+      drawerNode.style.transform = `translateX(${transform}px)`;
       if (backdropNode) {
-        backdropNode.style.opacity = (distance / drawerWidth) * 0.7
+        backdropNode.style.opacity = (distance / drawerWidth) * 0.7;
       }
     } else {
       // fully drawn drawers
-      drawerNode.style.transform = `translateX(0)`
+      drawerNode.style.transform = `translateX(0)`;
       if (backdropNode) {
-        backdropNode.style.opacity = 0.7
+        backdropNode.style.opacity = 0.7;
       }
     }
 
     // break after the first open loader is handled
-    break
+    break;
   }
 }
 
 function onTouchEnd(ev) {
   for (const drawer of drawers) {
-    drawer.isCandidate = false
+    drawer.isCandidate = false;
 
-    const { right, onOpen, onClose } = drawer.props
+    const { right, onOpen, onClose } = drawer.props;
     if (!drawer.store.isTouching) {
-      continue
+      continue;
     }
 
-    const drawerNode = drawer.ref.current
-    const touchDiff = right ? -touchStore.touchDiff : touchStore.touchDiff
+    const drawerNode = drawer.ref.current;
+    const touchDiff = right ? -touchStore.touchDiff : touchStore.touchDiff;
 
     if (0 < touchDiff) {
-      onOpen()
+      onOpen();
     } else {
-      onClose()
+      onClose();
     }
 
-    drawer.store.isTouching = false
-    drawerNode.style.transform = null
-    drawerNode.style.transition = null
+    drawer.store.isTouching = false;
+    drawerNode.style.transform = null;
+    drawerNode.style.transition = null;
 
     // break after the first open loader is handled
-    break
+    break;
   }
 
-  const backdropNode = backdrop.current
+  const backdropNode = backdrop.current;
   if (backdropNode) {
-    backdropNode.style.opacity = null
-    backdropNode.style.transition = null
+    backdropNode.style.opacity = null;
+    backdropNode.style.transition = null;
   }
 }
 
-window.addEventListener('touchstart', onTouchStart, { passive: true })
-window.addEventListener('touchmove', onTouchMove, { passive: true })
-window.addEventListener('touchend', onTouchEnd, { passive: true })
-window.addEventListener('touchcancel', onTouchEnd, { passive: true })
+window.addEventListener("touchstart", onTouchStart, { passive: true });
+window.addEventListener("touchmove", onTouchMove, { passive: true });
+window.addEventListener("touchend", onTouchEnd, { passive: true });
+window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
 const StyledDrawer = styled.div`
   position: fixed;
@@ -168,12 +168,12 @@ const StyledDrawer = styled.div`
   transition-timing-function: ${props => (props.open ? ease.out : ease.in)};
   transform: translateX(
     ${props =>
-      props.open || props.docked ? 0 : props.right ? '100%' : '-100%'}
+      props.open || props.docked ? 0 : props.right ? "100%" : "-100%"}
   );
   overflow: auto;
   will-change: transform;
   contain: strict;
-`
+`;
 
 const Backdrop = styled.div`
   position: fixed;
@@ -189,25 +189,25 @@ const Backdrop = styled.div`
   z-index: 60;
   will-change: opacity;
   contain: strict;
-`
+`;
 
 class Drawer extends Component {
-  ref = React.createRef()
+  ref = React.createRef();
   store = store({
     isTouching: false
-  })
+  });
 
   componentDidMount() {
-    drawers.add(this)
+    drawers.add(this);
   }
 
   componentWillUnmount() {
-    drawers.delete(this)
+    drawers.delete(this);
   }
 
   render() {
-    const { right, docked, onClose, open, children, ...rest } = this.props
-    const { isTouching } = this.store
+    const { right, docked, onClose, open, children, ...rest } = this.props;
+    const { isTouching } = this.store;
 
     return (
       <Fragment>
@@ -229,13 +229,13 @@ class Drawer extends Component {
           />
         )}
       </Fragment>
-    )
+    );
   }
 
   componentDidUpdate() {
     document.body.style.overflow =
-      this.props.open || this.store.isTouching ? 'hidden' : null
+      this.props.open || this.store.isTouching ? "hidden" : null;
   }
 }
 
-export default view(Drawer)
+export default view(Drawer);

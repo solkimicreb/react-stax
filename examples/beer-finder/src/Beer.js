@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { view, store } from "react-easy-stack";
+import { view, store } from "react-stax";
 import Card, { CardContent, CardMedia } from "material-ui/Card";
 
 class Beer extends Component {
@@ -17,7 +17,11 @@ class Beer extends Component {
           {showDetails ? (
             <p>{description}</p>
           ) : (
-            <ul>{food_pairing.map(food => <li key={food}>{food}</li>)}</ul>
+            <ul>
+              {food_pairing.map(food => (
+                <li key={food}>{food}</li>
+              ))}
+            </ul>
           )}
         </CardContent>
       </Card>

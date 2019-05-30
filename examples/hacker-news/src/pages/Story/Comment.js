@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import { view, store, Link } from 'react-stax'
-import timeago from 'timeago.js'
-import { fetchComment } from '../../api'
+import React, { Component } from "react";
+import { view, store, Link } from "react-stax";
+import timeago from "timeago.js";
+import { fetchComment } from "../../api";
 
 class RawComment extends Component {
   store = store({
     hidden: false
-  })
+  });
 
   toggleVisibility = () => {
-    this.store.hidden = !this.store.hidden
-  }
+    this.store.hidden = !this.store.hidden;
+  };
 
   render() {
-    const { hidden } = this.store
+    const { hidden } = this.store;
     const {
       deleted,
       dead,
@@ -23,22 +23,22 @@ class RawComment extends Component {
       kids,
       id,
       comments
-    } = this.props.comment
-    const timeAgo = timeago().format(time * 1000)
+    } = this.props.comment;
+    const timeAgo = timeago().format(time * 1000);
 
     if (deleted || dead || !text) {
-      return null
+      return null;
     }
 
     return (
       <div className="comment">
         <div>
           <Link to="/user" params={{ id: by }}>
-            {' '}
-            {by}{' '}
+            {" "}
+            {by}{" "}
           </Link>
           {timeAgo}
-          <span onClick={this.toggleVisibility}>{hidden ? '[+]' : '[-]'}</span>
+          <span onClick={this.toggleVisibility}>{hidden ? "[+]" : "[-]"}</span>
         </div>
 
         {!hidden && (
@@ -51,9 +51,9 @@ class RawComment extends Component {
           </div>
         )}
       </div>
-    )
+    );
   }
 }
 
-const Comment = view(RawComment)
-export default Comment
+const Comment = view(RawComment);
+export default Comment;

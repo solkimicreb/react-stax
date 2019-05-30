@@ -7,8 +7,8 @@ export default function render({ view, store }) {
 
   const startLoading = () => (loader.isLoading = true);
   const stopLoading = () => (loader.isLoading = false);
-  const Loader = view(
-    () => (loader.isLoading ? <span>DUMMY LOADER</span> : null)
+  const Loader = view(() =>
+    loader.isLoading ? <span>DUMMY LOADER</span> : null
   );
 
   return () => (

@@ -1,5 +1,5 @@
 import React from "react";
-import { view } from "react-easy-stack";
+import { view } from "react-stax";
 import appStore from "./appStore";
 import Beer from "./Beer";
 

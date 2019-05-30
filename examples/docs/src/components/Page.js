@@ -1,10 +1,10 @@
-import React, { Component, Fragment, Children } from 'react'
-import ReactDOM from 'react-dom'
-import { store, view, Link } from 'react-stax'
-import styled from 'styled-components'
-import BackIcon from 'react-icons/lib/fa/angle-left'
-import ForwardIcon from 'react-icons/lib/fa/angle-right'
-import { colors, layout } from './theme'
+import React, { Component, Fragment, Children } from "react";
+import ReactDOM from "react-dom";
+import { store, view, Link } from "react-stax";
+import styled from "styled-components";
+import BackIcon from "react-icons/lib/fa/angle-left";
+import ForwardIcon from "react-icons/lib/fa/angle-right";
+import { colors, layout } from "./theme";
 
 const StyledPage = styled.div`
   padding-left: 15px;
@@ -32,7 +32,7 @@ const StyledPage = styled.div`
     overflow: hidden;
     margin-bottom: 16px;
   }
-`
+`;
 
 const Stepper = styled.div`
   margin-top: 20px;
@@ -48,34 +48,34 @@ const Stepper = styled.div`
     height: 30px;
     width: 30px;
   }
-`
+`;
 
 class Page extends Component {
-  portals = {}
+  portals = {};
   store = store({
     didMount: false
-  })
+  });
 
   componentDidMount() {
-    const { children, curr } = this.props
+    const { children, curr } = this.props;
     Children.forEach(children, child => {
-      const { mount, portal } = child.props
+      const { mount, portal } = child.props;
       if (mount) {
-        ReactDOM.render(child, document.getElementById(mount))
+        ReactDOM.render(child, document.getElementById(mount));
       } else if (portal) {
-        const node = document.getElementById(portal)
+        const node = document.getElementById(portal);
         this.portals[portal] = {
           node,
           text: node.textContent
-        }
+        };
       }
-    })
-    this.store.didMount = true
+    });
+    this.store.didMount = true;
   }
 
   render() {
-    const { html, curr, prev, next, children, ...rest } = this.props
-    const { didMount } = this.store
+    const { html, curr, prev, next, children, ...rest } = this.props;
+    const { didMount } = this.store;
 
     return (
       <StyledPage
@@ -87,13 +87,13 @@ class Page extends Component {
         <div dangerouslySetInnerHTML={{ __html: html }} />
         {didMount &&
           Children.map(children, child => {
-            const portal = this.portals[child.props.portal]
+            const portal = this.portals[child.props.portal];
 
             if (portal) {
-              child = React.cloneElement(child, {}, portal.text)
-              return ReactDOM.createPortal(child, portal.node)
+              child = React.cloneElement(child, {}, portal.text);
+              return ReactDOM.createPortal(child, portal.node);
             }
-            return null
+            return null;
           })}
         <Stepper>
           <div>
@@ -112,8 +112,8 @@ class Page extends Component {
           </div>
         </Stepper>
       </StyledPage>
-    )
+    );
   }
 }
 
-export default view(Page)
+export default view(Page);
