@@ -21,13 +21,15 @@ updateCurrentState({
 
 export const history = {
   push(item) {
-    updateCurrentState(item)
+    item = cloneHistoryItem(item)
     window.history.pushState(item, '', item.url)
+    updateCurrentState(item)
     return item
   },
   replace(item) {
-    updateCurrentState(item)
+    item = cloneHistoryItem(item)
     window.history.replaceState(item, '', item.url)
+    updateCurrentState(item)
     return item
   },
   go(offset) {
@@ -47,13 +49,16 @@ function updateCurrentState(item) {
   replace(session, item.session)
 }
 
-function syncHistory() {
-  console.log('SYNC!!')
-  const item = {
+function cloneHistoryItem({ path, params, session }) {
+  return {
     path: Array.from(path),
     params: Object.assign({}, params),
     session: Object.assign({}, session)
   }
+}
+
+function syncHistory() {
+  const item = cloneHistoryItem({ path, params, session })
   const url = toUrl(item)
   window.history.replaceState(item, '', url)
 }
