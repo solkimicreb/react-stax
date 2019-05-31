@@ -1,7 +1,6 @@
 import { observable, observe, raw } from '@nx-js/observer-util'
-import { toPathString, toUrl, toObject, replace } from './utils'
+import { toPathString, toUrl, toObject, replace, schedulers } from 'utils'
 import { route } from './core'
-import * as schedulers from '../schedulers'
 
 export const elements = {
   anchor: 'a',

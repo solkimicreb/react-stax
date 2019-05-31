@@ -2,8 +2,8 @@
   "name": "react-stax",
   "version": "0.1.1-beta.1",
   "description": "TODO",
-  "main": "dist/dom.cjs.js",
-  "module": "dist/dom.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",
@@ -53,6 +53,7 @@
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.4.4",
     "@babel/plugin-transform-modules-commonjs": "^7.4.4",
     "@babel/polyfill": "^7.4.4",
@@ -96,6 +97,7 @@
     ],
     "ignore": [
       "**/build/**",
+      "**/dist/**",
       "**/node_modules/**"
     ]
   },
