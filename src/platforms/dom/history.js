@@ -1,6 +1,8 @@
 import { observable, observe, raw } from '@nx-js/observer-util'
+import { route } from 'router'
 import {
   toPathArray,
+  toPathString,
   toParams,
   toScroll,
   toUrl,
@@ -66,5 +68,11 @@ function syncHistory() {
 observe(syncHistory, { scheduler: schedulers.low })
 
 window.addEventListener('popstate', ev => {
-  updateCurrentState(ev.state)
+  const item = ev.state
+  route({
+    to: toPathString(item.path),
+    params: item.params,
+    session: item.session,
+    push: false
+  })
 })
