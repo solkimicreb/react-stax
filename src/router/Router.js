@@ -30,7 +30,9 @@ export default class Router extends PureComponent {
     return this.context.staxDepth || 0
   }
 
-  state = {}
+  state = {
+    page: path[this.depth] || this.props.defaultPage
+  }
 
   componentDidMount() {
     registerRouter(this, this.depth)
