@@ -1,14 +1,17 @@
 import { store } from 'react-stax'
 import * as userApi from '../api/user'
 
-const user = store({
+const userStore = store({
   user: undefined,
   async init() {
-    user.user = await userApi.getMe()
+    userStore.user = await userApi.getMe()
   },
   async login(user) {
-    user.user = await userApi.login(user)
+    userStore.user = await userApi.login(user)
+  },
+  async register(user) {
+    userStore.user = await userApi.register(user)
   }
 })
 
-export default user
+export default userStore

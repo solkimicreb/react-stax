@@ -7,7 +7,12 @@ const api = axios.create({
 })
 
 if (storage.token) {
-  api.defaults.headers.Authorization = `Token ${storage.token}`
+  auth(storage.token)
+}
+
+export function auth(token) {
+  api.defaults.headers.Authorization = `Token ${token}`
+  storage.token = token
 }
 
 export default api

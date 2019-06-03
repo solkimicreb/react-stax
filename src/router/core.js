@@ -78,7 +78,6 @@ export function route(
   const status = (routingStatus = { cancelled: false, depth: 0 })
 
   const toPath = to ? normalizePath(path, to, depth) : path
-  console.log('to', toPath)
   // push a new history item when necessary
   // it is important to do this before restarting the schedulers
   // to apply all new history replace operations to the new item
@@ -89,7 +88,6 @@ export function route(
   } else {
     history.replace({ path: toPath, params, session, scroll })
   }
-  console.log('PATH', path)
 
   // recursively route all routers, then finish the routing
   return Promise.resolve()
