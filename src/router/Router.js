@@ -12,44 +12,44 @@ export default class Router extends PureComponent {
     notFoundPage: PropTypes.string,
     onRoute: PropTypes.func,
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
-  }
+  };
 
   static defaultProps = {
     element: elements.div
-  }
+  };
 
-  static childContextTypes = { staxDepth: PropTypes.number }
-  static contextTypes = { staxDepth: PropTypes.number }
+  static childContextTypes = { staxDepth: PropTypes.number };
+  static contextTypes = { staxDepth: PropTypes.number };
 
-  getChildContext() {
+  getChildContext () {
     return { staxDepth: this.depth + 1 }
   }
 
   // depth stores how nested is the router, root routers have a depth of 0
-  get depth() {
+  get depth () {
     return this.context.staxDepth || 0
   }
 
   state = {
     page: path[this.depth] || this.props.defaultPage
-  }
+  };
 
-  componentDidMount() {
+  componentDidMount () {
     registerRouter(this, this.depth)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     releaseRouter(this, this.depth)
   }
 
   // this is part of the public API
   // it routes every router from the root depth
-  route = options => route(options, this.depth)
+  route = options => route(options, this.depth);
 
   // routing is split in 2 phases
   // first all parallel routers at the same depth executes startRouting
   // then all parallel routers at the same depth execute finishRouting
-  startRouting() {
+  startRouting () {
     const { onRoute, defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
@@ -70,7 +70,7 @@ export default class Router extends PureComponent {
   // finishRouting is called when all parallel routers at the current depth
   // finished executing startRouting
   // resolvedData is the data returned from props.onRoute in startRouting
-  finishRouting(resolvedData, status) {
+  finishRouting (resolvedData, status) {
     const { defaultPage } = this.props
     const fromPage = this.state.page
     const toPage = path[this.depth] || defaultPage
@@ -88,7 +88,7 @@ export default class Router extends PureComponent {
     return new Promise(resolve => this.setState(nextState, resolve))
   }
 
-  render() {
+  render () {
     const { element } = this.props
     const { page, resolvedData } = this.state
 
@@ -119,7 +119,7 @@ export default class Router extends PureComponent {
 
   // select the next view based on the children's page prop
   // and the string token in the URL pathname at the routers depth
-  selectChild(page) {
+  selectChild (page) {
     const children = Children.toArray(this.props.children)
     const selectedChild = children.find(child => child.props.page === page)
     // if the router has no matching child view try to render a notFoundPage
@@ -131,7 +131,7 @@ export default class Router extends PureComponent {
   }
 
   // all Router children must have a page prop
-  validateChild(child) {
+  validateChild (child) {
     if (child && typeof child.props.page !== 'string') {
       throw new Error(
         'Every Router child must have a string valued, unique page prop'

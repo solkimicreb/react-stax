@@ -10,7 +10,7 @@ if (storage.token) {
   auth(storage.token)
 }
 
-export function auth(token) {
+export function auth (token) {
   api.defaults.headers.Authorization = `Token ${token}`
   storage.token = token
 }

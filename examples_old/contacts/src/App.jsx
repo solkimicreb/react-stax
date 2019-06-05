@@ -1,11 +1,11 @@
-import React from "react";
-import { view } from "react-easy-state";
-import Contact from "./Contact";
-import ContactCreator from "./ContactCreator";
-import appStore from "./appStore";
+import React from 'react'
+import { view } from 'react-easy-state'
+import Contact from './Contact'
+import ContactCreator from './ContactCreator'
+import appStore from './appStore'
 
 // this rerenders whenever the appStore.contacts array changes (elements pushed or deleted)
-function App() {
+function App () {
   return (
     <table>
       <thead>
@@ -22,8 +22,8 @@ function App() {
         <ContactCreator />
       </tbody>
     </table>
-  );
+  )
 }
 
 // wrap the component with view() before exporting it
-export default view(App);
+export default view(App)

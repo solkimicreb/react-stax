@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react'
 
-export default function render({ view, store, fetch }) {
-  const beers = store([]);
+export default function render ({ view, store, fetch }) {
+  const beers = store([])
 
   const getRandomBeer = () =>
-    fetch("https://api.punkapi.com/v2/beers/random")
+    fetch('https://api.punkapi.com/v2/beers/random')
       .then(res => res.json())
-      .then(json => beers.push(json[0]));
+      .then(json => beers.push(json[0]))
 
   return view(() => (
     <div>
@@ -17,5 +17,5 @@ export default function render({ view, store, fetch }) {
         ))}
       </ul>
     </div>
-  ));
+  ))
 }

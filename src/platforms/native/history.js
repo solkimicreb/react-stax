@@ -8,7 +8,7 @@ export const session = observable()
 const historyItems = [{}]
 let idx = 0
 
-function createHistoryItem(item = {}) {
+function createHistoryItem (item = {}) {
   return {
     // raw (non Proxied) versions must be used here
     // Proxies can not be serialized by browsers
@@ -23,26 +23,26 @@ function createHistoryItem(item = {}) {
 }
 
 // TODO: this must be batched! (for the scheduler)
-function updateCurrent(item) {
+function updateCurrent (item) {
   replace(path, item.path)
   replace(params, item.params)
   replace(session, item.session)
 }
 
 export const history = {
-  push(item) {
+  push (item) {
     item = createHistoryItem(item)
     historyItems.splice(++idx, Infinity, item)
     updateCurrent(item)
     return item
   },
-  replace(item) {
+  replace (item) {
     item = createHistoryItem(item)
     historyItems[idx] = item
     updateCurrent(item)
     return item
   },
-  go(offset) {
+  go (offset) {
     idx = Math.min(historyItems.length - 1, Math.max(0, idx + offset))
     const { path, params, session } = historyItems[idx]
     return route({
@@ -53,13 +53,13 @@ export const history = {
       push: false
     })
   },
-  get(offset) {
+  get (offset) {
     const getIdx = Math.min(historyItems.length - 1, Math.max(0, idx + offset))
     return historyItems[getIdx]
   }
 }
 
-function syncHistory() {
+function syncHistory () {
   history.replace({ path, params, session, scroll: historyItems[idx].scroll })
 }
 // the URL and history can be updated with a low priority, the user won't notice

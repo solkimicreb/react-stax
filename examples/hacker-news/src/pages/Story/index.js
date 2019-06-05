@@ -1,7 +1,7 @@
-import React from "react";
-import { view } from "react-stax";
-import StoryItem from "../../components/StoryItem";
-import Comment from "./Comment";
+import React from 'react'
+import { view } from 'react-stax'
+import StoryItem from '../../components/StoryItem'
+import Comment from './Comment'
 
 export default view(story => (
   <div>
@@ -12,4 +12,4 @@ export default view(story => (
         <Comment key={comment.id} comment={comment} />
       ))}
   </div>
-));
+))

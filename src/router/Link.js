@@ -20,7 +20,7 @@ export default class Link extends PureComponent {
     activeStyle: PropTypes.object,
     isActive: PropTypes.func,
     element: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
-  }
+  };
 
   static defaultProps = {
     element: elements.anchor,
@@ -28,27 +28,27 @@ export default class Link extends PureComponent {
     activeClass: '',
     style: {},
     activeStyle: {}
-  }
+  };
 
   static contextTypes = {
     staxDepth: PropTypes.number
-  }
+  };
 
-  state = {}
+  state = {};
 
-  get depth() {
+  get depth () {
     return this.context.staxDepth || 0
   }
 
   // gets the full path for relative and absolute links too
-  get absolutePath() {
+  get absolutePath () {
     return normalizePath(path, this.props.to, this.depth)
   }
 
   // automatically update the link activity on pathname and params changes
   // with a low priority scheduler, to do not have a performance impact during
   // page transitions
-  componentDidMount() {
+  componentDidMount () {
     this.activityUpdater = observe(
       () => this.setState({ isActive: this.isLinkActive() }),
       { scheduler: schedulers.low }
@@ -56,11 +56,11 @@ export default class Link extends PureComponent {
   }
 
   // clean up transparent reactivity connections
-  componentWillUnmount() {
+  componentWillUnmount () {
     unobserve(this.activityUpdater)
   }
 
-  isLinkActive() {
+  isLinkActive () {
     const {
       activeClass,
       activeStyle,
@@ -89,7 +89,7 @@ export default class Link extends PureComponent {
     }
   }
 
-  isLinkPathActive() {
+  isLinkPathActive () {
     // URL pathname tokens before this.depth always match with the link
     // otherwise the link and its containing Router would not be rendered
     // URL pathname tokens after the link does not affect the check
@@ -97,7 +97,7 @@ export default class Link extends PureComponent {
     return this.absolutePath.every((page, i) => page === path[i])
   }
 
-  isLinkParamsActive() {
+  isLinkParamsActive () {
     const linkParams = this.props.params
     if (linkParams) {
       // extra query params does not affect the match
@@ -108,14 +108,14 @@ export default class Link extends PureComponent {
     return true
   }
 
-  isLinkScrollActive() {
-    /*const linkScroll = this.props.scroll
+  isLinkScrollActive () {
+    /* const linkScroll = this.props.scroll
     const historyScroll = history.current.scroll
     // scroll positions match when the link or the URL is missing a scroll anchor
     // or when the two anchors macth
     if (linkScroll && historyScroll) {
       return linkScroll.anchor === historyScroll.anchor
-    }*/
+    } */
     return true
   }
 
@@ -143,9 +143,9 @@ export default class Link extends PureComponent {
         this.depth
       )
     }
-  }
+  };
 
-  render() {
+  render () {
     let {
       to,
       params,

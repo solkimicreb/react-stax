@@ -1,1 +1,1 @@
-module.exports = require("react-native");
+module.exports = require('react-native')

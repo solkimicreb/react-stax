@@ -1,6 +1,6 @@
-import { params } from "react-stax";
-import { fetchFullStory } from "../api";
+import { params } from 'react-stax'
+import { fetchFullStory } from '../api'
 
-export default function resolveStory() {
-  return fetchFullStory(params.id);
+export default function resolveStory () {
+  return fetchFullStory(params.id)
 }

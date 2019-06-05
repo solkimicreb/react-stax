@@ -1,5 +1,5 @@
-import React from "react";
-import { view } from "react-stax";
+import React from 'react'
+import { view } from 'react-stax'
 
 export default view(({ id, created, karma, about }) => (
   <div>
@@ -10,4 +10,4 @@ export default view(({ id, created, karma, about }) => (
       about: <span dangerouslySetInnerHTML={{ __html: about }} />
     </p>
   </div>
-));
+))

@@ -1,7 +1,7 @@
-import { store } from "react-stax";
+import { store } from 'react-stax'
 
 const appStore = store({
   loading: false
-});
+})
 
-export default appStore;
+export default appStore

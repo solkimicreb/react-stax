@@ -43,7 +43,7 @@ export default [
       sourcemap: true
     }
   },
-  /*{
+  /* {
     input: path.resolve('src/platforms/native/index.js'),
     external: ['react-native', './utils', './router'],
     plugins: [
@@ -60,7 +60,7 @@ export default [
       dir: 'dist',
       entryFileNames: 'platform.native.js'
     }
-  },*/
+  }, */
   {
     input: path.resolve('src/router/index.js'),
     external: ['./platform', './utils'],

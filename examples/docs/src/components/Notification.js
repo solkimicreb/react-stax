@@ -1,15 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { store, view } from "react-stax";
-import styled from "styled-components";
-import { colors, ease, layout } from "./theme";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { store, view } from 'react-stax'
+import styled from 'styled-components'
+import { colors, ease, layout } from './theme'
 
-let timeoutId;
+let timeoutId
 const notificationStore = store({
-  message: "",
+  message: '',
   action: undefined,
   isOpen: false
-});
+})
 
 const StyledNotification = styled.div`
   position: fixed;
@@ -33,24 +33,24 @@ const StyledNotification = styled.div`
   cursor: pointer;
   font-size: 16px;
   z-index: 5;
-`;
+`
 
-export function notify(message, action, timeout = 5000) {
-  notificationStore.message = message;
-  notificationStore.action = action;
-  notificationStore.open = true;
-  clearTimeout(timeoutId);
-  timeoutId = setTimeout(closeNotification, timeout);
+export function notify (message, action, timeout = 5000) {
+  notificationStore.message = message
+  notificationStore.action = action
+  notificationStore.open = true
+  clearTimeout(timeoutId)
+  timeoutId = setTimeout(closeNotification, timeout)
 }
 
-function closeNotification() {
-  notificationStore.message = "";
-  notificationStore.action = undefined;
-  notificationStore.open = false;
+function closeNotification () {
+  notificationStore.message = ''
+  notificationStore.action = undefined
+  notificationStore.open = false
 }
 
 const Notification = view(() => {
-  const { open, action, message } = notificationStore;
+  const { open, action, message } = notificationStore
 
   return (
     <StyledNotification
@@ -61,7 +61,7 @@ const Notification = view(() => {
     >
       {message}
     </StyledNotification>
-  );
-});
+  )
+})
 
-ReactDOM.render(<Notification />, document.getElementById("notification"));
+ReactDOM.render(<Notification />, document.getElementById('notification'))

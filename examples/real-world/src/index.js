@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker'
 
 userStore.init().then(renderApp, renderApp)
 
-function renderApp() {
+function renderApp () {
   ReactDOM.render(<App />, document.getElementById('root'))
 }
 

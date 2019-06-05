@@ -6,7 +6,7 @@ let routingStatus
 const initStatuses = new Set()
 
 // register a router at a given depth
-export function registerRouter(router, depth) {
+export function registerRouter (router, depth) {
   // there can be multiple parallel routers at a given depth (we need a Set)
   if (!routers[depth]) {
     routers[depth] = new Set()
@@ -22,7 +22,7 @@ export function registerRouter(router, depth) {
 }
 
 // router newly added routers even if there is no ongoing routing process
-function initRouter(router) {
+function initRouter (router) {
   const status = { cancelled: false }
   initStatuses.add(status)
 
@@ -37,13 +37,13 @@ function initRouter(router) {
 }
 
 // release routers on componentWillUnmount
-export function releaseRouter(router, depth) {
+export function releaseRouter (router, depth) {
   routers[depth].delete(router)
 }
 
 // this is part of the public API
 // it cancels ongoing routings and recursively routes all routers from the root level
-export function route(
+export function route (
   { to, params = {}, session = {}, scroll, push } = {},
   depth = 0
 ) {
@@ -97,7 +97,7 @@ export function route(
 
 // this recursively routes all parallel routers form a given depth
 // all routers are finished routing at a depth before continuing with the next depth
-function switchRoutersFromDepth(status) {
+function switchRoutersFromDepth (status) {
   const routersAtDepth = Array.from(routers[status.depth] || [])
 
   if (routersAtDepth.length) {
@@ -123,14 +123,14 @@ function switchRoutersFromDepth(status) {
 
 // do the first routing half if the routing is not cancelled
 // it includes data resolving, interception and lazy loading
-function startRoutingAtDepth(routersAtDepth, status) {
+function startRoutingAtDepth (routersAtDepth, status) {
   if (!status.cancelled) {
     return Promise.all(routersAtDepth.map(router => router.startRouting()))
   }
 }
 
 // do the second routing half if the routing is not cancelled
-function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
+function finishRoutingAtDepth (routersAtDepth, resolvedData, status) {
   if (!status.cancelled) {
     return Promise.all(
       routersAtDepth.map((router, i) =>
@@ -142,7 +142,7 @@ function finishRoutingAtDepth(routersAtDepth, resolvedData, status) {
 
 // all routers updated recursively by now, it is time to finish the routing
 // if it was not cancelled in the meantime
-function finishRouting({ scroll }, status) {
+function finishRouting ({ scroll }, status) {
   if (!status.cancelled) {
     // handle the scroll after the whole routing is over
     // this makes sure that the necessary elements are already rendered

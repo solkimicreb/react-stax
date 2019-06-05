@@ -1,7 +1,7 @@
-import React from "react";
-import styled, { keyframes } from "styled-components";
-import ActionIcons from "./ActionIcons";
-import { colors, layout, ease } from "./theme";
+import React from 'react'
+import styled, { keyframes } from 'styled-components'
+import ActionIcons from './ActionIcons'
+import { colors, layout, ease } from './theme'
 
 const Actionbar = styled.nav`
   position: fixed;
@@ -26,10 +26,10 @@ const Actionbar = styled.nav`
       color: ${colors.accent};
     }
   }
-`;
+`
 
 export default () => (
   <Actionbar>
     <ActionIcons />
   </Actionbar>
-);
+)

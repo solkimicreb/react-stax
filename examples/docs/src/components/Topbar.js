@@ -1,11 +1,11 @@
-import React from "react";
-import { view } from "react-stax";
-import { TopLink } from "./Link";
-import styled from "styled-components";
-import { colors, layout, ease } from "./theme";
-import * as sidebar from "./Sidebar";
-import ActionIcons from "./ActionIcons";
-import { ReactComponent as Logo } from "../assets/logo_custom.svg";
+import React from 'react'
+import { view } from 'react-stax'
+import { TopLink } from './Link'
+import styled from 'styled-components'
+import { colors, layout, ease } from './theme'
+import * as sidebar from './Sidebar'
+import ActionIcons from './ActionIcons'
+import { ReactComponent as Logo } from '../assets/logo_custom.svg'
 
 const Topbar = styled.nav`
   position: fixed;
@@ -17,7 +17,7 @@ const Topbar = styled.nav`
   z-index: 50;
 
   .logo {
-    position: ${props => (props.isMobile ? "unset" : "absolute")};
+    position: ${props => (props.isMobile ? 'unset' : 'absolute')};
     left: 60px;
     display: flex;
     align-items: center;
@@ -29,7 +29,7 @@ const Topbar = styled.nav`
       margin-right: 10px;
     }
   }
-`;
+`
 
 const Navbar = styled.div`
   transform: translateX(${props => props.correction / 2}px);
@@ -52,33 +52,33 @@ const Navbar = styled.div`
       color: ${colors.accentLight};
     }
   }
-`;
+`
 
 const MenuItems = styled.div`
   display: flex;
-  justify-content: ${props => (props.isMobile ? "space-around" : "flex-start")};
-  width: ${props => (props.isMobile ? "100%" : "auto")};
-`;
+  justify-content: ${props => (props.isMobile ? 'space-around' : 'flex-start')};
+  width: ${props => (props.isMobile ? '100%' : 'auto')};
+`
 
 const Actions = styled.div`
   svg {
     margin: 10px;
   }
-`;
+`
 
 export default view(({ children }) => {
   const logo = (
-    <TopLink to="/home" className="logo">
+    <TopLink to='/home' className='logo'>
       <Logo />
       <div>Stax</div>
     </TopLink>
-  );
+  )
 
   return (
     <Topbar isMobile={layout.isMobile}>
       {!layout.isMobile && logo}
       <Navbar correction={layout.correction}>
-        <MenuItems isMobile={layout.isMobile} className="items">
+        <MenuItems isMobile={layout.isMobile} className='items'>
           {layout.isMobile && logo}
           {children}
         </MenuItems>
@@ -89,5 +89,5 @@ export default view(({ children }) => {
         )}
       </Navbar>
     </Topbar>
-  );
-});
+  )
+})

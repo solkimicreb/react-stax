@@ -1,15 +1,15 @@
-import React from "react";
-import styled from "styled-components";
-import { colors, ease } from "./theme";
+import React from 'react'
+import styled from 'styled-components'
+import { colors, ease } from './theme'
 
-function getSize(size) {
+function getSize (size) {
   switch (size) {
-    case "small":
-      return "20px";
-    case "large":
-      return "50px";
+    case 'small':
+      return '20px'
+    case 'large':
+      return '50px'
     default:
-      return "40px";
+      return '40px'
   }
 }
 
@@ -19,7 +19,7 @@ export default styled.button`
     props.dark ? colors.background : colors.backgroundLight};
   width: ${props => getSize(props.size)};
   height: ${props => getSize(props.size)};
-  border-radius: ${props => (props.round ? getSize(props.size) : "3px")};
+  border-radius: ${props => (props.round ? getSize(props.size) : '3px')};
   cursor: pointer;
   transition: color 0.2s ${ease.both};
   z-index: 20;
@@ -29,4 +29,4 @@ export default styled.button`
   &:active {
     color: ${props => (props.dark ? colors.accentLight : colors.accent)};
   }
-`;
+`

@@ -1,3 +1,3 @@
 module.exports = process.env.NATIVE
-  ? require("react-native")
-  : require("react-dom");
+  ? require('react-native')
+  : require('react-dom')

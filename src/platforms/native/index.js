@@ -8,7 +8,7 @@ export const elements = {
 }
 
 export const scroller = {
-  scrollTo() {}
+  scrollTo () {}
 }
 
 export const storage = observable()
@@ -19,7 +19,7 @@ export const path = observable([])
 export const history = [{}]
 let idx = 0
 
-function createHistoryItem(item = {}) {
+function createHistoryItem (item = {}) {
   return {
     // raw (non Proxied) versions must be used here
     // Proxies can not be serialized by browsers
@@ -34,7 +34,7 @@ function createHistoryItem(item = {}) {
 }
 
 // TODO: this must be batched! (for the scheduler)
-function updateCurrent(item) {
+function updateCurrent (item) {
   replace(path, item.path)
   replace(params, item.params)
   replace(session, item.session)
@@ -47,19 +47,19 @@ Object.defineProperties(history, {
 })
 
 Object.assign(history, {
-  push(item) {
+  push (item) {
     item = createHistoryItem(item)
     history.splice(++idx, Infinity, item)
     updateCurrent(item)
     return item
   },
-  replace(item) {
+  replace (item) {
     item = createHistoryItem(item)
     history[idx] = item
     updateCurrent(item)
     return item
   },
-  go(offset) {
+  go (offset) {
     idx = Math.min(history.length - 1, Math.max(0, idx + offset))
     const { path, params, session } = history[idx]
     return route({
@@ -70,13 +70,13 @@ Object.assign(history, {
       push: false
     })
   },
-  get(offset) {
+  get (offset) {
     const getIdx = Math.min(history.length - 1, Math.max(0, idx + offset))
     return history[getIdx]
   }
 })
 
-function syncHistory() {
+function syncHistory () {
   history.replace({ path, params, session, scroll: history.current.scroll })
 }
 // the URL and history can be updated with a low priority, the user won't notice

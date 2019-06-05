@@ -1,9 +1,9 @@
-export const isMobile = true;
+export const isMobile = true
 
 export const timing = {
   slow: 200,
   fast: 150
-};
+}
 
 export const elevation = {
   notification: 120,
@@ -11,6 +11,6 @@ export const elevation = {
   backdrop: 100,
   topbar: 80,
   actionbar: 60
-};
+}
 
-export * from "./common";
+export * from './common'

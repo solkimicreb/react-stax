@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { colors, ease } from "./theme";
+import React from 'react'
+import styled from 'styled-components'
+import { colors, ease } from './theme'
 
 export default styled.span`
   cursor: pointer;
@@ -12,4 +12,4 @@ export default styled.span`
   &:active {
     color: ${colors.accentLight};
   }
-`;
+`

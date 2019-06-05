@@ -1,28 +1,28 @@
-import React, { Component, Fragment } from "react";
-import { store, view, path, route, params, session } from "react-stax";
-import styled from "styled-components";
-import Drawer from "./Drawer";
-import { colors, ease, layout } from "./theme";
+import React, { Component, Fragment } from 'react'
+import { store, view, path, route, params, session } from 'react-stax'
+import styled from 'styled-components'
+import Drawer from './Drawer'
+import { colors, ease, layout } from './theme'
 
 export const chatStore = store({
-  get open() {
-    return layout.isLarge || params.chat;
+  get open () {
+    return layout.isLarge || params.chat
   }
-});
+})
 
-export function open() {
-  route({ params: { chat: true }, push: layout.isMobile, scroll: false });
+export function open () {
+  route({ params: { chat: true }, push: layout.isMobile, scroll: false })
 }
 
-export function close() {
-  route({ push: layout.isMobile, scroll: false });
+export function close () {
+  route({ push: layout.isMobile, scroll: false })
 }
 
-export function toggle() {
+export function toggle () {
   if (!chatStore.open) {
-    open();
+    open()
   } else {
-    close();
+    close()
   }
 }
 
@@ -34,10 +34,10 @@ const StyledChat = styled(Drawer)`
     width: 100%;
     border: none;
   }
-`;
+`
 
 class Chat extends Component {
-  render() {
+  render () {
     return session.chat !== false ? (
       <StyledChat
         docked={layout.isLarge}
@@ -48,13 +48,13 @@ class Chat extends Component {
         right
       >
         <iframe
-          src="https://discordapp.com/widget?id=476396897549025283&theme=dark"
-          allowtransparency="true"
-          frameBorder="0"
+          src='https://discordapp.com/widget?id=476396897549025283&theme=dark'
+          allowtransparency='true'
+          frameBorder='0'
         />
       </StyledChat>
-    ) : null;
+    ) : null
   }
 }
 
-export default view(Chat);
+export default view(Chat)

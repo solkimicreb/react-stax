@@ -1,7 +1,7 @@
 import { toScroll } from 'utils'
 
 export const scroller = {
-  scrollTo(options) {
+  scrollTo (options) {
     if (options.anchor) {
       const anchor = document.getElementById(options.anchor)
       if (anchor) {
@@ -24,7 +24,7 @@ const scroll = toScroll(location.hash)
 if (typeof scroll === 'object' && !sessionStorage.getItem(RELOAD_KEY)) {
   const start = Date.now()
 
-  function initialScroll() {
+  function initialScroll () {
     scroller.scrollTo(scroll)
     if (scroll.anchor) {
       // in case of a scroll anchor we have to wait for the anchor to

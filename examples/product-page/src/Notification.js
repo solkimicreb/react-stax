@@ -1,23 +1,23 @@
-import React from "react";
-import { store, view } from "react-stax";
-import Snackbar from "@material-ui/core/Snackbar";
+import React from 'react'
+import { store, view } from 'react-stax'
+import Snackbar from '@material-ui/core/Snackbar'
 
 const notificationStore = store({
-  message: "",
+  message: '',
   action: undefined,
   isOpen: false
-});
+})
 
-export function notify(message, action) {
-  notificationStore.message = message;
-  notificationStore.action = action;
-  notificationStore.isOpen = true;
+export function notify (message, action) {
+  notificationStore.message = message
+  notificationStore.action = action
+  notificationStore.isOpen = true
 }
 
-function closeNotification() {
-  notificationStore.message = "";
-  notificationStore.action = undefined;
-  notificationStore.isOpen = false;
+function closeNotification () {
+  notificationStore.message = ''
+  notificationStore.action = undefined
+  notificationStore.isOpen = false
 }
 
 export default view(() => (
@@ -29,4 +29,4 @@ export default view(() => (
     action={notificationStore.action}
     autoHideDuration={5000}
   />
-));
+))
