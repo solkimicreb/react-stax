@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.5",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.13",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-easy-stack": "^0.1.0-alpha.1",
