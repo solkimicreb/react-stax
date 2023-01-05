@@ -7,7 +7,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-easy-stack": "^0.1.0-alpha.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
     "moment-timezone": "^0.5.14",
